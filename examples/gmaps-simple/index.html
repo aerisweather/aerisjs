@@ -13,9 +13,9 @@
     <script data-main="../../lib/config" src="../../externals/require.js"></script>
     <script type="text/javascript">
       function initialize() {
-        require(["aeris/gmaps"], function(aeris) {
-          var map = new aeris.Map("map-canvas", {
-            baseLayer: new aeris.layers.GoogleRoadMap(),
+        require(["aeris/maps/gmaps"], function(aeris) {
+          var map = new aeris.maps.gmaps.Map("map-canvas", {
+            baseLayer: new aeris.maps.gmaps.layers.GoogleRoadMap(),
             center: [-34.397, 150.644],
             zoom: 8
           });

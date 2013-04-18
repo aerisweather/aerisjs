@@ -16,9 +16,9 @@
     <script data-main="../../lib/config" src="../../externals/require.js"></script>
     <script type="text/javascript">
       function initialize() {
-        require(["aeris/openlayers"], function(aeris) {
-          var map = new aeris.Map("map-canvas", {
-            baseLayer: new aeris.layers.OSM(),
+        require(["aeris/maps/openlayers"], function(aeris) {
+          var map = new aeris.maps.openlayers.Map("map-canvas", {
+            baseLayer: new aeris.maps.openlayers.layers.OSM(),
             center: [-34.397, 150.644],
             zoom: 8
           });
