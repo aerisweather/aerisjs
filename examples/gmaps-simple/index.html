@@ -15,7 +15,7 @@
       function initialize() {
         require(["aeris/maps/gmaps"], function(aeris) {
           var map = new aeris.maps.gmaps.Map("map-canvas", {
-            baseLayer: new aeris.maps.gmaps.layers.GoogleRoadMap(),
+            baseLayer: new aeris.maps.layers.GoogleRoadMap(),
             center: [-34.397, 150.644],
             zoom: 8
           });

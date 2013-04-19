@@ -18,7 +18,7 @@
       function initialize() {
         require(["aeris/maps/openlayers"], function(aeris) {
           var map = new aeris.maps.openlayers.Map("map-canvas", {
-            baseLayer: new aeris.maps.openlayers.layers.OSM(),
+            baseLayer: new aeris.maps.layers.OSM(),
             center: [-34.397, 150.644],
             zoom: 8
           });
