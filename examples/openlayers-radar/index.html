@@ -35,12 +35,24 @@
 
           var radar = new aeris.maps.layers.AerisRadar();
           radar.setMap(map);
+
+          var $radarVisibility = $("#radar-visibility");
+          $radarVisibility.change(function() {
+            radar[$radarVisibility.val()]();
+          });
         });
       }
     </script>
   </head>
   <body>
     <div id="map-canvas"></div>
+    <div>
+      <label for="radar-visibility">Visibility:</label>
+      <select id="radar-visibility">
+        <option value="show" selected="selected">Show</option>
+        <option value="hide">Hide</option>
+      </select>
+    </div>
     <script type="text/javascript">
       initialize();
     </script>
