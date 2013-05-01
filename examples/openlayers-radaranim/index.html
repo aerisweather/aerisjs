@@ -54,6 +54,18 @@
             radarAnim.stop();
             return false;
           });
+
+          var $animPrev = $("#anim-prev");
+          $animPrev.click(function() {
+            radarAnim.previous();
+            return false;
+          });
+
+          var $animNext = $("#anim-next");
+          $animNext.click(function() {
+            radarAnim.next();
+            return false;
+          });
         });
       }
     </script>
@@ -64,6 +76,10 @@
       <a href="#" id="anim-start">Start</a> &#160;|&#160;
       <a href="#" id="anim-pause">Pause</a> &#160;|&#160;
       <a href="#" id="anim-stop">Stop</a>
+    </div>
+    <div>
+      <a href="#" id="anim-prev">Previous</a> &#160;|&#160;
+      <a href="#" id="anim-next">Next</a>
     </div>
     <script type="text/javascript">
       initialize();
