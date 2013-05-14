@@ -33,12 +33,25 @@
           var radar = new aeris.maps.layers.AerisRadar();
           radar.setMap(map);
           radar.autoUpdate();
+          var radarAnim = radar.animate();
+
+          var $radarAnim = $("#radar-anim");
+          $radarAnim.change(function() {
+            if ($radarAnim.is(':checked'))
+              radarAnim.start();
+            else
+              radarAnim.stop();
+          });
         });
       }
     </script>
   </head>
   <body>
     <div id="map-canvas"></div>
+    <div>
+      <input type="checkbox" id="radar-anim" />
+      <label for="radar-anim">Animate</label>
+    </div>
     <script type="text/javascript">
       initialize();
     </script>
