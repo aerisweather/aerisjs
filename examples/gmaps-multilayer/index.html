@@ -38,14 +38,51 @@
 
           var anim = new aeris.maps.animations.AnimationSync(
             [radar, satellite]);
-          anim.start();
 
+          var $animStart = $("#anim-start");
+          $animStart.click(function() {
+            anim.start();
+            return false;
+          });
+
+          var $animPause = $("#anim-pause");
+          $animPause.click(function() {
+            anim.pause();
+            return false;
+          });
+
+          var $animStop = $("#anim-stop");
+          $animStop.click(function() {
+            anim.stop();
+            return false;
+          });
+
+          var $animPrev = $("#anim-prev");
+          $animPrev.click(function() {
+            anim.previous();
+            return false;
+          });
+
+          var $animNext = $("#anim-next");
+          $animNext.click(function() {
+            radarAnim.next();
+            return false;
+          });
         });
       }
     </script>
   </head>
   <body>
     <div id="map-canvas"></div>
+    <div>
+      <a href="#" id="anim-start">Start</a> &#160;|&#160;
+      <a href="#" id="anim-pause">Pause</a> &#160;|&#160;
+      <a href="#" id="anim-stop">Stop</a>
+    </div>
+    <div>
+      <a href="#" id="anim-prev">Previous</a> &#160;|&#160;
+      <a href="#" id="anim-next">Next</a>
+    </div>
     <script type="text/javascript">
       initialize();
     </script>
