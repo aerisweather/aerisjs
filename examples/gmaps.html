@@ -12,13 +12,11 @@
     <script type="text/javascript"
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false">
     </script>
-    <script type="text/javascript"
-      src="http://openlayers.org/api/OpenLayers.js">
     </script>
     <script data-main="../../lib/config" src="../../externals/require.js"></script>
     <script type="text/javascript">
-      var NS = 'openlayers';
-      var BASE = 'OSM';
+      var NS = 'gmaps';
+      var BASE = 'GoogleRoadMap';
     </script>
     <script type="text/javascript" src="all.js"></script>
   </head>
@@ -28,11 +26,11 @@
     <h3>Base Layer</h3>
     <div>
       <select id="base-layer">
-        <option value="OSM" selected="selected">OpenStreetMap</option>
         <option value="GoogleRoadMap">Google Street Map</option>
         <option value="GoogleSatellite">Google Satellite</option>
         <option value="GoogleTerrain">Google Terrain</option>
         <option value="GoogleHybrid">Google Hybrid</option>
+        <option value="OSM" selected="selected">OpenStreetMap</option>
       </select>
     </div>
 
@@ -76,4 +74,5 @@
     </script>
   </body>
 </html>
+
 
