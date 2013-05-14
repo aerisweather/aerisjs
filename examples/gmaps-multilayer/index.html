@@ -32,9 +32,14 @@
 
           var radar = new aeris.maps.layers.AerisRadar();
           radar.setMap(map);
+          var radarAnim = radar.animate();
 
           var satellite = new aeris.maps.layers.AerisSatellite();
           satellite.setMap(map);
+          var satAnim = satellite.animate();
+
+          radarAnim.start();
+          satAnim.start();
         });
       }
     </script>
