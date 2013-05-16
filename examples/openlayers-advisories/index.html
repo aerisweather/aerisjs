@@ -27,6 +27,7 @@
 
           var advisories = new aeris.maps.layers.AerisAdvisories();
           advisories.setMap(map);
+          advisories.autoUpdate();
 
           var $visibility = $("#visibility");
           $visibility.change(function() {
