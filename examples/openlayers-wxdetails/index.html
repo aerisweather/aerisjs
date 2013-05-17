@@ -33,8 +33,13 @@
             zoom: 4
           });
 
-          var wxDetails = new aeris.maps.layers.AerisWeatherDetails();
-          wxDetails.setMap(map);
+          var wxClick = new aeris.maps.events.Click();
+          wxClick.setMap(map);
+          wxClick.on('click', function(event) {
+            console.info(event);
+          });
+          /*var wxDetails = new aeris.maps.layers.AerisWeatherDetails();
+          wxDetails.setMap(map);*/
 
           var $radarVisibility = $("#radar-visibility");
           $radarVisibility.change(function() {
