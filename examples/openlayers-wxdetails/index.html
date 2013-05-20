@@ -9,6 +9,7 @@
       }
     </style>
     <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="https://raw.github.com/wycats/handlebars.js/1.0.0-rc.4/dist/handlebars.js"></script>
     <script type="text/javascript"
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false">
     </script>
@@ -35,8 +36,20 @@
 
           var wxClick = new aeris.maps.events.AerisWeatherDetailsClick();
           wxClick.setMap(map);
-          wxClick.on('click', function(latLng, weather) {
-            console.info(latLng, weather);
+          wxClick.on('click', function(latLon, weather) {
+            var source = $('#weather-details').html();
+            var template = Handlebars.compile(source);
+            var html = template({
+              latitude: Math.round(latLon[0] * 100) / 100,
+              longitude: Math.round(latLon[1] * 100) / 100,
+              place: weather.place,
+              obs: weather.observation,
+              fc1: weather.forecasts[0],
+              fc2: weather.forecasts[1],
+              fc3: weather.forecasts[2]
+            });
+            var infoBox = new aeris.maps.layers.InfoBox(latLon, html);
+            infoBox.setMap(map);
           });
 
           var $radarVisibility = $("#radar-visibility");
@@ -77,6 +90,123 @@
         <option value="0">0%</option>
       </select>
     </div>
+    <script id="weather-details" type="text/x-handlebars-template">
+      <div>
+        <div class="infowin-title">Weather </div>
+        <div class="wxdata-wrapper clearfix">
+          <div class="data">
+            <div class="wxdata-loc">{{latitude}}, {{longitude}}
+              <span class="wxdata-loc-detail">near {{place.name}}, {{place.state}}</span>
+            </div>
+            <table class="wxdata-table">
+              <tbody>
+                <tr><th colspan="2">Currently</th></tr>
+                <tr>
+                  <td class="wxcc-summary">
+                    <div class="wx">
+                      <div class="inner"><img src="http://mesh.hamweather.net/images/wxicons/{{obs.icon}}" alt=""></div>
+                    </div>
+                    <div class="temp">
+                      <div class="inner">{{obs.tempF}}&#176;</div>
+                    </div>
+                  </td>
+                  <td class="wxcc-details">
+                    <ul>
+                      <li class="odd">
+                        <div class="label">Feels Like</div>
+                        <div class="value">{{obs.feelslikeF}}&#176;</div>
+                      </li>
+                      <li class="even">
+                        <div class="label">Winds</div>
+                        <div class="value">{{obs.windDir}} {{obs.windMPH}} mph</div>
+                      </li>
+                      <li class="odd">
+                        <div class="label">Dew Point</div>
+                        <div class="value">{{obs.dewpointF}}&#176;</div>
+                      </li>
+                    </ul>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <table class="wxdata-table">
+              <tbody>
+                <tr><th colspan="3">Forecast</th></tr>
+                <tr>
+                  <td class="wxfcst">
+                    <div class="daydata day">{{fc1.title}}</div>
+                    <div class="wxrow">
+                      <div class="wx">
+                        <div class="inner"><img src="http://mesh.hamweather.net/images/wxicons/{{fc1.icon}}" alt="{{fc1.weather}}"></div>
+                      </div>
+                      <div class="temps">
+                        <div class="hitemp">
+                          <div class="label">Hi:</div>
+                          <div class="inner">{{fc1.maxTempF}}&#176;</div>
+                        </div>
+                        <div class="lotemp">
+                          <div class="label">Lo:</div>
+                          <div class="inner">{{fc1.minTempF}}&#176;</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="daydata pop">
+                      <div class="label">POP*:</div>
+                      <div class="value">{{fc1.pop}}%</div>
+                    </div>
+                  </td>
+                  <td class="wxfcst">
+                    <div class="daydata day">{{fc2.title}}</div>
+                    <div class="wxrow">
+                      <div class="wx">
+                        <div class="inner"><img src="http://mesh.hamweather.net/images/wxicons/{{fc2.icon}}" alt="{{fc2.weather}}"></div>
+                      </div>
+                      <div class="temps">
+                        <div class="hitemp">
+                          <div class="label">Hi:</div>
+                          <div class="inner">{{fc2.maxTempF}}&#176;</div>
+                        </div>
+                        <div class="lotemp">
+                          <div class="label">Lo:</div>
+                          <div class="inner">{{fc2.minTempF}}&#176;</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="daydata pop">
+                      <div class="label">POP*:</div>
+                      <div class="value">{{fc2.pop}}%</div>
+                    </div>
+                  </td>
+                  <td class="wxfcst">
+                    <div class="daydata day">{{fc3.title}}</div>
+                    <div class="wxrow">
+                      <div class="wx">
+                        <div class="inner"><img src="http://mesh.hamweather.net/images/wxicons/{{fc3.icon}}" alt="{{fc3.weather}}"></div>
+                      </div>
+                      <div class="temps">
+                        <div class="hitemp">
+                          <div class="label">Hi:</div>
+                          <div class="inner">{{fc3.maxTempF}}&#176;</div>
+                        </div>
+                        <div class="lotemp">
+                          <div class="label">Lo:</div>
+                          <div class="inner">{{fc3.minTempF}}&#176;</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="daydata pop">
+                      <div class="label">POP*:</div>
+                      <div class="value">{{fc3.pop}}%</div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="wxdata-loc"><span class="wxdata-loc-detail">* POP = Probability Of Precip</span></div>
+          </div>
+        </div>
+      </div>
+    </script>
     <script type="text/javascript">
       initialize();
     </script>
