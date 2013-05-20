@@ -30,10 +30,10 @@
             zoom: 4
           });
 
-          var wxClick = new aeris.maps.events.Click();
+          var wxClick = new aeris.maps.events.AerisWeatherDetailsClick();
           wxClick.setMap(map);
-          wxClick.on('click', function(event) {
-            console.info(event);
+          wxClick.on('click', function(latLng, weather) {
+            console.info(latLng, weather);
           });
 
           var $radarVisibility = $("#radar-visibility");
