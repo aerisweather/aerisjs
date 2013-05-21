@@ -7,6 +7,10 @@
         width: 600px;
         height: 400px;
       }
+      .float-left {
+        float: left;
+        margin-right: 10px;
+      }
     </style>
     <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
     <script type="text/javascript"
@@ -18,58 +22,110 @@
     <script data-main="../lib/config" src="../externals/require.js"></script>
     <script type="text/javascript">
       var NS = 'openlayers';
-      var BASE = 'OSM';
+      var BASE = 'GoogleRoadMap';
     </script>
     <script type="text/javascript" src="all.js"></script>
   </head>
   <body>
-    <div id="map-canvas"></div>
+    <div id="map-canvas" class="float-left"></div>
+    <div class="float-left">
+      <h3>Base Layer</h3>
+      <div>
+        <select id="base-layer">
+          <option value="GoogleRoadMap" selected="selected">Google Street Map</option>
+          <option value="GoogleSatellite">Google Satellite</option>
+          <option value="GoogleTerrain">Google Terrain</option>
+          <option value="GoogleHybrid">Google Hybrid</option>
+          <option value="OSM">OpenStreetMap</option>
+        </select>
+      </div>
 
-    <h3>Base Layer</h3>
-    <div>
-      <select id="base-layer">
-        <option value="OSM" selected="selected">OpenStreetMap</option>
-        <option value="GoogleRoadMap">Google Street Map</option>
-        <option value="GoogleSatellite">Google Satellite</option>
-        <option value="GoogleTerrain">Google Terrain</option>
-        <option value="GoogleHybrid">Google Hybrid</option>
-      </select>
-    </div>
+      <h3>Radar</h3>
+      <div>
+        <label for="radar-visibility">Visibility:</label>
+        <select id="radar-visibility">
+          <option value="show" selected="selected">Show</option>
+          <option value="hide">Hide</option>
+        </select>
+      </div>
+      <div>
+        <label for="radar-opacity">Opacity:</label>
+        <select id="radar-opacity">
+          <option value="1" selected="selected">100%</option>
+          <option value="0.9">90%</option>
+          <option value="0.8">80%</option>
+          <option value="0.7">70%</option>
+          <option value="0.6">60%</option>
+          <option value="0.5">50%</option>
+          <option value="0.4">40%</option>
+          <option value="0.3">30%</option>
+          <option value="0.2">20%</option>
+          <option value="0.1">10%</option>
+          <option value="0">0%</option>
+        </select>
+      </div>
 
-    <h3>Radar</h3>
-    <div>
-      <label for="radar-visibility">Visibility:</label>
-      <select id="radar-visibility">
-        <option value="show" selected="selected">Show</option>
-        <option value="hide">Hide</option>
-      </select>
-    </div>
-    <div>
-      <label for="radar-opacity">Opacity:</label>
-      <select id="radar-opacity">
-        <option value="1" selected="selected">100%</option>
-        <option value="0.9">90%</option>
-        <option value="0.8">80%</option>
-        <option value="0.7">70%</option>
-        <option value="0.6">60%</option>
-        <option value="0.5">50%</option>
-        <option value="0.4">40%</option>
-        <option value="0.3">30%</option>
-        <option value="0.2">20%</option>
-        <option value="0.1">10%</option>
-        <option value="0">0%</option>
-      </select>
-    </div>
+      <h3>Satellite</h3>
+      <div>
+        <label for="satellite-visibility">Visibility:</label>
+        <select id="satellite-visibility">
+          <option value="show" selected="selected">Show</option>
+          <option value="hide">Hide</option>
+        </select>
+      </div>
+      <div>
+        <label for="satellite-opacity">Opacity:</label>
+        <select id="satellite-opacity">
+          <option value="1" selected="selected">100%</option>
+          <option value="0.9">90%</option>
+          <option value="0.8">80%</option>
+          <option value="0.7">70%</option>
+          <option value="0.6">60%</option>
+          <option value="0.5">50%</option>
+          <option value="0.4">40%</option>
+          <option value="0.3">30%</option>
+          <option value="0.2">20%</option>
+          <option value="0.1">10%</option>
+          <option value="0">0%</option>
+        </select>
+      </div>
 
-    <h3>Animation</h3>
-    <div>
-      <a href="#" id="anim-start">Start</a> &#160;|&#160;
-      <a href="#" id="anim-pause">Pause</a> &#160;|&#160;
-      <a href="#" id="anim-stop">Stop</a>
+      <h3>Advisories</h3>
+      <div>
+        <label for="advisories-visibility">Visibility:</label>
+        <select id="advisories-visibility">
+          <option value="show" selected="selected">Show</option>
+          <option value="hide">Hide</option>
+        </select>
+      </div>
+      <div>
+        <label for="advisories-opacity">Opacity:</label>
+        <select id="advisories-opacity">
+          <option value="1" selected="selected">100%</option>
+          <option value="0.9">90%</option>
+          <option value="0.8">80%</option>
+          <option value="0.7">70%</option>
+          <option value="0.6">60%</option>
+          <option value="0.5">50%</option>
+          <option value="0.4">40%</option>
+          <option value="0.3">30%</option>
+          <option value="0.2">20%</option>
+          <option value="0.1">10%</option>
+          <option value="0">0%</option>
+        </select>
+      </div>
     </div>
-    <div>
-      <a href="#" id="anim-prev">Previous</a> &#160;|&#160;
-      <a href="#" id="anim-next">Next</a>
+    <div class="float-left">
+      <h3>Animation</h3>
+      <div>
+        <a href="#" id="anim-start">Start</a> &#160;|&#160;
+        <a href="#" id="anim-pause">Pause</a> &#160;|&#160;
+        <a href="#" id="anim-stop">Stop</a>
+      </div>
+      <div>
+        <a href="#" id="anim-prev">Previous</a> &#160;|&#160;
+        <a href="#" id="anim-next">Next</a>
+      </div>
     </div>
     <script type="text/javascript">
       initialize();

@@ -53,6 +53,38 @@ function initialize() {
       radar.setOpacity($radarOpacity.val());
     });
 
+    // Satellite
+
+    var satellite = new aeris.maps.layers.AerisSatellite();
+    satellite.setMap(map);
+    satellite.autoUpdate();
+
+    var $satelliteVisibility = $('#satellite-visibility');
+    $satelliteVisibility.change(function() {
+      satellite[$satelliteVisibility.val()]();
+    });
+
+    var $satelliteOpacity = $('#satellite-opacity');
+    $satelliteOpacity.change(function() {
+      satellite.setOpacity($satelliteOpacity.val());
+    });
+
+    // Advisories
+
+    var advisories = new aeris.maps.layers.AerisAdvisories();
+    advisories.setMap(map);
+    advisories.autoUpdate();
+
+    var $advisoriesVisibility = $('#advisories-visibility');
+    $advisoriesVisibility.change(function() {
+      advisories[$advisoriesVisibility.val()]();
+    });
+
+    var $advisoriesOpacity = $('#advisories-opacity')
+    $advisoriesOpacity.change(function() {
+      advisories.setOpacity($advisoriesOpacity.val());
+    });
+
     // Animate
 
     var radarAnim = radar.animate();
