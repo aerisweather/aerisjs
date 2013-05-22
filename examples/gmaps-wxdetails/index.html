@@ -9,11 +9,22 @@
       }
     </style>
     <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="https://raw.github.com/wycats/handlebars.js/1.0.0-rc.4/dist/handlebars.js"></script>
     <script type="text/javascript"
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false">
     </script>
     <script data-main="../../lib/config" src="../../externals/require.js"></script>
     <script type="text/javascript">
+      var source = null;
+      var template = null;
+      $.ajax({
+        url: '../wx-details.handlebars',
+        cache: true,
+        success: function(data) {
+          source = data;
+          template = Handlebars.compile(source);
+        }
+      });
       function initialize() {
         var req = require.config({
           config: {
@@ -32,8 +43,18 @@
 
           var wxClick = new aeris.maps.events.AerisWeatherDetailsClick();
           wxClick.setMap(map);
-          wxClick.on('click', function(latLng, weather) {
-            console.info(latLng, weather);
+          wxClick.on('click', function(latLon, weather) {
+            var html = template({
+              latitude: Math.round(latLon[0] * 100) / 100,
+              longitude: Math.round(latLon[1] * 100) / 100,
+              place: weather.place,
+              obs: weather.observation,
+              fc1: weather.forecasts[0],
+              fc2: weather.forecasts[1],
+              fc3: weather.forecasts[2]
+            });
+            var infoBox = new aeris.maps.layers.InfoBox(latLon, html);
+            infoBox.setMap(map);
           });
 
           var $radarVisibility = $("#radar-visibility");
