@@ -36,14 +36,14 @@
           var convective = new aeris.maps.layers.AerisConvectiveHazards();
           convective.setMap(map);
 
-          var $radarVisibility = $("#radar-visibility");
-          $radarVisibility.change(function() {
-            radar[$radarVisibility.val()]();
+          var $visibility = $("#visibility");
+          $visibility.change(function() {
+            convective[$visibility.val()]();
           });
 
-          var $radarOpacity = $("#radar-opacity");
-          $radarOpacity.change(function() {
-            radar.setOpacity($radarOpacity.val());
+          var $opacity = $("#opacity");
+          $opacity.change(function() {
+            convective.setOpacity($opacity.val());
           });
         });
       }
@@ -52,15 +52,15 @@
   <body>
     <div id="map-canvas"></div>
     <div>
-      <label for="radar-visibility">Visibility:</label>
-      <select id="radar-visibility">
+      <label for="visibility">Visibility:</label>
+      <select id="visibility">
         <option value="show" selected="selected">Show</option>
         <option value="hide">Hide</option>
       </select>
     </div>
     <div>
-      <label for="radar-opacity">Opacity:</label>
-      <select id="radar-opacity">
+      <label for="opacity">Opacity:</label>
+      <select id="opacity">
         <option value="1" selected="selected">100%</option>
         <option value="0.9">90%</option>
         <option value="0.8">80%</option>
