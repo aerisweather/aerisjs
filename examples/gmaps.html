@@ -11,6 +11,9 @@
         float: left;
         margin-right: 10px;
       }
+      .float-right {
+        float: right;
+      }
     </style>
     <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
     <script type="text/javascript"
@@ -75,6 +78,19 @@
           $radarOpacity.change(function() {
             radar.setOpacity($radarOpacity.val());
           });
+
+          var $radarOn = $('#radar-on');
+          $radarOn.change(function() {
+            if ($radarOn.is(':checked')) {
+              radar.setMap(map);
+              $radarVisibility.prop('disabled', false);
+              $radarOpacity.prop('disabled', false);
+            } else {
+              radar.remove();;
+              $radarVisibility.prop('disabled', true);
+              $radarOpacity.prop('disabled', true);
+            }
+          });
       
           // Satellite
       
@@ -91,6 +107,19 @@
           $satelliteOpacity.change(function() {
             satellite.setOpacity($satelliteOpacity.val());
           });
+
+          var $satelliteOn = $('#satellite-on');
+          $satelliteOn.change(function() {
+            if ($satelliteOn.is(':checked')) {
+              satellite.setMap(map);
+              $satelliteVisibility.prop('disabled', false);
+              $satelliteOpacity.prop('disabled', false);
+            } else {
+              satellite.remove();;
+              $satelliteVisibility.prop('disabled', true);
+              $satelliteOpacity.prop('disabled', true);
+            }
+          });
       
           // Advisories
       
@@ -106,6 +135,19 @@
           var $advisoriesOpacity = $("#advisories-opacity");
           $advisoriesOpacity.change(function() {
             advisories.setOpacity($advisoriesOpacity.val());
+          });
+
+          var $advisoriesOn = $('#advisories-on');
+          $advisoriesOn.change(function() {
+            if ($advisoriesOn.is(':checked')) {
+              advisories.setMap(map);
+              $advisoriesVisibility.prop('disabled', false);
+              $advisoriesOpacity.prop('disabled', false);
+            } else {
+              advisories.remove();;
+              $advisoriesVisibility.prop('disabled', true);
+              $advisoriesOpacity.prop('disabled', true);
+            }
           });
       
           // Animate
@@ -162,6 +204,10 @@
 
       <h3>Radar</h3>
       <div>
+        <input type="checkbox" checked="checked" id="radar-on">
+        <label for="radar-on">On</label>
+      </div>
+      <div>
         <label for="radar-visibility">Visibility:</label>
         <select id="radar-visibility">
           <option value="show" selected="selected">Show</option>
@@ -187,6 +233,10 @@
 
       <h3>Satellite</h3>
       <div>
+        <input type="checkbox" checked="checked" id="satellite-on">
+        <label for="satellite-on">On</label>
+      </div>
+      <div>
         <label for="satellite-visibility">Visibility:</label>
         <select id="satellite-visibility">
           <option value="show" selected="selected">Show</option>
@@ -211,6 +261,10 @@
       </div>
 
       <h3>Advisories</h3>
+      <div>
+        <input type="checkbox" checked="checked" id="advisories-on">
+        <label for="advisories-on">On</label>
+      </div>
       <div>
         <label for="advisories-visibility">Visibility:</label>
         <select id="advisories-visibility">
