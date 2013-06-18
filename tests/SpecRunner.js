@@ -15,8 +15,8 @@ require([
     };
 
     require([
-      '/tests/lib/domReady.js!'
-      // list required specs here
+      '/tests/lib/domReady.js!',
+      'spec/aeris/maps/base/layersSpecs'
     ], function() {
       jasmineEnv.execute();
     });
