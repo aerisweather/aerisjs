@@ -15,10 +15,10 @@
     <script type="text/javascript"
       src="http://openlayers.org/api/OpenLayers.js">
     </script>
-    <script data-main="../../lib/config" src="../../externals/require.js"></script>
+    <script data-main="../initialize" src="../../externals/require.js"></script>
     <script type="text/javascript">
       function initialize() {
-        var req = require.config({
+        require.config({
           config: {
             aeris: {
               apiId: 'ezHWL0MiLsxwlN2ik8U4c',
@@ -26,7 +26,7 @@
             }
           }
         });
-        req(["aeris/maps/openlayers"], function(aeris) {
+        require(["aeris/maps/openlayers"], function(aeris) {
           var map = new aeris.maps.openlayers.Map("map-canvas", {
             baseLayer: new aeris.maps.layers.OSM(),
             center: [44.98, -93.2636],
@@ -55,8 +55,5 @@
       <input type="checkbox" id="radar-anim" />
       <label for="radar-anim">Animate</label>
     </div>
-    <script type="text/javascript">
-      initialize();
-    </script>
   </body>
 </html>

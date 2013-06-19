@@ -20,7 +20,7 @@
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false">
     </script>
     </script>
-    <script data-main="../lib/config" src="../externals/require.js"></script>
+    <script data-main="initialize" src="../externals/require.js"></script>
     <script type="text/javascript">
       var NS = 'gmaps';
       var BASE = 'GoogleRoadMap';
@@ -37,152 +37,154 @@
       };
       
       function initialize() {
-        var req = require.config({
-          config: {
-            aeris: {
-              apiId: 'ezHWL0MiLsxwlN2ik8U4c',
-              apiSecret: 'uCDMeSj91lBfIKCmeQkpeZjsAwUUQJHuKesCvqTm'
+        require(['../lib/config'], function() {
+          require.config({
+            config: {
+              aeris: {
+                apiId: 'ezHWL0MiLsxwlN2ik8U4c',
+                apiSecret: 'uCDMeSj91lBfIKCmeQkpeZjsAwUUQJHuKesCvqTm'
+              }
             }
-          }
-        });
-        req(["aeris/maps/" + NS], function(aeris) {
-      
-          var layerRepo = new LayerRepository(aeris);
-      
-          var map = new aeris.maps[NS].Map("map-canvas", {
-            baseLayer: layerRepo.getLayer(BASE),
-            center: [44.98, -93.2636],
-            zoom: 4
           });
-      
-          // Base layer
-      
-          var $baseLayer = $("#base-layer");
-          $baseLayer.change(function() {
-            var layer = layerRepo.getLayer($baseLayer.val());
-            map.layers.setBaseLayer(layer);
-          });
-      
-          // Radar
-      
-          var radar = new aeris.maps.layers.AerisRadar();
-          radar.setMap(map);
-          radar.autoUpdate();
-      
-          var $radarVisibility = $("#radar-visibility");
-          $radarVisibility.change(function() {
-            radar[$radarVisibility.val()]();
-          });
-      
-          var $radarOpacity = $("#radar-opacity");
-          $radarOpacity.change(function() {
-            radar.setOpacity($radarOpacity.val());
-          });
+          require(["aeris/maps/" + NS], function(aeris) {
+        
+            var layerRepo = new LayerRepository(aeris);
+        
+            var map = new aeris.maps[NS].Map("map-canvas", {
+              baseLayer: layerRepo.getLayer(BASE),
+              center: [44.98, -93.2636],
+              zoom: 4
+            });
+        
+            // Base layer
+        
+            var $baseLayer = $("#base-layer");
+            $baseLayer.change(function() {
+              var layer = layerRepo.getLayer($baseLayer.val());
+              map.layers.setBaseLayer(layer);
+            });
+        
+            // Radar
+        
+            var radar = new aeris.maps.layers.AerisRadar();
+            radar.setMap(map);
+            radar.autoUpdate();
+        
+            var $radarVisibility = $("#radar-visibility");
+            $radarVisibility.change(function() {
+              radar[$radarVisibility.val()]();
+            });
+        
+            var $radarOpacity = $("#radar-opacity");
+            $radarOpacity.change(function() {
+              radar.setOpacity($radarOpacity.val());
+            });
 
-          var $radarOn = $('#radar-on');
-          $radarOn.change(function() {
-            if ($radarOn.is(':checked')) {
-              radar.setMap(map);
-              $radarVisibility.prop('disabled', false);
-              $radarOpacity.prop('disabled', false);
-            } else {
-              radar.remove();;
-              $radarVisibility.prop('disabled', true);
-              $radarOpacity.prop('disabled', true);
-            }
-          });
-      
-          // Satellite
-      
-          var satellite = new aeris.maps.layers.AerisSatellite();
-          satellite.setMap(map);
-          satellite.autoUpdate();
-      
-          var $satelliteVisibility = $("#satellite-visibility");
-          $satelliteVisibility.change(function() {
-            satellite[$satelliteVisibility.val()]();
-          });
-      
-          var $satelliteOpacity = $("#satellite-opacity");
-          $satelliteOpacity.change(function() {
-            satellite.setOpacity($satelliteOpacity.val());
-          });
+            var $radarOn = $('#radar-on');
+            $radarOn.change(function() {
+              if ($radarOn.is(':checked')) {
+                radar.setMap(map);
+                $radarVisibility.prop('disabled', false);
+                $radarOpacity.prop('disabled', false);
+              } else {
+                radar.remove();;
+                $radarVisibility.prop('disabled', true);
+                $radarOpacity.prop('disabled', true);
+              }
+            });
+        
+            // Satellite
+        
+            var satellite = new aeris.maps.layers.AerisSatellite();
+            satellite.setMap(map);
+            satellite.autoUpdate();
+        
+            var $satelliteVisibility = $("#satellite-visibility");
+            $satelliteVisibility.change(function() {
+              satellite[$satelliteVisibility.val()]();
+            });
+        
+            var $satelliteOpacity = $("#satellite-opacity");
+            $satelliteOpacity.change(function() {
+              satellite.setOpacity($satelliteOpacity.val());
+            });
 
-          var $satelliteOn = $('#satellite-on');
-          $satelliteOn.change(function() {
-            if ($satelliteOn.is(':checked')) {
-              satellite.setMap(map);
-              $satelliteVisibility.prop('disabled', false);
-              $satelliteOpacity.prop('disabled', false);
-            } else {
-              satellite.remove();;
-              $satelliteVisibility.prop('disabled', true);
-              $satelliteOpacity.prop('disabled', true);
-            }
-          });
-      
-          // Advisories
-      
-          var advisories = new aeris.maps.layers.AerisAdvisories();
-          advisories.setMap(map);
-          advisories.autoUpdate();
-      
-          var $advisoriesVisibility = $("#advisories-visibility");
-          $advisoriesVisibility.change(function() {
-            advisories[$advisoriesVisibility.val()]();
-          });
-      
-          var $advisoriesOpacity = $("#advisories-opacity");
-          $advisoriesOpacity.change(function() {
-            advisories.setOpacity($advisoriesOpacity.val());
-          });
+            var $satelliteOn = $('#satellite-on');
+            $satelliteOn.change(function() {
+              if ($satelliteOn.is(':checked')) {
+                satellite.setMap(map);
+                $satelliteVisibility.prop('disabled', false);
+                $satelliteOpacity.prop('disabled', false);
+              } else {
+                satellite.remove();;
+                $satelliteVisibility.prop('disabled', true);
+                $satelliteOpacity.prop('disabled', true);
+              }
+            });
+        
+            // Advisories
+        
+            var advisories = new aeris.maps.layers.AerisAdvisories();
+            advisories.setMap(map);
+            advisories.autoUpdate();
+        
+            var $advisoriesVisibility = $("#advisories-visibility");
+            $advisoriesVisibility.change(function() {
+              advisories[$advisoriesVisibility.val()]();
+            });
+        
+            var $advisoriesOpacity = $("#advisories-opacity");
+            $advisoriesOpacity.change(function() {
+              advisories.setOpacity($advisoriesOpacity.val());
+            });
 
-          var $advisoriesOn = $('#advisories-on');
-          $advisoriesOn.change(function() {
-            if ($advisoriesOn.is(':checked')) {
-              advisories.setMap(map);
-              $advisoriesVisibility.prop('disabled', false);
-              $advisoriesOpacity.prop('disabled', false);
-            } else {
-              advisories.remove();;
-              $advisoriesVisibility.prop('disabled', true);
-              $advisoriesOpacity.prop('disabled', true);
-            }
-          });
-      
-          // Animate
-      
-          var anim = new aeris.maps.animations.AnimationSync(
-            [radar, satellite]);
-      
-          var $animStart = $("#anim-start");
-          $animStart.click(function() {
-            anim.start();
-            return false;
-          });
-      
-          var $animPause = $("#anim-pause");
-          $animPause.click(function() {
-            anim.pause();
-            return false;
-          });
-      
-          var $animStop = $("#anim-stop");
-          $animStop.click(function() {
-            anim.stop();
-            return false;
-          });
-      
-          var $animPrev = $("#anim-prev");
-          $animPrev.click(function() {
-            anim.previous();
-            return false;
-          });
-      
-          var $animNext = $("#anim-next");
-          $animNext.click(function() {
-            anim.next();
-            return false;
+            var $advisoriesOn = $('#advisories-on');
+            $advisoriesOn.change(function() {
+              if ($advisoriesOn.is(':checked')) {
+                advisories.setMap(map);
+                $advisoriesVisibility.prop('disabled', false);
+                $advisoriesOpacity.prop('disabled', false);
+              } else {
+                advisories.remove();;
+                $advisoriesVisibility.prop('disabled', true);
+                $advisoriesOpacity.prop('disabled', true);
+              }
+            });
+        
+            // Animate
+        
+            var anim = new aeris.maps.animations.AnimationSync(
+              [radar, satellite]);
+        
+            var $animStart = $("#anim-start");
+            $animStart.click(function() {
+              anim.start();
+              return false;
+            });
+        
+            var $animPause = $("#anim-pause");
+            $animPause.click(function() {
+              anim.pause();
+              return false;
+            });
+        
+            var $animStop = $("#anim-stop");
+            $animStop.click(function() {
+              anim.stop();
+              return false;
+            });
+        
+            var $animPrev = $("#anim-prev");
+            $animPrev.click(function() {
+              anim.previous();
+              return false;
+            });
+        
+            var $animNext = $("#anim-next");
+            $animNext.click(function() {
+              anim.next();
+              return false;
+            });
           });
         });
       }
@@ -301,9 +303,6 @@
         <a href="#" id="anim-next">Next</a>
       </div>
     </div>
-    <script type="text/javascript">
-      initialize();
-    </script>
   </body>
 </html>
 

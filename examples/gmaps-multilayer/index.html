@@ -12,10 +12,10 @@
     <script type="text/javascript"
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false">
     </script>
-    <script data-main="../../lib/config" src="../../externals/require.js"></script>
+    <script data-main="../initialize" src="../../externals/require.js"></script>
     <script type="text/javascript">
       function initialize() {
-        var req = require.config({
+        require.config({
           config: {
             aeris: {
               apiId: 'ezHWL0MiLsxwlN2ik8U4c',
@@ -23,7 +23,7 @@
             }
           }
         });
-        req(["aeris/maps/gmaps"], function(aeris) {
+        require(["aeris/maps/gmaps"], function(aeris) {
           var map = new aeris.maps.gmaps.Map("map-canvas", {
             baseLayer: new aeris.maps.layers.GoogleRoadMap(),
             center: [44.98, -93.2636],
@@ -83,8 +83,5 @@
       <a href="#" id="anim-prev">Previous</a> &#160;|&#160;
       <a href="#" id="anim-next">Next</a>
     </div>
-    <script type="text/javascript">
-      initialize();
-    </script>
   </body>
 </html>
