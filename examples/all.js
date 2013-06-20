@@ -11,7 +11,7 @@ LayerRepository.prototype.getLayer = function(layer) {
 };
 
 function initialize() {
-  var req = require.config({
+  require.config({
     config: {
       aeris: {
         apiId: 'ezHWL0MiLsxwlN2ik8U4c',
@@ -19,7 +19,7 @@ function initialize() {
       }
     }
   });
-  req(["aeris/maps/" + NS], function(aeris) {
+  require(["aeris/maps/" + NS], function(aeris) {
 
     var layerRepo = new LayerRepository(aeris);
 
@@ -53,6 +53,19 @@ function initialize() {
       radar.setOpacity($radarOpacity.val());
     });
 
+    var $radarOn = $('#radar-on');
+    $radarOn.change(function() {
+      if ($radarOn.is(':checked')) {
+        radar.setMap(map);
+        $radarVisibility.prop('disabled', false);
+        $radarOpacity.prop('disabled', false);
+      } else {
+        radar.remove();
+        $radarVisibility.prop('disabled', true);
+        $radarOpacity.prop('disabled', true);
+      }
+    });
+
     // Satellite
 
     var satellite = new aeris.maps.layers.AerisSatellite();
@@ -69,6 +82,19 @@ function initialize() {
       satellite.setOpacity($satelliteOpacity.val());
     });
 
+    var $satelliteOn = $('#satellite-on');
+    $satelliteOn.change(function() {
+      if ($satelliteOn.is(':checked')) {
+        satellite.setMap(map);
+        $satelliteVisibility.prop('disabled', false);
+        $satelliteOpacity.prop('disabled', false);
+      } else {
+        satellite.remove();;
+        $satelliteVisibility.prop('disabled', true);
+        $satelliteOpacity.prop('disabled', true);
+      }
+    });
+
     // Advisories
 
     var advisories = new aeris.maps.layers.AerisAdvisories();
@@ -83,6 +109,19 @@ function initialize() {
     var $advisoriesOpacity = $('#advisories-opacity')
     $advisoriesOpacity.change(function() {
       advisories.setOpacity($advisoriesOpacity.val());
+    });
+
+    var $advisoriesOn = $('#advisories-on');
+    $advisoriesOn.change(function() {
+      if ($advisoriesOn.is(':checked')) {
+        advisories.setMap(map);
+        $advisoriesVisibility.prop('disabled', false);
+        $advisoriesOpacity.prop('disabled', false);
+      } else {
+        advisories.remove();;
+        $advisoriesVisibility.prop('disabled', true);
+        $advisoriesOpacity.prop('disabled', true);
+      }
     });
 
     // Animate
