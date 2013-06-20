@@ -1,6 +1,6 @@
 require([
-  '../config',
-  './testConfig'
+  '../lib/config',
+  'testConfig'
 ], function() {
   require(['jasmine-html'], function(jasmine) {
     var jasmineEnv = jasmine.getEnv();
@@ -15,7 +15,7 @@ require([
     };
 
     require([
-      'tests/lib/domReady!'
+      '/tests/lib/domReady.js!'
       // list required specs here
     ], function() {
       jasmineEnv.execute();
