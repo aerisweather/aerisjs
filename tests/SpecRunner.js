@@ -1,6 +1,6 @@
 require([
   '../lib/config',
-  'testConfig'
+  'testconfig'
 ], function() {
   require(['jasmine-html'], function(jasmine) {
     var jasmineEnv = jasmine.getEnv();
@@ -16,7 +16,7 @@ require([
 
     require([
       '/tests/lib/domReady.js!',
-      'spec/aeris/maps/base/layersSpecs'
+      'spec/aeris/maps/base/layers-specs'
     ], function() {
       jasmineEnv.execute();
     });
