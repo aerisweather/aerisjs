@@ -97,7 +97,7 @@ function initialize() {
 
     // Advisories
 
-    var advisories = new aeris.maps.layers.AerisAdvisories();
+    var advisories = new aeris.maps.layers.AerisAdvisoriesKML();
     advisories.setMap(map);
     advisories.autoUpdate();
 
