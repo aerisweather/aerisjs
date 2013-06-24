@@ -124,6 +124,34 @@ function initialize() {
       }
     });
 
+    // Convective
+
+    var convective = new aeris.maps.layers.AerisConvectiveHazards();
+    convective.setMap(map);
+
+    var $convectiveVisibility = $('#convective-visibility');
+    $convectiveVisibility.change(function() {
+      convective[$convectiveVisibility.val()]();
+    });
+
+    var $convectiveOpacity = $('#convective-opacity');
+    $convectiveOpacity.change(function() {
+      convective.setOpacity($convectiveOpacity.val());
+    });
+
+    var $convectiveOn = $('#convective-on');
+    $convectiveOn.change(function() {
+      if ($convectiveOn.is(':checked')) {
+        convective.setMap(map);
+        $convectiveVisibility.prop('disabled', false);
+        $convectiveOpacity.prop('disabled', false);
+      } else {
+        convective.remove();
+        $convectiveVisibility.prop('disabled', true);
+        $convectiveOpacity.prop('disabled', true);
+      }
+    });
+
     // Animate
 
     var radarAnim = radar.animate();
