@@ -23,7 +23,8 @@
           config: {
             aeris: {
               apiId: 'ezHWL0MiLsxwlN2ik8U4c',
-              apiSecret: 'uCDMeSj91lBfIKCmeQkpeZjsAwUUQJHuKesCvqTm'
+              apiSecret: 'uCDMeSj91lBfIKCmeQkpeZjsAwUUQJHuKesCvqTm',
+              path: '/'
             }
           }
         });
@@ -42,6 +43,8 @@
             route: route
           });
 
+          var jsonRouteMapper = new aeris.maps.gmaps.route.JSONRouteMapper();
+
           var $followPaths = $('#follow-paths');
           $followPaths.change(function() {
             routeBuilder.followPaths = $followPaths.is(':checked');
@@ -59,12 +62,30 @@
             miles = Math.round(miles * 100) / 100;
             $totalDistance.text(miles);
           }, this);
+
+          var $routeExport = $('#route-export');
+          var $routeImport = $('#route-import');
+          var $routeJSON = $('#route-json');
+          $routeExport.click(function() {
+            var exportJSON = jsonRouteMapper.export(route);
+            $routeJSON.val(exportJSON);
+          });
         });
       }
     </script>
   </head>
   <body>
-    <div id="map-canvas" class="float-left"></div>
+    <div class="float-left">
+      <div id="map-canvas"></div>
+
+      <div>
+        <strong>JSON Route Mapper</strong>
+        <button id="route-export">Export</button>
+        <button id="route-import">Import</button>
+        <br />
+        <textarea id="route-json" cols="80" rows="12"></textarea>
+      </div>
+    </div>
     <div class="float-left">
       <div>
         <strong>Total distance:</strong>
