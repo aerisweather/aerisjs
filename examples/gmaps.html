@@ -17,7 +17,7 @@
     </style>
     <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
     <script type="text/javascript"
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false">
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false&libraries=geometry">
     </script>
     <script data-main="initialize" src="../externals/require.js"></script>
     <script type="text/javascript">
@@ -149,6 +149,34 @@
                 $advisoriesOpacity.prop('disabled', true);
               }
             });
+
+            // Convective
+
+            var convective = new aeris.maps.layers.AerisConvectiveHazards();
+            convective.setMap(map);
+
+            var $convectiveVisibility = $('#convective-visibility');
+            $convectiveVisibility.change(function() {
+              convective[$convectiveVisibility.val()]();
+            });
+
+            var $convectiveOpacity = $('#convective-opacity');
+            $convectiveOpacity.change(function() {
+              convective.setOpacity($convectiveOpacity.val());
+            });
+
+            var $convectiveOn = $('#convective-on');
+            $convectiveOn.change(function() {
+              if ($convectiveOn.is(':checked')) {
+                convective.setMap(map);
+                $convectiveVisibility.prop('disabled', false);
+                $convectiveOpacity.prop('disabled', false);
+              } else {
+                convective.remove();
+                $convectiveVisibility.prop('disabled', true);
+                $convectiveOpacity.prop('disabled', true);
+              }
+            });
         
             // Animate
         
@@ -260,7 +288,8 @@
           <option value="0">0%</option>
         </select>
       </div>
-
+    </div>
+    <div class="float-left">
       <h3>Advisories</h3>
       <div>
         <input type="checkbox" checked="checked" id="advisories-on">
@@ -289,8 +318,36 @@
           <option value="0">0%</option>
         </select>
       </div>
-    </div>
-    <div class="float-left">
+
+      <h3>Convective</h3>
+      <div>
+        <input type="checkbox" checked="checked" id="convective-on">
+        <label for="convective-on">On</label>
+      </div>
+      <div>
+        <label for="convective-visibility">Visibility</label>
+        <select id="convective-visibility">
+          <option value="show" selected="selected">Show</option>
+          <option value="hide">Hide</option>
+        </select>
+      </div>
+      <div>
+        <label for="convective-opacity">Opacity:</label>
+        <select id="convective-opacity">
+          <option value="1" selected="selected">100%</option>
+          <option value="0.9">90%</option>
+          <option value="0.8">80%</option>
+          <option value="0.7">70%</option>
+          <option value="0.6">60%</option>
+          <option value="0.5">50%</option>
+          <option value="0.4">40%</option>
+          <option value="0.3">30%</option>
+          <option value="0.2">20%</option>
+          <option value="0.1">10%</option>
+          <option value="0">0%</option>
+        </select>
+      </div>
+
       <h3>Animation</h3>
       <div>
         <a href="#" id="anim-start">Start</a> &#160;|&#160;
