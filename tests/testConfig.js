@@ -1,6 +1,6 @@
 require.config({
   baseUrl: '/lib',
-  urlArgs: 'cb=' + Math.random(),                   // Cache buster
+  //urlArgs: 'cb=' + Math.random(),                   // Cache buster
   paths: {
     jasmine: '/tests/lib/jasmine',
     'jasmine-html': '/tests/lib/jasmine-html',

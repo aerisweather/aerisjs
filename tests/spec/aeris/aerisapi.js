@@ -1,4 +1,4 @@
-define(['aeris/aerisapi'], function(AerisAPI) {
+define(['aeris/aerisapi', 'aeris/promise', 'aeris/jsonp'], function(AerisAPI, Promise, jsonp) {
   describe('AerisAPI', function() {
 
     // Serializer tests are borrowed from jQuery
@@ -48,6 +48,142 @@ define(['aeris/aerisapi'], function(AerisAPI) {
 
       it('should not double encode objects', function() {
         expect(decodeURIComponent(AerisAPI.serializeToURI({ 'a': [1, 2, 3], 'b[]': [4, 5, 6], 'c[d]': [7, 8, 9], 'e': { 'f': [10], 'g': [11, 12], 'h': 13 } }))).toBe('a[]=1&a[]=2&a[]=3&b[]=4&b[]=5&b[]=6&c[d][]=7&c[d][]=8&c[d][]=9&e[f][]=10&e[g][]=11&e[g][]=12&e[h]=13');
+      });
+    });
+
+    describe('fetchBatch method', function() {
+      var api;
+      var timeout = 5000;
+      var endpoints;
+      var globalParams;
+
+      var apiSuccessData = {
+        success: true,
+        error: null,
+        response: {
+          responses: [{
+            'id': 'KBFI',
+            'loc': {
+              'long': -122.31666666667,
+              'lat': 47.55
+            },
+            'place': {
+              'name': 'seattle/boeing',
+              'state': 'wa',
+              'country': 'us'
+            },
+            'obTimestamp': 1326552780,
+            'obDateTime': '2012-01-14T06:53:00-08:00',
+            'ob': {
+              'tempC': 3
+            },
+            'raw': 'KBFI 141453Z 14010KT 8SM -RA OVC018 03/01 A2995',
+            'relativeTo': {
+              'lat': 47.60621
+            }
+          }]
+        }
+      };
+
+      var apiErrorData = {
+        success: false,
+        error: {
+          code: '',
+          description: ''
+        },
+        response: {}
+      };
+
+
+      beforeEach(function() {
+        endpoints = [
+          'places',
+          {
+            name: 'observations',
+            action: 'closest'
+          },
+          {
+            name: 'forecasts',
+            action: 'closest',
+            params: {
+              limit: 5
+            }
+          }
+        ];
+
+        globalParams = {
+          limit: 7,
+          p: 'Minneapolis, MN'
+        };
+
+        api = new AerisAPI();
+      });
+
+      afterEach(function() {
+        endpoints = null;
+        globalParams = null;
+        api = null;
+      });
+
+      it('should return a promise', function() {
+        expect(api.fetchBatch(endpoints, globalParams) instanceof Promise).toBe(true);
+      });
+
+      it('should resolve its promise with response data', function() {
+        var flag = false;
+
+        // Mock jsonp.get to return successData
+        spyOn(jsonp, 'get').andCallFake(function(a, b, callback) {
+          callback(apiSuccessData);
+        });
+
+        api.fetchBatch(endpoints, globalParams).done(function(res) {
+          flag = (res.responses !== undefined);
+        });
+
+        expect(flag).toBe(true);
+      });
+
+      it('should throw an error if no endpoints are defined', function() {
+        expect(function() { api.fetchBatch({}); }).toThrow();
+      });
+
+      it('should throw an error for an invalid endpoint', function() {
+        expect(function() { api.fetchBatch({ }) }).toThrow();
+      });
+
+      it('should reject promise if API returns an error', function() {
+        var flag = false;
+
+        // Mock jsonp.get to return error data
+        spyOn(jsonp, 'get').andCallFake(function(a, b, callback) {
+          callback(apiErrorData);
+        });
+
+        api.fetchBatch(endpoints, globalParams).fail(function(res) {
+          flag = (res.code !== undefined);
+        });
+
+        expect(flag).toBe(true);
+      });
+
+      it('should accept a single endpoint as a string', function() {
+          // Just makes sure this doesn't throw an error
+          api.fetchBatch('places');
+      });
+
+      it('should provide `fetch` method with a simpler signature for single-endpoint requests', function() {
+        var flag = false;
+
+        spyOn(jsonp, 'get').andCallFake(function(a, b, callback) {
+          callback(apiSuccessData);
+        });
+
+        api.fetch('places', 'closest', { limit: 5 }).done(function(res) {
+          flag = (res.id !== undefined);
+        });
+
+        expect(flag).toBe(true);
       });
     });
   });
