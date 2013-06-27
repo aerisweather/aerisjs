@@ -1,0 +1,27 @@
+<div>
+  <div>{{latitude}}, {{longitude}}</div>
+  <div>near {{place.name}}, {{place.state}}</div>
+  <table>
+    <tbody>
+      <tr>
+        <td></td>
+        <td>Rise {{profile.tzname}}</td>
+        <td>Set {{profile.tzname}}</td>
+      </tr>
+      <tr>
+        <td>Sun</td>
+        <td>{{sun.rise}}</td>
+        <td>{{sun.set}}</td>
+      </tr>
+      <tr>
+        <td>Moon</td>
+        <td>{{moon.rise}}</td>
+        <td>{{moon.set}}</td>
+      </tr>
+      <tr>
+        <td>Phase</td>
+        <td colspan="2">{{moon.phase}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
