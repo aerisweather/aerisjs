@@ -1,6 +1,10 @@
 <div>
   <div>{{latitude}}, {{longitude}}</div>
-  <div>near {{place.name}}, {{place.state}}</div>
+  {{#if place.name}}
+    <div>near {{place.name}}, {{place.state}}</div>
+  {{else }}
+    <div>Unknown location</div>
+  {{/if }}
   <table>
     <tbody>
       <tr>
