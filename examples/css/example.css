@@ -1,0 +1,33 @@
+#map-canvas {
+  width: 800px;
+  height: 600px;
+}
+
+.loading {
+  display: none;
+
+  position: absolute;
+  top:0; left: 0;
+  z-index: 9999;
+
+  text-align: center;
+  width: 100%;
+
+}
+.loading-content {
+  width:150px;
+  margin:20% auto;
+
+  padding: 20px;
+  text-align: center;
+
+  background: rgba(0,0,0, .15);
+
+  -webkit-box-shadow: 0 0 9999px 9999px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 0 0 9999px 9999px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 9999px 9999px rgba(0, 0, 0, 0.5);
+
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  border-radius: 15px;
+}

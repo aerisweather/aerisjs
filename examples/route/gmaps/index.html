@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+      #map-canvas {
+        width: 600px;
+        height: 400px;
+      }
+      .float-left {
+        float: left;
+        margin-right: 10px;
+      }
+    </style>
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false&libraries=geometry">
+    </script>
+    <script data-main="../../initialize" src="../../../externals/require.js"></script>
+    <script type="text/javascript">
+      function initialize() {
+        require(["aeris/maps/gmaps"], function(aeris) {
+          var map = new aeris.maps.gmaps.Map("map-canvas", {
+            baseLayer: new aeris.maps.layers.GoogleRoadMap(),
+            center: [44.98, -93.2636],
+            zoom: 15
+          });
+
+          var route = new aeris.maps.gmaps.route.Route();
+          var routeRenderer = new aeris.maps.gmaps.route.RouteRenderer(map, {
+            route: route
+          });
+          var routeBuilder = new aeris.maps.gmaps.route.RouteBuilder(map, {
+            route: route
+          });
+
+          var jsonRouteMapper = new aeris.maps.gmaps.route.JSONRouteMapper();
+
+          var $followPaths = $('#follow-paths');
+          $followPaths.change(function() {
+            routeBuilder.followPaths = $followPaths.is(':checked');
+          });
+
+          var $travelMode = $('#travel-mode');
+          $travelMode.change(function() {
+            routeBuilder.travelMode = $travelMode.val();
+          });
+
+          var $totalDistance = $('#total-distance');
+          route.on('addWaypoint', function() {
+            var distance = route.distance;
+            var miles = distance * 0.00062137;
+            miles = Math.round(miles * 100) / 100;
+            $totalDistance.text(miles);
+          }, this);
+
+          var $routeExport = $('#route-export');
+          var $routeImport = $('#route-import');
+          var $routeJSON = $('#route-json');
+          $routeExport.click(function() {
+            var exportJSON = jsonRouteMapper.export(route);
+            $routeJSON.val(exportJSON);
+          });
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <div class="float-left">
+      <div id="map-canvas"></div>
+
+      <div>
+        <strong>JSON Route Mapper</strong>
+        <button id="route-export">Export</button>
+        <button id="route-import">Import</button>
+        <br />
+        <textarea id="route-json" cols="80" rows="12"></textarea>
+      </div>
+    </div>
+    <div class="float-left">
+      <div>
+        <strong>Total distance:</strong>
+        <span id="total-distance">0</span> miles
+      </div>
+
+      <div>
+        <input type="checkbox" checked="checked" id="follow-paths">
+        <label for="follow-paths">Follow Paths</label>
+      </div>
+
+      <div>
+        <label for="travel-mode">Travel Mode</label>
+        <select id="travel-mode">
+          <option value="WALKING" selected="selected">Walking</option>
+          <option value="BICYCLING">Bicycling</option>
+          <option value="DRIVING">Driving</select>
+        </select>
+      </div>
+    </div>
+  </body>
+</html>

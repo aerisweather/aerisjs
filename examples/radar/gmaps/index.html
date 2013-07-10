@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+      #map-canvas {
+        width: 600px;
+        height: 400px;
+      }
+    </style>
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false">
+    </script>
+    <script data-main="../../initialize" src="../../../externals/require.js"></script>
+    <script type="text/javascript">
+      function initialize() {
+        require(["aeris/maps/gmaps"], function(aeris) {
+          var map = new aeris.maps.gmaps.Map("map-canvas", {
+            baseLayer: new aeris.maps.layers.GoogleRoadMap(),
+            center: [44.98, -93.2636],
+            zoom: 4
+          });
+
+          var radar = new aeris.maps.layers.AerisRadar();
+          radar.setMap(map);
+
+          var $radarVisibility = $("#radar-visibility");
+          $radarVisibility.change(function() {
+            radar[$radarVisibility.val()]();
+          });
+
+          var $radarOpacity = $("#radar-opacity");
+          $radarOpacity.change(function() {
+            radar.setOpacity($radarOpacity.val());
+          });
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <div id="map-canvas"></div>
+    <div>
+      <label for="radar-visibility">Visibility:</label>
+      <select id="radar-visibility">
+        <option value="show" selected="selected">Show</option>
+        <option value="hide">Hide</option>
+      </select>
+    </div>
+    <div>
+      <label for="radar-opacity">Opacity:</label>
+      <select id="radar-opacity">
+        <option value="1" selected="selected">100%</option>
+        <option value="0.9">90%</option>
+        <option value="0.8">80%</option>
+        <option value="0.7">70%</option>
+        <option value="0.6">60%</option>
+        <option value="0.5">50%</option>
+        <option value="0.4">40%</option>
+        <option value="0.3">30%</option>
+        <option value="0.2">20%</option>
+        <option value="0.1">10%</option>
+        <option value="0">0%</option>
+      </select>
+    </div>
+  </body>
+</html>

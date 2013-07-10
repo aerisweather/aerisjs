@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+      #map-canvas {
+        width: 600px;
+        height: 400px;
+      }
+    </style>
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false">
+    </script>
+    <script type="text/javascript"
+      src="http://openlayers.org/api/OpenLayers.js">
+    </script>
+    <script data-main="../../../initialize" src="../../../../externals/require.js"></script>
+    <script type="text/javascript">
+      function initialize() {
+        require.config({
+          config: {
+            aeris: {
+              path: '../../../../'
+            }
+          }
+        });
+        require(["aeris/maps/openlayers"], function(aeris) {
+          var map = new aeris.maps.openlayers.Map("map-canvas", {
+            baseLayer: new aeris.maps.layers.OSM(),
+            center: [44.98, -93.2636],
+            zoom: 4
+          });
+
+          var radar = new aeris.maps.layers.AerisRadar();
+          radar.setMap(map);
+          var radarAnim = radar.animate();
+
+          var $animStart = $("#anim-start");
+          $animStart.click(function() {
+            radarAnim.start();
+            return false;
+          });
+
+          var $animPause = $("#anim-pause");
+          $animPause.click(function() {
+            radarAnim.pause();
+            return false;
+          });
+
+          var $animStop = $("#anim-stop");
+          $animStop.click(function() {
+            radarAnim.stop();
+            return false;
+          });
+
+          var $animPrev = $("#anim-prev");
+          $animPrev.click(function() {
+            radarAnim.previous();
+            return false;
+          });
+
+          var $animNext = $("#anim-next");
+          $animNext.click(function() {
+            radarAnim.next();
+            return false;
+          });
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <div id="map-canvas"></div>
+    <div>
+      <a href="#" id="anim-start">Start</a> &#160;|&#160;
+      <a href="#" id="anim-pause">Pause</a> &#160;|&#160;
+      <a href="#" id="anim-stop">Stop</a>
+    </div>
+    <div>
+      <a href="#" id="anim-prev">Previous</a> &#160;|&#160;
+      <a href="#" id="anim-next">Next</a>
+    </div>
+  </body>
+</html>

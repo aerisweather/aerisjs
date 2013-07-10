@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+      html { height: 100%; }
+      body { height: 100%; margin: 0; padding: 0; }
+      #map-canvas { height: 100%; }
+    </style>
+    <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false">
+    </script>
+    <script data-main="../../initialize" src="../../../externals/require.js"></script>
+    <script type="text/javascript">
+      function initialize() {
+        require(["aeris/maps/gmaps"], function(aeris) {
+          var map = new aeris.maps.gmaps.Map("map-canvas", {
+            baseLayer: new aeris.maps.layers.GoogleRoadMap(),
+            center: [-34.397, 150.644],
+            zoom: 8
+          });
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <div id="map-canvas" />
+  </body>
+</html>

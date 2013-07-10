@@ -1,0 +1,7 @@
+# standard gitignore
+.idea/
+.idea/*
+.DS_STORE
+
+# environment specific files
+examples/initialize.js

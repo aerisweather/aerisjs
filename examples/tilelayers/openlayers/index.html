@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+  <style type="text/css">
+    #map-canvas {
+      width: 600px;
+      height: 400px;
+    }
+    .float-left {
+      float: left;
+      margin-right: 10px;
+    }
+    .float-right {
+      float: right;
+    }
+  </style>
+  <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+  <script type="text/javascript"
+          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false">
+  </script>
+  <script type="text/javascript"
+          src="http://openlayers.org/api/OpenLayers.js"></script>
+  <script data-main="../../initialize" src="../../../externals/require.js"></script>
+  <script type="text/javascript">
+
+    var LayerManager = function(aeris, map) {
+      this.aeris = aeris;
+      this.map = map;
+      this.curLayer = null;
+    }
+
+    LayerManager.prototype.setMapLayer = function(LayerName) {
+      var layer;
+
+      // Ensure valid layer name
+      if(!this.aeris.maps.layers[LayerName]) {
+        throw new Error("Invalid Tile Layer: aeris.maps.layers." + LayerName + " does not exist");
+      }
+
+      // Clean up old layer
+      if(this.curLayer) {
+        this.curLayer.remove();
+      }
+
+      // Set new layer
+      layer = new this.aeris.maps.layers[LayerName]();
+      layer.setMap(this.map);
+      this.curLayer = layer;
+    }
+
+
+    function initialize() {
+      require(["aeris/maps/openlayers"], function(aeris) {
+
+        var map = new aeris.maps.openlayers.Map("map-canvas", {
+          baseLayer: new aeris.maps.layers.GoogleRoadMap(),
+          center: [44.98, -93.2636],
+          zoom: 4
+        });
+
+        var layerManager = new LayerManager(aeris, map);
+
+        var $layerSelect = $('input[name="layer"]');
+
+        var $modisPeriodSelect = $('#modis-select');
+
+        // Handle modis period selection
+        $modisPeriodSelect.on('change', 'select', function() {
+          var layer = layerManager.curLayer;
+          if(!(layer instanceof aeris.maps.layers.AerisModisTile)) {
+            throw new Error("Unable to set MODIS period: current layer is not a AerisModisTile object");
+          }
+
+          layer.setModisPeriod($(this).val());
+          layer.remove();
+          layer.setMap(layerManager.map);
+        });
+
+        var renderModisPeriodSelect = function() {
+          var layer = layerManager.curLayer;
+          var $select = $('<select name="periodSelect"></select>');
+
+
+          $modisPeriodSelect.empty();
+
+          // Render available period options
+          for(var key in layer.modisPeriodTileTypes) {
+            if(layer.modisPeriodTileTypes.hasOwnProperty(key)) {
+              var $opt = $('<option value="' + key + '">' + key + ' days</option>');
+              $opt.appendTo($select)
+            }
+          }
+
+          $select.appendTo($modisPeriodSelect);
+          $('<h4>Select MODIS Period:</h4>').insertBefore($select);
+        };
+
+        var removeModisPeriodSelect = function() {
+          $modisPeriodSelect.empty();
+        }
+
+
+
+
+        // Handle tile layer select event
+        $layerSelect.change(function() {
+          var LayerName = $(this).val();
+          layerManager.setMapLayer(LayerName);
+
+          // Check for modis layer,
+          // And display period options
+          if($(this).data('modis') !== undefined) {
+            renderModisPeriodSelect();
+          }
+          else {
+            removeModisPeriodSelect();
+          }
+        });
+
+
+
+
+        // Trigger select of already checked input
+        $layerSelect.filter('[checked]').trigger('change');
+      });
+    }
+  </script>
+</head>
+<body>
+<div id="map-canvas" class="float-left"></div>
+
+<div class="float-left">
+  <h2>Tile Layers</h2>
+
+  <div>
+    <input name="layer" type="radio" value="AerisRadar" id="AerisRadar" checked/>
+    <label for="AerisRadar">Radar</label>
+  </div>
+  <div>
+    <input name="layer" type="radio" value="AerisSatellite" id="AerisSatellite"/>
+    <label for="AerisSatellite">Satellite</label>
+  </div>
+  <div>
+    <input name="layer" type="radio" value="AerisSatelliteVisible" id="AerisSatelliteVisible" />
+    <label for="AerisSatelliteVisible">Visible Satellite</label>
+  </div>
+  <div>
+    <input name="layer" type="radio" value="AerisSatelliteGlobal" id="AerisSatelliteGlobal" />
+    <label for="AerisSatelliteGlobal">Global Satellite</label>
+  </div>
+  <div>
+    <input name="layer" type="radio" value="AerisAdvisories" id="AerisAdvisories" />
+    <label for="AerisAdvisories">Advisories</label>
+  </div>
+  <div>
+    <input name="layer" type="radio" value="AerisTemps" id="AerisTemps" />
+    <label for="AerisTemps">Current Temperatures</label>
+  </div>
+  <div>
+    <input name="layer" type="radio" value="AerisWinds" id="AerisWinds" />
+    <label for="AerisWinds">Current Winds</label>
+  </div>
+  <div>
+    <input name="layer" type="radio" value="AerisDewPoints" id="AerisDewPoints" />
+    <label for="AerisDewPoints">Current Dew Points</label>
+  </div>
+  <div>
+    <input name="layer" type="radio" value="AerisHeatIndex" id="AerisHeatIndex" />
+    <label for="AerisHeatIndex">Current Heat Index</label>
+  </div>
+  <div>
+    <input name="layer" type="radio" value="AerisHumidity" id="AerisHumidity" />
+    <label for="AerisHumidity">Current Humidity</label>
+  </div>
+  <div>
+    <input name="layer" type="radio" value="AerisSnowDepth" id="AerisSnowDepth" />
+    <label for="AerisSnowDepth">Snow Depth</label>
+  </div>
+  <div>
+    <input name="layer" type="radio" value="AerisWindChill" id="AerisWindChill" />
+    <label for="AerisWindChill">Current Wind Chill</label>
+  </div>
+  <div>
+    <input name="layer" type="radio" value="AerisSeaSurfaceTemps" id="AerisSeaSurfaceTemps" data-modis />
+    <label for="AerisSeaSurfaceTemps">Sea Surface Temps</label>
+  </div>
+  <div>
+    <input name="layer" type="radio" value="AerisChlorophyll" id="AerisChlorophyll" data-modis />
+    <label for="AerisChlorophyll">Current Chlorophyll</label>
+  </div>
+  <div id="modis-select"></div>
+</div>
+<div style="clear:both;"></div>
+</body>
+</html>

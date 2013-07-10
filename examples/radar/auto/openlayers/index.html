@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+      #map-canvas {
+        width: 600px;
+        height: 400px;
+      }
+    </style>
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false">
+    </script>
+    <script type="text/javascript"
+      src="http://openlayers.org/api/OpenLayers.js">
+    </script>
+    <script data-main="../../../initialize" src="../../../../externals/require.js"></script>
+    <script type="text/javascript">
+      function initialize() {
+        require.config({
+          config: {
+            aeris: {
+              path: '../../../../'
+            }
+          }
+        });
+        require(["aeris/maps/openlayers"], function(aeris) {
+          var map = new aeris.maps.openlayers.Map("map-canvas", {
+            baseLayer: new aeris.maps.layers.OSM(),
+            center: [44.98, -93.2636],
+            zoom: 4
+          });
+
+          var radar = new aeris.maps.layers.AerisRadar();
+          radar.setMap(map);
+          radar.autoUpdate();
+          var radarAnim = radar.animate();
+
+          var $radarAnim = $("#radar-anim");
+          $radarAnim.change(function() {
+            if ($radarAnim.is(':checked'))
+              radarAnim.start();
+            else
+              radarAnim.stop();
+          });
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <div id="map-canvas"></div>
+    <div>
+      <input type="checkbox" id="radar-anim" />
+      <label for="radar-anim">Animate</label>
+    </div>
+  </body>
+</html>
