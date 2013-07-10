@@ -1,0 +1,31 @@
+<div>
+  <h3>Fire Report for {{capitalizeWords place.name}}</h3>
+  <table>
+    <tr>
+      <td colspan="2">
+        <div>{{capitalizeWords place.name}}, {{uppercase place.state}}</div>
+        <div>({{capitalizeWords report.location}})</div>
+      </td>
+    </tr>
+    <tr>
+      <td>Burnt area:</td>
+      <td>{{report.areaAC}} acres ({{report.areaMI}} sq mi)</td>
+    </tr>
+    <tr>
+      <td>Cause:</td>
+      <td>{{capitalizeWords report.cause}}</td>
+    </tr>
+    <tr>
+      <td>Expected containment</td>
+      <td>{{formatDate report.expContainedTimestamp}}</td>
+    </tr>
+    <tr>
+      <td>Containment Status:</td>
+      <td>{{report.perContained}}% contained</td>
+    </tr>
+    <tr>
+      <td>Fuels</td>
+      <td>{{report.fuels}}</td>
+    </tr>
+  </table>
+</div>
