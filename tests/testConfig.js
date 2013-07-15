@@ -4,7 +4,10 @@ require.config({
   paths: {
     jasmine: '/tests/lib/jasmine',
     'jasmine-html': '/tests/lib/jasmine-html',
-    spec: '/tests/spec'
+    spec: '/tests/spec',
+    async: '/tests/lib/async',
+    sinon: '/tests/lib/sinon',
+    jquery: '//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min'
   },
   shim: {
     jasmine: {
@@ -13,6 +16,9 @@ require.config({
     'jasmine-html': {
       deps: ['jasmine'],
       exports: 'jasmine'
+    },
+    sinon: {
+      exports: 'sinon'
     }
   },
   config: {

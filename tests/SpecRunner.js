@@ -2,7 +2,10 @@ require([
   '../lib/config',
   'testconfig'
 ], function() {
-  require(['jasmine-html'], function(jasmine) {
+  require([
+    'jasmine-html',
+    'async!https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false'
+  ], function(jasmine) {
     var jasmineEnv = jasmine.getEnv();
     jasmineEnv.updateInterval = 1000;
 
