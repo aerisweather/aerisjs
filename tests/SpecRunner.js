@@ -25,7 +25,8 @@ require([
       'spec/aeris/aerisapi',
       'spec/aeris/promise',
       'spec/aeris/maps/base/layers',
-      'spec/aeris/maps/gmaps/route'
+      'spec/aeris/maps/gmaps/route',
+      'spec/integration/route'
     ], function() {
       // Yes, it's a hack,
       // but it's solving some aweful async
