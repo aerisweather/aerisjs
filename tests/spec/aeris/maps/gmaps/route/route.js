@@ -96,8 +96,8 @@ define(['jasmine', 'gmaps/route/route', 'underscore'], function(jasmine, Route, 
         distance: 11
       });
 
-      spyOn(wpMock, 'toJSON').andReturn({ "some": "jsonObject" });
-      spyOn(wpMock2, 'toJSON').andReturn({ "another": "jsonObject" });
+      spyOn(wpMock, 'toJSON').andReturn({ 'some': 'jsonObject' });
+      spyOn(wpMock2, 'toJSON').andReturn({ 'another': 'jsonObject' });
 
       route.addWaypoint(wpMock);
       route.addWaypoint(wpMock2);
@@ -105,8 +105,8 @@ define(['jasmine', 'gmaps/route/route', 'underscore'], function(jasmine, Route, 
       expect(_.isEqual(route.toJSON(), {
         distance: 18,
         waypoints: [
-          { "some": "jsonObject" },
-          { "another": "jsonObject" }
+          { 'some': 'jsonObject' },
+          { 'another': 'jsonObject' }
         ]
       })).toEqual(true);
     });
