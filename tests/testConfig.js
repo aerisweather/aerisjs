@@ -6,10 +6,9 @@ require.config({
     jasmine: '/tests/lib/jasmine',
     'jasmine-html': '/tests/lib/jasmine-html',
     spec: '/tests/spec',
-    async: '/tests/lib/async',
     sinon: '/tests/lib/sinon',
-    jquery: '//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min'
-    underscore: '/tests/lib/underscore-min',
+    jquery: '/tests/lib/jquery-1.10.2',
+    underscore: '/tests/lib/underscore-min'
   },
   shim: {
     jasmine: {

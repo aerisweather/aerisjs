@@ -27,7 +27,12 @@ require([
       'spec/aeris/maps/base/layers',
       'spec/aeris/maps/gmaps/route'
     ], function() {
-      jasmineEnv.execute();
+      // Yes, it's a hack,
+      // but it's solving some aweful async
+      // loading issues...
+      window.setTimeout(function() {
+        jasmineEnv.execute();
+      }, 500);
     });
   });
 });
