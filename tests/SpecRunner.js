@@ -4,8 +4,9 @@ require([
 ], function() {
   require([
     'jasmine-html',
+    'underscore',
     'async!https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false'
-  ], function(jasmine) {
+  ], function(jasmine, underscore) {
     var jasmineEnv = jasmine.getEnv();
     jasmineEnv.updateInterval = 1000;
 
@@ -17,11 +18,14 @@ require([
       return htmlReporter.specFilter(spec);
     };
 
+    window._ = underscore;
+
     require([
       '/tests/lib/domReady.js!',
       'spec/aeris/aerisapi',
       'spec/aeris/promise',
-      'spec/aeris/maps/base/layers'
+      'spec/aeris/maps/base/layers',
+      'spec/aeris/maps/gmaps/route'
     ], function() {
       jasmineEnv.execute();
     });
