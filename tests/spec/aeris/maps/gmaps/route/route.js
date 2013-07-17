@@ -1,141 +1,338 @@
-define(['jasmine', 'gmaps/route/route', 'underscore'], function(jasmine, Route, _) {
+define([
+  'gmaps/route/waypoint',
+  'mocks/waypoint',
+  'gmaps/route/route',
+  'underscore'
+], function(Waypoint, MockWaypoint, Route, _) {
   describe('A Route', function() {
 
-    function getMockWaypoint(opt_options) {
-      opt_options || (opt_options = {});
-      return {
-        distance: opt_options.distance || 0,
-        previous: opt_options.previous || null,
-        toJSON: function() {}
-      }
-    }
+    describe('should manage waypoints', function() {
+      it('should construct with no waypoints or distance', function() {
+        var route = new Route();
+        expect(route.distance).toEqual(0);
+        expect(route.getWaypoints()).toEqual([]);
+      });
 
-    it('should construct with no waypoints or distance', function() {
-      var route = new Route();
-      expect(route.distance).toEqual(0);
-      expect(route.getWaypoints()).toEqual([]);
+      it('should add a waypoint', function() {
+        var route = new Route();
+        var wpMock = new MockWaypoint({
+          distance: 7
+        });
+        route.add(wpMock);
+
+        expect(route.getWaypoints().length).toEqual(1);
+        expect(route.distance).toEqual(7);
+      });
+
+      it('should trigger a \'add\' event', function() {
+        var route = new Route();
+        var triggered = false;
+
+        route.on('add', function() {
+          triggered = true;
+        });
+        route.add(new MockWaypoint());
+
+        expect(triggered).toBe(true);
+      });
+
+      it('should remove a waypoint', function() {
+        var route = new Route();
+        var wp = new MockWaypoint();
+        route.add(wp);
+        route.remove(wp);
+
+        expect(route.getWaypoints().length).toEqual(0);
+      });
+
+      it('should not allow removing a waypoint that doesn\'t exist', function() {
+        var route = new Route();
+        var wp1 = new MockWaypoint({
+          distance: 7
+        });
+        var wp2 = new MockWaypoint({
+          distance: 13
+        });
+
+        route.add(wp1);
+
+        expect(function() { route.remove(wp2); }).toThrow();
+      });
+
+      it('should reset to an array of Waypoints', function() {
+        var newWaypoints = [];
+        var route = new Route();
+
+        for (var i = 0; i < 5; i++) {
+          var wpOld1 = new MockWaypoint({ distance: i });
+          var wpOld2 = new MockWaypoint({ distance: i + 1 });
+          var wpNew = new MockWaypoint({ distance: 2 * (i + 2) });
+
+          route.add(wpOld1);
+          route.add(wpOld2);
+          newWaypoints.push(wpNew);
+        }
+
+        expect(route.getWaypoints().length).toEqual(10);
+
+        route.reset(newWaypoints);
+        expect(route.getWaypoints().length).toEqual(5);
+        expect(route.getWaypoints()).toEqual(newWaypoints);
+      });
+
+      it('should remove all waypoints with reset', function() {
+        var route = new Route();
+
+        for (var i = 0; i < 5; i++) {
+          route.add(new MockWaypoint());
+        }
+
+        expect(route.getWaypoints().length).toEqual(5);
+
+        route.reset();
+        expect(route.getWaypoints().length).toEqual(0);
+      });
+
+      it('should tell each waypoint about the previous waypoint in the route', function() {
+        var route = new Route();
+        var wpMock = new MockWaypoint({
+          distance: 7
+        });
+        var wpMock2 = new MockWaypoint({
+          distance: 11
+        });
+
+        route.add(wpMock);
+        expect(wpMock.previous).toBeNull();
+        route.add(wpMock2);
+        expect(wpMock2.previous.distance).toEqual(7);
+      });
+
+      it('should return the last waypoint in the route', function() {
+        var route = new Route();
+        var wpMock = new MockWaypoint({
+          distance: 7
+        });
+        var wpMock2 = new MockWaypoint({
+          distance: 11
+        });
+
+        expect(route.getLastWaypoint()).toBeNull();
+
+        route.add(wpMock);
+        expect(route.getLastWaypoint().distance).toEqual(7);
+
+        route.add(wpMock2);
+        expect(route.getLastWaypoint().distance).toEqual(11);
+      });
     });
 
-    it('should add a waypoint', function() {
-      var route = new Route();
-      var wpMock = getMockWaypoint({
-        distance: 7
-      });
-      route.addWaypoint(wpMock);
+    describe('should trigger events', function() {
 
-      expect(route.getWaypoints().length).toEqual(1);
-      expect(route.distance).toEqual(7);
+      it('should trigger a \'remove\' event', function() {
+        var route = new Route();
+        var wp = new MockWaypoint();
+        var listenerSpy = jasmine.createSpy('onRemove');
+
+        route.on('remove', listenerSpy);
+
+        route.add(wp);
+        route.remove(wp);
+
+        expect(listenerSpy).toHaveBeenCalledWith(wp);
+        expect(listenerSpy.callCount).toEqual(1);
+      });
+
+      it('should optionally supress event triggers', function() {
+        var route = new Route();
+        var addSpy = jasmine.createSpy('add');
+        var removeSpy = jasmine.createSpy('remove');
+        var resetSpy = jasmine.createSpy('reset');
+        var wp = new MockWaypoint();
+
+        route.on('add', addSpy);
+        route.on('remove', removeSpy);
+        route.on('reset', resetSpy);
+
+        route.add(wp, { trigger: false });
+        route.remove(wp, { trigger: false });
+        route.reset([new MockWaypoint(), new MockWaypoint()], { trigger: false });
+
+        expect(addSpy).not.toHaveBeenCalled();
+        expect(removeSpy).not.toHaveBeenCalled();
+        expect(resetSpy).not.toHaveBeenCalled();
+      });
+
+      it('should trigger only a \'reset\' event on reset', function() {
+        var route = new Route();
+        var newWaypoints = [new MockWaypoint(), new MockWaypoint()];
+        var resetListener = jasmine.createSpy('resetListener');
+        var removeListener = jasmine.createSpy('removeListener');
+        var addListener = jasmine.createSpy('addListener');
+
+        for (var i = 0; i < 5; i++) {
+          var wp = new MockWaypoint({
+            distance: i + 1
+          });
+          route.add(wp);
+        }
+
+        route.on('remove', removeListener);
+        route.on('reset', resetListener);
+
+        route.reset(newWaypoints);
+        expect(resetListener).toHaveBeenCalledWith(route.getWaypoints());
+        expect(resetListener.callCount).toEqual(1);
+
+        expect(removeListener).not.toHaveBeenCalled();
+        expect(addListener).not.toHaveBeenCalled();
+      });
     });
 
-    it('should trigger a \'addWaypoint\' event', function() {
-      var route = new Route();
-      var triggered = false;
+    describe('should calculate total distance', function() {
+      it('when adding multiple waypoints', function() {
+        var route = new Route();
+        var wpMock = new MockWaypoint({
+          distance: 7
+        });
+        var wpMock2 = new MockWaypoint({
+          distance: 11
+        });
 
-      route.on('addWaypoint', function() {
-        triggered = true;
+        route.add(wpMock);
+        route.add(wpMock2);
+        expect(route.getWaypoints().length).toEqual(2);
+        expect(route.distance).toEqual(18);
       });
-      route.addWaypoint(getMockWaypoint());
 
-      expect(triggered).toBe(true);
+      it('when removing waypoints', function() {
+        var route = new Route();
+        var wp = new MockWaypoint();
+
+        route.add(wp);
+        route.remove(wp);
+
+        expect(route.distance).toEqual(0);
+      });
+
+      it('when resetting waypoints', function() {
+        var route = new Route();
+        var newWaypoints = [];
+
+        for (var i = 0; i < 5; i++) {
+          var wp = new MockWaypoint({
+            distance: 1
+          });
+          route.add(wp);
+        }
+
+        expect(route.distance).toEqual(5);
+
+        for (var i = 0; i < 5; i++) {
+          var wp = new MockWaypoint({
+            distance: 2
+          });
+          newWaypoints.push(wp);
+        }
+
+        route.reset(newWaypoints);
+        expect(route.distance).toEqual(10);
+
+        route.reset();
+        expect(route.distance).toEqual(0);
+      });
     });
 
-    it('should add multiple waypoints, and calculate total route distance', function() {
-      var route = new Route();
-      var wpMock = getMockWaypoint({
-        distance: 7
-      });
-      var wpMock2 = getMockWaypoint({
-        distance: 11
-      });
+    describe('should import/export to JSON', function() {
 
-      route.addWaypoint(wpMock);
-      route.addWaypoint(wpMock2);
-      expect(route.getWaypoints().length).toEqual(2);
-      expect(route.distance).toEqual(18);
-    });
+      it('should export an array of waypoints with toJSON', function() {
+        var route = new Route();
+        var wpMock = new MockWaypoint({
+          distance: 7
+        });
+        var wpMock2 = new MockWaypoint({
+          distance: 11
+        });
 
-    it('should tell each waypoint about the previous waypoint in the route', function() {
-      var route = new Route();
-      var wpMock = getMockWaypoint({
-        distance: 7
-      });
-      var wpMock2 = getMockWaypoint({
-        distance: 11
-      });
+        spyOn(wpMock, 'toJSON').andReturn({ 'some': 'jsonObject' });
+        spyOn(wpMock2, 'toJSON').andReturn({ 'another': 'jsonObject' });
 
-      route.addWaypoint(wpMock);
-      expect(wpMock.previous).toBeNull();
-      route.addWaypoint(wpMock2);
-      expect(wpMock2.previous.distance).toEqual(7);
-    });
+        route.add(wpMock);
+        route.add(wpMock2);
 
-    it('should return the last waypoint in the route', function() {
-      var route = new Route();
-      var wpMock = getMockWaypoint({
-        distance: 7
-      });
-      var wpMock2 = getMockWaypoint({
-        distance: 11
-      });
-
-      expect(route.getLastWaypoint()).toBeNull();
-
-      route.addWaypoint(wpMock);
-      expect(route.getLastWaypoint().distance).toEqual(7);
-
-      route.addWaypoint(wpMock2);
-      expect(route.getLastWaypoint().distance).toEqual(11);
-    });
-
-    it('should serialize as a JSON object', function() {
-      var route = new Route();
-      var wpMock = getMockWaypoint({
-        distance: 7
-      });
-      var wpMock2 = getMockWaypoint({
-        distance: 11
-      });
-
-      spyOn(wpMock, 'toJSON').andReturn({ 'some': 'jsonObject' });
-      spyOn(wpMock2, 'toJSON').andReturn({ 'another': 'jsonObject' });
-
-      route.addWaypoint(wpMock);
-      route.addWaypoint(wpMock2);
-
-      expect(_.isEqual(route.toJSON(), {
-        distance: 18,
-        waypoints: [
+        // Just testing that we return an array of waypoints,
+        // not the results of waypoint.toJSON
+        expect(_.isEqual(route.toJSON(), [
           { 'some': 'jsonObject' },
           { 'another': 'jsonObject' }
-        ]
-      })).toEqual(true);
-    });
-
-    it('should parse a JSON string into a route object', function() {
-      // Taken from an example export
-      var jsonStr = '{"distance":2452,"waypoints":[{"originalLatLon":[44.978278126139514,-93.26341152191162],"geocodedLatLon":[44.978350000000006,-93.26335],"followPaths":true,"travelMode":"WALKING","path":null,"previous":null,"distance":0},{"originalLatLon":[44.972752843480855,-93.27199459075928],"geocodedLatLon":[44.97276,-93.272],"followPaths":true,"travelMode":"WALKING","path":[[44.978350000000006,-93.26335],[44.979310000000005,-93.26556000000001],[44.979350000000004,-93.26569],[44.97887,-93.26608],[44.979110000000006,-93.26667],[44.978060000000006,-93.26758000000001],[44.97672,-93.26873],[44.97574,-93.26950000000001],[44.97478,-93.27031000000001],[44.97415,-93.27086000000001],[44.97316000000001,-93.27170000000001],[44.97276,-93.272]],"previous":{"originalLatLon":[44.978278126139514,-93.26341152191162],"geocodedLatLon":[44.978350000000006,-93.26335],"followPaths":true,"travelMode":"WALKING","path":null,"previous":null,"distance":0},"distance":1153},{"originalLatLon":[44.96953457638823,-93.2580041885376],"geocodedLatLon":[44.969550000000005,-93.25799],"followPaths":true,"travelMode":"WALKING","path":[[44.97276,-93.272],[44.97280000000001,-93.27197000000001],[44.97233000000001,-93.27082000000001],[44.9722,-93.27051],[44.97167,-93.26922],[44.971630000000005,-93.26905000000001],[44.97110000000001,-93.26789000000001],[44.97052,-93.26655000000001],[44.969910000000006,-93.2651],[44.9697,-93.26457],[44.969120000000004,-93.26321],[44.96904000000001,-93.26314],[44.968920000000004,-93.26310000000001],[44.968920000000004,-93.26273],[44.96891,-93.26264],[44.96887,-93.26255],[44.96886000000001,-93.26028000000001],[44.969100000000005,-93.25999],[44.96911,-93.25964],[44.969260000000006,-93.25964],[44.96925,-93.25906],[44.9692,-93.25901],[44.9692,-93.25898000000001],[44.969210000000004,-93.25889000000001],[44.96925,-93.25881000000001],[44.969300000000004,-93.25876000000001],[44.969350000000006,-93.25874],[44.96941,-93.25874],[44.969460000000005,-93.25877000000001],[44.96965,-93.25826],[44.969570000000004,-93.25804000000001],[44.969550000000005,-93.25799]],"previous":{"originalLatLon":[44.972752843480855,-93.27199459075928],"geocodedLatLon":[44.97276,-93.272],"followPaths":true,"travelMode":"WALKING","path":[[44.978350000000006,-93.26335],[44.979310000000005,-93.26556000000001],[44.979350000000004,-93.26569],[44.97887,-93.26608],[44.979110000000006,-93.26667],[44.978060000000006,-93.26758000000001],[44.97672,-93.26873],[44.97574,-93.26950000000001],[44.97478,-93.27031000000001],[44.97415,-93.27086000000001],[44.97316000000001,-93.27170000000001],[44.97276,-93.272]],"previous":{"originalLatLon":[44.978278126139514,-93.26341152191162],"geocodedLatLon":[44.978350000000006,-93.26335],"followPaths":true,"travelMode":"WALKING","path":null,"previous":null,"distance":0},"distance":1153},"distance":1299}]}';
-      var route = new Route();
-      var waypoints;
-
-      var eventFlag = false;
-      route.on('topic', function() {
-        eventFlag = true;
+        ])).toEqual(true);
       });
 
-      route.importJSON(jsonStr);
-      waypoints = route.getWaypoints();
+      it('should reset to an exported JSON object', function() {
+        // Taken from an example export
+        var json = [{'originalLatLon': [44.978915624496295, -93.26489210128784], 'geocodedLatLon': [44.97892, -93.26491000000001], 'followPaths': true, 'travelMode': 'WALKING', 'path': null, 'distance': 0}, {'originalLatLon': [44.97666917019782, -93.26875448226929], 'geocodedLatLon': [44.976670000000006, -93.26877], 'followPaths': true, 'travelMode': 'WALKING', 'path': [[44.97892, -93.26491000000001], [44.978030000000004, -93.26566000000001], [44.978640000000006, -93.26706], [44.97764, -93.26794000000001], [44.976670000000006, -93.26877]], 'distance': 502}, {'originalLatLon': [44.975895033800114, -93.26392650604248], 'geocodedLatLon': [44.97592, -93.2639], 'followPaths': true, 'travelMode': 'WALKING', 'path': [[44.976670000000006, -93.26877], [44.97764, -93.26794000000001], [44.97702, -93.26651000000001], [44.97592, -93.2639]], 'distance': 497}];
+        var route = new Route();
+        var waypoints;
 
-      // Test: meta-data imported
-      expect(route.distance).toEqual(2452);
+        var eventFlag = false;
+        route.on('topic', function() {
+          eventFlag = true;
+        });
 
-      // Test: waypoints imported
-      //      note: not testing parsing of Waypoints (belongs in Waypoint's spec)
-      expect(waypoints.length).toEqual(3);
-      expect(waypoints[0] instanceof Route).toEqual(true);
+        route.reset(json);
+        waypoints = route.getWaypoints();
 
-      // Make sure we didn't lose our subscribers.
-      route.trigger('topic');
-      expect(eventFlag).toEqual(true);
+        // Test: meta-data imported
+        expect(route.distance).toEqual(999);
+
+        // Test: waypoints imported
+        //      note: not testing parsing of Waypoints (belongs in Waypoint's spec)
+        expect(waypoints.length).toEqual(3);
+        expect(waypoints[0] instanceof Waypoint).toEqual(true);
+
+        // Properly set previous waypoints
+        expect(waypoints[1].previous).toEqual(waypoints[0]);
+        expect(waypoints[2].previous).toEqual(waypoints[1]);
+
+        // Make sure we didn't lose our subscribers.
+        route.trigger('topic');
+        expect(eventFlag).toEqual(true);
+      });
+
+      it('should reject poorly formed JSON input', function() {
+        var notJSON = 'imposter';
+        var route = new Route();
+
+        expect(function() { route.reset(notJSON); }).toThrowType('InvalidArgumentError');
+      });
+
+      it('should import what it exports', function() {
+        var routeExporter = new Route();
+        var routeImporter = new Route();
+        var waypoints = [
+          new MockWaypoint(null, true),
+          new MockWaypoint(),
+          new MockWaypoint()
+        ];
+
+        for (var i = 0; i < waypoints.length; i++) {
+          routeExporter.add(waypoints[i]);
+        }
+
+        routeImporter.reset(routeExporter.toJSON());
+        expect(routeExporter.getWaypoints()).toEqual(routeImporter.getWaypoints());
+      });
+
+      it('should accept a collection of waypoints as a constructor param', function() {
+        var waypoints = [
+          new MockWaypoint(null, true),
+          new MockWaypoint(),
+          new MockWaypoint()
+        ];
+        var route = new Route(waypoints);
+
+        expect(route.getWaypoints()).toEqual(waypoints);
+      });
     });
   });
 });

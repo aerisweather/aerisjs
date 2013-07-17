@@ -26,7 +26,7 @@ define([
     /**
      *
      * @param {Array<number, number>} latLon
-     * @param {?google.maps.Map} opt_map Defaults to aerisMap.map.
+     * @param {google.maps.Map=} opt_map Defaults to aerisMap.map.
      * @return {google.maps.MouseEvent} Mock mouse event.
      */
     function triggerClick(latLon, opt_map) {
@@ -258,11 +258,19 @@ define([
 
     describe('Import/Export', function() {
 
-      /* @todo
-      it('should import from a JSON string', function() {
+      /*it('import a route', function() {
+        var mapper = new aeris.maps.gmaps.routes.JSONRouteMapper();
+        var jsonExport;
 
-      });
-      */
+        // Create a route
+        triggerClick([40, -90]);
+        triggerClick([37, -89]);
+        triggerClick([35, -88]);
+        triggerClick([45, -73]);
+
+        jsonExport = mapper.export(route);
+        route.import(jsonImport);
+      });*/
     });
   });
 });

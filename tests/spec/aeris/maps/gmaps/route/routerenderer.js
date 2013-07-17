@@ -37,7 +37,7 @@ define([
       rR = new RouteRenderer(map);
 
       rR.setRoute(route);
-      route.trigger('addWaypoint', { foo: 'bar' });
+      route.trigger('add', { foo: 'bar' });
       expect(rR.renderWaypoint).toHaveBeenCalledWith({foo: 'bar'});
     });
 

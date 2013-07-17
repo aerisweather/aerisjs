@@ -6,6 +6,7 @@ require.config({
     jasmine: '/tests/lib/jasmine',
     'jasmine-html': '/tests/lib/jasmine-html',
     spec: '/tests/spec',
+    mocks: '/tests/spec/mocks',
     sinon: '/tests/lib/sinon',
     jquery: '/tests/lib/jquery-1.10.2',
     underscore: '/tests/lib/underscore-min'

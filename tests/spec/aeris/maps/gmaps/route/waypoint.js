@@ -1,5 +1,5 @@
-define(['jasmine', 'gmaps/route/waypoint'], function(jasmine, Waypoint) {
-  describe('A waypoint', function() {
+define(['jasmine', 'gmaps/route/waypoint', 'mocks/waypoint', 'underscore'], function(jasmine, Waypoint, MockWaypoint, _) {
+  describe('A Waypoint', function() {
     it('should accept waypoint properties as options on construction, and set defaults', function() {
       var wp = new Waypoint({
         originalLatLon: [-45, 90],
@@ -88,14 +88,43 @@ define(['jasmine', 'gmaps/route/waypoint'], function(jasmine, Waypoint) {
           _.extend({}, goodJSON, { path: undefined })
         ];
 
-        for (var i = 0; i <= badJSONs.length; i++) {
+        for (var i = 0; i < badJSONs.length; i++) {
           var fn = (function(j) {
             return function() {
               wp.reset(badJSONs[j]);
             }
           })(i);
 
-          expect(fn).toThrow();
+          expect(fn).toThrowType('JSONParseError');
+        }
+      });
+
+      it('should import what it exports', function() {
+        var waypointExporter = new MockWaypoint();
+        var waypointImporter = new MockWaypoint();
+
+        waypointImporter.reset(waypointExporter.toJSON());
+
+        expect(waypointImporter.getLatLon()).toEqual(waypointExporter.getLatLon());
+
+        // Compare all object properties
+        for (var prop in waypointImporter) {
+          if (waypointImporter.hasOwnProperty(prop)) {
+            expect(waypointImporter[prop]).toEqual(waypointExporter[prop]);
+          }
+        }
+      });
+
+      it('should accept an exported Waypoint as a construtor param', function() {
+        var waypointExporter = new MockWaypoint();
+        var mockJSON = waypointExporter.toJSON();
+        var waypointImporter = new Waypoint(mockJSON);
+
+        // Compare all object properties
+        for (var prop in waypointImporter) {
+          if (waypointImporter.hasOwnProperty(prop)) {
+            expect(waypointImporter[prop]).toEqual(waypointExporter[prop]);
+          }
         }
       });
     });

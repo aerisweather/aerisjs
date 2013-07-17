@@ -47,7 +47,7 @@
           });
 
           var $totalDistance = $('#total-distance');
-          route.on('addWaypoint', function() {
+          route.on('add', function() {
             var distance = route.distance;
             var miles = distance * 0.00062137;
             miles = Math.round(miles * 100) / 100;
