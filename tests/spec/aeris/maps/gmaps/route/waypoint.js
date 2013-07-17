@@ -31,7 +31,7 @@ define(['jasmine', 'gmaps/route/waypoint', 'mocks/waypoint', 'underscore'], func
     });
 
     describe('JSON import/export', function() {
-      it('should serialize as a JSON string, using the Waypoints toJSON method', function() {
+      it('export as a JSON string', function() {
         var wp = new Waypoint({
           originalLatLon: [-45, 90],
           geocodedLatLon: [-45.1, 90.1],
@@ -40,7 +40,7 @@ define(['jasmine', 'gmaps/route/waypoint', 'mocks/waypoint', 'underscore'], func
           path: ['mock', 'path']
         });
 
-        expect(JSON.stringify(wp)).toBe('{' +
+        expect(wp.export()).toEqual('{' +
           '"originalLatLon":[-45,90],' +
           '"geocodedLatLon":[-45.1,90.1],' +
           '"followPaths":true,' +
@@ -76,10 +76,31 @@ define(['jasmine', 'gmaps/route/waypoint', 'mocks/waypoint', 'underscore'], func
         expect(wp.previous).toBeNull();
       });
 
-      it('should reject poorly formed JSON input', function() {
+      it('should import waypoint data from a JSON string', function() {
+        var jsonStr = '{' +
+          '"originalLatLon":[44.97840714423616,-93.2635509967804],' +
+          '"geocodedLatLon":[44.978410000000004,-93.26356000000001],' +
+          '"followPaths":true,' +
+          '"travelMode":"WALKING",' +
+          '"path":[[44.97905,-93.26302000000001],[44.978410000000004,-93.26356000000001]],' +
+          '"distance":83' +
+        '}';
+
+        var wp = new Waypoint();
+        wp.import(jsonStr);
+
+        expect(wp.originalLatLon).toEqual([44.97840714423616, -93.2635509967804]);
+        expect(wp.geocodedLatLon).toEqual([44.978410000000004, -93.26356000000001]);
+        expect(wp.followPaths).toEqual(true);
+        expect(wp.travelMode).toEqual('WALKING');
+        expect(wp.path).toEqual([[44.97905, -93.26302000000001], [44.978410000000004, -93.26356000000001]]);
+        expect(wp.distance).toEqual(83);
+      });
+
+      it('should reject poorly formed JSON object input', function() {
         var wp = new Waypoint();
 
-        var goodJSON = json = {'originalLatLon': [44.972752843480855, -93.27199459075928], 'geocodedLatLon': [44.97276, -93.272], 'followPaths': true, 'travelMode': 'WALKING', 'path': [[44.978350000000006, -93.26335], [44.979310000000005, -93.26556000000001], [44.979350000000004, -93.26569], [44.97887, -93.26608], [44.979110000000006, -93.26667], [44.978060000000006, -93.26758000000001], [44.97672, -93.26873], [44.97574, -93.26950000000001], [44.97478, -93.27031000000001], [44.97415, -93.27086000000001], [44.97316000000001, -93.27170000000001], [44.97276, -93.272]], 'distance': 1153};
+        var goodJSON = {'originalLatLon': [44.972752843480855, -93.27199459075928], 'geocodedLatLon': [44.97276, -93.272], 'followPaths': true, 'travelMode': 'WALKING', 'path': [[44.978350000000006, -93.26335], [44.979310000000005, -93.26556000000001], [44.979350000000004, -93.26569], [44.97887, -93.26608], [44.979110000000006, -93.26667], [44.978060000000006, -93.26758000000001], [44.97672, -93.26873], [44.97574, -93.26950000000001], [44.97478, -93.27031000000001], [44.97415, -93.27086000000001], [44.97316000000001, -93.27170000000001], [44.97276, -93.272]], 'distance': 1153};
         var badJSONs = [
           _.extend({}, goodJSON, { distance: 'way out there' }),
           _.extend({}, goodJSON, { originalLatLon: ['this far north', 'this far west']}),
@@ -99,7 +120,21 @@ define(['jasmine', 'gmaps/route/waypoint', 'mocks/waypoint', 'underscore'], func
         }
       });
 
-      it('should import what it exports', function() {
+      it('should reject poorly formed JSON string input', function() {
+        var wp = new Waypoint();
+
+        expect(function() {
+          wp.import('foo');
+        }).toThrowType('JSONParseError');
+
+        expect(function() {
+          wp.import({
+            foo: 'bar'
+          });
+        }).toThrowType('JSONParseError');
+      });
+
+      it('should import what it exports, using JSON objects', function() {
         var waypointExporter = new MockWaypoint();
         var waypointImporter = new MockWaypoint();
 
@@ -115,7 +150,23 @@ define(['jasmine', 'gmaps/route/waypoint', 'mocks/waypoint', 'underscore'], func
         }
       });
 
-      it('should accept an exported Waypoint as a construtor param', function() {
+      it('should import what is exports, using JSON strings', function() {
+        var waypointExporter = new MockWaypoint();
+        var waypointImporter = new Waypoint();
+
+        waypointImporter.import(waypointExporter.export());
+
+        expect(waypointImporter.getLatLon()).toEqual(waypointExporter.getLatLon());
+
+        // Compare all object properties
+        for (var prop in waypointImporter) {
+          if (waypointImporter.hasOwnProperty(prop)) {
+            expect(waypointImporter[prop]).toEqual(waypointExporter[prop]);
+          }
+        }
+      });
+
+      it('should accept an exported Waypoint as a constructor param', function() {
         var waypointExporter = new MockWaypoint();
         var mockJSON = waypointExporter.toJSON();
         var waypointImporter = new Waypoint(mockJSON);

@@ -1,9 +1,10 @@
 define([
+  'aeris',
   'gmaps/route/waypoint',
   'mocks/waypoint',
   'gmaps/route/route',
   'underscore'
-], function(Waypoint, MockWaypoint, Route, _) {
+], function(aeris, Waypoint, MockWaypoint, Route, _) {
   describe('A Route', function() {
 
     describe('should manage waypoints', function() {
@@ -245,82 +246,138 @@ define([
 
     describe('should import/export to JSON', function() {
 
-      it('should export an array of waypoints with toJSON', function() {
-        var route = new Route();
-        var wpMock = new MockWaypoint({
-          distance: 7
-        });
-        var wpMock2 = new MockWaypoint({
-          distance: 11
-        });
+      describe('should export an array of waypoints', function() {
+        it('as a JSON object, using toJSON', function() {
+          var route = new Route();
+          var wpMock = new MockWaypoint({
+            distance: 7
+          });
+          var wpMock2 = new MockWaypoint({
+            distance: 11
+          });
 
-        spyOn(wpMock, 'toJSON').andReturn({ 'some': 'jsonObject' });
-        spyOn(wpMock2, 'toJSON').andReturn({ 'another': 'jsonObject' });
+          spyOn(wpMock, 'toJSON').andReturn({ 'some': 'jsonObject' });
+          spyOn(wpMock2, 'toJSON').andReturn({ 'another': 'jsonObject' });
 
-        route.add(wpMock);
-        route.add(wpMock2);
+          route.add(wpMock);
+          route.add(wpMock2);
 
-        // Just testing that we return an array of waypoints,
-        // not the results of waypoint.toJSON
-        expect(_.isEqual(route.toJSON(), [
-          { 'some': 'jsonObject' },
-          { 'another': 'jsonObject' }
-        ])).toEqual(true);
-      });
-
-      it('should reset to an exported JSON object', function() {
-        // Taken from an example export
-        var json = [{'originalLatLon': [44.978915624496295, -93.26489210128784], 'geocodedLatLon': [44.97892, -93.26491000000001], 'followPaths': true, 'travelMode': 'WALKING', 'path': null, 'distance': 0}, {'originalLatLon': [44.97666917019782, -93.26875448226929], 'geocodedLatLon': [44.976670000000006, -93.26877], 'followPaths': true, 'travelMode': 'WALKING', 'path': [[44.97892, -93.26491000000001], [44.978030000000004, -93.26566000000001], [44.978640000000006, -93.26706], [44.97764, -93.26794000000001], [44.976670000000006, -93.26877]], 'distance': 502}, {'originalLatLon': [44.975895033800114, -93.26392650604248], 'geocodedLatLon': [44.97592, -93.2639], 'followPaths': true, 'travelMode': 'WALKING', 'path': [[44.976670000000006, -93.26877], [44.97764, -93.26794000000001], [44.97702, -93.26651000000001], [44.97592, -93.2639]], 'distance': 497}];
-        var route = new Route();
-        var waypoints;
-
-        var eventFlag = false;
-        route.on('topic', function() {
-          eventFlag = true;
+          // Just testing that we return an array of waypoints,
+          // not the results of waypoint.toJSON
+          expect(_.isEqual(route.toJSON(), [
+            { 'some': 'jsonObject' },
+            { 'another': 'jsonObject' }
+          ])).toEqual(true);
         });
 
-        route.reset(json);
-        waypoints = route.getWaypoints();
+        it('as a JSON string, using export', function() {
+          var waypoints, route, jsonExport;
 
-        // Test: meta-data imported
-        expect(route.distance).toEqual(999);
+          spyOn(aeris.maps.gmaps.route.Waypoint.prototype, 'toJSON').andReturn({ some: 'value' });
 
-        // Test: waypoints imported
-        //      note: not testing parsing of Waypoints (belongs in Waypoint's spec)
-        expect(waypoints.length).toEqual(3);
-        expect(waypoints[0] instanceof Waypoint).toEqual(true);
+          route = new Route([new MockWaypoint(null, true), new MockWaypoint(), new MockWaypoint()]);
+          jsonExport = route.export();
 
-        // Properly set previous waypoints
-        expect(waypoints[1].previous).toEqual(waypoints[0]);
-        expect(waypoints[2].previous).toEqual(waypoints[1]);
+          expect(aeris.maps.gmaps.route.Waypoint.prototype.toJSON.callCount).toEqual(3);
+          expect(jsonExport).toEqual('[' +
+            '{"some":"value"},' +
+            '{"some":"value"},' +
+            '{"some":"value"}' +
+          ']');
 
-        // Make sure we didn't lose our subscribers.
-        route.trigger('topic');
-        expect(eventFlag).toEqual(true);
+          // Make sure json is parseable
+          JSON.parse(jsonExport);
+        });
       });
 
-      it('should reject poorly formed JSON input', function() {
-        var notJSON = 'imposter';
-        var route = new Route();
+      describe('should import', function() {
 
-        expect(function() { route.reset(notJSON); }).toThrowType('InvalidArgumentError');
-      });
+        it('a JSON waypoints object', function() {
+          // Taken from an example export
+          //var json = [{'originalLatLon': [44.978915624496295, -93.26489210128784], 'geocodedLatLon': [44.97892, -93.26491000000001], 'followPaths': true, 'travelMode': 'WALKING', 'path': null, 'distance': 0}, {'originalLatLon': [44.97666917019782, -93.26875448226929], 'geocodedLatLon': [44.976670000000006, -93.26877], 'followPaths': true, 'travelMode': 'WALKING', 'path': [[44.97892, -93.26491000000001], [44.978030000000004, -93.26566000000001], [44.978640000000006, -93.26706], [44.97764, -93.26794000000001], [44.976670000000006, -93.26877]], 'distance': 502}, {'originalLatLon': [44.975895033800114, -93.26392650604248], 'geocodedLatLon': [44.97592, -93.2639], 'followPaths': true, 'travelMode': 'WALKING', 'path': [[44.976670000000006, -93.26877], [44.97764, -93.26794000000001], [44.97702, -93.26651000000001], [44.97592, -93.2639]], 'distance': 497}];
+          var json = [
+            new MockWaypoint({ distance: 2 }, true),
+            new MockWaypoint({ distance: 4 }),
+            new MockWaypoint({ distance: 6 })
+          ];
+          var route = new Route();
+          var waypoints;
 
-      it('should import what it exports', function() {
-        var routeExporter = new Route();
-        var routeImporter = new Route();
-        var waypoints = [
-          new MockWaypoint(null, true),
-          new MockWaypoint(),
-          new MockWaypoint()
-        ];
+          var eventFlag = false;
+          route.on('topic', function() {
+            eventFlag = true;
+          });
 
-        for (var i = 0; i < waypoints.length; i++) {
-          routeExporter.add(waypoints[i]);
-        }
+          route.reset(json);
+          waypoints = route.getWaypoints();
 
-        routeImporter.reset(routeExporter.toJSON());
-        expect(routeExporter.getWaypoints()).toEqual(routeImporter.getWaypoints());
+          // Test: meta-data imported
+          expect(route.distance).toEqual(12);
+
+          // Test: waypoints imported
+          //      note: not testing parsing of Waypoints (belongs in Waypoint's spec)
+          expect(waypoints.length).toEqual(3);
+          expect(waypoints[0] instanceof Waypoint).toEqual(true);
+
+          // Properly set previous waypoints
+          expect(waypoints[1].previous).toEqual(waypoints[0]);
+          expect(waypoints[2].previous).toEqual(waypoints[1]);
+
+          // Make sure we didn't lose our subscribers.
+          route.trigger('topic');
+          expect(eventFlag).toEqual(true);
+        });
+
+        it('a JSON string of waypoints', function() {
+          var route = new Route();
+          spyOn(route, 'reset');
+
+          route.import('{ "foo": "bar" }');
+          expect(route.reset.mostRecentCall.args[0]).toEqual({ foo: 'bar' });
+          expect(route.reset.callCount).toEqual(1);
+        });
+
+        it('but reject poorly formed JSON input', function() {
+          var notJSON = 'imposter';
+          var route = new Route();
+
+          expect(function() { route.reset(notJSON); }).toThrowType('InvalidArgumentError');
+          expect(function() { route.import({ foo: 'bar' }); }).toThrowType('JSONParseError');
+        });
+
+        it('what it exports, as a JSON object', function() {
+          var routeExporter = new Route();
+          var routeImporter = new Route();
+          var waypoints = [
+            new MockWaypoint(null, true),
+            new MockWaypoint(),
+            new MockWaypoint()
+          ];
+
+          for (var i = 0; i < waypoints.length; i++) {
+            routeExporter.add(waypoints[i]);
+          }
+
+          routeImporter.reset(routeExporter.toJSON());
+          expect(routeExporter.getWaypoints()).toEqual(routeImporter.getWaypoints());
+        });
+
+        it('what it exports, as a JSON string', function() {
+          var routeExporter = new Route();
+          var routeImporter = new Route();
+          var waypoints = [
+            new MockWaypoint(null, true),
+            new MockWaypoint(),
+            new MockWaypoint()
+          ];
+
+          for (var i = 0; i < waypoints.length; i++) {
+            routeExporter.add(waypoints[i]);
+          }
+
+          routeImporter.import(routeExporter.export());
+          expect(routeExporter.getWaypoints()).toEqual(routeImporter.getWaypoints());
+        });
       });
 
       it('should accept a collection of waypoints as a constructor param', function() {
