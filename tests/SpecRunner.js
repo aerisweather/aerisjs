@@ -4,6 +4,7 @@ require([
 ], function() {
   require([
     'jasmine-html',
+    '/tests/jasmine-matchers.js',
     'underscore',
     'googlemaps'
   ], function(jasmine, underscore) {
@@ -22,8 +23,10 @@ require([
 
     require([
       '/tests/lib/domReady.js!',
+      'spec/jasmine-matchers',
       'spec/aeris/aerisapi',
       'spec/aeris/promise',
+      'spec/aeris/errors',
       'spec/aeris/maps/base/layers',
       'spec/aeris/maps/gmaps/route',
       'spec/integration/route'
