@@ -5,7 +5,7 @@ require([
   require([
     'jasmine-html',
     'underscore',
-    'async!https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false'
+    'googlemaps'
   ], function(jasmine, underscore) {
     var jasmineEnv = jasmine.getEnv();
     jasmineEnv.updateInterval = 1000;
