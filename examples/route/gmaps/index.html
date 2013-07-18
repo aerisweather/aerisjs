@@ -25,14 +25,8 @@
             center: [44.98, -93.2636],
             zoom: 15
           });
-
-          var route = new aeris.maps.gmaps.route.Route();
-          var routeRenderer = new aeris.maps.gmaps.route.RouteRenderer(map, {
-            route: route
-          });
-          var routeBuilder = new aeris.maps.gmaps.route.RouteBuilder(map, {
-            route: route
-          });
+          var routeBuilder = new aeris.maps.gmaps.route.RouteBuilder(map);
+          var route = routeBuilder.getRoute();
 
           var $followPaths = $('#follow-paths');
           $followPaths.change(function() {
