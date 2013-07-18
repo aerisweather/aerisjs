@@ -199,7 +199,7 @@ define([
         });
 
         // Spy on AddWaypointCommand
-        spyOn(aeris.maps.gmaps.route.AddWaypointCommand.prototype, 'execute');
+        spyOn(aeris.maps.gmaps.route.commands.AddWaypointCommand.prototype, 'execute');
 
 
         new RouteBuilder(map);
@@ -208,7 +208,7 @@ define([
         evtHandler.call(evtCtx, [45, -90]);
 
         // Check that the AddWaypoinCommand was executed
-        expect(aeris.maps.gmaps.route.AddWaypointCommand.prototype.execute).toHaveBeenCalled();
+        expect(aeris.maps.gmaps.route.commands.AddWaypointCommand.prototype.execute).toHaveBeenCalled();
       });
     });
 
