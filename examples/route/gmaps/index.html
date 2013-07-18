@@ -34,8 +34,6 @@
             route: route
           });
 
-          var jsonRouteMapper = new aeris.maps.gmaps.route.JSONRouteMapper();
-
           var $followPaths = $('#follow-paths');
           $followPaths.change(function() {
             routeBuilder.followPaths = $followPaths.is(':checked');
@@ -54,20 +52,22 @@
             $totalDistance.text(miles);
           }, this);
 
-          var $routeExport = $('#route-export');
-          var $routeImport = $('#route-import');
+          var $exportBtn = $('#route-export');
+          var $importBtn = $('#route-import');
           var $routeJSON = $('#route-json');
-          $routeExport.click(function() {
-            var exportJSON = jsonRouteMapper.export(route);
-            $routeJSON.val(exportJSON);
+          $exportBtn.click(function() {
+            $routeJSON.val(route.export());
+          });
+          $importBtn.click(function() {
+            route.import($routeJSON.val());
           });
         });
       }
     </script>
   </head>
   <body>
-    <div class="float-left">
-      <div id="map-canvas"></div>
+  <div class="float-left">
+    <div id="map-canvas"></div>
 
       <div>
         <strong>JSON Route Mapper</strong>

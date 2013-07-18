@@ -29,16 +29,12 @@ define([
       $canvas.empty();
     });
 
-    it('should render a waypoint when it\' added to a route', function() {
-      var route = new Route();
-      var rR;
+    it('requires an AerisMap', function() {
+      expect(function() {
+        new RouteRenderer({foo: 'bar'});
+      }).toThrowType('InvalidArgumentError');
 
-      spyOn(RouteRenderer.prototype, 'renderWaypoint');
-      rR = new RouteRenderer(map);
-
-      rR.setRoute(route);
-      route.trigger('add', { foo: 'bar' });
-      expect(rR.renderWaypoint).toHaveBeenCalledWith({foo: 'bar'});
+      new RouteRenderer(map);
     });
 
     it('should draw a path', function() {
