@@ -24,6 +24,7 @@ require([
     require([
       '/tests/lib/domReady.js!',
       'spec/jasmine-matchers',
+      'spec/aeris/utils',
       'spec/aeris/aerisapi',
       'spec/aeris/promise',
       'spec/aeris/errors',

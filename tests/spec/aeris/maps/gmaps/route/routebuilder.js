@@ -67,7 +67,7 @@ define([
       it('should return a route with getRoute()', function() {
         var builder = new RouteBuilder(map);
 
-        expect(builder.getRoute() instanceof Route).toEqual(true);
+        expect(builder.getRoute() instanceof aeris.maps.gmaps.route.Route).toEqual(true);
       });
 
       it('should accept a Route', function() {
@@ -218,14 +218,13 @@ define([
         var renderer = new RouteRenderer(map);
         var waypoint = new MockWaypoint(null, true);
 
-        new RouteBuilder(map, { route: route, routeRenderer: renderer });
+      it('should render an Icon on Route#add', function() {
+        var waypoint = new MockWaypoint(null, true);
 
-        spyOn(renderer, 'drawIcon');
-        spyOn(renderer, 'drawPath');
+        spyOn(renderer, 'renderWaypoint');
 
-        route.trigger('add', waypoint);
-        expect(renderer.drawIcon).toHaveBeenCalledWith(waypoint);
-        expect(renderer.drawPath).not.toHaveBeenCalled();
+        route.add(waypoint);
+        expect(renderer.renderWaypoint).toHaveBeenCalled();
       });
 
       it('renders an path on adding two or more waypoints', function() {
@@ -237,19 +236,12 @@ define([
 
         new RouteBuilder(map, { route: route, routeRenderer: renderer });
 
-        spyOn(renderer, 'drawIcon');
-        spyOn(renderer, 'drawPath');
+        spyOn(renderer, 'renderWaypoint');
 
-        route.trigger('add', wp1);
-        route.trigger('add', wp2);
-        expect(renderer.drawIcon.callCount).toEqual(2);
-        expect(renderer.drawPath.callCount).toEqual(1);
-        expect(renderer.drawPath).toHaveBeenCalledWith(wp2.path);
-
-        route.trigger('add', wp3);
-        expect(renderer.drawIcon.callCount).toEqual(3);
-        expect(renderer.drawPath.callCount).toEqual(2);
-        expect(renderer.drawPath).toHaveBeenCalledWith(wp3.path);
+        route.add(wp1);
+        route.add(wp2);
+        route.add(wp3);
+        expect(renderer.renderWaypoint.callCount).toEqual(3);
       });
     });
   });

@@ -1,11 +1,23 @@
 define([
   'aeris',
+  'aeris/utils',
   'gmaps/route/waypoint',
   'mocks/waypoint',
   'gmaps/route/route',
   'underscore'
-], function(aeris, Waypoint, MockWaypoint, Route, _) {
+], function(aeris, utils, Waypoint, MockWaypoint, Route, _) {
   describe('A Route', function() {
+
+    it('should have a unique cid, with prefix \'route_\'', function() {
+      var route;
+
+      spyOn(utils, 'uniqueId').andCallThrough();
+      route = new Route();
+
+      expect(utils.uniqueId).toHaveBeenCalled();
+      expect(route.cid).toBeDefined();
+      expect(route.cid).toMatch(/^route_[0-9]*/);
+    });
 
     describe('should manage waypoints', function() {
       it('should construct with no waypoints or distance', function() {
@@ -25,16 +37,34 @@ define([
         expect(route.distance).toEqual(7);
       });
 
-      it('should trigger a \'add\' event', function() {
+      it('should trigger a \'add\' event, passing the waypoint and the route', function() {
         var route = new Route();
         var triggered = false;
+        var waypoint = new MockWaypoint();
 
-        route.on('add', function() {
+        route.on('add', function(wp, r) {
           triggered = true;
+          expect(wp).toEqual(waypoint);
+          expect(r).toEqual(route);
         });
-        route.add(new MockWaypoint());
+        route.add(waypoint);
 
         expect(triggered).toBe(true);
+      });
+
+      it('should return a waypoint by cid', function() {
+        var route = new Route();
+        var waypoints = [
+          new Waypoint(null, true),
+          new Waypoint(),
+          new Waypoint()
+        ];
+
+        for (var i = 0; i < waypoints.length; i++) {
+          var wp = waypoints[i];
+          route.add(wp);
+          expect(route.get(wp.cid)).toEqual(wp);
+        }
       });
 
       it('should remove a waypoint', function() {
@@ -359,7 +389,7 @@ define([
           }
 
           routeImporter.reset(routeExporter.toJSON());
-          expect(routeExporter.getWaypoints()).toEqual(routeImporter.getWaypoints());
+          expect(routeImporter).toMatchRoute(routeExporter);
         });
 
         it('what it exports, as a JSON string', function() {
@@ -376,7 +406,7 @@ define([
           }
 
           routeImporter.import(routeExporter.export());
-          expect(routeExporter.getWaypoints()).toEqual(routeImporter.getWaypoints());
+          expect(routeImporter).toMatchRoute(routeExporter);
         });
       });
 
@@ -388,7 +418,11 @@ define([
         ];
         var route = new Route(waypoints);
 
-        expect(route.getWaypoints()).toEqual(waypoints);
+        expect(route.getWaypoints().length).toEqual(waypoints.length);
+
+        for (var i = 0; i < waypoints.length; i++) {
+          expect(route.getWaypoints()[i]).toMatchWaypoint(waypoints[i]);
+        }
       });
     });
   });

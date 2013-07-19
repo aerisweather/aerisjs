@@ -1,4 +1,4 @@
-define(['gmaps/route/waypoint'], function(Waypoint) {
+define(['gmaps/route/waypoint', 'underscore'], function(Waypoint, _) {
   // Random float between
   function randomFloatBetween(minValue, maxValue, precision) {
     precision || (precision = 2);
@@ -25,10 +25,12 @@ define(['gmaps/route/waypoint'], function(Waypoint) {
    * @constructor
    */
   return function MockWaypoint(opt_options, isFirst) {
+    var wpOptions;
+
     opt_options || (opt_options = {});
     isFirst || (isFirst = false);
 
-    return new Waypoint({
+    wpOptions = _.extend({
       previous: opt_options.previous || null,
       distance: opt_options.distance || null,
       path: isFirst ? null : [
@@ -38,6 +40,8 @@ define(['gmaps/route/waypoint'], function(Waypoint) {
       ],
       originalLatLon: getRandomLatLon(),
       geocodedLatLon: getRandomLatLon()
-    });
+    }, opt_options);
+
+    return new Waypoint(wpOptions);
   }
 });
