@@ -1,5 +1,6 @@
 define([
   'aeris',
+  'jquery',
   'packages/gmaps/routes'
 ], function(aeris) {
   describe('The Aeris Routes package for Google Maps', function() {
