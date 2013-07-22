@@ -9,22 +9,25 @@ require([
 ], function(jasmine, _, Waypoint, InvalidArgumentError) {
   function isSameWaypoint(wp1, wp2) {
     var match = true;
+    var compareProps = [
+      'path', 'originalLatLon', 'geocodedLatLon', 'followPaths', 'travelMode',
+      'previous'
+    ];
 
     if (!(wp1 instanceof Waypoint) || !(wp2 instanceof Waypoint)) {
       throw new InvalidArgumentError('Unable to compare waypoints: invalid waypoint.');
     }
 
-    for (var prop in wp1) {
-      if (wp1.hasOwnProperty(prop) && prop !== 'cid') {
-        // Property is a waypoint (eg. `previous`)
-        if (wp1[prop] instanceof Waypoint) {
-          match = isSameWaypoint(wp1[prop], wp2[prop]) ? match : false;
-        }
-        else {
-          match = _.isEqual(wp1[prop], wp2[prop]) ? match : false;
-        }
+    _.each(compareProps, function(prop) {
+      if (wp1[prop] instanceof Waypoint) {
+        match = isSameWaypoint(wp1[prop], wp2[prop]) ? match : false;
       }
-    }
+      else {
+        match = _.isEqual(wp1[prop], wp2[prop]) ? match : false;
+      }
+    });
+
+    match = wp1.getDistance() === wp2.getDistance() ? match : false;
 
     return match;
   }

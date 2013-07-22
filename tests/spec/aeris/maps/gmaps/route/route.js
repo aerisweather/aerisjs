@@ -136,7 +136,7 @@ define([
         route.add(wpMock);
         expect(wpMock.previous).toBeNull();
         route.add(wpMock2);
-        expect(wpMock2.previous.distance).toEqual(7);
+        expect(wpMock2.previous.getDistance()).toEqual(7);
       });
 
       it('should return the last waypoint in the route', function() {
@@ -151,10 +151,10 @@ define([
         expect(route.getLastWaypoint()).toBeNull();
 
         route.add(wpMock);
-        expect(route.getLastWaypoint().distance).toEqual(7);
+        expect(route.getLastWaypoint().getDistance()).toEqual(7);
 
         route.add(wpMock2);
-        expect(route.getLastWaypoint().distance).toEqual(11);
+        expect(route.getLastWaypoint().getDistance()).toEqual(11);
       });
     });
 
@@ -271,6 +271,37 @@ define([
 
         route.reset();
         expect(route.distance).toEqual(0);
+      });
+
+      it('should update total distance when a waypoint\'s distance changes', function() {
+        var route = new Route([
+          new MockWaypoint({ distance: 1 }, true),
+          new MockWaypoint({ distance: 2 }),
+          new MockWaypoint({ distance: 3 })
+        ]);
+
+        route.getWaypoints()[1].setDistance(100);
+
+        expect(route.distance).toEqual(104);
+      });
+    });
+
+    describe('should bind to waypoint events', function() {
+      it('should unbind from waypoint events', function() {
+        var route;
+        var waypoints = [
+          new MockWaypoint(null, true),
+          new MockWaypoint(),
+          new MockWaypoint()
+        ];
+
+        spyOn(waypoints[1], 'on');
+        spyOn(waypoints[1], 'off');
+
+        route = new Route(waypoints);
+        route.remove(waypoints[1]);
+
+        expect(waypoints[1].on.callCount).toEqual(waypoints[1].off.callCount);
       });
     });
 

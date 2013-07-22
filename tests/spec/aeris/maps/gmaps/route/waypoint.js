@@ -23,7 +23,7 @@ define([
       // Some defaults
       expect(wp.followPaths).toEqual(true);
       expect(wp.travelMode).toBe('WALKING');
-      expect(wp.distance).toEqual(0);
+      expect(wp.getDistance()).toEqual(0);
     });
 
     it('should have a unique client id, prefixed with \'wp_\'', function() {
@@ -47,6 +47,20 @@ define([
       // geocoded lat lon is considered more accurate, and preferred
       wp.geocodedLatLon = [-45.1, 90.1];
       expect(wp.getLatLon()).toEqual([-45.1, 90.1]);
+    });
+
+    describe('Should trigger events', function() {
+      it('should trigger a change:distance event', function() {
+        var wp = new MockWaypoint();
+        var triggered = false;
+
+        wp.on('change:distance', function() {
+          triggered = true;
+        });
+
+        wp.setDistance(1921235456245123);
+        expect(triggered).toEqual(true);
+      });
     });
 
     describe('JSON import/export', function() {
@@ -83,7 +97,7 @@ define([
 
         wp.reset(json);
 
-        expect(wp.distance).toEqual(1153);
+        expect(wp.getDistance()).toEqual(1153);
         expect(wp.followPaths).toEqual(true);
         expect(wp.travelMode).toEqual('WALKING');
         expect(wp.originalLatLon).toEqual([44.972752843480855, -93.27199459075928]);
@@ -113,7 +127,7 @@ define([
         expect(wp.followPaths).toEqual(true);
         expect(wp.travelMode).toEqual('WALKING');
         expect(wp.path).toEqual([[44.97905, -93.26302000000001], [44.978410000000004, -93.26356000000001]]);
-        expect(wp.distance).toEqual(83);
+        expect(wp.getDistance()).toEqual(83);
       });
 
       it('should reject poorly formed JSON object input', function() {
