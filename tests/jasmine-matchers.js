@@ -46,6 +46,20 @@ require([
     return match;
   }
 
+
+  function isWithin(a, b, within) {
+    within = within || 1;
+    return (a >= (b - within)) && (a <= (b + within));
+  }
+
+  function latLngToArray(latLng) {
+    if (latLng.lat && latLng.lng) {
+      return [latLng.lat(), latLng.lng()];
+    }
+
+    return latLng;
+  }
+
   beforeEach(function() {
     this.addMatchers({
       /**
@@ -127,8 +141,17 @@ require([
       // Thanks to: https://gist.github.com/joecorcoran/3818133
       // for not making me think.
       toBeNear: function(expected, within) {
-        within = within || 1;
-        return (this.actual >= (expected - within)) && (this.actual <= (expected + within));
+        return isWithin(this.actual, expected, within);
+      },
+
+
+      toBeNearLatLng: function(expected, within) {
+        var actual = latLngToArray(this.actual);
+        expected = latLngToArray(expected);
+
+        within || (within = 0.001);
+
+        return isWithin(actual[0], expected[0], within) && isWithin(actual[1], expected[1], within);
       }
     });
   });
