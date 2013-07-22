@@ -56,6 +56,8 @@ require([
       toThrowType: function(err) {
         var errorName;
         var isObject = err === Object(err);
+        var wrongTypeMsg;
+
 
         if (isObject) {
           var tmpError = new err();
@@ -68,8 +70,16 @@ require([
         try {
           this.actual();
         } catch (e) {
-          this.message = 'Expected to throw error type \'' + errorName + '\',' +
-            'but instead threw error type \'' + e.name + '\'';
+
+          wrongTypeMsg = this.isNot ?
+            'Expected not to throw error type \'' + errorName + '\'' :
+            'Expected to throw error type \'' + errorName + '\',' +
+              'but instead threw error type \'' + e.name + '\'';
+
+
+          this.message = function() {
+            return wrongTypeMsg;
+          };
 
           if (isObject) {
             return e instanceof err;
@@ -79,23 +89,34 @@ require([
           }
         }
 
-        this.message = 'Expected to throw error type \'' + errorName + '\',' +
+        this.message = function() {
+          return 'Expected to throw error type \'' + errorName + '\',' +
           'but no error was thrown';
+        };
+
         return false;
       },
 
       toMatchWaypoint: function(expectedWaypoint) {
-        this.message = 'Expected waypoints to match, but they did not.' +
-          'Expected waypoint: ' + JSON.stringify(expectedWaypoint) +
-          'Actual waypoint: ' + JSON.stringify(this.actual);
+        var actualWaypoint = this.actual;
+
+        this.message = function() {
+          return 'Expected waypoints to match, but they did not.' +
+            'Expected waypoint: ' + JSON.stringify(expectedWaypoint) +
+            'Actual waypoint: ' + JSON.stringify(actualWaypoint);
+        };
 
         return isSameWaypoint(expectedWaypoint, this.actual);
       },
 
       toMatchRoute: function(expectedRoute) {
-        this.message = 'Expected routes to match, but they did not.' +
-          'Expected route: ' + JSON.stringify(expectedRoute) +
-          'Actual route: ' + JSON.stringify(this.actual);
+        var actualWaypoint = this.actual;
+
+        this.message = function() {
+          return 'Expected routes to match, but they did not.' +
+            'Expected route: ' + JSON.stringify(expectedRoute) +
+            'Actual route: ' + JSON.stringify(actualWaypoint);
+        };
 
         return isSameRoute(expectedRoute, this.actual);
       },
