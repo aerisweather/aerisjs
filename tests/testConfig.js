@@ -8,6 +8,7 @@ require.config({
     spec: '/tests/spec',
     mocks: '/tests/spec/mocks',
     testErrors: '/tests/errors',
+    testUtils: '/tests/testUtils',
     sinon: '/tests/lib/sinon',
     jquery: '/tests/lib/jquery-1.10.2',
     underscore: '/tests/lib/underscore-min'

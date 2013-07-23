@@ -30,7 +30,8 @@ require([
       'spec/aeris/errors',
       'spec/aeris/maps/base/layers',
       'spec/aeris/maps/gmaps/route',
-      'spec/integration/route'
+      'spec/integration/route',
+      'spec/integration/markers'
     ], function() {
       // Yes, it's a hack,
       // but it's solving some aweful async
