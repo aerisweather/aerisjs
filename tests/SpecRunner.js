@@ -28,6 +28,7 @@ require([
       'spec/aeris/aerisapi',
       'spec/aeris/promise',
       'spec/aeris/errors',
+      'spec/aeris/maps/base/extensions',
       'spec/aeris/maps/base/layers',
       'spec/aeris/maps/gmaps/route',
       'spec/integration/route',
