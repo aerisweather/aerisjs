@@ -29,6 +29,19 @@ define(['aeris/promise'], function(Promise) {
       expect(flag).toBe(true);
     });
 
+    it('should trigger a callback with a specified context', function() {
+      var ctx = { foo: 'bar' };
+
+      promise.done(function() {
+        expect(this).toEqual(ctx);
+        setFlag();
+      }, ctx);
+
+      promise.resolve();
+
+      expect(flag).toEqual(true);
+    });
+
     it('should trigger a callback if it\'s already resolved', function() {
       promise.resolve();
 
