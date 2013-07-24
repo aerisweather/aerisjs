@@ -1,5 +1,20 @@
 define(function() {
+  var flag = false;
+
   return {
+
+    setFlag: function() {
+      flag = true;
+    },
+
+    resetFlag: function() {
+      flag = false;
+    },
+
+    checkFlag: function() {
+      return flag;
+    },
+
     randomFloatBetween: function(minValue, maxValue, precision) {
       precision || (precision = 2);
       return parseFloat(Math.min(minValue + (Math.random() * (maxValue - minValue)), maxValue).toFixed(precision));
