@@ -155,6 +155,17 @@ define(['aeris/promise'], function(Promise) {
       expect(flag).toBe(false);
     });
 
+    it('should call callbacks in the correct order', function() {
+      var calledFirst = false, calledSecond = false;
+      promise.done(function() {
+        calledFirst = true;
+        expect(calledSecond).toEqual(false);
+      });
+      promise.done(function() {
+        calledSecond = true;
+      });
+    });
+
     describe('A master promise', function() {
       var p1, p2, p3;
 
