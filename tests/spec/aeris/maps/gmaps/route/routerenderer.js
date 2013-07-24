@@ -128,22 +128,6 @@ define([
       });
     });
 
-    it('should not render the same waypoint in the same route', function() {
-      var renderer = new RouteRenderer(map);
-      var waypoint = new MockWaypoint();
-      var route1 = new Route([waypoint]);
-      var route2 = new Route([waypoint]);
-
-      renderer.renderWaypoint(waypoint, route1);
-
-      expect(function() {
-        renderer.renderWaypoint(waypoint, route1);
-      }).toThrowType('InvalidArgumentError');
-
-      // Can render it on a new route
-      renderer.renderWaypoint(waypoint, route2);
-    });
-
     it('should not render a non-waypoint', function() {
       var renderer = new RouteRenderer(map);
 
@@ -189,11 +173,65 @@ define([
       spyOn(google.maps.Polyline.prototype, 'setMap');
       spyOn(aeris.maps.markers.Icon.prototype, 'remove');
 
-      renderer.removeRoute(route);
+      renderer.eraseRoute(route);
       expect(google.maps.Polyline.prototype.setMap).toHaveBeenCalledWith(null);
       expect(google.maps.Polyline.prototype.setMap.callCount).toEqual(2);
 
       expect(aeris.maps.markers.Icon.prototype.remove.callCount).toEqual(3);
+    });
+
+    it('should remove a waypoint', function() {
+      var renderer = new RouteRenderer(map);
+      var waypoints = [
+        new MockWaypoint(null, true),
+        new MockWaypoint(),
+        new MockWaypoint()
+      ];
+      var route = new Route(waypoints);
+
+      renderer.renderRoute(route);
+
+      spyOn(google.maps.Polyline.prototype, 'setMap');
+      spyOn(aeris.maps.markers.Icon.prototype, 'remove');
+
+      renderer.eraseWaypoint(waypoints[1], route);
+
+      // Test: Removes a waypoint's Icon
+      expect(aeris.maps.markers.Icon.prototype.remove.callCount).toEqual(1);
+
+      // Test: Removes waypoint's path
+      expect(google.maps.Polyline.prototype.setMap).toHaveBeenCalledWith(null);
+      expect(google.maps.Polyline.prototype.setMap.callCount).toEqual(1);
+    });
+
+    it('should re-render a waypoint', function() {
+      var tmpWp = new MockWaypoint();
+      var renderer = new RouteRenderer(map);
+      var waypoints = [
+        new MockWaypoint(null, true),
+        new MockWaypoint(),
+        new MockWaypoint()
+      ];
+      var route = new Route(waypoints);
+      renderer.renderRoute(route);
+
+      spyOn(google.maps.Polyline.prototype, 'setPath');
+      spyOn(google.maps.Polyline.prototype, 'setMap');
+      spyOn(aeris.maps.markers.Icon.prototype, 'setMap');
+      spyOn(aeris.maps.markers.Icon.prototype, 'remove');
+
+      // Adjust and redraw middle waypoint path
+      route.getWaypoints()[1].path = tmpWp.path;
+      route.getWaypoints()[1].geocodedLatLon = tmpWp.geocodedLatLon;
+      renderer.renderWaypoint(route.getWaypoints()[1], route);
+
+      // Test: remove old path and Icon
+      expect(google.maps.Polyline.prototype.setMap).toHaveBeenCalledWith(null);
+      expect(aeris.maps.markers.Icon.prototype.remove).toHaveBeenCalled();
+
+      // Test: draw new path and Icon
+      expect(google.maps.Polyline.prototype.setPath).toHaveBeenCalled();
+      expect(aeris.maps.markers.Icon.prototype.setMap).toHaveBeenCalledWith(map);
     });
 
     it('should clear all rendered objects', function() {
@@ -213,7 +251,7 @@ define([
       spyOn(google.maps.Polyline.prototype, 'setMap');
       spyOn(aeris.maps.markers.Icon.prototype, 'remove');
 
-      renderer.removeAll();
+      renderer.eraseAllRoutes();
       expect(google.maps.Polyline.prototype.setMap).toHaveBeenCalledWith(null);
       expect(google.maps.Polyline.prototype.setMap.callCount).toEqual(4);
 

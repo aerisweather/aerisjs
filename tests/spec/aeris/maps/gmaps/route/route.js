@@ -170,7 +170,7 @@ define([
         route.add(wp);
         route.remove(wp);
 
-        expect(listenerSpy).toHaveBeenCalledWith(wp);
+        expect(listenerSpy.argsForCall[0][0]).toMatchWaypoint(wp);
         expect(listenerSpy.callCount).toEqual(1);
       });
 

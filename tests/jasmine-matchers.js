@@ -116,6 +116,10 @@ require([
         return false;
       },
 
+      toBeInstanceOf: function(SomeClass) {
+        return this.actual instanceof SomeClass;
+      },
+
       toMatchWaypoint: function(expectedWaypoint) {
         var actualWaypoint = this.actual;
 

@@ -1,8 +1,9 @@
 define([
   'aeris',
   'jquery',
+  'gmaps/utils',
   'packages/gmaps/routes'
-], function(aeris) {
+], function(aeris, $, gUtils) {
   describe('The Aeris Routes package for Google Maps', function() {
     var aerisMap, route, routeRenderer, routeBuilder;
     var $canvas = $('<div id="map-canvas"><div>');
@@ -88,7 +89,6 @@ define([
       });
 
       it('should add waypoint icon in the correct location', function() {
-        //spyOn(google.maps, 'Marker').andCallThrough();
         var event;
 
         spyOn(google.maps.Marker.prototype, 'setPosition');

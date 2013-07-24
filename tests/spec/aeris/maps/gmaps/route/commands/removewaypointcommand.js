@@ -1,5 +1,6 @@
 define([
   'aeris',
+  'aeris/promise',
   'gmaps/utils',
   'gmaps/route/commands/removewaypointcommand',
   'mocks/waypoint',
@@ -10,6 +11,7 @@ define([
   'vendor/underscore'
 ], function(
   aeris,
+  Promise,
   gUtils,
   RemoveWaypointCommand,
   MockWaypoint,
@@ -59,23 +61,48 @@ define([
       new RemoveWaypointCommand(route, firstWaypoint);
     });
 
+    it('should return a promise', function() {
+      var waypoint = new MockWaypoint();
+      var command = new RemoveWaypointCommand(new Route([waypoint]), waypoint);
+      expect(command.execute()).toBeInstanceOf(Promise);
+    });
+
+    it('should resolve its promise after fetching API data', function() {
+      var waypoints = [
+        new MockWaypoint(null, true),
+        new MockWaypoint(),
+        new MockWaypoint
+      ];
+      var command = new RemoveWaypointCommand(new Route(waypoints), waypoints[0]);
+      var flag = false;
+
+      // Service is mocked to immediately call callback
+      command.execute().done(function() {
+        flag = true;
+      });
+      expect(flag).toEqual(true);
+    });
+
     it('should remove a waypoint from a route', function() {
       var command1 = new RemoveWaypointCommand(route, firstWaypoint);
       var command2 = new RemoveWaypointCommand(route, middleWaypoint);
       var command3 = new RemoveWaypointCommand(route, lastWaypoint);
+      var flag = false;
 
       spyOn(route, 'remove');
 
-      command1.execute();
-      expect(route.remove).toHaveBeenCalledWith(firstWaypoint);
+      waitsFor(function() {
+        return flag === true;
+      }, 'command promises to resolve', 2000);
 
-      command2.execute();
-      expect(route.remove).toHaveBeenCalledWith(middleWaypoint);
-      expect(route.remove.callCount).toEqual(2);
-
-      command3.execute();
-      expect(route.remove).toHaveBeenCalledWith(lastWaypoint);
-      expect(route.remove.callCount).toEqual(3);
+      Promise.when(command1.execute(), command2.execute(), command3.execute()).done(function() {
+        flag = true;
+        expect(route.remove.argsForCall).toEqual([
+          [firstWaypoint],
+          [middleWaypoint],
+          [lastWaypoint]
+        ]);
+      });
     });
 
     describe('for a waypoint following a path', function() {
@@ -130,6 +157,7 @@ define([
         it('should set the following path\'s \'previous\' property to the previous waypoint', function() {
           command.execute();
           expect(lastWaypoint.previous).toMatchWaypoint(firstWaypoint);
+          expect(lastWaypoint.previous.cid).toEqual(firstWaypoint.cid);
         });
 
         it('should query the Google Directions service for directions between the previous and following waypoints', function() {
@@ -170,13 +198,17 @@ define([
         });
 
         it('should handle errors from Google Directions service', function() {
+          var flag = false;
+
           google.maps.DirectionsService.prototype.route.andCallFake(function(request, callback) {
             callback(directionsResult, google.maps.DirectionsStatus.INVALID_REQUEST);
           });
 
-          expect(function() {
-            command.execute();
-          }).toThrowType('APIResponseError');
+          command.execute().fail(function() {
+            flag = true;
+          });
+
+          expect(flag).toEqual(true);
         });
 
         it('should not affect the previous waypoint', function() {

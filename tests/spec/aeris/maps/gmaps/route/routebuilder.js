@@ -6,8 +6,11 @@ define([
   'gmaps/route/route',
   'gmaps/route/routerenderer',
   'gmaps/route/routebuilder',
+  'gmaps/route/commands/addwaypointcommand',
+  'gmaps/route/commands/removewaypointcommand',
   'mocks/waypoint',
-  'gmaps/map'
+  'gmaps/map',
+  'testErrors/untestedspecerror'
 ], function(
     aeris,
     jasmine,
@@ -16,8 +19,11 @@ define([
     Route,
     RouteRenderer,
     RouteBuilder,
+    AddWaypointCommand,
+    RemoveWaypointCommand,
     MockWaypoint,
-    AerisMap
+    AerisMap,
+    UntestedSpecError
 ) {
   var map, $canvas;
 
@@ -176,7 +182,35 @@ define([
       });
     });
 
-    describe('Map Events', function() {
+    describe('Manage Waypoints using commands', function() {
+      it('should add a waypoint', function() {
+        var builder = new RouteBuilder(map);
+
+        spyOn(AddWaypointCommand.prototype, 'execute');
+        builder.addWaypoint(new MockWaypoint());
+
+        expect(AddWaypointCommand.prototype.execute).toHaveBeenCalled();
+      });
+
+      it('should remove a waypoint', function() {
+        var waypoints = [
+          new MockWaypoint(null, true),
+          new MockWaypoint(),
+          new MockWaypoint
+        ];
+        var builder = new RouteBuilder(map, {
+          route: new Route(waypoints)
+        });
+
+        spyOn(RemoveWaypointCommand.prototype, 'execute');
+        builder.removeWaypoint(waypoints[1]);
+
+        expect(RemoveWaypointCommand.prototype.execute).toHaveBeenCalled();
+      });
+    });
+
+
+    describe('Bind Map Events to Route Commands', function() {
       it('should bind the AddWayPointCommand to a map click', function() {
         // Pilfer the handler bound to the Click event
         var evtHandler, evtCtx;
@@ -201,7 +235,26 @@ define([
       });
     });
 
-    describe('Route Events', function() {
+    describe('Delegate route events to RouteRenderer', function() {
+      var route, renderer, builder, waypoints;
+
+      beforeEach(function() {
+        waypoints = [
+          new MockWaypoint({}, true),
+          new MockWaypoint(),
+          new MockWaypoint()
+        ];
+        route = new Route();
+        renderer = new RouteRenderer(map);
+        builder = new RouteBuilder(map, { route: route, routeRenderer: renderer });
+      });
+
+      afterEach(function() {
+        route = null;
+        renderer = null;
+        builder = null;
+      });
+
       it('should render an Icon on Route#add', function() {
         var waypoint = new MockWaypoint(null, true);
 
@@ -211,14 +264,27 @@ define([
         expect(renderer.renderWaypoint).toHaveBeenCalled();
       });
 
-      it('renders an path on adding two or more waypoints', function() {
+      it('should remove a waypoint on Route#remove', function() {
+        route.add(waypoints[0]);
+        route.add(waypoints[1]);
+        route.add(waypoints[2]);
+
+        spyOn(renderer, 'eraseWaypoint');
+        spyOn(renderer, 'renderWaypoint');
+
+        route.remove(waypoints[1]);
+
+        // Test render this wp
+        expect(renderer.eraseWaypoint).toHaveBeenCalled();
+
+        // Test: re-render next wp
+        expect(renderer.renderWaypoint).toHaveBeenCalled();
+      });
+
+      it('should render an path on adding two or more waypoints', function() {
         var wp1 = new MockWaypoint(null, true);
         var wp2 = new MockWaypoint();
         var wp3 = new MockWaypoint();
-        var route = new Route();
-        var renderer = new RouteRenderer(map);
-
-        new RouteBuilder(map, { route: route, routeRenderer: renderer });
 
         spyOn(renderer, 'renderWaypoint');
 
