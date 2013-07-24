@@ -82,6 +82,10 @@
               routeBuilder.removeWaypoint(wp);
             }
           });
+          $('#clearRoute').click(function() {
+            routeBuilder.resetRoute();
+          });
+
         });
       }
     </script>
@@ -113,6 +117,7 @@
         <button id="removeFirstWaypoint">Remove first waypoint</button>
         <button id="removeMiddleWaypoint">Remove middle waypoint</button>
         <button id="removeLastWaypoint">Remove last waypoint</button>
+        <button id="clearRoute">Clear All</button>
       </div>
 
       <div>

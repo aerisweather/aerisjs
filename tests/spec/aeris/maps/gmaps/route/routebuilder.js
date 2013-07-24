@@ -27,6 +27,14 @@ define([
 ) {
   var map, $canvas;
 
+  function getMockWaypoints() {
+    return [
+      new MockWaypoint(null, true),
+      new MockWaypoint(),
+      new MockWaypoint()
+    ];
+  }
+
   beforeEach(function() {
     $canvas = $('<div id="map-canvas"></div>').appendTo('body');
     map = new AerisMap('map-canvas', {
@@ -207,6 +215,19 @@ define([
 
         expect(RemoveWaypointCommand.prototype.execute).toHaveBeenCalled();
       });
+
+      it('should reset waypoints', function() {
+        var newWaypoints = getMockWaypoints();
+        var route = new Route(getMockWaypoints());
+        var builder = new RouteBuilder(map, {
+          route: route
+        });
+
+        spyOn(route, 'reset');
+
+        builder.resetRoute(newWaypoints);
+        expect(route.reset).toHaveBeenCalledWith(newWaypoints);
+      });
     });
 
 
@@ -292,6 +313,16 @@ define([
         route.add(wp2);
         route.add(wp3);
         expect(renderer.renderWaypoint.callCount).toEqual(3);
+      });
+
+      it('should re-render a route on Route#reset', function() {
+        route.add(waypoints);
+
+        spyOn(renderer, 'eraseRoute');
+
+        route.reset(getMockWaypoints());
+        expect(renderer.eraseRoute).toHaveBeenCalledWith(this.route_);
+        expect(renderer.renderRoute).toHaveBeenCalledWith(this.route_);
       });
     });
   });
