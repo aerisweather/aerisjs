@@ -1,4 +1,6 @@
-define(function() {
+define([
+  'mocks/waypoint'
+], function(MockWaypoint) {
   var flag = false;
 
   return {
@@ -28,6 +30,21 @@ define(function() {
         this.randomFloatBetween(from[0], to[0]),
         this.randomFloatBetween(from[1], to[1])
       ];
+    },
+
+    getMockWaypoints: function(count) {
+      var waypoints = [];
+
+      count || (count = 3);
+
+      // Create the first waypoint (has no path, distance)
+      waypoints.push(new MockWaypoint(null, true));
+
+      for (var i = 0; i < (count - 1); i++) {
+        waypoints.push(new MockWaypoint());
+      }
+
+      return waypoints;
     }
   };
 });

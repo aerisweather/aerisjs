@@ -316,13 +316,14 @@ define([
       });
 
       it('should re-render a route on Route#reset', function() {
-        route.add(waypoints);
+        route.add(waypoints[0]);
 
         spyOn(renderer, 'eraseRoute');
+        spyOn(renderer, 'renderRoute');
 
         route.reset(getMockWaypoints());
-        expect(renderer.eraseRoute).toHaveBeenCalledWith(this.route_);
-        expect(renderer.renderRoute).toHaveBeenCalledWith(this.route_);
+        expect(renderer.eraseRoute).toHaveBeenCalledWith(route);
+        expect(renderer.renderRoute).toHaveBeenCalledWith(route);
       });
     });
   });
