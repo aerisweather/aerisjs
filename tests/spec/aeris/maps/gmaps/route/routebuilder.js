@@ -7,8 +7,7 @@ define([
   'gmaps/route/routerenderer',
   'gmaps/route/routebuilder',
   'mocks/waypoint',
-  'gmaps/map',
-  'base/events/click'
+  'gmaps/map'
 ], function(
     aeris,
     jasmine,
@@ -18,8 +17,7 @@ define([
     RouteRenderer,
     RouteBuilder,
     MockWaypoint,
-    AerisMap,
-    ClickEvent
+    AerisMap
 ) {
   var map, $canvas;
 
@@ -127,15 +125,6 @@ define([
       });
     });
 
-    /*it('should create a RouteRenderer, with its route and map', function() {
-      var route = new Route();
-
-      spyOn(aeris.maps.gmaps, 'RouteRenderer').andCallThrough();
-
-      new RouteBuilder(map, { route: route });
-      expect(aeris.maps.gmaps.RouteRenderer).toHaveBeenCalledWith(map, { route: route });
-    });*/
-
     describe('Its RouteRenderer', function() {
       var route = new Route();
       it('should create a RouteRenderer', function() {
@@ -213,11 +202,6 @@ define([
     });
 
     describe('Route Events', function() {
-      it('renders an Icon on Route#add', function() {
-        var route = new Route();
-        var renderer = new RouteRenderer(map);
-        var waypoint = new MockWaypoint(null, true);
-
       it('should render an Icon on Route#add', function() {
         var waypoint = new MockWaypoint(null, true);
 
