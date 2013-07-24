@@ -27,7 +27,7 @@ require([
       }
     });
 
-    match = wp1.getDistance() === wp2.getDistance() ? match : false;
+    match = (wp1.getDistance() === wp2.getDistance()) ? match : false;
 
     return match;
   }
@@ -37,7 +37,9 @@ require([
     var waypoints2 = route2.getWaypoints();
     var match = true;
 
-    expect(waypoints1.length).toEqual(waypoints2.length);
+    if (waypoints1.length !== waypoints2.length) {
+      match = false;
+    }
 
     for (var i = 0; i < waypoints1.length; i++) {
       match = isSameWaypoint(waypoints1[i], waypoints2[i]) ? match : false;
@@ -130,9 +132,10 @@ require([
         var actualWaypoint = this.actual;
 
         this.message = function() {
-          return 'Expected routes to match, but they did not.' +
-            'Expected route: ' + JSON.stringify(expectedRoute) +
-            'Actual route: ' + JSON.stringify(actualWaypoint);
+          var msg = this.isNot ? 'Expected routes not to match' : 'Expected routes to match';
+          return msg +
+            '\n\n Expected route: ' + JSON.stringify(expectedRoute) +
+            '\n\n Actual route: ' + JSON.stringify(actualWaypoint);
         };
 
         return isSameRoute(expectedRoute, this.actual);
