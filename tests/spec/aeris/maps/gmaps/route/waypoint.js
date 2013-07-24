@@ -3,7 +3,7 @@ define([
   'jasmine',
   'gmaps/route/waypoint',
   'mocks/waypoint',
-  'underscore',
+  'vendor/underscore',
   'aeris/utils'
 ], function(aeris, jasmine, Waypoint, MockWaypoint, _) {
   describe('A Waypoint', function() {

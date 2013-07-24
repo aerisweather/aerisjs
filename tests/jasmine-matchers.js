@@ -3,7 +3,7 @@
  */
 require([
   'jasmine',
-  'underscore',
+  'vendor/underscore',
   'gmaps/route/waypoint',
   'aeris/errors/invalidargumenterror'
 ], function(jasmine, _, Waypoint, InvalidArgumentError) {

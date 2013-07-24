@@ -2,7 +2,7 @@ define([
   'gmaps/route/waypoint',
   'mocks/waypoint',
   'gmaps/route/route',
-  'underscore',
+  'vendor/underscore',
   '/tests/jasmine-matchers.js'
 ], function(Waypoint, MockWaypoint, Route, _) {
   describe('Jasmine custom matcher', function() {

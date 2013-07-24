@@ -21,9 +21,6 @@ require.config({
       deps: ['jasmine'],
       exports: 'jasmine'
     },
-    'underscore': {
-      exports: '_'
-    },
     'sinon': {
       exports: 'sinon'
     }

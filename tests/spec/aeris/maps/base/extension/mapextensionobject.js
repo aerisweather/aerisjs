@@ -2,7 +2,7 @@ define([
   'aeris',
   'base/extension/mapextensionobject',
   'testErrors/untestedspecerror',
-  'underscore'
+  'vendor/underscore'
 ], function(aeris, MapExtensionObject, UntestedSpecError, _) {
   describe('A MapExtensionObject', function() {
 

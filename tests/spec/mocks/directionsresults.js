@@ -1,7 +1,7 @@
 /**
  * @fileoverview Defines a mock google.maps.DirectionsResult object.
 */
-define(['mocks/waypoint', 'underscore', 'googlemaps'], function(MockWaypoint, _) {
+define(['mocks/waypoint', 'vendor/underscore', 'googlemaps'], function(MockWaypoint, _) {
   var DirectionsResult = function() {
     return {
       routes: [

@@ -4,7 +4,7 @@ define([
   'gmaps/route/waypoint',
   'mocks/waypoint',
   'gmaps/route/route',
-  'underscore'
+  'vendor/underscore'
 ], function(aeris, utils, Waypoint, MockWaypoint, Route, _) {
   describe('A Route', function() {
 

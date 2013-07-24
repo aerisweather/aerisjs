@@ -2,7 +2,7 @@ define([
     'aeris',
     'jasmine',
     'sinon',
-    'underscore',
+    'vendor/underscore',
     'mocks/waypoint',
     'gmaps/route/route',
     'gmaps/route/routerenderer',

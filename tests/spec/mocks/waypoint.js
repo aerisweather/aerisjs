@@ -1,4 +1,4 @@
-define(['gmaps/route/waypoint', 'underscore'], function(Waypoint, _) {
+define(['gmaps/route/waypoint', 'vendor/underscore'], function(Waypoint, _) {
   // Random float between
   function randomFloatBetween(minValue, maxValue, precision) {
     precision || (precision = 2);

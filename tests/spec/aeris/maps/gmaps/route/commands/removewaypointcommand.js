@@ -7,7 +7,7 @@ define([
   'mocks/directionsresults',
   'testErrors/untestedspecerror',
   'aeris/errors/invalidargumenterror',
-  'underscore'
+  'vendor/underscore'
 ], function(
   aeris,
   gUtils,
