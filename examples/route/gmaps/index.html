@@ -39,12 +39,15 @@
           });
 
           var $totalDistance = $('#total-distance');
-          route.on('add', function() {
+          var displayDistance = function() {
             var distance = route.distance;
             var miles = distance * 0.00062137;
             miles = Math.round(miles * 100) / 100;
             $totalDistance.text(miles);
-          }, this);
+          }
+          route.on('add', displayDistance, this);
+          route.on('remove', displayDistance, this);
+          route.on('reset', displayDistance, this);
 
           var $exportBtn = $('#route-export');
           var $importBtn = $('#route-import');
@@ -54,6 +57,30 @@
           });
           $importBtn.click(function() {
             route.import($routeJSON.val());
+          });
+
+          $('#removeFirstWaypoint').click(function() {
+            var wp;
+
+            if (route.getWaypoints().length) {
+              wp = route.at(0);
+              routeBuilder.removeWaypoint(wp);
+            }
+          });
+          $('#removeMiddleWaypoint').click(function() {
+            var wp;
+            var count = route.getWaypoints().length;
+            if (count > 2) {
+              wp = route.at(Math.floor(count / 2));
+              routeBuilder.removeWaypoint(wp);
+            }
+          });
+          $('#removeLastWaypoint').click(function() {
+            var wp = route.getLastWaypoint();
+
+            if(wp) {
+              routeBuilder.removeWaypoint(wp);
+            }
           });
         });
       }
@@ -80,6 +107,12 @@
       <div>
         <input type="checkbox" checked="checked" id="follow-paths">
         <label for="follow-paths">Follow Paths</label>
+      </div>
+
+      <div>
+        <button id="removeFirstWaypoint">Remove first waypoint</button>
+        <button id="removeMiddleWaypoint">Remove middle waypoint</button>
+        <button id="removeLastWaypoint">Remove last waypoint</button>
       </div>
 
       <div>
