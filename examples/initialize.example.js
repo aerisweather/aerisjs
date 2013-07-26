@@ -7,7 +7,7 @@
 require(['../lib/config'], function() {
   require(['./lib/domReady!'], function() {
     require.config({
-      baseUrl: '/../lib',
+      baseUrl: '../../../lib',
       paths: {
         examples: '../examples',
         handlebars: '../examples/lib/handlebars',
