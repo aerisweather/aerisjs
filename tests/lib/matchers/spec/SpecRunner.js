@@ -1,6 +1,6 @@
 require([
-  '../lib/config',
-  'testconfig'
+  '../../../../lib/config',
+  '../../../testconfig'
 ], function() {
   require([
     'jasmine-html',
@@ -22,16 +22,8 @@ require([
     window._ = underscore;
 
     require([
-      '/tests/lib/domReady.js!',
-      'spec/aeris/utils',
-      'spec/aeris/aerisapi',
-      'spec/aeris/promise',
-      'spec/aeris/errors',
-      'spec/aeris/maps/base/extensions',
-      'spec/aeris/maps/base/layers',
-      'spec/aeris/maps/gmaps/route',
-      'spec/integration/route',
-      'spec/integration/markers'
+      'matchers/spec/custom-matchers',
+      'matchers/spec/route-matchers'
     ], function() {
       // Yes, it's a hack,
       // but it's solving some aweful async

@@ -1,33 +1,13 @@
-define([
+require([
+  'jasmine',
+  'vendor/underscore',
   'gmaps/route/waypoint',
   'mocks/waypoint',
   'gmaps/route/route',
-  'vendor/underscore',
-  '/tests/jasmine-matchers.js'
-], function(Waypoint, MockWaypoint, Route, _) {
-  describe('Jasmine custom matcher', function() {
-    describe('toThrowType', function() {
-      var MyError = function() {
-        this.name = 'MyError';
-        this.message = 'Something awful happened';
-      };
+  'matchers/route-matchers'
+], function(jasmine, _, Waypoint, MockWaypoint, Route) {
+  describe('Jasmine Route Matchers', function() {
 
-      it('should pass with a matching error name', function() {
-        expect(function() { throw new MyError() }).toThrowType('MyError');
-      });
-
-      it('should pass with a matching error class', function() {
-        expect(function() { throw new MyError() }).toThrowType(MyError);
-      });
-
-      it('should fail with a mismatched error name', function() {
-        expect(function() { throw new MyError() }).not.toThrowType('AnotherError');
-      });
-
-      it('should fail with a mismatched error class', function() {
-        expect(function() { throw new MyError() }).not.toThrowType(SyntaxError);
-      });
-    });
 
     describe('toMatchWaypoint', function() {
       it('should pass with and equivalent waypoint', function() {
@@ -79,6 +59,4 @@ define([
       });
     });
   });
-
-
 });
