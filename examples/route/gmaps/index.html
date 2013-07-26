@@ -38,16 +38,37 @@
             routeBuilder.travelMode = $travelMode.val();
           });
 
-          var $totalDistance = $('#total-distance');
+          var $totalDistance = $('#total-distance')
+
+
+          // @TODO route should trigger a change event
+          var onChange = function() {
+            displayDistance();
+
+            // Enable/Disable undo/redo
+            if(routeBuilder.canUndo()) {
+              $('#undo').removeAttr('disabled');
+            }
+            else {
+              $('#undo').attr('disabled', 'disabled');
+            }
+            if(routeBuilder.canRedo()) {
+              $('#redo').removeAttr('disabled');
+            }
+            else {
+              $('#redo').attr('disabled', 'disabled');
+            }
+          };
+
           var displayDistance = function() {
             var distance = route.distance;
             var miles = distance * 0.00062137;
             miles = Math.round(miles * 100) / 100;
             $totalDistance.text(miles);
           }
-          route.on('add', displayDistance, this);
-          route.on('remove', displayDistance, this);
-          route.on('reset', displayDistance, this);
+          route.on('add', onChange, this);
+          route.on('remove', onChange, this);
+          route.on('reset', onChange, this);
 
           var $exportBtn = $('#route-export');
           var $importBtn = $('#route-import');
@@ -84,6 +105,15 @@
           });
           $('#clearRoute').click(function() {
             routeBuilder.resetRoute();
+          });
+
+
+          // Undo/Redo
+          $('#undo').click(function() {
+            routeBuilder.undo();
+          });
+          $('#redo').click(function() {
+            routeBuilder.redo();
           });
 
         });
@@ -127,6 +157,11 @@
           <option value="BICYCLING">Bicycling</option>
           <option value="DRIVING">Driving</select>
         </select>
+      </div>
+
+      <div>
+        <button id="undo">Undo</button>
+        <button id="redo">Redo</button>
       </div>
     </div>
   </body>

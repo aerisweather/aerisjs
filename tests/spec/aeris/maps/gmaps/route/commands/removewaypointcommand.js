@@ -1,6 +1,7 @@
 define([
   'aeris',
   'aeris/promise',
+  'testUtils',
   'gmaps/utils',
   'gmaps/route/commands/removewaypointcommand',
   'mocks/waypoint',
@@ -12,6 +13,7 @@ define([
 ], function(
   aeris,
   Promise,
+  testUtils,
   gUtils,
   RemoveWaypointCommand,
   MockWaypoint,
@@ -51,6 +53,8 @@ define([
       waypoints.length = 0;
 
       route = null;
+
+      testUtils.resetFlag();
     });
 
     it('should require a route and a waypoint', function() {
@@ -198,17 +202,13 @@ define([
         });
 
         it('should handle errors from Google Directions service', function() {
-          var flag = false;
-
           google.maps.DirectionsService.prototype.route.andCallFake(function(request, callback) {
             callback(directionsResult, google.maps.DirectionsStatus.INVALID_REQUEST);
           });
 
-          command.execute().fail(function() {
-            flag = true;
-          });
+          command.execute().fail(testUtils.setFlag);
 
-          expect(flag).toEqual(true);
+          waitsFor(testUtils.checkFlag, 'execute promise to fail', 500);
         });
 
         it('should not affect the previous waypoint', function() {

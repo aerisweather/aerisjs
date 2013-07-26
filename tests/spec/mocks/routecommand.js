@@ -1,9 +1,10 @@
 define([
   'aeris',
+  'aeris/promise',
   'gmaps/route/commands/abstractroutecommand',
   'mocks/waypoint',
   'gmaps/route/route'
-], function(aeris, AbstractRouteCommand, MockWaypoint, Route) {
+], function(aeris, Promise, AbstractRouteCommand, MockWaypoint, Route) {
 
   /**
    *
@@ -22,20 +23,26 @@ define([
 
   RouteCommand.prototype.execute_ = function() {
     var self = this;
+    var promise = new Promise();
 
     window.setTimeout(function() {
       self.route_.add(self.mockWaypoint_);
-      self.executePromise_.resolve();
+      promise.resolve();
     }, 50);
+
+    return promise;
   };
 
   RouteCommand.prototype.undo_ = function() {
     var self = this;
+    var promise = new Promise();
 
     window.setTimeout(function() {
       self.route_.reset(self.previousRouteState_);
-      self.undoPromise_.resolve();
+      promise.resolve();
     }, 50);
+
+    return promise;
   };
 
 

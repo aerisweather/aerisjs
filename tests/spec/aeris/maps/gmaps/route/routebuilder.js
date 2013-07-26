@@ -1,11 +1,13 @@
 define([
   'aeris',
+  'aeris/promise',
   'jasmine',
   'sinon',
   'jquery',
   'gmaps/route/route',
   'gmaps/route/routerenderer',
   'gmaps/route/routebuilder',
+  'gmaps/route/commands/commandmanager',
   'gmaps/route/commands/addwaypointcommand',
   'gmaps/route/commands/removewaypointcommand',
   'mocks/waypoint',
@@ -13,12 +15,14 @@ define([
   'testErrors/untestedspecerror'
 ], function(
     aeris,
+    Promise,
     jasmine,
     sinon,
     $,
     Route,
     RouteRenderer,
     RouteBuilder,
+    CommandManager,
     AddWaypointCommand,
     RemoveWaypointCommand,
     MockWaypoint,
@@ -142,7 +146,7 @@ define([
     describe('Its RouteRenderer', function() {
       var route = new Route();
       it('should create a RouteRenderer', function() {
-        spyOn(aeris.maps.gmaps.route, 'RouteRenderer');
+        spyOn(aeris.maps.gmaps.route, 'RouteRenderer').andCallThrough();
 
         new RouteBuilder(map, { route: route });
         expect(aeris.maps.gmaps.route.RouteRenderer).toHaveBeenCalled();
@@ -194,7 +198,7 @@ define([
       it('should add a waypoint', function() {
         var builder = new RouteBuilder(map);
 
-        spyOn(AddWaypointCommand.prototype, 'execute');
+        spyOn(AddWaypointCommand.prototype, 'execute').andCallThrough();
         builder.addWaypoint(new MockWaypoint());
 
         expect(AddWaypointCommand.prototype.execute).toHaveBeenCalled();
@@ -210,7 +214,7 @@ define([
           route: new Route(waypoints)
         });
 
-        spyOn(RemoveWaypointCommand.prototype, 'execute');
+        spyOn(RemoveWaypointCommand.prototype, 'execute').andCallThrough();
         builder.removeWaypoint(waypoints[1]);
 
         expect(RemoveWaypointCommand.prototype.execute).toHaveBeenCalled();
@@ -228,6 +232,24 @@ define([
         builder.resetRoute(newWaypoints);
         expect(route.reset).toHaveBeenCalledWith(newWaypoints);
       });
+
+      it('should undo and redo commands, using a CommandManager', function() {
+        var builder = new RouteBuilder(map);
+
+        // Mock the addwaypoint command, to limit test scope
+        spyOn(AddWaypointCommand.prototype, 'execute').andReturn(new Promise());
+
+        builder.addWaypoint(new MockWaypoint());
+
+        spyOn(CommandManager.prototype, 'undo');
+        spyOn(CommandManager.prototype, 'redo');
+
+        builder.undo();
+        expect(CommandManager.prototype.undo).toHaveBeenCalled();
+
+        builder.redo();
+        expect(CommandManager.prototype.redo).toHaveBeenCalled();
+      });
     });
 
 
@@ -243,7 +265,7 @@ define([
         });
 
         // Spy on AddWaypointCommand
-        spyOn(aeris.maps.gmaps.route.commands.AddWaypointCommand.prototype, 'execute');
+        spyOn(aeris.maps.gmaps.route.commands.AddWaypointCommand.prototype, 'execute').andCallThrough();
 
 
         new RouteBuilder(map);

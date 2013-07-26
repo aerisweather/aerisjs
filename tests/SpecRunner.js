@@ -26,6 +26,7 @@ require([
       'spec/aeris/utils',
       'spec/aeris/aerisapi',
       'spec/aeris/promise',
+      'spec/aeris/promisequeue',
       'spec/aeris/errors',
       'spec/aeris/maps/base/extensions',
       'spec/aeris/maps/base/layers',

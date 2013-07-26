@@ -3,11 +3,12 @@
  * as a proxy.
  */
 define([
+  'aeris/promise',
   'mocks/routecommand',
   'testErrors/untestedspecerror',
   'testUtils',
   'gmaps/route/route'
-], function(MockRouteCommand, UntestedSpecError, testUtils, Route) {
+], function(Promise, MockRouteCommand, UntestedSpecError, testUtils, Route) {
   describe('An AbstractRouteCommand', function() {
     var route, waypoints, waypoints_orig, command;
 
@@ -28,9 +29,45 @@ define([
 
 
     it('should promise to execute', function() {
-      command.execute().done(testUtils.setFlag);
+      var promise = command.execute();
 
+      expect(promise).toBeInstanceOf(Promise);
+
+      promise.done(testUtils.setFlag);
       waitsFor(testUtils.checkFlag, 'command to execute', 100);
+    });
+
+    it('should promise to undo', function() {
+      command.execute().done(function() {
+        var promise = command.undo();
+
+        expect(promise).toBeInstanceOf(Promise);
+        promise.done(testUtils.setFlag);
+      });
+
+      waitsFor(testUtils.checkFlag, 'promise to finish undoing', 200);
+    });
+
+    it('should handle rejected commands', function() {
+      var failingFunction = function() {
+        var promise = new Promise();
+        promise.reject();
+        return promise;
+      };
+
+      spyOn(MockRouteCommand.prototype, 'execute_').andCallFake(failingFunction);
+      spyOn(MockRouteCommand.prototype, 'undo_').andCallFake(failingFunction);
+
+      runs(function() {
+        command.execute().fail(testUtils.setFlag);
+      });
+      waitsFor(testUtils.checkFlag, 'execution to fail', 100);
+
+      runs(function() {
+        testUtils.resetFlag();
+        command.undo().fail(testUtils.setFlag);
+      });
+      waitsFor(testUtils.checkFlag, 'undo to fail', 100);
     });
 
 
@@ -80,51 +117,43 @@ define([
       expect(function() {
         command.undo();
       }).toThrowType('CommandHistoryError');
-
-      command.execute();
     });
 
     it('should not undo a command that has already been undone', function() {
-      command.execute();
-      command.undo();
+      command.execute().done(testUtils.setFlag);
 
+      waitsFor(testUtils.checkFlag, 'command to execute', 100);
+      runs(function() {
+        testUtils.resetFlag();
+        command.undo().done(testUtils.setFlag);
+      });
+
+      waitsFor(testUtils.checkFlag, 'undo to execute', 100);
+      runs(function() {
+        expect(function() {
+          command.undo();
+        }).toThrowType('CommandHistoryError');
+      });
+    });
+
+    it('should not undo a command that is still in progress', function() {
+      command.execute();
       expect(function() {
         command.undo();
       }).toThrowType('CommandHistoryError');
     });
-    
-    it('should wait to undo a command until execution is complete', function() {
-      var executeComplete = false;
-      var undoComplete = false;
 
-      command.execute().done(function() {
-        executeComplete = true;
-
-        // Test: undo should not be finished yet
-        expect(undoComplete).toEqual(false);
-      });
-
-      command.undo().done(function() {
-        undoComplete = true;
-      });
-
-      // Double check that command executed
-      waitsFor(function() {
-        return undoComplete && executeComplete;
-      }, 'execute and undo to complete', 300);
-    });
 
     describe('should be able to execute, undo, and redo multiple times', function() {
       it('...ending in undo', function() {
 
-        command.execute();
-        command.undo();
-        command.execute();
-        command.undo();
-        command.execute();
-        command.undo();
-        command.execute();
-        command.undo().done(testUtils.setFlag);
+        command.execute().done(function() {
+          command.undo().done(function() {
+            command.execute().done(function() {
+              command.undo().done(testUtils.setFlag);
+            });
+          });
+        });
 
         waitsFor(testUtils.checkFlag, 'command stack to complete', 1000);
         runs(function() {
@@ -134,15 +163,15 @@ define([
 
       it('...ending in execute', function() {
 
-        command.execute();
-        command.undo();
-        command.execute();
-        command.undo();
-        command.execute();
-        command.undo();
-        command.execute();
-        command.undo();
-        command.execute().done(testUtils.setFlag);
+        command.execute().done(function() {
+          command.undo().done(function() {
+            command.execute().done(function() {
+              command.undo().done(function() {
+                command.execute().done(testUtils.setFlag);
+              });
+            });
+          });
+        });
 
         waitsFor(testUtils.checkFlag, 'command stack to complete', 1000);
         runs(function() {
@@ -150,13 +179,6 @@ define([
         });
       });
 
-    });
-
-    it('should wait to redo until undo is complete', function() {
-      var redoComplete = false;
-
-      command.execute();
-      command.undo();
     });
   });
 });

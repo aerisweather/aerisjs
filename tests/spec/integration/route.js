@@ -1,9 +1,11 @@
 define([
   'aeris',
   'jquery',
+  'testUtils',
   'gmaps/utils',
+  'mocks/directionsresults',
   'packages/gmaps/routes'
-], function(aeris, $, gUtils) {
+], function(aeris, $, testUtils, gUtils, MockDirectionsResults) {
   describe('The Aeris Routes package for Google Maps', function() {
     var aerisMap, route, routeRenderer, routeBuilder;
     var $canvas = $('<div id="map-canvas"><div>');
@@ -74,7 +76,12 @@ define([
       aerisMap = null;
       route = null;
       routeRenderer = null;
+
+      routeBuilder.undelegateEvents();
       routeBuilder = null;
+
+
+      testUtils.resetFlag();
     });
 
 
@@ -144,15 +151,13 @@ define([
         var endTestMsg = 'End of test. Should only query directions for >1 waypoint';
         var secondClick, thirdClick;
 
-        // Throw error on constructor, to break script
-        // --> and limit scope of test
-        spyOn(google.maps.DirectionsService.prototype, 'route').andThrow(endTestMsg);
+        spyOn(google.maps.DirectionsService.prototype, 'route').andCallThrough();
 
-        triggerClick([89, -44]);
-        secondClick = function() { triggerClick([90, -45]); };
-        thirdClick = function() { triggerClick([88, -43]); };
+        triggerClick([43, -90]);
+        triggerClick([44, -89]);
+        triggerClick([45, -87]);
 
-        // Test: Script ended like we asked it to
+        /*// Test: Script ended like we asked it to
         expect(secondClick).toThrow(endTestMsg);
         expect(thirdClick).toThrow(endTestMsg);
 
@@ -160,7 +165,11 @@ define([
         expect(google.maps.DirectionsService.prototype.route).toHaveBeenCalled();
 
         // Test: Only queried for last two clicks (not first one)
-        expect(google.maps.DirectionsService.prototype.route.callCount).toEqual(2);
+        expect(google.maps.DirectionsService.prototype.route.callCount).toEqual(2);*/
+
+        waitsFor(function() {
+          return google.maps.DirectionsService.prototype.route.callCount === 2;
+        }, 'DirectionsService to be queried twice', 5000);
       });
 
       it('should draw paths between waypoint, based on returned directions', function() {
@@ -180,36 +189,29 @@ define([
         expect(google.maps.Polyline.prototype.setPath.mostRecentCall.args[0]).toEqual(mockPath);
       });
 
-      it('should get directions for different different travel modes', function() {
-        var endTestMsg = 'end of test';
-        var testCount = 0;
-        spyOn(google.maps.DirectionsService.prototype, 'route').andThrow(endTestMsg);
+      it('should get directions for different travel modes', function() {
+        spyOn(google.maps.DirectionsService.prototype, 'route').andCallFake(function(req, callback) {
+          callback(new MockDirectionsResults(), google.maps.DirectionsStatus.OK);
+        });
 
         function testMode(mode) {
           routeBuilder.travelMode = mode;
 
-          // Click two waypoints
-          // --> breaks script, to limit test scope
-          expect(function() {
-            triggerClick([40, -90]);
-            triggerClick([39, -89]);
-          }).toThrow(endTestMsg);
+          triggerClick(testUtils.getRandomLatLon());
 
           // Test: DirectionsService was called with correct transit mode
           expect(google.maps.DirectionsService.prototype.route).toHaveBeenCalled();
           expect(google.maps.DirectionsService.prototype.route.mostRecentCall.args[0].travelMode).
             toEqual(mode);
-
-          testCount++;
         }
+
+        // Set the first waypoint
+        triggerClick(testUtils.getRandomLatLon());
 
         testMode('BICYCLING');
         testMode('WALKING');
         testMode('DRIVING');
         testMode('TRANSIT');
-
-        // Make sure all the tests ran
-        expect(testCount).toEqual(4);
       });
 
       it('should draw direct paths between waypoints (not following directions)', function() {
@@ -233,27 +235,7 @@ define([
         expect(google.maps.DirectionsService.prototype.route).not.toHaveBeenCalled();
       });
 
-      it('should calculate total distance', function() {
-        triggerClick([40, -90]);
-        triggerClick([39, -89]);
-        triggerClick([38, -88]);
 
-        // Wait for directions service
-        // ... would be nice to expose this promise.... @todo
-        var flag = false;
-        waitsFor(function() {
-          window.setInterval(function() {
-            flag = true;
-          }, 800);
-          return flag;
-        }, 'Directions service timeout.', 820);
-
-        runs(function() {
-          var precision = 10000;
-          expect(route.distance).toBeLessThan(530594 + precision);
-          expect(route.distance).toBeGreaterThan(530593 - precision);
-        });
-      });
     });
 
 
