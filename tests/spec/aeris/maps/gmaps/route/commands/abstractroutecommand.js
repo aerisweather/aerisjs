@@ -36,7 +36,7 @@ define([
 
     it('should require a route', function() {
       expect(function() {
-        new MockRouteCommand(null);
+        new MockRouteCommand('not a route');
       }).toThrowType('InvalidArgumentError');
     });
 
