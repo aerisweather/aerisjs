@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <link href="../../css/example.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false">
+    </script>
+    <script data-main="../../initialize" src="../../../externals/require.js"></script>
+    <script type="text/javascript">
+
+
+
+      function initialize() {
+        require([
+          'aeris/maps/gmaps',
+          'base/markercollections/stormreportmarkers',
+          'jquery',
+          'handlebars',
+          'examples/lib/helpers.handlebars'
+        ], function(aeris, StormReportMarkers, $, Handlebars) {
+          var $loading = $('.loading');
+          $loading.show();
+
+          var map = new aeris.maps.gmaps.Map('map-canvas', {
+            baseLayer: new aeris.maps.layers.GoogleRoadMap(),
+            center: [44.98, -93.2636],
+            zoom: 4
+          });
+
+          var stormData = new StormReportMarkers();
+
+          var templatePromise = $.ajax({
+            url: '../storm-details.handlebars',
+            cache: true,
+            success: function(data) {
+              source = data;
+              template = Handlebars.compile(source);
+            }
+          });
+
+          // Prevent choppy 'loading' UI
+          var loadingTimeout = (function() {
+            var promise = $.Deferred();
+            window.setTimeout(function() {
+              promise.resolve();
+            }, 1000)
+            return promise;
+          })();
+
+          var handleMarkerClick = function(marker, data) {
+            var html = template(data);
+            var infoBox = new aeris.maps.layers.InfoBox(marker.position, html);
+            infoBox.setMap(map);
+          };
+
+          // Add the lightning marker collection to the map
+          stormData.setMap(map);
+
+          // Wait for everything to be ready to bind click event
+          $.when(stormData.initialized, map.initialized, templatePromise, loadingTimeout).
+            done(function() {
+              $loading.fadeOut(400);
+              stormData.on('marker:click', handleMarkerClick);
+            }).
+            fail(function() {
+              console.log('Something went horribly wrong.', arguments)
+            });
+
+          var $stormHours = $('#storm-hours');
+          $stormHours.change(function() {
+            stormData.setHours($stormHours.val());
+          });
+
+          var $stormTypes = $('[name="storm-type[]"]');
+          $stormTypes.change(function() {
+            var types = [];
+            $stormTypes.each(function() {
+              var $stormType = $(this);
+              if ($stormType.is(':checked'))
+                types.push($stormType.val());
+            });
+            stormData.setTypes(types);
+          });
+
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <div class="loading">
+      <div class="loading-content"><h3>Loading...</h3></div>
+    </div>
+    <div id="map-canvas" class="float-left"></div>
+    <div class="float-left">
+      <div>
+        <label for="storm-type">Storm type:</label><br />
+
+        <input name="storm-type[]" value="tornado" type="checkbox" id="storm-type-tornado" checked="checked" />
+        <label for="storm-type-tornado">Tornado</label>
+        <br />
+
+        <input name="storm-type[]" value="highwind" type="checkbox" id="storm-type-highwind" checked="checked" />
+        <label for="storm-type-highwind">High Wind</label>
+        <br />
+
+        <input name="storm-type[]" value="hail" type="checkbox" id="storm-type-hail" checked="checked" />
+        <label for="storm-type-hail">Hail</label>
+        <br />
+
+        <input name="storm-type[]" value="flood" type="checkbox" id="storm-type-flood" checked="checked" />
+        <label for="storm-type-flood">Flood</label>
+        <br />
+
+        <input name="storm-type[]" value="rain" type="checkbox" id="storm-type-rain" checked="checked" />
+        <label for="storm-type-rain">Rain</label>
+        <br />
+
+        <input name="storm-type[]" value="lightning" type="checkbox" id="storm-type-lightning" checked="checked" />
+        <label for="storm-type-lightning">Lightning</label>
+        <br />
+
+        <input name="storm-type[]" value="highsurf" type="checkbox" id="storm-type-highsurf" checked="checked" />
+        <label for="storm-type-highsurf">High Surf</label>
+        <br />
+
+        <input name="storm-type[]" value="dust" type="checkbox" id="storm-type-dust" checked="checked" />
+        <label for="storm-type-dust">Dust</label>
+        <br />
+
+        <input name="storm-type[]" value="avalanche" type="checkbox" id="storm-type-avalanche" checked="checked" />
+        <label for="storm-type-avalanche">Avalanche</label>
+        <br />
+
+        <input name="storm-type[]" value="wildfire" type="checkbox" id="storm-type-wildfire" checked="checked" />
+        <label for="storm-type-wildfire">Wildfire</label>
+        <br />
+
+        <input name="storm-type[]" value="snow" type="checkbox" id="storm-type-snow" checked="checked" />
+        <label for="storm-type-snow">Snow</label>
+        <br />
+      </div>
+      <div>
+        <label for="storm-hours">Max storm age:</label>
+        <select id="storm-hours">
+          <option value="4" selected="selected">4 hours</option>
+          <option value="12">12 hours</option>
+          <option value="24">24 hours</option>
+          <option value="48">2 days</option>
+          <option value="72">3 days</option>
+          <option value="168">1 week</option>
+          <option value="336">2 weeks</option>
+      </div>
+    </div>
+  </body>
+</html>

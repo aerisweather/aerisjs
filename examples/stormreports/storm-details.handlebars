@@ -1,0 +1,23 @@
+<div>
+  <h3>Storm Report for {{capitalizeWords report.type}}</h3>
+  <table>
+    <tr>
+      <td colspan="2">
+        <div>{{capitalizeWords place.name}}, {{uppercase place.state}}</div>
+        <div>({{capitalizeWords report.name}})</div>
+      </td>
+    </tr>
+    <tr>
+      <td>Report Time:</td>
+      <td>{{formatDate report.datetime}} {{formatTime report.datetime}}</td>
+    </tr>
+    <tr>
+      <td>Reporter:</td>
+      <td>{{capitalizeWords report.reporter}}</td>
+    </tr>
+    <tr>
+      <td>WFO</td>
+      <td>{{uppercase report.wfo}}</td>
+    </tr>
+  </table>
+</div>

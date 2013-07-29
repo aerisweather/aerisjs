@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <link href="../../css/example.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false">
+    </script>
+    <script data-main="../../initialize" src="../../../externals/require.js"></script>
+    <script type="text/javascript">
+
+
+
+      function initialize() {
+        require([
+          'aeris/maps/gmaps',
+          'base/markercollections/earthquakemarkers',
+          'jquery',
+          'handlebars',
+          'examples/lib/helpers.handlebars'
+        ], function(aeris, EarthquakeMarkers, $, Handlebars) {
+          var $loading = $('.loading');
+          $loading.show();
+
+          var map = new aeris.maps.gmaps.Map('map-canvas', {
+            baseLayer: new aeris.maps.layers.GoogleRoadMap(),
+            center: [44.98, -93.2636],
+            zoom: 4
+          });
+
+          var earthquakeData = new EarthquakeMarkers();
+
+          var templatePromise = $.ajax({
+            url: '../earthquake-details.handlebars',
+            cache: true,
+            success: function(data) {
+              source = data;
+              template = Handlebars.compile(source);
+            }
+          });
+
+          // Prevent choppy 'loading' UI
+          var loadingTimeout = (function() {
+            var promise = $.Deferred();
+            window.setTimeout(function() {
+              promise.resolve();
+            }, 1000)
+            return promise;
+          })();
+
+          var handleMarkerClick = function(marker, data) {
+            var html = template(data);
+            var infoBox = new aeris.maps.layers.InfoBox(marker.position, html);
+            infoBox.setMap(map);
+          };
+
+          // Add the earthquake marker collection to the map
+          earthquakeData.setMap(map);
+
+          // Wait for everything to be ready to bind click event
+          $.when(earthquakeData.initialized, map.initialized, templatePromise, loadingTimeout).
+            done(function() {
+              $loading.fadeOut(400);
+              earthquakeData.on('marker:click', handleMarkerClick);
+            }).
+            fail(function() {
+              console.log('Something went horribly wrong.', arguments)
+            });
+
+          var $earthquakeHours = $('#earthquake-hours');
+          $earthquakeHours.change(function() {
+            earthquakeData.setHours($earthquakeHours.val());
+          });
+
+          var $earthquakeTypes = $('[name="earthquake-type[]"]');
+          $earthquakeTypes.change(function() {
+            var types = [];
+            $earthquakeTypes.each(function() {
+              var $earthquakeType = $(this);
+              if ($earthquakeType.is(':checked'))
+                types.push($earthquakeType.val());
+            });
+            earthquakeData.setTypes(types);
+          });
+
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <div class="loading">
+      <div class="loading-content"><h3>Loading...</h3></div>
+    </div>
+    <div id="map-canvas" class="float-left"></div>
+    <div class="float-left">
+      <div>
+        <label for="earthquake-type">Earthquake type:</label><br />
+
+        <input name="earthquake-type[]" value="mini" type="checkbox" id="earthquake-type-mini" checked="checked" />
+        <label for="earthquake-type-mini">Mini</label>
+        <br />
+
+        <input name="earthquake-type[]" value="minor" type="checkbox" id="earthquake-type-minor" checked="checked" />
+        <label for="earthquake-type-minor">Minor</label>
+        <br />
+
+        <input name="earthquake-type[]" value="light" type="checkbox" id="earthquake-type-light" checked="checked" />
+        <label for="earthquake-type-light">Light</label>
+        <br />
+
+        <input name="earthquake-type[]" value="moderate" type="checkbox" id="earthquake-type-moderate" checked="checked" />
+        <label for="earthquake-type-moderate">Moderate</label>
+        <br />
+
+        <input name="eartquake-type[]" value="strong" type="checkbox" id="earthquake-type-strong" checked="checked" />
+        <label for="earthquake-type-strong">Strong</label>
+        <br />
+
+        <input name="earthquake-type[]" value="major" type="checkbox" id="earthquake-type-major" checked="checked" />
+        <label for="earthquake-type-major">Major</label>
+        <br />
+
+        <input name="earthquake-type[]" value="great" type="checkbox" id="earthquake-type-great" checked="checked" />
+        <label for="earthquake-type-great">Great</label>
+      </div>
+      <div>
+        <label for="earthquake-hours">Max earthquake age:</label>
+        <select id="earthquake-hours">
+          <option value="4" selected="selected">4 hours</option>
+          <option value="12">12 hours</option>
+          <option value="24">24 hours</option>
+          <option value="48">2 days</option>
+          <option value="72">3 days</option>
+          <option value="168">1 week</option>
+          <option value="336">2 weeks</option>
+      </div>
+    </div>
+  </body>
+</html>

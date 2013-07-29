@@ -1,0 +1,31 @@
+<div>
+  <h3>Earthquake Report</h3>
+  <table>
+    <tr>
+      <td colspan="2">
+        <div>{{capitalizeWords place.name}}, {{uppercase place.state}}</div>
+        <div>({{capitalizeWords report.location}})</div>
+      </td>
+    </tr>
+    <tr>
+      <td>Local Time:</td>
+      <td>{{formatDate report.dateTimeISO}} {{formatTime report.dateTimeISO}}</td>
+    </tr>
+    <tr>
+      <td>Magnitude:</td>
+      <td>{{report.mag}}</td>
+    </tr>
+    <tr>
+      <td>Depth</td>
+      <td>{{report.depthMI}} miles ({{report.depthKM}} km)</td>
+    </tr>
+    <tr>
+      <td>Category</td>
+      <td>{{capitalizeWords report.type}}</td>
+    </tr>
+    <tr>
+      <td>Region</td>
+      <td>{{capitalizeWords report.region}}</td>
+    </tr>
+  </table>
+</div>

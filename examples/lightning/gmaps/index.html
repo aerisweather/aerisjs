@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <link href="../../css/example.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false">
+    </script>
+    <script data-main="../../initialize" src="../../../externals/require.js"></script>
+    <script type="text/javascript">
+
+
+
+      function initialize() {
+        require([
+          'aeris/maps/gmaps',
+          'aeris/promise',
+          'base/markercollections/lightningmarkers',
+          'jquery'
+        ], function(aeris, Promise, LightningMarkers, $) {
+          var $loading = $('.loading');
+          $loading.show();
+
+          var map = new aeris.maps.gmaps.Map('map-canvas', {
+            baseLayer: new aeris.maps.layers.GoogleRoadMap(),
+            center: [44.98, -93.2636],
+            zoom: 4
+          });
+
+          var lightningData = new LightningMarkers();
+
+          // Prevent choppy 'loading' UI
+          var loadingTimeout = (function() {
+            var promise = $.Deferred();
+            window.setTimeout(function() {
+              promise.resolve();
+            }, 1000)
+            return promise;
+          })();
+
+          // Add the lightning marker collection to the map
+          lightningData.setMap(map);
+
+          // Wait for everything to be ready
+          Promise.when(lightningData.initialized, map.initialized, loadingTimeout).
+            done(function() {
+              $loading.fadeOut(400);
+            }).
+            fail(function(error) {
+              console.log(error);
+              throw new Error('Something went horribly wrong');
+            });
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <div class="loading">
+      <div class="loading-content"><h3>Loading...</h3></div>
+    </div>
+    <div id="map-canvas"></div>
+  </body>
+</html>

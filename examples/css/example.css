@@ -31,3 +31,12 @@
   -moz-border-radius: 15px;
   border-radius: 15px;
 }
+
+.float-left {
+	float: left;
+	margin-right: 10px;
+}
+
+.float-right {
+	float: right;
+}
