@@ -1,5 +1,15 @@
-define(['aeris/aerisapi', 'aeris/promise', 'aeris/jsonp'], function(AerisAPI, Promise, jsonp) {
-  describe('AerisAPI', function() {
+define([
+  'aeris/aerisapi',
+  'aeris/promise',
+  'aeris/jsonp',
+  'testUtils',
+  'testErrors/untestedspecerror'
+], function(AerisAPI, Promise, jsonp, testUtils, UntestedSpecError) {
+  describe('The AerisAPI', function() {
+
+    afterEach(function() {
+      testUtils.resetFlag();
+    });
 
     // Serializer tests are borrowed from jQuery
     // https://github.com/jquery/jquery/blob/e53a91909061c7a7280a274990db179b94db81b6/test/unit/serialize.js
@@ -62,6 +72,8 @@ define(['aeris/aerisapi', 'aeris/promise', 'aeris/jsonp'], function(AerisAPI, Pr
         error: null,
         response: {
           responses: [{
+            success: true,
+            error: null,
             'id': 'KBFI',
             'loc': {
               'long': -122.31666666667,
@@ -92,6 +104,28 @@ define(['aeris/aerisapi', 'aeris/promise', 'aeris/jsonp'], function(AerisAPI, Pr
           description: ''
         },
         response: {}
+      };
+
+
+      // The master response returns successful,
+      // But on the component batch responses
+      // returns an error
+      var apiSubErrorData = {
+        'success': true,
+        'error': null,
+        'response': {
+          'responses': [
+            {
+              'success': false,
+              'error': {
+                'code': 'fail_fail',
+                'description': 'Looks like you broke the internet.'
+              },
+              'response': [],
+              'request': '/someEndpoint/someAction'
+            }
+          ]
+        }
       };
 
 
@@ -165,6 +199,16 @@ define(['aeris/aerisapi', 'aeris/promise', 'aeris/jsonp'], function(AerisAPI, Pr
         });
 
         expect(flag).toBe(true);
+      });
+
+      it('should reject promise if a sub request of a batch request returns an error', function() {
+        spyOn(jsonp, 'get').andCallFake(function(url, params, callback) {
+          callback(apiSubErrorData);
+        });
+
+        api.fetchBatch(endpoints, globalParams).fail(testUtils.setFlag);
+
+        waitsFor(testUtils.checkFlag, 'fetchBatch to fail', 100);
       });
 
       it('should accept a single endpoint as a string', function() {
