@@ -8,7 +8,7 @@
 // Released under the MIT license
 beforeEach(function () {
   var jQueryEquals = function (actual, expected) {
-    if (!jQuery) { return false; }
+    if (!window.jQuery) { return false; }
 
     var normalizeObjects = function (objects) {
       return (objects instanceof jQuery) ? objects.toArray() : [objects];
@@ -30,7 +30,7 @@ beforeEach(function () {
         throw new Error('Expected a spy, but got ' + jasmine.pp(spy) + '.');
       }
 
-      if (expectedObject === undefined || jQuery && expectedObject instanceof jQuery && expectedObject.length === 0) {
+      if (expectedObject === undefined || window.jQuery && expectedObject instanceof jQuery && expectedObject.length === 0) {
         throw new Error('Expected a context for ' + jasmine.pp(spy) + ', but got ' + jasmine.pp(expectedObject) + '.');
       }
 
