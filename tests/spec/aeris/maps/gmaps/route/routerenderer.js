@@ -1,14 +1,14 @@
 define([
     'aeris',
     'jasmine',
-    'sinon',
+    'testUtils',
     'vendor/underscore',
     'mocks/waypoint',
     'gmaps/route/route',
     'gmaps/route/routerenderer',
     'gmaps/map',
     'base/markers/icon'
-], function(aeris, jasmine, sinon, _, MockWaypoint, Route, RouteRenderer, AerisMap, Icon) {
+], function(aeris, jasmine, testUtils, _, MockWaypoint, Route, RouteRenderer, AerisMap, Icon) {
   describe('A RouteRenderer', function() {
     var map, $canvas;
 
@@ -72,10 +72,16 @@ define([
         renderer.renderWaypoint(waypoint, route);
       });
 
-      it('following a path', function() {
+      it('with a path', function() {
         var renderer = new RouteRenderer(map);
         var mockWp = new MockWaypoint({
-          followPaths: true
+          followPaths: true,
+          previous: new MockWaypoint(),
+          path: [
+            testUtils.getRandomLatLon(),
+            testUtils.getRandomLatLon(),
+            testUtils.getRandomLatLon()
+          ]
         });
 
         renderer.renderWaypoint(mockWp, new Route([mockWp]));
@@ -87,41 +93,8 @@ define([
         // Test: Polyline path matches waypoint's path
         expect(google.maps.Polyline.argsForCall[0][0].path.length).toEqual(mockWp.path.length);
         _.each(google.maps.Polyline.argsForCall[0][0].path, function(latLng, i) {
-          expect(latLng.lat()).toBeNear(mockWp.path[i][0], 0.01);
-          expect(latLng.lng()).toBeNear(mockWp.path[i][1], 0.01);
+          expect(latLng).toBeNearLatLng(mockWp.path[i]);
         });
-
-        // Test: Polyline added to map
-        expect(polyline.setMap).toHaveBeenCalled();
-      });
-
-      it('not following a path', function() {
-        var renderer = new RouteRenderer(map);
-        var prevPoint = [45, -90];
-        var currPoint = [45.1, -90.1];
-        var previousWaypoint = new MockWaypoint();
-        var waypoint = new MockWaypoint({
-          followPaths: false,
-          previous: previousWaypoint
-        });
-
-        spyOn(previousWaypoint, 'getLatLon').andReturn(prevPoint);
-        spyOn(waypoint, 'getLatLon').andReturn(currPoint);
-
-        renderer.renderWaypoint(waypoint, new Route([waypoint]));
-
-        // Test: constructed Polyline
-        expect(google.maps.Polyline).toHaveBeenCalled();
-        expect(google.maps.Polyline.callCount).toEqual(1);
-
-        // Test: Path only has two points
-        expect(google.maps.Polyline.argsForCall[0][0].path.length).toEqual(2);
-
-        // Test: Polyline path matches waypoints path
-        expect(google.maps.Polyline.argsForCall[0][0].path[0].lat()).toBeNear(prevPoint[0], 0.01);
-        expect(google.maps.Polyline.argsForCall[0][0].path[0].lng()).toBeNear(prevPoint[1], 0.01);
-        expect(google.maps.Polyline.argsForCall[0][0].path[1].lat()).toBeNear(currPoint[0], 0.01);
-        expect(google.maps.Polyline.argsForCall[0][0].path[1].lng()).toBeNear(currPoint[1], 0.01);
 
         // Test: Polyline added to map
         expect(polyline.setMap).toHaveBeenCalled();

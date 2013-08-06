@@ -171,27 +171,6 @@ define([
           new RouteBuilder();
         }).toThrowType('InvalidArgumentError');
       });
-
-      it('should bind events to an AerisMap', function() {
-        spyOn(aeris.maps.Event.prototype, 'on');
-
-        new RouteBuilder(map);
-        expect(aeris.maps.Event.prototype.on).toHaveBeenCalled();
-      });
-
-      it('should unbind events from an AerisMap', function() {
-        var builder;
-
-        spyOn(aeris.maps.Event.prototype, 'on');
-        spyOn(aeris.maps.Event.prototype, 'off');
-
-        builder = new RouteBuilder(map);
-        builder.undelegateMapEvents();
-
-        expect(aeris.maps.Event.prototype.off).toHaveBeenCalled();
-        expect(aeris.maps.Event.prototype.off.callCount).
-          toEqual(aeris.maps.Event.prototype.on.callCount);
-      });
     });
 
     describe('Manage Waypoints using commands', function() {
@@ -249,32 +228,6 @@ define([
 
         builder.redo();
         expect(CommandManager.prototype.redo).toHaveBeenCalled();
-      });
-    });
-
-
-    describe('Bind Map Events to Route Commands', function() {
-      it('should bind the AddWayPointCommand to a map click', function() {
-        // Pilfer the handler bound to the Click event
-        var evtHandler, evtCtx;
-        spyOn(aeris.maps.events.Click.prototype, 'on').andCallFake(function(topic, callback, ctx) {
-          if (topic === 'click') {
-            evtHandler = callback;
-            evtCtx = ctx;
-          }
-        });
-
-        // Spy on AddWaypointCommand
-        spyOn(aeris.maps.gmaps.route.commands.AddWaypointCommand.prototype, 'execute').andCallThrough();
-
-
-        new RouteBuilder(map);
-
-        // Call the click event handler
-        evtHandler.call(evtCtx, [45, -90]);
-
-        // Check that the AddWaypoinCommand was executed
-        expect(aeris.maps.gmaps.route.commands.AddWaypointCommand.prototype.execute).toHaveBeenCalled();
       });
     });
 

@@ -45,6 +45,27 @@ define([
       expect(testUtils.checkFlag()).toEqual(true);
     });
 
+    describe('Not following paths', function() {
+      it('should set the path property as a direct line to the previous waypoint', function() {
+        var firstWaypoint = new MockWaypoint(null, true);
+        var secondWaypoint = new MockWaypoint({
+          followPaths: false
+        }, true);
+        var route = new Route([firstWaypoint]);
+        var command = new AddWaypointCommand(route, secondWaypoint);
+
+        command.execute().done(function() {
+          expect(route.getLastWaypoint().path).toEqual([
+            firstWaypoint.getLatLon(),
+            secondWaypoint.getLatLon()
+          ]);
+          testUtils.setFlag();
+        });
+
+        waitsFor(testUtils.checkFlag, 'command to execute', 50);
+      });
+    });
+
     describe('Undo', function() {
 
       it('should return a promise', function() {
