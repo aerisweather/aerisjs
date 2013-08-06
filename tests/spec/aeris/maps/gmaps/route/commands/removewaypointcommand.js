@@ -53,8 +53,6 @@ define([
       waypoints.length = 0;
 
       route = null;
-
-      testUtils.resetFlag();
     });
 
     it('should require a route and a waypoint', function() {
@@ -133,7 +131,7 @@ define([
 
         it('should set the following waypoint\'s \'distance\' property to 0', function() {
           command.execute();
-          expect(middleWaypoint.distance).toEqual(0);
+          expect(middleWaypoint.getDistance()).toEqual(0);
         });
 
         it('should NOT query the Google Directions service', function() {
@@ -142,6 +140,7 @@ define([
         });
 
         it('should not affect other waypoints', function() {
+          command.execute();
           expect(lastWaypoint).toEqual(waypoints_orig[2]);
         });
       });
@@ -198,10 +197,11 @@ define([
           var responseDistance = directionsResult.routes[0].legs[0].distance.value;
           command.execute();
 
-          expect(lastWaypoint.distance).toEqual(responseDistance);
+          expect(lastWaypoint.getDistance()).toEqual(responseDistance);
         });
 
         it('should handle errors from Google Directions service', function() {
+          // Change route spy to return error status
           google.maps.DirectionsService.prototype.route.andCallFake(function(request, callback) {
             callback(directionsResult, google.maps.DirectionsStatus.INVALID_REQUEST);
           });
@@ -217,7 +217,21 @@ define([
       });
 
       describe('for a waypoint at the end of a route', function() {
+        var command;
+
+        beforeEach(function() {
+          command = new RemoveWaypointCommand(route, lastWaypoint);
+        });
+
+        afterEach(function() {
+          command = null;
+        });
+
+
+
         it('should not effect any other waypoints', function() {
+          command.execute();
+
           expect(firstWaypoint).toEqual(waypoints_orig[0]);
           expect(middleWaypoint).toEqual(waypoints_orig[1]);
         });
@@ -270,7 +284,7 @@ define([
         spyOn(google.maps.geometry.spherical, 'computeDistanceBetween').andReturn(54321);
         command.execute();
 
-        expect(lastWaypoint.distance).toEqual(54321);
+        expect(lastWaypoint.getDistance()).toEqual(54321);
       });
     });
   });

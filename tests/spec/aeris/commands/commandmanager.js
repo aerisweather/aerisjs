@@ -1,11 +1,11 @@
 define([
   'aeris',
   'testUtils',
-  'gmaps/route/commands/commandmanager',
+  'aeris/commands/commandmanager',
   'aeris/promise',
-  'mocks/routecommand',
+  'mocks/command',
   'testErrors/untestedspecerror'
-], function(aeris, testUtils, CommandManager, Promise, MockRouteCommand, UntestedSpecError) {
+], function(aeris, testUtils, CommandManager, Promise, MockCommand, UntestedSpecError) {
   describe('A CommandManager', function() {
     var manager;
 
@@ -15,7 +15,6 @@ define([
 
     afterEach(function() {
       manager = null;
-      testUtils.resetFlag();
     });
 
 
@@ -26,7 +25,8 @@ define([
     });
 
     it('should execute a command, and return a promise', function() {
-      var command = new MockRouteCommand();
+      var manager = new CommandManager();
+      var command = new MockCommand();
       var promise;
 
       spyOn(command, 'execute').andCallThrough();
@@ -40,8 +40,9 @@ define([
     });
 
     it('should undo the last executed command, and return a promise', function() {
-      var command1 = new MockRouteCommand();
-      var command2 = new MockRouteCommand();
+      var manager = new CommandManager();
+      var command1 = new MockCommand();
+      var command2 = new MockCommand();
       var promise;
 
       spyOn(command1, 'undo').andCallThrough();
@@ -72,7 +73,8 @@ define([
     });
 
     it('should redo a command, and return a promise', function() {
-      var command = new MockRouteCommand();
+      var manager = new CommandManager();
+      var command = new MockCommand();
       var promise;
 
       spyOn(command, 'execute').andCallThrough();
@@ -89,18 +91,18 @@ define([
 
 
     describe('Command queue sequence', function() {
-      var command, command1, command2, command3;
+      waitsFor(testUtils.checkFlag, 'manager to undo', 200);
+    });
 
-      beforeEach(function() {
-        command = new MockRouteCommand();
-        command1 = new MockRouteCommand();
-        command2 = new MockRouteCommand();
-        command3 = new MockRouteCommand();
-      });
 
-      afterEach(function() {
-        command1 = command2 = command3 = null;
-      });
+    describe('Command queue sequence', function() {
+      function getCommands() {
+        return [
+          new MockCommand(),
+          new MockCommand(),
+          new MockCommand()
+        ];
+      }
 
 
 
@@ -120,6 +122,8 @@ define([
       });
 
       it('should wait for a command to resolve before undoing it', function() {
+        var manager = new CommandManager();
+        var command = new MockCommand();
         var promise = manager.executeCommand(command);
 
         spyOn(command, 'undo').andCallFake(function() {
@@ -135,6 +139,8 @@ define([
       });
 
       it('should wait for an undo to finish before redoing', function() {
+        var manager = new CommandManager();
+        var command = new MockCommand();
         var undoPromise;
 
         manager.executeCommand(command);
@@ -192,8 +198,9 @@ define([
 
     describe('canUndo', function() {
       it('should return true if undo is available', function() {
-        var command1 = new MockRouteCommand();
-        var command2 = new MockRouteCommand();
+        var manager = new CommandManager();
+        var command1 = new MockCommand();
+        var command2 = new MockCommand();
 
         manager.executeCommand(command1);             // stack = 1
         expect(manager.canUndo()).toEqual(true);
@@ -214,8 +221,9 @@ define([
       });
 
       it('should return false if undo is not available', function() {
-        var command1 = new MockRouteCommand();
-        var command2 = new MockRouteCommand();
+        var manager = new CommandManager();
+        var command1 = new MockCommand();
+        var command2 = new MockCommand();
 
         expect(manager.canUndo()).toEqual(false);
 
@@ -233,8 +241,9 @@ define([
 
     describe('canRedo', function() {
       it('should return true if redo is available', function() {
-        var command1 = new MockRouteCommand();
-        var command2 = new MockRouteCommand();
+        var manager = new CommandManager();
+        var command1 = new MockCommand();
+        var command2 = new MockCommand();
 
         manager.executeCommand(command1);           // stack = 1
         manager.undo();                             // stack = 0
@@ -255,8 +264,9 @@ define([
       });
 
       it('should return false if redo is not available', function() {
-        var command1 = new MockRouteCommand();
-        var command2 = new MockRouteCommand();
+        var manager = new CommandManager();
+        var command1 = new MockCommand();
+        var command2 = new MockCommand();
 
         expect(manager.canRedo()).toEqual(false);
 

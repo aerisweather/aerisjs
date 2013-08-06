@@ -20,7 +20,6 @@ define([
     });
 
     afterEach(function() {
-      testUtils.resetFlag();
       waypoints.length = 0;
       route = null;
       command = null;

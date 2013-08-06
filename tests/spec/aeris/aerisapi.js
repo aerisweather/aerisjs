@@ -7,10 +7,6 @@ define([
 ], function(AerisAPI, Promise, jsonp, testUtils, UntestedSpecError) {
   describe('The AerisAPI', function() {
 
-    afterEach(function() {
-      testUtils.resetFlag();
-    });
-
     // Serializer tests are borrowed from jQuery
     // https://github.com/jquery/jquery/blob/e53a91909061c7a7280a274990db179b94db81b6/test/unit/serialize.js
     describe('URI Serializer', function() {

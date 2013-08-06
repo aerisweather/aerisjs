@@ -1,11 +1,12 @@
 define([
   'aeris',
+  'gmaps/map',
   'jquery',
   'testUtils',
   'testErrors/untestedspecerror',
   'googlemaps',
   'packages/gmaps/markers'
-], function(aeris, $, testUtils, UntestedSpecError) {
+], function(aeris, AerisMap, $, testUtils, UntestedSpecError) {
   describe('The Markers Package for Google Maps', function() {
     var aerisMap;
     var $canvas = $('<div id="map-canvas"><div>');
@@ -13,7 +14,7 @@ define([
     beforeEach(function() {
       $canvas.appendTo('body');
 
-      aerisMap = new aeris.maps.gmaps.Map('map-canvas', {
+      aerisMap = new AerisMap('map-canvas', {
         center: [44.98, -93.2636],
         zoom: 15
       });

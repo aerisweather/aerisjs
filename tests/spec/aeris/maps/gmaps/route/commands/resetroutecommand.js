@@ -20,18 +20,6 @@ define([
 ) {
   describe('A ResetRouteCommand', function() {
 
-    function getMockWaypoints() {
-      return [
-        new MockWaypoint(null, true),
-        new MockWaypoint(),
-        new MockWaypoint()
-      ];
-    }
-
-    beforeEach(function() {
-      testUtils.resetFlag();
-    });
-
 
     it('should return a promise on execute', function() {
       var command = new ResetRouteCommand(new Route());
@@ -39,7 +27,7 @@ define([
     });
 
     it('should clear a route', function() {
-      var route = new Route(getMockWaypoints());
+      var route = new Route(testUtils.getMockWaypoints());
       var command = new ResetRouteCommand(route);
 
       command.execute().done(testUtils.setFlag);
@@ -51,8 +39,8 @@ define([
     });
 
     it('should reset a route with the provided waypoints', function() {
-      var newWaypoints = getMockWaypoints();
-      var route = new Route(getMockWaypoints());
+      var newWaypoints = testUtils.getMockWaypoints();
+      var route = new Route(testUtils.getMockWaypoints());
       var command = new ResetRouteCommand(route, newWaypoints);
 
       command.execute().done(testUtils.setFlag);
@@ -69,7 +57,7 @@ define([
         new MockWaypoint({ distance: 0 }, true),
         new MockWaypoint({ distance: 0 }, true)
       ];
-      var route = new Route(getMockWaypoints());
+      var route = new Route(testUtils.getMockWaypoints());
       var command = new ResetRouteCommand(route, dumbWaypoints, true);
 
       spyOn(route, 'add');

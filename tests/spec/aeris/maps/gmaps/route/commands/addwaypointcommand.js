@@ -12,8 +12,6 @@ define([
     var directionsResult;
 
     beforeEach(function() {
-      testUtils.resetFlag();
-
       directionsResult = new MockDirectionsResult();
       spyOn(google.maps.DirectionsService.prototype, 'route').andCallFake(function(request, callback) {
         callback(directionsResult, google.maps.DirectionsStatus.OK);
@@ -70,7 +68,7 @@ define([
 
       it('should revert state', function() {
         var route = new Route(testUtils.getMockWaypoints());
-        var origWaypoints = route.getWaypoints().slice(0);
+        var route_orig = testUtils.cloneRoute(route);
         var newWaypoint = new MockWaypoint();
         var command = new AddWaypointCommand(route, newWaypoint);
 
@@ -81,7 +79,7 @@ define([
         waitsFor(testUtils.checkFlag, 'to undo command', 500);
         runs(function() {
           expect(route.getWaypoints().length).toEqual(3);
-          expect(route).toMatchRoute(new Route(origWaypoints));
+          expect(route).toMatchRoute(route_orig);
         });
       });
     });

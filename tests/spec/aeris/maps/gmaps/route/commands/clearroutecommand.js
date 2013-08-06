@@ -10,8 +10,6 @@ define([
     var waypoints;
 
     beforeEach(function() {
-      testUtils.resetFlag();
-
       waypoints = [
         new MockWaypoint(null, true),
         new MockWaypoint(),

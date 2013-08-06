@@ -20,10 +20,6 @@ define([
     };
     Person.prototype.eavesdrop = function() {};
 
-    afterEach(function() {
-      testUtils.resetFlag();
-    });
-
 
     describe('listenTo', function() {
       it('should bind handler to object events', function() {

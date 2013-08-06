@@ -23,11 +23,6 @@ define([
     }
 
 
-    afterEach(function() {
-      testUtils.resetFlag();
-    });
-
-
 
     describe('Add a function to a queue', function() {
       it('should queue a function which returns a promise', function() {

@@ -1,4 +1,7 @@
-require(['jasmine'], function(jasmine) {
+require([
+  'vendor/underscore',
+  'jasmine'
+], function(_, jasmine) {
 
 
 
@@ -13,6 +16,16 @@ require(['jasmine'], function(jasmine) {
     }
 
     return latLng;
+  }
+
+  function isNearLatLng(expected, actual, within) {
+    actual = latLngToArray(actual);
+    expected = latLngToArray(expected);
+
+    within || (within = 0.001);
+
+    return isWithin(actual[0], expected[0], within) &&
+            isWithin(actual[1], expected[1], within);
   }
 
   beforeEach(function() {
@@ -81,12 +94,61 @@ require(['jasmine'], function(jasmine) {
 
 
       toBeNearLatLng: function(expected, within) {
-        var actual = latLngToArray(this.actual);
-        expected = latLngToArray(expected);
+        return isNearLatLng(expected, actual, within);
+      },
 
-        within || (within = 0.001);
+      toBeNearPath: function(expectedPath, within) {
+        var actualPath = this.actual;
+        var match = true;
 
-        return isWithin(actual[0], expected[0], within) && isWithin(actual[1], expected[1], within);
+
+        // Compare paths' latLngs
+        // Leveraging existing toBeNearLatLng custom matcher
+        _.each(actualPath, function(actualLatLon, i) {
+          var expectedLatLon = expectedPath[i];
+
+          // Compare latLngs
+          if (!isNearLatLng(expectedLatLon, actualLatLon, within)) {
+            match = false;
+          }
+        }, this);
+
+
+        // Make sure the paths are the same length
+        if (actualPath.length !== expectedPath.length) {
+          match = false;
+        }
+
+        return match;
+      },
+
+
+      /**
+       * Check that all spies have been called
+       *
+       * @param {Array.<jasmine.Spy>} spies
+       * @return {Boolean}
+       */
+      toHaveAllBeenCalled: function(spies) {
+        var neverCalled = [];
+        var called = [];
+
+        _.each(this.actual, function(spy) {
+          if (spy.callCount >= 1) {
+            called.push(spy.identity);
+          }
+          else {
+            neverCalled.push(spy.identity);
+          }
+        });
+
+        this.message = function() {
+          return 'Expected spies "' + called.join('", "') + '", "' + neverCalled.join('", "') +
+            '" to have all been called.  ' +
+            'But spies "' + neverCalled.join('", "') + '" were not called.';
+        };
+
+        return neverCalled.length < 1;
       }
     });
   });

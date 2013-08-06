@@ -6,7 +6,7 @@ require.config({
     jasmine: '/tests/lib/jasmine',
     'jasmine-html': '/tests/lib/jasmine-html',
     spec: '/tests/spec',
-    mocks: '/tests/spec/mocks',
+    mocks: '/tests/mocks',
     matchers: '/tests/lib/matchers',
     testErrors: '/tests/errors',
     testUtils: '/tests/testUtils',
