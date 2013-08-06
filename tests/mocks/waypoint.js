@@ -37,7 +37,7 @@ define(['gmaps/route/waypoint', 'vendor/underscore'], function(Waypoint, _) {
         getRandomLatLon(),
         getRandomLatLon()
       ],
-      originalLatLon: getRandomLatLon(),
+      latLon: getRandomLatLon(),
       geocodedLatLon: getRandomLatLon()
     }, opt_options);
 

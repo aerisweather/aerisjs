@@ -25,13 +25,13 @@ define([
 
     it('should accept waypoint properties as options on construction, and set defaults', function() {
       var wp = new Waypoint({
-        originalLatLon: [-45, 90],
+        latLon: [-45, 90],
         geocodedLatLon: [-45.1, 90.1],
         path: ['mock', 'path']
       });
 
       // Defined properties
-      expect(wp.originalLatLon).toEqual([-45, 90]);
+      expect(wp.latLon).toEqual([-45, 90]);
       expect(wp.geocodedLatLon).toEqual([-45.1, 90.1]);
       expect(wp.path).toEqual(['mock', 'path']);
 
@@ -54,7 +54,7 @@ define([
 
     it('should return the most accurate lat/lon', function() {
       var wp = new Waypoint({
-        originalLatLon: [-45, 90]
+        latLon: [-45, 90]
       });
 
       expect(wp.getLatLon()).toEqual([-45, 90]);
@@ -81,7 +81,7 @@ define([
     describe('JSON import/export', function() {
       it('export as a JSON string', function() {
         var wp = new Waypoint({
-          originalLatLon: [-45, 90],
+          latLon: [-45, 90],
           geocodedLatLon: [-45.1, 90.1],
           followDirections: true,
           travelMode: 'WALKING',
@@ -89,7 +89,7 @@ define([
         });
 
         expect(wp.export()).toEqual('{' +
-          '"originalLatLon":[-45,90],' +
+          '"latLon":[-45,90],' +
           '"geocodedLatLon":[-45.1,90.1],' +
           '"followDirections":true,' +
           '"travelMode":"WALKING",' +
@@ -108,21 +108,21 @@ define([
         wp.followDirections = false;
         wp.travelMode = 'JETPACK';
 
-        json = {'originalLatLon': [44.972752843480855, -93.27199459075928], 'geocodedLatLon': [44.97276, -93.272], "followDirections": true, 'travelMode': 'WALKING', 'path': [[44.978350000000006, -93.26335], [44.979310000000005, -93.26556000000001], [44.979350000000004, -93.26569], [44.97887, -93.26608], [44.979110000000006, -93.26667], [44.978060000000006, -93.26758000000001], [44.97672, -93.26873], [44.97574, -93.26950000000001], [44.97478, -93.27031000000001], [44.97415, -93.27086000000001], [44.97316000000001, -93.27170000000001], [44.97276, -93.272]], 'distance': 1153};
+        json = {"latLon": [44.972752843480855, -93.27199459075928], 'geocodedLatLon': [44.97276, -93.272], "followDirections": true, 'travelMode': 'WALKING', 'path': [[44.978350000000006, -93.26335], [44.979310000000005, -93.26556000000001], [44.979350000000004, -93.26569], [44.97887, -93.26608], [44.979110000000006, -93.26667], [44.978060000000006, -93.26758000000001], [44.97672, -93.26873], [44.97574, -93.26950000000001], [44.97478, -93.27031000000001], [44.97415, -93.27086000000001], [44.97316000000001, -93.27170000000001], [44.97276, -93.272]], 'distance': 1153};
 
         wp.reset(json);
 
         expect(wp.getDistance()).toEqual(1153);
         expect(wp.followDirections).toEqual(true);
         expect(wp.travelMode).toEqual('WALKING');
-        expect(wp.originalLatLon).toEqual([44.972752843480855, -93.27199459075928]);
+        expect(wp.latLon).toEqual([44.972752843480855, -93.27199459075928]);
         expect(wp.geocodedLatLon).toEqual([44.97276, -93.272]);
         expect(wp.path).toEqual([[44.978350000000006, -93.26335], [44.979310000000005, -93.26556000000001], [44.979350000000004, -93.26569], [44.97887, -93.26608], [44.979110000000006, -93.26667], [44.978060000000006, -93.26758000000001], [44.97672, -93.26873], [44.97574, -93.26950000000001], [44.97478, -93.27031000000001], [44.97415, -93.27086000000001], [44.97316000000001, -93.27170000000001], [44.97276, -93.272]]);
       });
 
       it('should import waypoint data from a JSON string', function() {
         var jsonStr = '{' +
-          '"originalLatLon":[44.97840714423616,-93.2635509967804],' +
+          '"latLon":[44.97840714423616,-93.2635509967804],' +
           '"geocodedLatLon":[44.978410000000004,-93.26356000000001],' +
           '"followDirections":true,' +
           '"travelMode":"WALKING",' +
@@ -133,7 +133,7 @@ define([
         var wp = new Waypoint();
         wp.import(jsonStr);
 
-        expect(wp.originalLatLon).toEqual([44.97840714423616, -93.2635509967804]);
+        expect(wp.latLon).toEqual([44.97840714423616, -93.2635509967804]);
         expect(wp.geocodedLatLon).toEqual([44.978410000000004, -93.26356000000001]);
         expect(wp.followDirections).toEqual(true);
         expect(wp.travelMode).toEqual('WALKING');
@@ -144,10 +144,10 @@ define([
       it('should reject poorly formed JSON object input', function() {
         var wp = new Waypoint();
 
-        var goodJSON = {'originalLatLon': [44.972752843480855, -93.27199459075928], 'geocodedLatLon': [44.97276, -93.272], "followDirections": true, 'travelMode': 'WALKING', 'path': [[44.978350000000006, -93.26335], [44.979310000000005, -93.26556000000001], [44.979350000000004, -93.26569], [44.97887, -93.26608], [44.979110000000006, -93.26667], [44.978060000000006, -93.26758000000001], [44.97672, -93.26873], [44.97574, -93.26950000000001], [44.97478, -93.27031000000001], [44.97415, -93.27086000000001], [44.97316000000001, -93.27170000000001], [44.97276, -93.272]], 'distance': 1153};
+        var goodJSON = {"latLon": [44.972752843480855, -93.27199459075928], 'geocodedLatLon': [44.97276, -93.272], "followDirections": true, 'travelMode': 'WALKING', 'path': [[44.978350000000006, -93.26335], [44.979310000000005, -93.26556000000001], [44.979350000000004, -93.26569], [44.97887, -93.26608], [44.979110000000006, -93.26667], [44.978060000000006, -93.26758000000001], [44.97672, -93.26873], [44.97574, -93.26950000000001], [44.97478, -93.27031000000001], [44.97415, -93.27086000000001], [44.97316000000001, -93.27170000000001], [44.97276, -93.272]], 'distance': 1153};
         var badJSONs = [
           _.extend({}, goodJSON, { distance: 'way out there' }),
-          _.extend({}, goodJSON, { originalLatLon: ['this far north', 'this far west']}),
+          _.extend({}, goodJSON, { latLon: ['this far north', 'this far west']}),
           _.extend({}, goodJSON, { followDirections: undefined }),
           _.extend({}, goodJSON, { travelMode: undefined }),
           _.extend({}, goodJSON, { path: undefined })
