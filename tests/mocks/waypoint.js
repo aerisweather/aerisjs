@@ -31,7 +31,6 @@ define(['gmaps/route/waypoint', 'vendor/underscore'], function(Waypoint, _) {
     isFirst || (isFirst = false);
 
     wpOptions = _.extend({
-      previous: opt_options.previous || null,
       distance: opt_options.distance || null,
       path: isFirst ? null : [
         getRandomLatLon(),

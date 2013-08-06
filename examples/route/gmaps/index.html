@@ -77,15 +77,15 @@
           }
 
           function bindUIEvents() {
-            var $followPaths = $('#follow-paths');
+            var $followDirections = $('#follow-directions');
             var $travelModeSelect = $('#travel-mode');
             var $exportBtn = $('#route-export');
             var $importBtn = $('#route-import');
             var $routeJSON = $('#route-json');
 
             // Follow paths
-            $followPaths.change(function() {
-              routeBuilder.followPaths = $followPaths.is(':checked');
+            $followDirections.change(function() {
+              routeBuilder.followDirections = $followDirections.is(':checked');
             });
 
             // Travel mode
@@ -167,8 +167,8 @@
       </div>
 
       <div>
-        <input type="checkbox" checked="checked" id="follow-paths">
-        <label for="follow-paths">Follow Paths</label>
+        <input type="checkbox" checked="checked" id="follow-directions">
+        <label for="follow-directions">Follow Directions?</label>
       </div>
 
       <div>

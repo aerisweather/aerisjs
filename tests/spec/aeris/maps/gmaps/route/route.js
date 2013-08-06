@@ -1,11 +1,12 @@
 define([
   'aeris',
   'aeris/utils',
+  'testErrors/untestedspecerror',
   'gmaps/route/waypoint',
   'mocks/waypoint',
   'gmaps/route/route',
   'vendor/underscore'
-], function(aeris, utils, Waypoint, MockWaypoint, Route, _) {
+], function(aeris, utils, UntestedSpecError, Waypoint, MockWaypoint, Route, _) {
   describe('A Route', function() {
 
     it('should have a unique cid, with prefix \'route_\'', function() {
@@ -37,6 +38,47 @@ define([
         expect(route.distance).toEqual(7);
       });
 
+      it('should not a add waypoint that already exists in the route', function() {
+        var route = new Route();
+        spyOn(route, 'has');
+
+        route.has.andReturn(false);
+        route.add(sinon.createStubInstance(Waypoint));
+
+        route.has.andReturn(true);
+        expect(function() {
+          route.add(sinon.createStubInstance(Waypoint));
+        }).toThrowType('InvalidArgumentError');
+      });
+
+      it('should add a waypoint at an index', function() {
+        var route, newWaypoint, waypoints = [];
+
+
+        // Create mock waypoints
+        _.times(3, function() {
+          var wp = sinon.createStubInstance(Waypoint);
+          wp.cid = _.uniqueId();
+          waypoints.push(wp);
+        });
+        newWaypoint = sinon.createStubInstance(Waypoint);
+        newWaypoint.cid = _.uniqueId();
+
+        // Create route with mock waypoints
+        route = new Route(waypoints);
+
+        // Insert a new waypoint
+        route.add(newWaypoint, { at: 1 });
+
+        // Test: waypoint was inserted
+        // Use cids so we don't have to do
+        // messy object comparison
+        expect(route.at(0).cid).toEqual(waypoints[0].cid);
+        expect(route.at(1).cid).toEqual(newWaypoint.cid);
+        expect(route.at(2).cid).toEqual(waypoints[1].cid);
+        expect(route.at(3).cid).toEqual(waypoints[2].cid);
+      });
+
       it('should trigger a \'add\' event, passing the waypoint and the route', function() {
         var route = new Route();
         var triggered = false;
@@ -54,17 +96,59 @@ define([
 
       it('should return a waypoint by cid', function() {
         var route = new Route();
-        var waypoints = [
-          new Waypoint(null, true),
-          new Waypoint(),
-          new Waypoint()
-        ];
+        var waypoints = [];
 
-        for (var i = 0; i < waypoints.length; i++) {
-          var wp = waypoints[i];
+        // Create mock waypoints
+        _.times(3, function() {
+          var wp = sinon.createStubInstance(Waypoint);
+          wp.cid = _.uniqueId();
+
           route.add(wp);
           expect(route.get(wp.cid)).toEqual(wp);
-        }
+        });
+      });
+
+      it('should return the previous waypoint', function() {
+        var route, waypoints = [];
+
+        // Create mock waypoints
+        _.times(3, function() {
+          var wp = sinon.createStubInstance(Waypoint);
+          wp.cid = _.uniqueId();
+          waypoints.push(wp);
+        });
+        route = new Route(waypoints);
+
+        expect(route.getPrevious(waypoints[0])).toBeUndefined();
+        expect(route.getPrevious(waypoints[1])).toEqual(waypoints[0]);
+        expect(function() {
+          route.getPrevious(sinon.createStubInstance(Waypoint));
+        }).toThrowType('InvalidArgumentError');
+      });
+
+      it('should return the next waypoint', function() {
+        var waypoints = [
+          sinon.createStubInstance(Waypoint),
+          sinon.createStubInstance(Waypoint),
+          sinon.createStubInstance(Waypoint)
+        ];
+        var route = new Route(waypoints);
+
+        expect(route.getNext(waypoints[2])).toBeUndefined();
+        expect(route.getNext(waypoints[1])).toEqual(waypoints[2]);
+        expect(function() {
+          route.getNext(sinon.createStubInstance(Waypoint));
+        }).toThrowType('InvalidArgumentError');
+      });
+
+      it('should check if a waypoint exists in a route', function() {
+        var waypoint = sinon.createStubInstance(Waypoint);
+        var someOtherWaypoint = sinon.createStubInstance(Waypoint);
+        var route = new Route();
+
+        route.add(waypoint);
+        expect(route.has(waypoint)).toEqual(true);
+        expect(route.has(someOtherWaypoint)).toEqual(false);
       });
 
       it('should remove a waypoint', function() {
@@ -122,21 +206,6 @@ define([
 
         route.reset();
         expect(route.getWaypoints().length).toEqual(0);
-      });
-
-      it('should tell each waypoint about the previous waypoint in the route', function() {
-        var route = new Route();
-        var wpMock = new MockWaypoint({
-          distance: 7
-        });
-        var wpMock2 = new MockWaypoint({
-          distance: 11
-        });
-
-        route.add(wpMock);
-        expect(wpMock.previous).toBeNull();
-        route.add(wpMock2);
-        expect(wpMock2.previous.getDistance()).toEqual(7);
       });
 
       it('should return the last waypoint in the route', function() {
@@ -355,7 +424,7 @@ define([
 
         it('a JSON waypoints object', function() {
           // Taken from an example export
-          //var json = [{'originalLatLon': [44.978915624496295, -93.26489210128784], 'geocodedLatLon': [44.97892, -93.26491000000001], 'followPaths': true, 'travelMode': 'WALKING', 'path': null, 'distance': 0}, {'originalLatLon': [44.97666917019782, -93.26875448226929], 'geocodedLatLon': [44.976670000000006, -93.26877], 'followPaths': true, 'travelMode': 'WALKING', 'path': [[44.97892, -93.26491000000001], [44.978030000000004, -93.26566000000001], [44.978640000000006, -93.26706], [44.97764, -93.26794000000001], [44.976670000000006, -93.26877]], 'distance': 502}, {'originalLatLon': [44.975895033800114, -93.26392650604248], 'geocodedLatLon': [44.97592, -93.2639], 'followPaths': true, 'travelMode': 'WALKING', 'path': [[44.976670000000006, -93.26877], [44.97764, -93.26794000000001], [44.97702, -93.26651000000001], [44.97592, -93.2639]], 'distance': 497}];
+          //var json = [{'originalLatLon': [44.978915624496295, -93.26489210128784], 'geocodedLatLon': [44.97892, -93.26491000000001], 'followDirections': true, 'travelMode': 'WALKING', 'path': null, 'distance': 0}, {'originalLatLon': [44.97666917019782, -93.26875448226929], 'geocodedLatLon': [44.976670000000006, -93.26877], 'followDirections': true, 'travelMode': 'WALKING', 'path': [[44.97892, -93.26491000000001], [44.978030000000004, -93.26566000000001], [44.978640000000006, -93.26706], [44.97764, -93.26794000000001], [44.976670000000006, -93.26877]], 'distance': 502}, {'originalLatLon': [44.975895033800114, -93.26392650604248], 'geocodedLatLon': [44.97592, -93.2639], 'followDirections': true, 'travelMode': 'WALKING', 'path': [[44.976670000000006, -93.26877], [44.97764, -93.26794000000001], [44.97702, -93.26651000000001], [44.97592, -93.2639]], 'distance': 497}];
           var json = [
             new MockWaypoint({ distance: 2 }, true),
             new MockWaypoint({ distance: 4 }),
@@ -379,10 +448,6 @@ define([
           //      note: not testing parsing of Waypoints (belongs in Waypoint's spec)
           expect(waypoints.length).toEqual(3);
           expect(waypoints[0] instanceof Waypoint).toEqual(true);
-
-          // Properly set previous waypoints
-          expect(waypoints[1].previous).toEqual(waypoints[0]);
-          expect(waypoints[2].previous).toEqual(waypoints[1]);
 
           // Make sure we didn't lose our subscribers.
           route.trigger('topic');

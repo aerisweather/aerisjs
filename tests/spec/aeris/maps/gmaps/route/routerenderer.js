@@ -2,13 +2,15 @@ define([
     'aeris',
     'jasmine',
     'testUtils',
+    'gmaps/utils',
     'vendor/underscore',
     'mocks/waypoint',
     'gmaps/route/route',
+    'gmaps/route/waypoint',
     'gmaps/route/routerenderer',
     'gmaps/map',
     'base/markers/icon'
-], function(aeris, jasmine, testUtils, _, MockWaypoint, Route, RouteRenderer, AerisMap, Icon) {
+], function(aeris, jasmine, testUtils, mapUtils, _, MockWaypoint, Route, Waypoint, RouteRenderer, AerisMap, Icon) {
   describe('A RouteRenderer', function() {
     var map, $canvas;
 
@@ -74,30 +76,44 @@ define([
 
       it('with a path', function() {
         var renderer = new RouteRenderer(map);
-        var mockWp = new MockWaypoint({
-          followPaths: true,
-          previous: new MockWaypoint(),
-          path: [
-            testUtils.getRandomLatLon(),
-            testUtils.getRandomLatLon(),
-            testUtils.getRandomLatLon()
-          ]
+        var route, waypoint, setMapSpy;
+
+        // Mock waypoint
+        waypoint = sinon.createStubInstance(Waypoint);
+        waypoint.path = testUtils.getRandomPath();
+
+        // Mock route
+        route = sinon.createStubInstance(Route);
+        route.getPrevious = jasmine.createSpy('getPrevious')
+          .andCallFake(function(wp) {
+            expect(wp).toEqual(waypoint);
+            return sinon.createStubInstance(Waypoint);
+          });
+        route.has = jasmine.createSpy('has')
+          .andCallFake(function(wp) {
+            expect(wp).toEqual(waypoint);
+            return true;
+          });
+
+
+        // Mock Polyline
+        setMapSpy = jasmine.createSpy('setMap');
+        google.maps.Polyline.andCallFake(function(args) {
+          expect(args.path).toBeNearPath(mapUtils.pathToLatLng(waypoint.path));
+
+          return {
+            setMap: setMapSpy
+          };
         });
 
-        renderer.renderWaypoint(mockWp, new Route([mockWp]));
+        // Render the waypoint
+        renderer.renderWaypoint(waypoint, route);
 
         // Test: constructed Polyine
         expect(google.maps.Polyline).toHaveBeenCalled();
-        expect(google.maps.Polyline.callCount).toEqual(1);
-
-        // Test: Polyline path matches waypoint's path
-        expect(google.maps.Polyline.argsForCall[0][0].path.length).toEqual(mockWp.path.length);
-        _.each(google.maps.Polyline.argsForCall[0][0].path, function(latLng, i) {
-          expect(latLng).toBeNearLatLng(mockWp.path[i]);
-        });
 
         // Test: Polyline added to map
-        expect(polyline.setMap).toHaveBeenCalled();
+        expect(setMapSpy).toHaveBeenCalled();
       });
     });
 

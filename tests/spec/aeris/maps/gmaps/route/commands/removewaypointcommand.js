@@ -121,11 +121,6 @@ define([
           expect(middleWaypoint.path).toBeNull();
         });
 
-        it('should set the following waypoint\'s \'previous\' property to null', function() {
-          command.execute();
-          expect(middleWaypoint.previous).toBeNull();
-        });
-
         it('should set the following waypoint\'s \'distance\' property to 0', function() {
           command.execute();
           expect(middleWaypoint.getDistance()).toEqual(0);
@@ -164,13 +159,6 @@ define([
 
         afterEach(function() {
           command = null;
-        });
-
-
-        it('should set the following path\'s \'previous\' property to the previous waypoint', function() {
-          command.execute();
-          expect(lastWaypoint.previous).toMatchWaypoint(firstWaypoint);
-          expect(lastWaypoint.previous.cid).toEqual(firstWaypoint.cid);
         });
 
         it('should query the Google Directions service for directions between the previous and following waypoints', function() {
@@ -278,7 +266,7 @@ define([
       beforeEach(function() {
         waypoints = [
           new MockWaypoint(null, true),
-          new MockWaypoint({ followPaths: false }),
+          new MockWaypoint({ followDirections: false }),
           new MockWaypoint()
         ];
         firstWaypoint = waypoints[0];
@@ -300,10 +288,10 @@ define([
         ]);
       });
 
-      it('should set the following waypoint\'s \'followPaths\' property to false', function() {
+      it('should set the following waypoint\'s \'followDirections\' property to false', function() {
         command.execute();
 
-        expect(lastWaypoint.followPaths).toEqual(false);
+        expect(lastWaypoint.followDirections).toEqual(false);
       });
 
       it('should request distance data from the google.geometry library', function() {

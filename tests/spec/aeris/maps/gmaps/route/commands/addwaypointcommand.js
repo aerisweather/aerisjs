@@ -49,7 +49,7 @@ define([
       it('should set the path property as a direct line to the previous waypoint', function() {
         var firstWaypoint = new MockWaypoint(null, true);
         var secondWaypoint = new MockWaypoint({
-          followPaths: false
+          followDirections: false
         }, true);
         var route = new Route([firstWaypoint]);
         var command = new AddWaypointCommand(route, secondWaypoint);
