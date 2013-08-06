@@ -19,7 +19,10 @@
     <script data-main="../../initialize" src="../../../externals/require.js"></script>
     <script type="text/javascript">
       function initialize() {
-        require(["aeris/maps/gmaps"], function(aeris) {
+        require([
+          'aeris/maps/gmaps',
+          'base/events/click'
+        ], function(aeris, Click) {
           var map = new aeris.maps.gmaps.Map("map-canvas", {
             baseLayer: new aeris.maps.layers.GoogleRoadMap(),
             center: [44.98, -93.2636],
@@ -28,22 +31,27 @@
           var routeBuilder = new aeris.maps.gmaps.route.RouteBuilder(map);
           var route = routeBuilder.getRoute();
 
-          var $followPaths = $('#follow-paths');
-          $followPaths.change(function() {
-            routeBuilder.followPaths = $followPaths.is(':checked');
-          });
+          bindMapEvents();
+          bindUIEvents();
+          updateUI();
 
-          var $travelMode = $('#travel-mode');
-          $travelMode.change(function() {
-            routeBuilder.travelMode = $travelMode.val();
-          });
-
-          var $totalDistance = $('#total-distance')
+          // To make my life really easy...
+          $('body').click(updateUI);
 
 
-          // @TODO route should trigger a change event
-          var onChange = function() {
-            displayDistance();
+          // Bind map events
+          function bindMapEvents() {
+            var click = new Click();
+            click.setMap(map);
+
+            click.on('click', function(latLon) {
+              routeBuilder.addWaypoint(latLon);
+              updateUI();
+            });
+          }
+
+          function updateUI() {
+            updateDistance();
 
             // Enable/Disable undo/redo
             if(routeBuilder.canUndo()) {
@@ -58,63 +66,83 @@
             else {
               $('#redo').attr('disabled', 'disabled');
             }
-          };
+          }
 
-          var displayDistance = function() {
+          function updateDistance() {
             var distance = route.distance;
             var miles = distance * 0.00062137;
+            var $totalDistance = $('#total-distance')
             miles = Math.round(miles * 100) / 100;
             $totalDistance.text(miles);
           }
-          route.on('add', onChange, this);
-          route.on('remove', onChange, this);
-          route.on('reset', onChange, this);
 
-          var $exportBtn = $('#route-export');
-          var $importBtn = $('#route-import');
-          var $routeJSON = $('#route-json');
-          $exportBtn.click(function() {
-            $routeJSON.val(route.export());
-          });
-          $importBtn.click(function() {
-            route.import($routeJSON.val());
-          });
+          function bindUIEvents() {
+            var $followPaths = $('#follow-paths');
+            var $travelModeSelect = $('#travel-mode');
+            var $exportBtn = $('#route-export');
+            var $importBtn = $('#route-import');
+            var $routeJSON = $('#route-json');
 
-          $('#removeFirstWaypoint').click(function() {
-            var wp;
+            // Follow paths
+            $followPaths.change(function() {
+              routeBuilder.followPaths = $followPaths.is(':checked');
+            });
 
-            if (route.getWaypoints().length) {
-              wp = route.at(0);
-              routeBuilder.removeWaypoint(wp);
-            }
-          });
-          $('#removeMiddleWaypoint').click(function() {
-            var wp;
-            var count = route.getWaypoints().length;
-            if (count > 2) {
-              wp = route.at(Math.floor(count / 2));
-              routeBuilder.removeWaypoint(wp);
-            }
-          });
-          $('#removeLastWaypoint').click(function() {
-            var wp = route.getLastWaypoint();
+            // Travel mode
+            $travelModeSelect.change(function() {
+              routeBuilder.travelMode = $travelModeSelect.val();
+            });
 
-            if(wp) {
-              routeBuilder.removeWaypoint(wp);
-            }
-          });
-          $('#clearRoute').click(function() {
-            routeBuilder.resetRoute();
-          });
+            // Import/Export
+            $exportBtn.click(function() {
+              $routeJSON.val(route.export());
+            });
+            $importBtn.click(function() {
+              route.import($routeJSON.val());
+            });
+
+            // Route Commands
+            $('#removeFirstWaypoint').click(function() {
+              var wp;
+
+              if (route.getWaypoints().length) {
+                wp = route.at(0);
+                routeBuilder.removeWaypoint(wp);
+              }
+            });
+            $('#removeMiddleWaypoint').click(function() {
+              var wp;
+              var count = route.getWaypoints().length;
+              if (count > 2) {
+                wp = route.at(Math.floor(count / 2));
+                routeBuilder.removeWaypoint(wp);
+              }
+            });
+            $('#removeLastWaypoint').click(function() {
+              var wp = route.getLastWaypoint();
+
+              if(wp) {
+                routeBuilder.removeWaypoint(wp);
+              }
+            });
+            $('#clearRoute').click(function() {
+              routeBuilder.resetRoute();
+            });
+
+            // Undo/Redo
+            $('#undo').click(function() {
+              routeBuilder.undo();
+            });
+            $('#redo').click(function() {
+              routeBuilder.redo();
+            });
+          }
 
 
-          // Undo/Redo
-          $('#undo').click(function() {
-            routeBuilder.undo();
-          });
-          $('#redo').click(function() {
-            routeBuilder.redo();
-          });
+
+
+
+
 
         });
       }
