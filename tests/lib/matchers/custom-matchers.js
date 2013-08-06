@@ -94,7 +94,7 @@ require([
 
 
       toBeNearLatLng: function(expected, within) {
-        return isNearLatLng(expected, actual, within);
+        return isNearLatLng(expected, this.actual, within);
       },
 
       toBeNearPath: function(expectedPath, within) {

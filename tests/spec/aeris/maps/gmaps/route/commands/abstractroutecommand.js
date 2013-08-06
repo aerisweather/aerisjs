@@ -3,181 +3,66 @@
  * as a proxy.
  */
 define([
-  'aeris/promise',
-  'mocks/routecommand',
-  'testErrors/untestedspecerror',
-  'testUtils',
+  'aeris',
+  'gmaps/route/commands/abstractroutecommand',
   'gmaps/route/route'
-], function(Promise, MockRouteCommand, UntestedSpecError, testUtils, Route) {
+], function(aeris, AbstractRouteCommand, Route) {
   describe('An AbstractRouteCommand', function() {
-    var route, waypoints, waypoints_orig, command;
+    var ConcreteRouteCommand = function(route, opt_isResolving, opt_timeout) {
+      AbstractRouteCommand.call(this, route);
 
-    beforeEach(function() {
-      waypoints = testUtils.getMockWaypoints();
-      waypoints_orig = waypoints.slice(0);
-      route = new Route(waypoints);
-      command = new MockRouteCommand(route);
-    });
+      this.isResolving_ = opt_isResolving  === undefined ? true : opt_isResolving;
+      this.timeout_ = opt_timeout === undefined ? 25 : opt_timeout;
 
-    afterEach(function() {
-      waypoints.length = 0;
-      route = null;
-      command = null;
-    });
+      // -1 --> never executed
+      // 0  --> undone
+      // 1  --> executed
+      this.state_ = -1;
+    };
+    aeris.inherits(ConcreteRouteCommand, AbstractRouteCommand);
 
+    ConcreteRouteCommand.prototype.execute_ = function() {
+      var promise = new Promise();
+      var self = this;
 
+      window.setTimeout(function() {
+        if (self.isResolving_) {
+          self.state_ = 1;
+          promise.resolve();
+        }
+        else { promise.reject(); }
+      }, this.timeout_);
 
-    it('should promise to execute', function() {
-      var promise = command.execute();
+      return promise;
+    };
 
-      expect(promise).toBeInstanceOf(Promise);
+    ConcreteRouteCommand.prototype.undo_ = function() {
+      var promise = new Promise();
+      var self = this;
 
-      promise.done(testUtils.setFlag);
-      waitsFor(testUtils.checkFlag, 'command to execute', 100);
-    });
+      window.setTimeout(function() {
+        if (self.isResolving_) {
+          self.state_ = 0;
+          promise.resolve();
+        }
+        else { promise.reject(); }
+      }, this.timeout_);
 
-    it('should promise to undo', function() {
-      command.execute().done(function() {
-        var promise = command.undo();
+      return promise;
+    };
 
-        expect(promise).toBeInstanceOf(Promise);
-        promise.done(testUtils.setFlag);
-      });
-
-      waitsFor(testUtils.checkFlag, 'promise to finish undoing', 200);
-    });
-
-    it('should handle rejected commands', function() {
-      var failingFunction = function() {
-        var promise = new Promise();
-        promise.reject();
-        return promise;
-      };
-
-      spyOn(MockRouteCommand.prototype, 'execute_').andCallFake(failingFunction);
-      spyOn(MockRouteCommand.prototype, 'undo_').andCallFake(failingFunction);
-
-      runs(function() {
-        command.execute().fail(testUtils.setFlag);
-      });
-      waitsFor(testUtils.checkFlag, 'execution to fail', 100);
-
-      runs(function() {
-        testUtils.resetFlag();
-        command.undo().fail(testUtils.setFlag);
-      });
-      waitsFor(testUtils.checkFlag, 'undo to fail', 100);
-    });
+    ConcreteRouteCommand.prototype.getState = function() {
+      return this.state_;
+    };
 
 
-    it('should require a route', function() {
+    it('should require a route', function () {
       expect(function() {
-        new MockRouteCommand('not a route');
+        new ConcreteRouteCommand(null);
       }).toThrowType('InvalidArgumentError');
+
+      new ConcreteRouteCommand(new Route());
     });
 
-    it('should save the starting route state', function() {
-      command.execute().done(testUtils.setFlag);
-
-      // Confirm that route changes on execute
-      waitsFor(testUtils.checkFlag, 'command to execute', 100);
-      runs(function() {
-        expect(route).not.toMatchRoute(new Route(waypoints_orig));
-
-        testUtils.resetFlag();
-        command.undo().done(testUtils.setFlag);
-      });
-
-      // Check that route reverts to original state
-      waitsFor(testUtils.checkFlag, 'command to undo', 100);
-      runs(function() {
-        expect(route).toMatchRoute(new Route(waypoints_orig));
-      });
-    });
-
-    it('should not execute a command twice', function() {
-      command.execute().done(testUtils.setFlag);
-
-      // Test: before command has completed execution;
-      expect(function() {
-        command.execute();
-      }).toThrowType('CommandHistoryError');
-
-      // Test: after command has completed execution
-      waitsFor(testUtils.checkFlag, 'command to complete execution', 100);
-      runs(function() {
-        expect(function() {
-          command.execute();
-        }).toThrowType('CommandHistoryError');
-      });
-    });
-
-    it('should not undo a command that has\'nt been executed', function() {
-      expect(function() {
-        command.undo();
-      }).toThrowType('CommandHistoryError');
-    });
-
-    it('should not undo a command that has already been undone', function() {
-      command.execute().done(testUtils.setFlag);
-
-      waitsFor(testUtils.checkFlag, 'command to execute', 100);
-      runs(function() {
-        testUtils.resetFlag();
-        command.undo().done(testUtils.setFlag);
-      });
-
-      waitsFor(testUtils.checkFlag, 'undo to execute', 100);
-      runs(function() {
-        expect(function() {
-          command.undo();
-        }).toThrowType('CommandHistoryError');
-      });
-    });
-
-    it('should not undo a command that is still in progress', function() {
-      command.execute();
-      expect(function() {
-        command.undo();
-      }).toThrowType('CommandHistoryError');
-    });
-
-
-    describe('should be able to execute, undo, and redo multiple times', function() {
-      it('...ending in undo', function() {
-
-        command.execute().done(function() {
-          command.undo().done(function() {
-            command.execute().done(function() {
-              command.undo().done(testUtils.setFlag);
-            });
-          });
-        });
-
-        waitsFor(testUtils.checkFlag, 'command stack to complete', 1000);
-        runs(function() {
-          expect(route).toMatchRoute(new Route(waypoints_orig));
-        });
-      });
-
-      it('...ending in execute', function() {
-
-        command.execute().done(function() {
-          command.undo().done(function() {
-            command.execute().done(function() {
-              command.undo().done(function() {
-                command.execute().done(testUtils.setFlag);
-              });
-            });
-          });
-        });
-
-        waitsFor(testUtils.checkFlag, 'command stack to complete', 1000);
-        runs(function() {
-          expect(route).not.toMatchRoute(new Route(waypoints_orig));
-        });
-      });
-
-    });
   });
 });

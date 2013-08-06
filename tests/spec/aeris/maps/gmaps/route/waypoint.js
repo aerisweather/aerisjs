@@ -1,11 +1,26 @@
 define([
   'aeris',
   'jasmine',
+  'testErrors/untestedspecerror',
   'gmaps/route/waypoint',
   'mocks/waypoint',
+  'mocks/directionsresults',
   'vendor/underscore',
-  'aeris/utils'
-], function(aeris, jasmine, Waypoint, MockWaypoint, _) {
+  'aeris/utils',
+  'testUtils',
+  'gmaps/utils'
+], function(
+  aeris,
+  jasmine,
+  UntestedSpecError,
+  Waypoint,
+  MockWaypoint,
+  MockDirectionsResults,
+  _,
+  utils,
+  testUtils,
+  mapUtils
+) {
   describe('A Waypoint', function() {
 
     it('should accept waypoint properties as options on construction, and set defaults', function() {
@@ -198,6 +213,74 @@ define([
 
         // Compare all object properties
         expect(waypointImporter).toMatchWaypoint(waypointExporter);
+      });
+    });
+
+    describe('Calculate path data', function() {
+      var latLon_origin, latLon_destination, 
+          waypoint_origin, waypoint_destination;
+      
+      beforeEach(function() {
+        latLon_origin = testUtils.getRandomLatLon();
+        latLon_destination = testUtils.getRandomLatLon();
+        waypoint_origin = new Waypoint();
+        waypoint_destination = new Waypoint();
+
+        spyOn(waypoint_origin, 'getLatLon').andReturn(latLon_origin);
+        spyOn(waypoint_destination, 'getLatLon').andReturn(latLon_destination);
+      });
+
+
+      it('should calculate the direct distance to another waypoint', function () {
+        var mockDistance = 12345;
+        var result;
+
+        spyOn(google.maps.geometry.spherical, 'computeDistanceBetween').andCallFake(
+          function(from, to) {
+            expect(from).toEqual(mapUtils.arrayToLatLng(latLon_origin));
+            expect(to).toEqual(mapUtils.arrayToLatLng(latLon_destination));
+
+            return mockDistance;
+          }
+        );
+
+        result = waypoint_origin.calculateDirectDistanceTo(waypoint_destination);
+        expect(result).toEqual(mockDistance);
+      });
+
+      it('should fetch path info to another waypoint', function () {
+        var mockDistance = 12345;
+        var mockPath = [
+            testUtils.getRandomLatLon(),
+            testUtils.getRandomLatLon(),
+            testUtils.getRandomLatLon()
+        ];
+
+        // Mock Google Directions Service
+        var directionsService = {
+          route: function(request, callback) {
+            // Test: correct request parameters
+            expect(request).toEqual({
+              origin: mapUtils.arrayToLatLng(latLon_origin),
+              destination: mapUtils.arrayToLatLng(latLon_destination),
+              travelMode: google.maps.TravelMode[waypoint_destination.travelMode]
+            });
+
+            callback(new MockDirectionsResults({
+              path: mockPath,
+              distance: mockDistance
+            }), google.maps.DirectionsStatus.OK);
+          }
+        };
+
+        waypoint_origin.fetchPathTo(waypoint_destination, directionsService).
+            done(function(path, distance) {
+              expect(path).toBeNearPath(mockPath);
+              expect(distance).toEqual(mockDistance);
+              testUtils.setFlag();
+            });
+
+        waitsFor(testUtils.checkFlag, 'fetchPathTo to resolve', 50);
       });
     });
   });

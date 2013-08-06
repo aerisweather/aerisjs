@@ -7,18 +7,11 @@ define([
   'testErrors/untestedspecerror'
 ], function(aeris, testUtils, CommandManager, Promise, MockCommand, UntestedSpecError) {
   describe('A CommandManager', function() {
-    var manager;
-
-    beforeEach(function() {
-      manager = new CommandManager();
-    });
-
-    afterEach(function() {
-      manager = null;
-    });
 
 
     it('should reject non-commands', function() {
+      var manager = new CommandManager();
+
       expect(function() {
         manager.executeCommand('not a command');
       }).toThrowType('InvalidArgumentError');
@@ -67,6 +60,7 @@ define([
     });
 
     it('should fail to undo a command if a command has not been executed', function() {
+      var manager = new CommandManager();
       expect(function() {
         manager.undo();
       }).toThrowType('CommandHistoryError');
@@ -81,12 +75,16 @@ define([
 
       manager.executeCommand(command).done(function() {
         manager.undo().done(function() {
-          promise = manager.redo(testUtils.setFlag);
-
-          expect(promise).toBeInstanceOf(Promise);
-          expect(command.execute.callCount).toEqual(2);
+          promise = manager.redo().done(function() {
+            expect(promise).toBeInstanceOf(Promise);
+            expect(command.execute.callCount).toEqual(2);
+            
+            testUtils.setFlag();
+          });
         });
       });
+
+      waitsFor(testUtils.checkFlag, 'manager to undo', 200);
     });
 
 
@@ -107,16 +105,18 @@ define([
 
 
       it('should wait for one command to resolve before executing the next', function() {
-        var promise1 = manager.executeCommand(command1);
+        var manager = new CommandManager();
+        var commands = getCommands();
+        var promise1 = manager.executeCommand(commands[0]);
 
-        spyOn(command2, 'execute').andCallFake(function() {
+        spyOn(commands[1], 'execute').andCallFake(function() {
           expect(promise1.getState()).toEqual('resolved');
 
           testUtils.setFlag();
           return new Promise();
         });
 
-        manager.executeCommand(command2);
+        manager.executeCommand(commands[1]);
 
         waitsFor(testUtils.checkFlag, 'command2.execute to be called', 250);
       });
@@ -160,34 +160,38 @@ define([
       });
 
       it('should wait for an undo to finish before undoing again', function() {
+        var manager = new CommandManager();
+        var commands = getCommands();
         var undoPromise2;
 
-        p1 = manager.executeCommand(command1);
-        p2 = manager.executeCommand(command2);
-        undoPromise2 = manager.undo();          // undo command2
+        p1 = manager.executeCommand(commands[0]);
+        p2 = manager.executeCommand(commands[1]);
+        undoPromise2 = manager.undo();          // undo command 1
 
-        spyOn(command1, 'undo').andCallFake(function() {
+        spyOn(commands[0], 'undo').andCallFake(function() {
           expect(undoPromise2.getState()).toEqual('resolved');
 
           testUtils.setFlag();
           return new Promise();
         });
 
-        manager.undo();                         // undo command1
+        manager.undo();                         // undo command 0
 
         waitsFor(testUtils.checkFlag, 'command2.undo to be called', 500);
       });
 
 
       it('should only redo after undoing', function() {
-        manager.executeCommand(command1);
-        manager.executeCommand(command2);
-        manager.executeCommand(command3);
+        var commands = getCommands();
+        var manager = new CommandManager();
+        manager.executeCommand(commands[0]);
+        manager.executeCommand(commands[1]);
+        manager.executeCommand(commands[2]);
 
-        manager.undo(); // undoes cmd3
         manager.undo(); // undoes cmd2
+        manager.undo(); // undoes cmd1
 
-        manager.executeCommand(command3);
+        manager.executeCommand(commands[2]);
 
         expect(function() {
           manager.redo();

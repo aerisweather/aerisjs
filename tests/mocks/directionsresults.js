@@ -23,9 +23,13 @@ define([
     return {
       routes: [
         {
-          overview_path: mapUtils.pathToLatLng(opt_options.path) || [
-
-          ],
+          overview_path: opt_options.path ?
+              mapUtils.pathToLatLng(opt_options.path) :
+              mapUtils.pathToLatLng([
+                testUtils.getRandomLatLon(),
+                testUtils.getRandomLatLon(),
+                testUtils.getRandomLatLon()
+              ]),
           legs: [
             {
               distance: {

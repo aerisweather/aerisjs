@@ -7,7 +7,7 @@ define([
   'gmaps/route/route',
   'gmaps/route/routerenderer',
   'gmaps/route/routebuilder',
-  'gmaps/route/commands/commandmanager',
+  'aeris/commands/commandmanager',
   'gmaps/route/commands/addwaypointcommand',
   'gmaps/route/commands/removewaypointcommand',
   'mocks/waypoint',

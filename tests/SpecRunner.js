@@ -25,6 +25,8 @@ require([
       '/tests/lib/domReady.js!',
       'spec/aeris/utils',
       'spec/aeris/events',
+      'spec/aeris/commands/abstractcommand',
+      'spec/aeris/commands/commandmanager',
       'spec/aeris/aerisapi',
       'spec/aeris/promise',
       'spec/aeris/promisequeue',

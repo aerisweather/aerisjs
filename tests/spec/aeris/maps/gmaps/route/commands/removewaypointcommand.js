@@ -9,8 +9,7 @@ define([
   'gmaps/route/route',
   'mocks/directionsresults',
   'testErrors/untestedspecerror',
-  'aeris/errors/invalidargumenterror',
-  'vendor/underscore'
+  'aeris/errors/invalidargumenterror'
 ], function(
   aeris,
   _,
@@ -22,8 +21,7 @@ define([
   Route,
   MockDirectionsResult,
   UntestedSpecError,
-  InvalidArgumentError,
-  _
+  InvalidArgumentError
 ) {
   describe('A RemoveWaypointCommand', function() {
     var waypoints, route;
@@ -91,22 +89,19 @@ define([
       var command1 = new RemoveWaypointCommand(route, firstWaypoint);
       var command2 = new RemoveWaypointCommand(route, middleWaypoint);
       var command3 = new RemoveWaypointCommand(route, lastWaypoint);
-      var flag = false;
 
       spyOn(route, 'remove');
 
-      waitsFor(function() {
-        return flag === true;
-      }, 'command promises to resolve', 2000);
-
       Promise.when(command1.execute(), command2.execute(), command3.execute()).done(function() {
-        flag = true;
         expect(route.remove.argsForCall).toEqual([
           [firstWaypoint],
           [middleWaypoint],
           [lastWaypoint]
         ]);
+        testUtils.setFlag();
       });
+
+      waitsFor(testUtils.checkFlag, 'command promises to resolve', 2000);
     });
 
     describe('for a waypoint following a path', function() {

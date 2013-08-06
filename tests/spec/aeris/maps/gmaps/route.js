@@ -3,7 +3,6 @@ require([
   'spec/aeris/maps/gmaps/route/route',
   'spec/aeris/maps/gmaps/route/routebuilder',
   'spec/aeris/maps/gmaps/route/routerenderer',
-  'spec/aeris/maps/gmaps/route/commands/commandmanager',
   'spec/aeris/maps/gmaps/route/commands/abstractroutecommand',
   'spec/aeris/maps/gmaps/route/commands/addwaypointcommand',
   'spec/aeris/maps/gmaps/route/commands/removewaypointcommand',
