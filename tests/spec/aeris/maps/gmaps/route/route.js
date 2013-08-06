@@ -1,12 +1,16 @@
 define([
   'aeris',
+  'aeris/events',
+  'jasmine',
+  'sinon',
   'aeris/utils',
+  'testUtils',
   'testErrors/untestedspecerror',
   'gmaps/route/waypoint',
   'mocks/waypoint',
   'gmaps/route/route',
   'vendor/underscore'
-], function(aeris, utils, UntestedSpecError, Waypoint, MockWaypoint, Route, _) {
+], function(aeris, Events, jasmine, sinon, utils, testUtils, UntestedSpecError, Waypoint, MockWaypoint, Route, _) {
   describe('A Route', function() {
 
     it('should have a unique cid, with prefix \'route_\'', function() {
@@ -79,24 +83,42 @@ define([
         expect(route.at(3).cid).toEqual(waypoints[2].cid);
       });
 
-      it('should trigger a \'add\' event, passing the waypoint and the route', function() {
-        var route = new Route();
-        var triggered = false;
-        var waypoint = new MockWaypoint();
+      describe('triggering events', function() {
 
-        route.on('add', function(wp, r) {
-          triggered = true;
-          expect(wp).toEqual(waypoint);
-          expect(r).toEqual(route);
+        it('should trigger a \'add\' event, passing the waypoint and the route', function() {
+          var route = new Route();
+          var triggered = false;
+          var waypoint = new MockWaypoint();
+
+          route.on('add', function(wp, r) {
+            triggered = true;
+            expect(wp).toEqual(waypoint);
+            expect(r).toEqual(route);
+          });
+          route.add(waypoint);
+
+          expect(triggered).toBe(true);
         });
-        route.add(waypoint);
 
-        expect(triggered).toBe(true);
+        it('should trigger \'change\' events fired by child waypoints', function() {
+          var waypoint = sinon.createStubInstance(Waypoint);
+          var route = new Route();
+
+
+          spyOn(route, 'trigger');
+
+          // Immediately call change event callback
+          testUtils.stubEvent(waypoint, 'change', [waypoint]);
+
+          // Add a waypoint --> bind events to waypoint --> handler are immediately called
+          route.add(waypoint);
+
+          expect(route.trigger).toHaveBeenCalledWith('change', waypoint);
+        });
       });
 
       it('should return a waypoint by cid', function() {
         var route = new Route();
-        var waypoints = [];
 
         // Create mock waypoints
         _.times(3, function() {
@@ -424,7 +446,7 @@ define([
 
         it('a JSON waypoints object', function() {
           // Taken from an example export
-          //var json = [{'originalLatLon': [44.978915624496295, -93.26489210128784], 'geocodedLatLon': [44.97892, -93.26491000000001], 'followDirections': true, 'travelMode': 'WALKING', 'path': null, 'distance': 0}, {'originalLatLon': [44.97666917019782, -93.26875448226929], 'geocodedLatLon': [44.976670000000006, -93.26877], 'followDirections': true, 'travelMode': 'WALKING', 'path': [[44.97892, -93.26491000000001], [44.978030000000004, -93.26566000000001], [44.978640000000006, -93.26706], [44.97764, -93.26794000000001], [44.976670000000006, -93.26877]], 'distance': 502}, {'originalLatLon': [44.975895033800114, -93.26392650604248], 'geocodedLatLon': [44.97592, -93.2639], 'followDirections': true, 'travelMode': 'WALKING', 'path': [[44.976670000000006, -93.26877], [44.97764, -93.26794000000001], [44.97702, -93.26651000000001], [44.97592, -93.2639]], 'distance': 497}];
+          //var json = [{'latLon': [44.978915624496295, -93.26489210128784], 'geocodedLatLon': [44.97892, -93.26491000000001], 'followDirections': true, 'travelMode': 'WALKING', 'path': null, 'distance': 0}, {'latLon': [44.97666917019782, -93.26875448226929], 'geocodedLatLon': [44.976670000000006, -93.26877], 'followDirections': true, 'travelMode': 'WALKING', 'path': [[44.97892, -93.26491000000001], [44.978030000000004, -93.26566000000001], [44.978640000000006, -93.26706], [44.97764, -93.26794000000001], [44.976670000000006, -93.26877]], 'distance': 502}, {'latLon': [44.975895033800114, -93.26392650604248], 'geocodedLatLon': [44.97592, -93.2639], 'followDirections': true, 'travelMode': 'WALKING', 'path': [[44.976670000000006, -93.26877], [44.97764, -93.26794000000001], [44.97702, -93.26651000000001], [44.97592, -93.2639]], 'distance': 497}];
           var json = [
             new MockWaypoint({ distance: 2 }, true),
             new MockWaypoint({ distance: 4 }),
