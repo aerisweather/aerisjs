@@ -244,7 +244,7 @@ define([
         expect(result).toEqual(mockDistance);
       });
 
-      it('should fetch path info to another waypoint', function () {
+      it('should fetch path info to another waypoint', function() {
         var mockDistance = 12345;
         var mockPath = [
             testUtils.getRandomLatLon(),
@@ -270,9 +270,9 @@ define([
         };
 
         waypoint_origin.fetchPathTo(waypoint_destination, directionsService).
-            done(function(path, distance) {
-              expect(path).toBeNearPath(mockPath);
-              expect(distance).toEqual(mockDistance);
+            done(function(res) {
+              expect(res.path).toBeNearPath(mockPath);
+              expect(res.distance).toEqual(mockDistance);
               testUtils.setFlag();
             });
 

@@ -1,305 +1,396 @@
-define([
+require([
   'aeris',
   'aeris/promise',
   'jasmine',
   'sinon',
-  'jquery',
+  'testUtils',
+  'vendor/underscore',
+  'gmaps/route/waypoint',
   'gmaps/route/route',
   'gmaps/route/routerenderer',
   'gmaps/route/routebuilder',
   'aeris/commands/commandmanager',
   'gmaps/route/commands/addwaypointcommand',
   'gmaps/route/commands/removewaypointcommand',
-  'mocks/waypoint',
-  'gmaps/map',
+  'gmaps/route/commands/resetroutecommand',
   'testErrors/untestedspecerror'
 ], function(
     aeris,
     Promise,
     jasmine,
     sinon,
-    $,
+    testUtils,
+    _,
+    Waypoint,
     Route,
     RouteRenderer,
     RouteBuilder,
     CommandManager,
     AddWaypointCommand,
     RemoveWaypointCommand,
-    MockWaypoint,
-    AerisMap,
+    ResetRouteCommand,
     UntestedSpecError
 ) {
-  var map, $canvas;
 
-  function getMockWaypoints() {
-    return [
-      new MockWaypoint(null, true),
-      new MockWaypoint(),
-      new MockWaypoint()
-    ];
+  function getStubbedWaypoint() {
+    return sinon.createStubInstance(Waypoint);
   }
 
-  beforeEach(function() {
-    $canvas = $('<div id="map-canvas"></div>').appendTo('body');
-    map = new AerisMap('map-canvas', {
-      center: [44.98, -93.2636],
-      zoom: 15
+  function getStubbedRoute() {
+    return sinon.createStubInstance(Route);
+  }
+
+
+  function getStubbedRenderer() {
+    return sinon.createStubInstance(RouteRenderer);
+  }
+
+  function getStubbedCommandManager() {
+    return sinon.createStubInstance(CommandManager);
+  }
+
+  var RouteBuilderFactory = function(opt_options) {
+    var options = _.extend({}, opt_options);
+    this.renderer_ = getStubbedRenderer(options.renderer);
+    this.commandManager_ = getStubbedCommandManager(options.renderer);
+    this.route_ = getStubbedRoute(options.route);
+    this.builder_ = null;
+
+    if (options.build !== false) {
+      this.build();
+    }
+  };
+  RouteBuilderFactory.prototype = {
+    /**
+     * Create the route builder instance.
+     * @return {aeris.maps.gmaps.route.RouteBuilder}
+     */
+    build: function() {
+      this.builder_ = getRouteBuilder({
+        route: this.getRoute(),
+        routeRenderer: this.getRenderer(),
+        commandManager: this.getCommandManager()
+      });
+
+      // Stub to return factory route
+      spyOn(this.builder_, 'getRoute').andReturn(this.getRoute());
+
+      return this.builder_;
+    },
+
+    getRoute: function() { return this.route_; },
+    getRenderer: function() { return this.renderer_; },
+    getCommandManager: function() { return this.commandManager_; },
+    getBuilder: function() { return this.builder_; },
+
+    destroy: function() {
+      // Clean up?
+    }
+  };
+
+  /**
+   * RouteBuilder factory
+   * With stubbed dependency
+   *
+   * @param {Object=} opt_options Any options accepted by RouteBuilder constructor.
+   * @return {aeris.maps.gmaps.route.RouteBuilder}
+   */
+  function getRouteBuilder(opt_options) {
+    var options = _.extend({}, opt_options);
+
+    return new RouteBuilder({
+      route: options.route,
+      commandManager: options.commandManager,
+      routeRenderer: options.routeRenderer
     });
-
-
-    // Wait for the map to initialize
-    waitsFor(function() {
-      return map.initialized.state === 'resolved';
-    }, 'map to initialize', 1000);
-  });
-
-  afterEach(function() {
-    map = null;
-    $canvas.remove();
-  });
+  }
 
 
   describe('A RouteBuilder', function() {
-    it('should require an AerisMap', function() {
-      expect(function() {
-        new RouteBuilder(null);
-      }).toThrowType('InvalidArgumentError');
+    var factory;
 
-      new RouteBuilder(map);
+    beforeEach(function() {
+      factory = new RouteBuilderFactory({ build: false });
+    });
+
+    afterEach(function() {
+      factory.destroy();
+      factory = null;
     });
 
     describe('Its Route', function() {
 
-      it('should create a Route', function() {
-        spyOn(aeris.maps.gmaps.route.Route.prototype, 'on');
-
-        new RouteBuilder(map);
-        // Testing indirectly, because of trouble with
-        // Jasmine removing 'on' method when mocking
-        // constructor.
-        expect(aeris.maps.gmaps.route.Route.prototype.on).toHaveBeenCalled();
-      });
-
-      it('should return a route with getRoute()', function() {
-        var builder = new RouteBuilder(map);
-
-        expect(builder.getRoute() instanceof aeris.maps.gmaps.route.Route).toEqual(true);
-      });
-
-      it('should accept a Route', function() {
-        var route = new Route();
-        var builder = new RouteBuilder(map, { route: route });
+      it('should return its route with getRoute()', function() {
+        var route = getStubbedRoute();
+        var builder = getRouteBuilder({
+          route: route,
+          commandManager: getStubbedCommandManager(),
+          routeRenderer: getStubbedRenderer()
+        });
 
         expect(builder.getRoute()).toEqual(route);
       });
 
       it('should bind events to its route', function() {
-        var route;
+        spyOn(factory.getRoute(), 'on');
 
-        route = new Route();
-        spyOn(route, 'on');
+        factory.build();
 
-        new RouteBuilder(map, { route: route });
-        expect(route.on).toHaveBeenCalled();
+        expect(factory.getRoute().on).toHaveBeenCalled();
       });
 
       it('should set a Route', function() {
-        var oldRoute = new Route();
-        var builder = new RouteBuilder(map, { route: oldRoute });
-        var newRoute = new Route();
-
-        spyOn(newRoute, 'on');
+        var builder = getRouteBuilder({
+          route: getStubbedRoute(),
+          commandManager: getStubbedCommandManager(),
+          routeRenderer: getStubbedRenderer()
+        });
+        var newRoute = getStubbedRoute();
         builder.setRoute(newRoute);
-        expect(newRoute.on).toHaveBeenCalled();
+
+        expect(builder.getRoute()).toEqual(newRoute);
       });
 
       it('should unbind route events', function() {
-        var builder;
-        var route = new Route();
+        spyOn(factory.getRoute(), 'on');
+        spyOn(factory.getRoute(), 'off');
 
-        spyOn(route, 'on');
-        spyOn(route, 'off');
+        factory.build();
+        factory.getBuilder().undelegateEvents();
 
-        builder = new RouteBuilder(map, { route: route });
-
-        builder.undelegateEvents();
-        expect(route.off.callCount).toEqual(route.on.callCount);
+        // Check that as many events have been unbound,
+        // as have been bound.
+        expect(factory.getRoute().off.callCount).toEqual(factory.getRoute().on.callCount);
       });
 
-      it('should bind events to a new route, and clean up the old route\'s events', function() {
-        var builder;
-        var oldRoute = new Route();
-        var newRoute = new Route();
+      it('should bind events to a new route', function() {
+        var newRoute = getStubbedRoute();
 
-        spyOn(oldRoute, 'on');
-        spyOn(oldRoute, 'off');
         spyOn(newRoute, 'on');
 
-        builder = new RouteBuilder(map, { route: oldRoute });
-        builder.setRoute(newRoute);
+        factory.build();
 
-        expect(oldRoute.off.callCount).toEqual(oldRoute.on.callCount);
-        expect(newRoute.on.callCount).toEqual(oldRoute.on.callCount);
+        // Set the new route
+        factory.getBuilder().getRoute.andReturn(newRoute);
+        factory.getBuilder().setRoute(newRoute);
+
+        // Bind as many events to the new route as to the old
+        expect(newRoute.on.callCount).toEqual(factory.getRoute().on.callCount);
+      });
+
+      it('should clean up old route events', function() {
+        spyOn(factory.getRoute(), 'on');
+        spyOn(factory.getRoute(), 'off');
+
+        factory.build();
+
+        // It would be difficult to test the setRoute method
+        // with a stubbed getRoute method
+        factory.getBuilder().getRoute.andCallThrough();
+
+        // Set a new route
+        factory.getBuilder().setRoute(getStubbedRoute());
+
+        // Unbind as many events from the old route as were originally bound
+        expect(factory.getRoute().off.callCount).toEqual(factory.getRoute().on.callCount);
       });
     });
 
-    describe('Its RouteRenderer', function() {
-      var route = new Route();
-      it('should create a RouteRenderer', function() {
-        spyOn(aeris.maps.gmaps.route, 'RouteRenderer').andCallThrough();
-
-        new RouteBuilder(map, { route: route });
-        expect(aeris.maps.gmaps.route.RouteRenderer).toHaveBeenCalled();
-      });
-
-      it('should accept a RouteRenderer', function() {
-        var route = new Route();
-        var renderer = new RouteRenderer(map);
-        spyOn(aeris.maps.gmaps.route, 'RouteRenderer');
-
-        new RouteBuilder(map, { routeRenderer: renderer, route: route });
-
-        // Check that RouteRendered not called a second time
-        expect(aeris.maps.gmaps.route.RouteRenderer).not.toHaveBeenCalled();
-      });
-    });
-
-    describe('Its AerisMap', function() {
-
-      it('should require an AerisMap', function() {
-        expect(function() {
-          new RouteBuilder();
-        }).toThrowType('InvalidArgumentError');
-      });
-    });
 
     describe('Manage Waypoints using commands', function() {
-      it('should add a waypoint', function() {
-        var builder = new RouteBuilder(map);
+      describe('should add a waypoint', function() {
+        var waypoint, commandStub;
 
-        spyOn(AddWaypointCommand.prototype, 'execute').andCallThrough();
-        builder.addWaypoint(new MockWaypoint());
+        beforeEach(function() {
+          waypoint = getStubbedWaypoint();
+          commandStub = sinon.createStubInstance(AddWaypointCommand);
 
-        expect(AddWaypointCommand.prototype.execute).toHaveBeenCalled();
-      });
+          factory.build();
 
-      it('should remove a waypoint', function() {
-        var waypoints = [
-          new MockWaypoint(null, true),
-          new MockWaypoint(),
-          new MockWaypoint
-        ];
-        var builder = new RouteBuilder(map, {
-          route: new Route(waypoints)
+          // Stub AddWaypointCommand instance
+          // and spy on constructor
+          spyOn(aeris.maps.gmaps.route.commands, 'AddWaypointCommand')
+            .andReturn(commandStub);
+          spyOn(factory.getCommandManager(), 'executeCommand');
         });
 
-        spyOn(RemoveWaypointCommand.prototype, 'execute').andCallThrough();
-        builder.removeWaypoint(waypoints[1]);
+        afterEach(function() {
+          expect(factory.getCommandManager().executeCommand).toHaveBeenCalledWith(commandStub);
+        });
 
-        expect(RemoveWaypointCommand.prototype.execute).toHaveBeenCalled();
+        it('at the end of  route', function() {
+          factory.getBuilder().addWaypoint(waypoint);
+
+          expect(aeris.maps.gmaps.route.commands.AddWaypointCommand).toHaveBeenCalledWith(
+            factory.getRoute(),
+            waypoint,
+            {}
+          );
+        });
+
+        it('should add a waypoint at a specified index', function() {
+          var index = 3;
+
+          factory.getBuilder().addWaypoint(waypoint, { at: index });
+
+          expect(aeris.maps.gmaps.route.commands.AddWaypointCommand).toHaveBeenCalledWith(
+            factory.getRoute(),
+            waypoint,
+            { at: index }
+          );
+        });
+      });
+
+
+      it('should remove a waypoint', function() {
+        var waypoint = getStubbedWaypoint();
+        var commandStub = sinon.createStubInstance(RemoveWaypointCommand);
+
+        factory.build();
+
+        // Stub remove waypoint command,
+        // and spy on constructor
+        spyOn(aeris.maps.gmaps.route.commands, 'RemoveWaypointCommand').
+          andReturn(commandStub);
+
+        spyOn(factory.getCommandManager(), 'executeCommand');
+
+        // Get passed 'waypoint exists in route' check
+        spyOn(factory.getRoute(), 'has').andCallFake(function(wp) {
+          expect(wp).toEqual(waypoint);
+          return true;
+        });
+
+        factory.getBuilder().removeWaypoint(waypoint);
+
+        expect(aeris.maps.gmaps.route.commands.RemoveWaypointCommand).toHaveBeenCalledWith(factory.getRoute(), waypoint);
+        expect(factory.getCommandManager().executeCommand).toHaveBeenCalledWith(commandStub);
       });
 
       it('should reset waypoints', function() {
-        var newWaypoints = getMockWaypoints();
-        var route = new Route(getMockWaypoints());
-        var builder = new RouteBuilder(map, {
-          route: route
-        });
+        var commandStub = sinon.createStubInstance(ResetRouteCommand);
+        var fakeWaypoints = [
+          getStubbedWaypoint(),
+          getStubbedWaypoint(),
+          getStubbedWaypoint()
+        ];
+        factory.build();
 
-        spyOn(route, 'reset');
+        spyOn(aeris.maps.gmaps.route.commands, 'ResetRouteCommand').
+          andReturn(commandStub);
+        spyOn(factory.getCommandManager(), 'executeCommand');
 
-        builder.resetRoute(newWaypoints);
-        expect(route.reset).toHaveBeenCalledWith(newWaypoints);
+        factory.getBuilder().resetRoute(fakeWaypoints, true);
+
+        expect(aeris.maps.gmaps.route.commands.ResetRouteCommand).toHaveBeenCalledWith(
+          factory.getRoute(),
+          fakeWaypoints,
+          true
+        );
+        expect(factory.getCommandManager().executeCommand).toHaveBeenCalledWith(commandStub);
       });
 
       it('should undo and redo commands, using a CommandManager', function() {
-        var builder = new RouteBuilder(map);
+        factory.build();
 
-        // Mock the addwaypoint command, to limit test scope
-        spyOn(AddWaypointCommand.prototype, 'execute').andReturn(new Promise());
+        spyOn(factory.getCommandManager(), 'undo');
+        spyOn(factory.getCommandManager(), 'redo');
 
-        builder.addWaypoint(new MockWaypoint());
+        factory.getBuilder().undo();
+        expect(factory.getCommandManager().undo).toHaveBeenCalled();
 
-        spyOn(CommandManager.prototype, 'undo');
-        spyOn(CommandManager.prototype, 'redo');
-
-        builder.undo();
-        expect(CommandManager.prototype.undo).toHaveBeenCalled();
-
-        builder.redo();
-        expect(CommandManager.prototype.redo).toHaveBeenCalled();
+        factory.getBuilder().redo();
+        expect(factory.getCommandManager().redo).toHaveBeenCalled();
       });
     });
 
     describe('Delegate route events to RouteRenderer', function() {
-      var route, renderer, builder, waypoints;
+      it('should bind Route#add event to RouteRenderer#renderWaypoint', function() {
+        var waypoint = getStubbedWaypoint();
 
-      beforeEach(function() {
-        waypoints = [
-          new MockWaypoint({}, true),
-          new MockWaypoint(),
-          new MockWaypoint()
-        ];
-        route = new Route();
-        renderer = new RouteRenderer(map);
-        builder = new RouteBuilder(map, { route: route, routeRenderer: renderer });
+        // Stub event binding
+        testUtils.stubEvent(factory.getRoute(), 'add', [waypoint, factory.getRoute()]);
+
+        spyOn(factory.getRenderer(), 'renderWaypoint');
+
+        factory.build();
+        expect(factory.getRenderer().renderWaypoint).toHaveBeenCalledWith(waypoint, factory.getRoute());
       });
 
-      afterEach(function() {
-        route = null;
-        renderer = null;
-        builder = null;
+      describe('on Route#remove', function() {
+        var waypoint = getStubbedWaypoint();
+        var wpIndex = 3;
+
+        beforeEach(function() {
+          testUtils.stubEvent(factory.getRoute(), 'remove', [waypoint, wpIndex]);
+        });
+
+        it('should erase a waypoint', function() {
+          // Stub --> waypoint is last in route
+          spyOn(factory.getRoute(), 'at').andCallFake(function(index) {
+            expect(index).toEqual(wpIndex);
+            return null;
+          });
+
+          spyOn(factory.getRenderer(), 'eraseWaypoint');
+
+          factory.build();
+
+          expect(factory.getRenderer().eraseWaypoint).toHaveBeenCalledWith(waypoint, factory.getRoute());
+        });
+
+        it('should redraw the next waypoint', function() {
+          var nextWaypoint = getStubbedWaypoint();
+
+          // Stub --> waypoint is NOT last in route
+          spyOn(factory.getRoute(), 'at').andCallFake(function(index) {
+            expect(index).toEqual(wpIndex);
+            return nextWaypoint;
+          });
+
+          spyOn(factory.getRenderer(), 'renderWaypoint');
+
+          factory.build();
+
+          expect(factory.getRenderer().renderWaypoint).toHaveBeenCalledWith(nextWaypoint, factory.getRoute());
+        });
       });
 
-      it('should render an Icon on Route#add', function() {
-        var waypoint = new MockWaypoint(null, true);
+      describe('on Route#reset', function() {
 
-        spyOn(renderer, 'renderWaypoint');
+        it('should erase the route', function() {
+          var waypoints = [];
+          testUtils.stubEvent(factory.getRoute(), 'reset', [waypoints]);
+          spyOn(factory.getRenderer(), 'eraseRoute');
 
-        route.add(waypoint);
-        expect(renderer.renderWaypoint).toHaveBeenCalled();
+          factory.build();
+
+          expect(factory.getRenderer().eraseRoute).toHaveBeenCalledWith(factory.getRoute());
+        });
+
+        it('should render the new waypoints', function() {
+          var waypoints = [
+            getStubbedWaypoint(),
+            getStubbedWaypoint(),
+            getStubbedWaypoint()
+          ];
+          testUtils.stubEvent(factory.getRoute(), 'reset', [waypoints]);
+          spyOn(factory.getRenderer(), 'renderRoute');
+
+          factory.build();
+
+          expect(factory.getRenderer().renderRoute).toHaveBeenCalledWith(factory.getRoute());
+        });
+
+        it('should not render waypoint, if route is empty', function() {
+          var noWaypoints = [];
+          testUtils.stubEvent(factory.getRoute(), 'reset', [noWaypoints]);
+          spyOn(factory.getRenderer(), 'renderRoute');
+
+          expect(factory.getRenderer().renderRoute).not.toHaveBeenCalled();
+        });
       });
 
-      it('should remove a waypoint on Route#remove', function() {
-        route.add(waypoints[0]);
-        route.add(waypoints[1]);
-        route.add(waypoints[2]);
-
-        spyOn(renderer, 'eraseWaypoint');
-        spyOn(renderer, 'renderWaypoint');
-
-        route.remove(waypoints[1]);
-
-        // Test render this wp
-        expect(renderer.eraseWaypoint).toHaveBeenCalled();
-
-        // Test: re-render next wp
-        expect(renderer.renderWaypoint).toHaveBeenCalled();
-      });
-
-      it('should render an path on adding two or more waypoints', function() {
-        var wp1 = new MockWaypoint(null, true);
-        var wp2 = new MockWaypoint();
-        var wp3 = new MockWaypoint();
-
-        spyOn(renderer, 'renderWaypoint');
-
-        route.add(wp1);
-        route.add(wp2);
-        route.add(wp3);
-        expect(renderer.renderWaypoint.callCount).toEqual(3);
-      });
-
-      it('should re-render a route on Route#reset', function() {
-        route.add(waypoints[0]);
-
-        spyOn(renderer, 'eraseRoute');
-        spyOn(renderer, 'renderRoute');
-
-        route.reset(getMockWaypoints());
-        expect(renderer.eraseRoute).toHaveBeenCalledWith(route);
-        expect(renderer.renderRoute).toHaveBeenCalledWith(route);
-      });
     });
   });
 });

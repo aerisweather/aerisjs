@@ -139,10 +139,12 @@
           }
 
 
-
-
-
-
+          // Insert waypoints
+          $('#addFirstWaypoint').click(function() {
+            try {
+              routeBuilder.a
+            }
+          });
 
         });
       }
@@ -150,20 +152,16 @@
   </head>
   <body>
   <div class="float-left">
+    <div>
+      <strong>Total distance:</strong>
+      <span id="total-distance">0</span> miles
+    </div>
     <div id="map-canvas"></div>
+    <div class="float-left">
 
       <div>
-        <strong>JSON Route Mapper</strong>
-        <button id="route-export">Export</button>
-        <button id="route-import">Import</button>
-        <br />
-        <textarea id="route-json" cols="80" rows="12"></textarea>
-      </div>
-    </div>
-    <div class="float-left">
-      <div>
-        <strong>Total distance:</strong>
-        <span id="total-distance">0</span> miles
+        <button id="undo">Undo</button>
+        <button id="redo">Redo</button>
       </div>
 
       <div>
@@ -171,12 +169,24 @@
         <label for="follow-directions">Follow Directions?</label>
       </div>
 
+
+      <div>
+        <button id="addFirstWaypoint">Add first waypoint</button>
+        <button id="addMiddleWaypoint">Add middle waypoint</button>
+        <button id="addLastWaypoint">Add last waypoint</button>
+      </div>
+
       <div>
         <button id="removeFirstWaypoint">Remove first waypoint</button>
         <button id="removeMiddleWaypoint">Remove middle waypoint</button>
         <button id="removeLastWaypoint">Remove last waypoint</button>
+      </div>
+
+      <div>
         <button id="clearRoute">Clear All</button>
       </div>
+
+
 
       <div>
         <label for="travel-mode">Travel Mode</label>
@@ -187,10 +197,16 @@
         </select>
       </div>
 
+
+
       <div>
-        <button id="undo">Undo</button>
-        <button id="redo">Redo</button>
+        <strong>JSON Route Mapper</strong>
+        <button id="route-export">Export</button>
+        <button id="route-import">Import</button>
+        <br />
+        <textarea id="route-json" cols="80" rows="12"></textarea>
       </div>
+    </div>
     </div>
   </body>
 </html>

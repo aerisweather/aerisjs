@@ -1,36 +1,28 @@
 define([
-    'aeris',
-    'jasmine',
-    'testUtils',
-    'gmaps/utils',
-    'vendor/underscore',
-    'mocks/waypoint',
-    'gmaps/route/route',
-    'gmaps/route/waypoint',
-    'gmaps/route/routerenderer',
-    'gmaps/map',
-    'base/markers/icon'
-], function(aeris, jasmine, testUtils, mapUtils, _, MockWaypoint, Route, Waypoint, RouteRenderer, AerisMap, Icon) {
+  'aeris',
+  'jasmine',
+  'sinon',
+  'testUtils',
+  'gmaps/utils',
+  'vendor/underscore',
+  'mocks/waypoint',
+  'gmaps/route/route',
+  'gmaps/route/waypoint',
+  'gmaps/route/routerenderer',
+  'gmaps/map'
+], function(aeris, jasmine, sinon, testUtils, mapUtils, _, MockWaypoint, Route, Waypoint, RouteRenderer, AerisMap) {
   describe('A RouteRenderer', function() {
-    var map, $canvas;
+    var map;
 
     beforeEach(function() {
-      $canvas = $('<div id="map-canvas"></div>').appendTo('body');
-      map = new AerisMap('map-canvas', {
-        center: [44.98, -93.2636],
-        zoom: 15
-      });
+      map = sinon.createStubInstance(AerisMap);
 
-      // Wait for the map to initialize
-      waitsFor(function() {
-        return map.initialized.state === 'resolved';
-      }, 'map to initialize', 1000);
+      // Stub the Icon's setMap method
+      spyOn(aeris.maps.markers.Icon.prototype, 'setMap');
     });
 
     afterEach(function() {
       map = null;
-      $canvas.remove();
-      $canvas.empty();
     });
 
     it('requires an AerisMap', function() {
@@ -84,12 +76,12 @@ define([
 
         // Mock route
         route = sinon.createStubInstance(Route);
-        route.getPrevious = jasmine.createSpy('getPrevious')
+        spyOn(route, 'getPrevious')
           .andCallFake(function(wp) {
             expect(wp).toEqual(waypoint);
             return sinon.createStubInstance(Waypoint);
           });
-        route.has = jasmine.createSpy('has')
+        spyOn(route, 'has')
           .andCallFake(function(wp) {
             expect(wp).toEqual(waypoint);
             return true;
@@ -206,7 +198,6 @@ define([
 
       spyOn(google.maps.Polyline.prototype, 'setPath');
       spyOn(google.maps.Polyline.prototype, 'setMap');
-      spyOn(aeris.maps.markers.Icon.prototype, 'setMap');
       spyOn(aeris.maps.markers.Icon.prototype, 'remove');
 
       // Adjust and redraw middle waypoint path
