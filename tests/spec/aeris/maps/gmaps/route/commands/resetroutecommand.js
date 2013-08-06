@@ -74,5 +74,20 @@ define([
         expect(AddWaypointCommand.prototype.execute.callCount).toEqual(3);
       });
     });
+    
+    it('should undo', function() {
+      var route = new Route(testUtils.getMockWaypoints());
+      var route_orig = testUtils.cloneRoute(route);
+      var command = new ResetRouteCommand(route, testUtils.getMockWaypoints());
+
+      command.execute().done(function() {
+        command.undo().done(function() {
+          expect(route).toMatchRoute(route_orig);
+          testUtils.setFlag();
+        });
+      });
+
+      waitsFor(testUtils.checkFlag, 'undo to complete', 50);
+    });
   });
 });

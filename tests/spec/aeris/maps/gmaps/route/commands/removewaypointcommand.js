@@ -1,5 +1,6 @@
 define([
   'aeris',
+  'vendor/underscore',
   'aeris/promise',
   'testUtils',
   'gmaps/utils',
@@ -12,6 +13,7 @@ define([
   'vendor/underscore'
 ], function(
   aeris,
+  _,
   Promise,
   testUtils,
   gUtils,
@@ -143,6 +145,19 @@ define([
           command.execute();
           expect(lastWaypoint).toEqual(waypoints_orig[2]);
         });
+
+        it('should undo', function() {
+          var route_orig = testUtils.cloneRoute(route);
+
+          command.execute().done(function() {
+            command.undo().done(function() {
+              expect(route).toMatchRoute(route_orig);
+              testUtils.setFlag();
+            });
+          });
+
+          waitsFor(testUtils.checkFlag, 'undo to complete', 50);
+        });
       });
 
       describe('for a waypoint in the middle of a route', function() {
@@ -214,6 +229,19 @@ define([
         it('should not affect the previous waypoint', function() {
           expect(firstWaypoint).toEqual(waypoints_orig[0]);
         });
+
+        it('should undo', function() {
+          var route_orig = testUtils.cloneRoute(route);
+
+          command.execute().done(function() {
+            command.undo().done(function() {
+              expect(route).toMatchRoute(route_orig);
+              testUtils.setFlag();
+            });
+          });
+
+          waitsFor(testUtils.checkFlag, 'undo to complete', 50);
+        });
       });
 
       describe('for a waypoint at the end of a route', function() {
@@ -234,6 +262,19 @@ define([
 
           expect(firstWaypoint).toEqual(waypoints_orig[0]);
           expect(middleWaypoint).toEqual(waypoints_orig[1]);
+        });
+
+        it('should undo', function() {
+          var route_orig = testUtils.cloneRoute(route);
+
+          command.execute().done(function() {
+            command.undo().done(testUtils.setFlag);
+          });
+
+          waitsFor(testUtils.checkFlag, 'undo to complete', 50);
+          runs(function() {
+            expect(route).toMatchRoute(route_orig);
+          });
         });
       });
     });

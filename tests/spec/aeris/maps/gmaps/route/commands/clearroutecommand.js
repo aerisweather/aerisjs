@@ -40,5 +40,20 @@ define([
         expect(route.getWaypoints().length).toEqual(0);
       });
     });
+
+    it('should undo', function() {
+      var route = new Route(waypoints);
+      var route_orig = testUtils.cloneRoute(route);
+      var command = new ClearRouteCommand(route);
+
+      command.execute().done(function() {
+        command.undo().done(function() {
+          expect(route).toMatchRoute(route_orig);
+          testUtils.setFlag();
+        });
+      });
+
+      waitsFor(testUtils.checkFlag, 'undo to complete', 50);
+    });
   });
 });
