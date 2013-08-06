@@ -18,22 +18,48 @@
     </script>
     <script data-main="../../initialize" src="../../../externals/require.js"></script>
     <script type="text/javascript">
+      function randomFloatBetween(minValue, maxValue, precision) {
+        precision = precision == undefined ? 2 : precision;
+        return parseFloat(Math.min(minValue + (Math.random() * (maxValue - minValue)), maxValue).toFixed(precision));
+      }
+
+      function getRandomLatLon(from, to) {
+        var center = [44.98, -93.2636];
+        var radius = 0.0075;
+        from || (from = [center[0] - radius, center[1] - radius]);
+        to || (to = [center[0] + radius, center[1] + radius]);
+
+        return [
+          this.randomFloatBetween(from[0], to[0], 5),
+          this.randomFloatBetween(from[1], to[1], 5)
+        ];
+      }
+
+
       function initialize() {
         require([
-          'aeris/maps/gmaps',
+          'aeris/maps/gmaps/map',
+          'gmaps/route/waypoint',
+          'gmaps/route/route',
+          'gmaps/route/routebuilder',
+          'gmaps/route/routerenderer',
           'base/events/click'
-        ], function(aeris, Click) {
-          var map = new aeris.maps.gmaps.Map("map-canvas", {
-            baseLayer: new aeris.maps.layers.GoogleRoadMap(),
+        ], function(AerisMap, Waypoint, Route, RouteBuilder, RouteRenderer, Click) {
+          var map = new AerisMap("map-canvas", {
             center: [44.98, -93.2636],
-            zoom: 15
+            zoom: 14
           });
-          var routeBuilder = new aeris.maps.gmaps.route.RouteBuilder(map);
+          var routeBuilder = new RouteBuilder({
+            route: new Route(),
+            routeRenderer: new RouteRenderer(map)
+          });
           var route = routeBuilder.getRoute();
 
           bindMapEvents();
           bindUIEvents();
-          updateUI();
+
+          route.on('change', updateUI);
+          route.on('add', updateUI);
 
           // To make my life really easy...
           $('body').click(updateUI);
@@ -46,7 +72,6 @@
 
             click.on('click', function(latLon) {
               routeBuilder.addWaypoint(latLon);
-              updateUI();
             });
           }
 
@@ -131,7 +156,22 @@
 
             // Undo/Redo
             $('#undo').click(function() {
-              routeBuilder.undo();
+              try {
+                routeBuilder.undo();
+              }
+              catch (e) {
+                if (e.name === 'UnimplementedMethodError') {
+                  $('#map-canvas').slideUp(800, function() {
+                    $(this).empty().html('<h2>Ya should\'na done that.</h2>' +
+                            '<p>Undo has not yet been implemented for this command.</p>' +
+                            '<p>This would be a good time to reload the page...</p>');
+                  });
+                  $('#map-canvas').delay(200).slideDown(800);
+                }
+                else {
+                  throw e;
+                }
+              }
             });
             $('#redo').click(function() {
               routeBuilder.redo();
@@ -141,9 +181,24 @@
 
           // Insert waypoints
           $('#addFirstWaypoint').click(function() {
-            try {
-              routeBuilder.a
-            }
+            var waypoint = new Waypoint({
+              latLon: getRandomLatLon()
+            });
+            routeBuilder.addWaypoint(waypoint, { at: 0 });
+          });
+          $('#addMiddleWaypoint').click(function() {
+            var waypoint = new Waypoint({
+              latLon: getRandomLatLon()
+            });
+            var index = randomFloatBetween(1, route.getWaypoints().length - 1, 0) || 1;
+            routeBuilder.addWaypoint(waypoint, { at: index });
+          });
+          $('#addLastWaypoint').click(function() {
+            var waypoint = new Waypoint({
+              latLon: getRandomLatLon()
+            });
+
+            routeBuilder.addWaypoint(waypoint);
           });
 
         });
