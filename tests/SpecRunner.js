@@ -29,6 +29,7 @@ require([
       'spec/aeris/commands/commandmanager',
       'spec/aeris/aerisapi',
       'spec/aeris/promise',
+      'spec/aeris/emptypromise',
       'spec/aeris/promisequeue',
       'spec/aeris/errors',
       'spec/aeris/maps/base/extensions',
