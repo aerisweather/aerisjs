@@ -1,5 +1,5 @@
 define([
-  'aeris/Promise',
+  'aeris/promise',
   'sinon',
   'vendor/underscore'
 ], function(Promise, sinon, _) {
