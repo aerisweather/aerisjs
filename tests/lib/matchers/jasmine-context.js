@@ -35,6 +35,15 @@ beforeEach(function () {
       }
 
       this.message = function () {
+        if (this.actual.callCount === 0 && !this.isNot) {
+          return "Expected spy " + this.actual.identity + " to have been called in the context of " + jasmine.pp(expectedObject) +
+            ", but the spy was never called";
+        }
+        if (this.actual.callCount > 0 && this.isNot) {
+          return "Expected spy " + this.actual.identity + " not to have been called in the context of " + jasmine.pp(expectedObject) +
+            ", but the spy was called";
+        }
+
         if (expectedArgs === undefined) {
           return [
             "Expected spy " + this.actual.identity + " to have been called in the context of " + jasmine.pp(expectedObject),
