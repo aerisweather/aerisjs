@@ -233,6 +233,22 @@ define([
         expect(function() { route.remove(waypoint); }).toThrowType('InvalidArgumentError');
       });
 
+      it('should remove all waypoints with reset', function() {
+        var count = 3;
+        var waypoints = getStubbedWaypointCollection(count);
+        var route = new Route();
+
+        spyOn(route, 'getWaypoints').andReturn(waypoints);
+        spyOn(route, 'remove').andCallFake(function(waypoint, options) {
+          expect(waypoints.indexOf(waypoint)).not.toEqual(-1);
+          expect(options).toEqual({ trigger: false });
+        });
+
+        route.reset();
+
+        expect(route.remove.callCount).toEqual(count);
+      });
+
       it('should reset to an array of Waypoints', function() {
         var route = new Route();
         var count = 3;
