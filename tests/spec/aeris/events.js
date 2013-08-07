@@ -122,5 +122,63 @@ define([
         expect(busybody.watch).toHaveBeenCalled();
       });
     });
+
+    describe('Binding events', function() {
+      var updateStuff, updateThings, destroyEverything;
+      var eventsHash;
+      var listener, actor, someCtx;
+
+      beforeEach(function() {
+        listener = new Events();
+        actor = new Events();
+        someCtx = { foo: 'bar' };
+
+        // Some handler spies to play with
+        updateStuff = jasmine.createSpy('updateStuff');
+        updateThings = jasmine.createSpy('updateThings');
+        destroyEverything = jasmine.createSpy('destroyEverything');
+
+        eventsHash = {
+          remove: destroyEverything,
+          change: [
+            updateStuff,
+            updateThings
+          ]
+        };
+      });
+
+      it('should bind an events hash', function() {
+        spyOn(actor, 'on');
+
+        listener.bindEvents(eventsHash, actor, someCtx);
+        expect(actor.on).toHaveBeenCalledWith('remove', destroyEverything, someCtx);
+        expect(actor.on).toHaveBeenCalledWith('change', updateStuff, someCtx);
+        expect(actor.on).toHaveBeenCalledWith('change', updateThings, someCtx);
+      });
+
+      it('should unbind an events hash', function() {
+        spyOn(actor, 'off');
+
+        listener.unbindEvents(eventsHash, actor, someCtx);
+        expect(actor.off).toHaveBeenCalledWith('remove', destroyEverything, someCtx);
+        expect(actor.off).toHaveBeenCalledWith('change', updateStuff, someCtx);
+        expect(actor.off).toHaveBeenCalledWith('change', updateThings, someCtx);
+      });
+
+      it('should default to \'this\' as the target object and context', function() {
+        spyOn(listener, 'on');
+        spyOn(listener, 'off');
+
+        listener.bindEvents(eventsHash);
+        expect(listener.on).toHaveBeenCalledWith('remove', destroyEverything, listener);
+        expect(listener.on).toHaveBeenCalledWith('change', updateStuff, listener);
+        expect(listener.on).toHaveBeenCalledWith('change', updateThings, listener);
+
+        listener.unbindEvents(eventsHash);
+        expect(listener.off).toHaveBeenCalledWith('remove', destroyEverything, listener);
+        expect(listener.off).toHaveBeenCalledWith('change', updateStuff, listener);
+        expect(listener.off).toHaveBeenCalledWith('change', updateThings, listener);
+      });
+    });
   });
 });
