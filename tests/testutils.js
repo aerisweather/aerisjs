@@ -137,11 +137,15 @@ define([
      * @return {jasmine.Spy}
      */
     stubEvent: function(obj, topic, args) {
-      return spyOn(obj, 'on').andCallFake(function(event, callback, ctx) {
+      var spy = obj.on.isSpy ? obj.on : spyOn(obj, 'on');
+
+      spy.andCallFake(function(event, callback, ctx) {
         if (event === topic) {
           callback.apply(ctx, args);
         }
       });
+
+      return spy;
     }
   };
 });
