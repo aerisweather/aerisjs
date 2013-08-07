@@ -132,11 +132,11 @@ require([
       });
 
       it('should bind events to its route', function() {
-        spyOn(factory.getRoute(), 'on');
+        spyOn(factory.getRoute(), 'bindEvents');
 
         factory.build();
 
-        expect(factory.getRoute().on).toHaveBeenCalled();
+        expect(factory.getRoute().bindEvents).toHaveBeenCalled();
       });
 
       it('should set a Route', function() {
@@ -280,12 +280,11 @@ require([
           andReturn(commandStub);
         spyOn(factory.getCommandManager(), 'executeCommand');
 
-        factory.getBuilder().resetRoute(fakeWaypoints, true);
+        factory.getBuilder().resetRoute(fakeWaypoints);
 
         expect(aeris.maps.gmaps.route.commands.ResetRouteCommand).toHaveBeenCalledWith(
           factory.getRoute(),
-          fakeWaypoints,
-          true
+          fakeWaypoints
         );
         expect(factory.getCommandManager().executeCommand).toHaveBeenCalledWith(commandStub);
       });
@@ -302,95 +301,6 @@ require([
         factory.getBuilder().redo();
         expect(factory.getCommandManager().redo).toHaveBeenCalled();
       });
-    });
-
-    describe('Delegate route events to RouteRenderer', function() {
-      it('should bind Route#add event to RouteRenderer#renderWaypoint', function() {
-        var waypoint = getStubbedWaypoint();
-
-        // Stub event binding
-        testUtils.stubEvent(factory.getRoute(), 'add', [waypoint, factory.getRoute()]);
-
-        spyOn(factory.getRenderer(), 'renderWaypoint');
-
-        factory.build();
-        expect(factory.getRenderer().renderWaypoint).toHaveBeenCalledWith(waypoint, factory.getRoute());
-      });
-
-      describe('on Route#remove', function() {
-        var waypoint = getStubbedWaypoint();
-        var wpIndex = 3;
-
-        beforeEach(function() {
-          testUtils.stubEvent(factory.getRoute(), 'remove', [waypoint, wpIndex]);
-        });
-
-        it('should erase a waypoint', function() {
-          // Stub --> waypoint is last in route
-          spyOn(factory.getRoute(), 'at').andCallFake(function(index) {
-            expect(index).toEqual(wpIndex);
-            return null;
-          });
-
-          spyOn(factory.getRenderer(), 'eraseWaypoint');
-
-          factory.build();
-
-          expect(factory.getRenderer().eraseWaypoint).toHaveBeenCalledWith(waypoint, factory.getRoute());
-        });
-
-        it('should redraw the next waypoint', function() {
-          var nextWaypoint = getStubbedWaypoint();
-
-          // Stub --> waypoint is NOT last in route
-          spyOn(factory.getRoute(), 'at').andCallFake(function(index) {
-            expect(index).toEqual(wpIndex);
-            return nextWaypoint;
-          });
-
-          spyOn(factory.getRenderer(), 'renderWaypoint');
-
-          factory.build();
-
-          expect(factory.getRenderer().renderWaypoint).toHaveBeenCalledWith(nextWaypoint, factory.getRoute());
-        });
-      });
-
-      describe('on Route#reset', function() {
-
-        it('should erase the route', function() {
-          var waypoints = [];
-          testUtils.stubEvent(factory.getRoute(), 'reset', [waypoints]);
-          spyOn(factory.getRenderer(), 'eraseRoute');
-
-          factory.build();
-
-          expect(factory.getRenderer().eraseRoute).toHaveBeenCalledWith(factory.getRoute());
-        });
-
-        it('should render the new waypoints', function() {
-          var waypoints = [
-            getStubbedWaypoint(),
-            getStubbedWaypoint(),
-            getStubbedWaypoint()
-          ];
-          testUtils.stubEvent(factory.getRoute(), 'reset', [waypoints]);
-          spyOn(factory.getRenderer(), 'renderRoute');
-
-          factory.build();
-
-          expect(factory.getRenderer().renderRoute).toHaveBeenCalledWith(factory.getRoute());
-        });
-
-        it('should not render waypoint, if route is empty', function() {
-          var noWaypoints = [];
-          testUtils.stubEvent(factory.getRoute(), 'reset', [noWaypoints]);
-          spyOn(factory.getRenderer(), 'renderRoute');
-
-          expect(factory.getRenderer().renderRoute).not.toHaveBeenCalled();
-        });
-      });
-
     });
   });
 });

@@ -1,4 +1,6 @@
-define(function() {
+define([
+  'vendor/underscore'
+], function(_) {
   /**
    * Mock the DirectionsService constructor
    * and provide a mocked instance.

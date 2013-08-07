@@ -1,59 +1,61 @@
 define([
+  'jasmine',
   'aeris',
   'testUtils',
+  'vendor/underscore',
   'gmaps/route/commands/clearroutecommand',
   'aeris/promise',
   'gmaps/route/route',
-  'mocks/waypoint'
-], function(aeris, testUtils, ClearRouteCommand, Promise, Route, MockWaypoint) {
+  'gmaps/route/waypoint',
+  'mocks/promise'
+], function(jasmine, aeris, testUtils, _, ClearRouteCommand, Promise, Route, Waypoint, StubbedPromise) {
   describe('A ClearRouteCommand', function() {
     var waypoints;
 
-    beforeEach(function() {
-      waypoints = [
-        new MockWaypoint(null, true),
-        new MockWaypoint(),
-        new MockWaypoint()
-      ];
-    });
+    function getStubbedWaypoints(opt_count) {
+      var count = opt_count || 3;
+      var waypoints = [];
 
+      _.times(count, function() {
+        waypoints.push(sinon.createStubInstance(Waypoint));
+      });
 
-    afterEach(function() {
-      waypoints = [];
-      waypoints.length = 0;
-    });
+      return waypoints;
+    }
+
+    function getStubbedRoute() {
+      var route = sinon.createStubInstance(Route);
+
+      route.reset = jasmine.createSpy('Route reset');
+      return route;
+    }
 
     it('should return a promise on execute', function() {
-      var command = new ClearRouteCommand(new Route());
+      var command = new ClearRouteCommand(getStubbedRoute());
       expect(command.execute()).toBeInstanceOf(Promise);
     });
 
     it('should remove all waypoints from a route', function() {
-      var route = new Route(waypoints);
+      var route = getStubbedRoute();
       var command = new ClearRouteCommand(route);
 
-      command.execute().done(testUtils.setFlag);
+      command.execute();
 
-      waitsFor(testUtils.checkFlag, 'command to execute', 1000);
-
-      runs(function() {
-        expect(route.getWaypoints().length).toEqual(0);
-      });
+      expect(route.reset).toHaveBeenCalledWith();
     });
 
     it('should undo', function() {
-      var route = new Route(waypoints);
-      var route_orig = testUtils.cloneRoute(route);
+      var route = getStubbedRoute();
+      var waypoints = getStubbedWaypoints();
       var command = new ClearRouteCommand(route);
 
-      command.execute().done(function() {
-        command.undo().done(function() {
-          expect(route).toMatchRoute(route_orig);
-          testUtils.setFlag();
-        });
-      });
+      route.getWaypoints = jasmine.createSpy('getWaypoints').
+        andReturn(waypoints);
 
-      waitsFor(testUtils.checkFlag, 'undo to complete', 50);
+      command.execute();
+      command.undo();
+
+      expect(route.reset).toHaveBeenCalledWith(waypoints);
     });
   });
 });

@@ -1,93 +1,62 @@
 define([
-  'aeris',
+  'jasmine',
   'testUtils',
-  'gmaps/utils',
   'gmaps/route/commands/resetroutecommand',
-  'gmaps/route/commands/addwaypointcommand',
-  'aeris/promise',
   'gmaps/route/route',
-  'mocks/waypoint',
-  'googlemaps'
+  'gmaps/route/waypoint'
 ], function(
-  aeris,
+  jasmine,
   testUtils,
-  gUtils,
   ResetRouteCommand,
-  AddWaypointCommand,
-  Promise,
   Route,
-  MockWaypoint
+  Waypoint
 ) {
+
+  function getStubbedWaypoints() {
+    return [
+      sinon.createStubInstance(Waypoint),
+      sinon.createStubInstance(Waypoint),
+      sinon.createStubInstance(Waypoint)
+    ];
+  }
+
+  function getStubbedRoute() {
+    var route = sinon.createStubInstance(Route);
+    route.reset = jasmine.createSpy('reset');
+    return route;
+  }
+
+  var TestFactory = function() {
+    this.oldWaypoints_ = getStubbedWaypoints();
+    this.newWaypoints_ = getStubbedWaypoints();
+    this.route_ = getStubbedRoute();
+
+    this.getRoute().getWaypoints = jasmine.createSpy('getWaypoints').
+      andReturn(this.getOldWaypoints());
+
+    this.command_ = new ResetRouteCommand(this.getRoute(), this.getNewWaypoints());
+  };
+  TestFactory.prototype = {
+    getRoute: function() { return this.route_; },
+    getOldWaypoints: function() { return this.oldWaypoints_; },
+    getNewWaypoints: function() { return this.newWaypoints_; },
+    getCommand: function() { return this.command_; }
+  };
+
   describe('A ResetRouteCommand', function() {
+    it('should reset a route with new waypoints', function() {
+      var f = new TestFactory();
 
-
-    it('should return a promise on execute', function() {
-      var command = new ResetRouteCommand(new Route());
-      expect(command.execute()).toBeInstanceOf(Promise);
+      f.getCommand().execute();
+      expect(f.getRoute().reset).toHaveBeenCalledWith(f.getNewWaypoints());
     });
 
-    it('should clear a route', function() {
-      var route = new Route(testUtils.getMockWaypoints());
-      var command = new ResetRouteCommand(route);
-
-      command.execute().done(testUtils.setFlag);
-      waitsFor(testUtils.checkFlag, 'to execute command', 1000);
-
-      runs(function() {
-        expect(route.getWaypoints().length).toEqual(0);
-      });
-    });
-
-    it('should reset a route with the provided waypoints', function() {
-      var newWaypoints = testUtils.getMockWaypoints();
-      var route = new Route(testUtils.getMockWaypoints());
-      var command = new ResetRouteCommand(route, newWaypoints);
-
-      command.execute().done(testUtils.setFlag);
-      waitsFor(testUtils.checkFlag, 'to execute command', 1000);
-
-      runs(function() {
-        expect(route).toMatchRoute(new Route(newWaypoints));
-      });
-    });
-
-    it('should recalculate a route', function() {
-      var dumbWaypoints = [
-        new MockWaypoint({ distance: 0 }, true),
-        new MockWaypoint({ distance: 0 }, true),
-        new MockWaypoint({ distance: 0 }, true)
-      ];
-      var route = new Route(testUtils.getMockWaypoints());
-      var command = new ResetRouteCommand(route, dumbWaypoints, true);
-
-      spyOn(route, 'add');
-      spyOn(AddWaypointCommand.prototype, 'execute').andReturn((function() {
-        var promise = new Promise();
-        promise.resolve();
-        return promise;
-      }()));
-
-      command.execute().done(testUtils.setFlag);
-      waitsFor(testUtils.checkFlag, 'to execute command', 1000);
-
-      runs(function() {
-        expect(AddWaypointCommand.prototype.execute.callCount).toEqual(3);
-      });
-    });
-    
     it('should undo', function() {
-      var route = new Route(testUtils.getMockWaypoints());
-      var route_orig = testUtils.cloneRoute(route);
-      var command = new ResetRouteCommand(route, testUtils.getMockWaypoints());
+      var f = new TestFactory();
 
-      command.execute().done(function() {
-        command.undo().done(function() {
-          expect(route).toMatchRoute(route_orig);
-          testUtils.setFlag();
-        });
-      });
-
-      waitsFor(testUtils.checkFlag, 'undo to complete', 50);
+      f.getCommand().execute();
+      f.getCommand().undo();
+      expect(f.getRoute().reset).toHaveBeenCalledWith(f.getOldWaypoints());
     });
   });
 });
