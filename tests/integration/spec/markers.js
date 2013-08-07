@@ -108,5 +108,26 @@ define([
         expect(google.maps.Marker.prototype.setMap.argsForCall).toEqual(expectedCalls);
       });
     });
+
+    it('should bind map events to a marker', function() {
+      var marker = createIcon();
+      var onClickSpy = jasmine.createSpy('onclick');
+      var dragSpy = jasmine.createSpy('drag');
+      var events = ['click', 'dragend'];
+
+      spyOn(google.maps.event, 'addListener').andCallFake(function(gMarker, topic, handler) {
+        if (events.indexOf(topic) !== -1) {
+          handler.call(marker);
+        }
+      });
+
+      marker.on('click', onClickSpy);
+      marker.on('dragend', dragSpy);
+      marker.setMap(aerisMap);
+
+      expect(google.maps.event.addListener).toHaveBeenCalled();
+      expect(onClickSpy).toHaveBeenCalled();
+      expect(dragSpy).toHaveBeenCalled();
+    });
   });
 });
