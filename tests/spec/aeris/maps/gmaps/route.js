@@ -6,7 +6,6 @@ require([
   'spec/aeris/maps/gmaps/route/commands/abstractroutecommand',
   'spec/aeris/maps/gmaps/route/commands/addwaypointcommand',
   'spec/aeris/maps/gmaps/route/commands/removewaypointcommand',
-  'spec/aeris/maps/gmaps/route/commands/clearroutecommand',
   'spec/aeris/maps/gmaps/route/commands/resetroutecommand',
   'spec/aeris/maps/gmaps/route/directions/abstractdirectionsservice',
   'spec/aeris/maps/gmaps/route/directions/googledirectionsservice'
