@@ -56,6 +56,12 @@ define([
     return waypoints;
   }
 
+  function getStubbedWaypointsForRoute(route, count, opt_options) {
+    var waypoints = getStubbedWaypointCollection(count, opt_options);
+
+    spyOn(route, 'getWaypoints').andReturn(waypoints);
+    return waypoints;
+  }
 
 
   describe('A Route', function() {
@@ -115,12 +121,14 @@ define([
 
           // Create mock waypoints
           // and add them to the route
-          _.times(3, function() {
+          _.times(3, function(i) {
             var wp = getStubbedWaypoint();
+            wp.testId = 'oldWaypoint_' + i;
             waypoints.push(wp);
             route.add(wp);
           });
           newWaypoint = getStubbedWaypoint();
+          newWaypoint.testId = 'newWaypoint';
 
           // Insert a new waypoint
           route.add(newWaypoint, { at: 1 });
@@ -130,6 +138,17 @@ define([
           expect(route.at(1)).toEqual(newWaypoint);
           expect(route.at(2)).toEqual(waypoints[1]);
           expect(route.at(3)).toEqual(waypoints[2]);
+        });
+
+        it('should add multiple waypoints', function() {
+          var route = new Route();
+          var waypoints = getStubbedWaypointCollection();
+
+          spyOn(route, 'trigger');
+          spyOn(route, 'has').andReturn(false);
+
+          route.add(waypoints);
+          expect(route.getWaypoints()).toEqual(waypoints);
         });
       });
 
@@ -265,6 +284,18 @@ define([
         expect(route.getWaypoints().length).toEqual(0);
         expect(route.trigger).toHaveBeenCalledWith('remove', waypoint, waypointIndex);
         expect(waypoint.removeProxy).toHaveBeenCalled();
+      });
+
+      it('should remove multiple waypoints', function() {
+        var route = new Route();
+        var waypoints = getStubbedWaypointCollection();
+
+        spyOn(route, 'trigger');
+
+        route.add(waypoints);
+        route.remove(waypoints);
+
+        expect(route.getWaypoints().length).toEqual(0);
       });
 
       it('should not allow removing a waypoint that doesn\'t exist', function() {
