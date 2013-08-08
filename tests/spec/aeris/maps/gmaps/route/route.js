@@ -199,7 +199,7 @@ define([
       it('should remove a waypoint', function() {
         var route = new Route();
         var waypoint = getStubbedWaypoint();
-        var waypointIndex;
+        var waypointIndex = 0;
 
         spyOn(route, 'trigger');
         route.add(waypoint);
@@ -209,15 +209,14 @@ define([
           expect(wp).toEqual(waypoint);
           return waypointIndex;
         });
-        spyOn(route, 'unbindEvents').andCallFake(function(events, obj) {
-          expect(obj).toEqual(waypoint);
-        });
+        spyOn(route, 'has').andReturn(true);
+        spyOn(waypoint, 'removeProxy');
 
         route.remove(waypoint);
 
         expect(route.getWaypoints().length).toEqual(0);
         expect(route.trigger).toHaveBeenCalledWith('remove', waypoint, waypointIndex);
-        expect(route.unbindEvents).toHaveBeenCalled();
+        expect(waypoint.removeProxy).toHaveBeenCalled();
       });
 
       it('should not allow removing a waypoint that doesn\'t exist', function() {
@@ -301,40 +300,32 @@ define([
     });
 
     describe('Event bindings', function() {
-
-      it('should proxy \'change\' events fired by child waypoints', function() {
+      it('should proxy events fired by child waypoints', function() {
         var waypoint = getStubbedWaypoint();
         var route = new Route();
 
+        spyOn(route, 'proxyEvents').andCallFake(function(obj, cb, ctx) {
+          var fakeArgs = ['some', 'args'];
+          
+          ctx || (ctx = route);
+          
+          expect(obj).toEqual(waypoint);
+          expect(cb.call(ctx, 'change', fakeArgs)).toEqual({
+            topic: 'change',
+            args: [waypoint].concat(fakeArgs)
+          });
+          expect(cb.call(ctx, 'change:someProp', fakeArgs)).toEqual({
+            topic: 'change:someProp',
+            args: [waypoint].concat(fakeArgs)
+          });
+          expect(cb.call(ctx, 'someEvent', fakeArgs)).toEqual({
+            topic: 'waypoint:someEvent',
+            args: [waypoint].concat(fakeArgs)
+          });
+        });
 
-        spyOn(route, 'trigger');
-
-        // Immediately call change event callback
-        testUtils.stubEvent(waypoint, 'change', [waypoint]);
-
-        // Add a waypoint --> bind events to waypoint --> handler are immediately called
         route.add(waypoint);
-
-        expect(route.trigger).toHaveBeenCalledWith('change', waypoint);
-      });
-
-      it('should proxy \'change:[property]\' events fired by child waypoints', function() {
-        var waypoint = getStubbedWaypoint();
-        var route = new Route();
-
-        spyOn(route, 'trigger');
-
-        // Immediately call waypoint.on('change') handler
-        testUtils.stubEvent(waypoint, 'change', [waypoint, {
-          properties: [
-            'someProp',
-            'anotherProp'
-          ]
-        }]);
-        route.add(waypoint);
-
-        expect(route.trigger).toHaveBeenCalledWith('change:someProp', waypoint);
-        expect(route.trigger).toHaveBeenCalledWith('change:anotherProp', waypoint);
+        expect(route.proxyEvents).toHaveBeenCalled();
       });
     });
 
