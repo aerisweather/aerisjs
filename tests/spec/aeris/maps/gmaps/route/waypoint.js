@@ -147,52 +147,50 @@ define([
         function stubAndVerify(property, value) {
           var setObj = {};
 
-          wp.trigger.andCallFake(function(topic, waypoint) {
+          wp.trigger.andCallFake(function(topic) {
             // Ignore generic 'change' events
             if (topic === 'change') { return; }
 
             actualCount++;
 
-          expect(topic).toEqual('change:' + property);
-          expect(waypoint).toEqual(wp);
+            expect(topic).toEqual('change:' + property);
+          });
+
+          setObj[property] = value;
+          wp.set(setObj);
+
+          expectedCount++;
+          expect(actualCount).toEqual(expectedCount);
+        }
+
+        // Run run run
+        stubAndVerify('latLon', testUtils.getRandomLatLon());
+        stubAndVerify('geocodedLatLon', testUtils.getRandomLatLon());
+        stubAndVerify('followDirections', false);
+        stubAndVerify('travelMode', 'JETSKI');
+        stubAndVerify('path', testUtils.getRandomPath());
+      });
+
+      it('and trigger a single \'change\' event when properties are changed', function() {
+        var wp = new Waypoint();
+        var changeEventCount = 0;
+
+        spyOn(wp, 'trigger').andCallFake(function(topic) {
+          if (topic === 'change') {
+            changeEventCount++;
+          }
         });
 
-        setObj[property] = value;
-        wp.set(setObj);
+        wp.set({
+          distance: 12345,
+          latLon: testUtils.getRandomLatLon(),
+          travelMode: 'SPACE_ELEVATOR'
+        });
 
-        expectedCount++;
-        expect(actualCount).toEqual(expectedCount);
-      }
-
-      // Run run run
-      stubAndVerify('latLon', testUtils.getRandomLatLon());
-      stubAndVerify('geocodedLatLon', testUtils.getRandomLatLon());
-      stubAndVerify('followDirections', false);
-      stubAndVerify('travelMode', 'JETSKI');
-      stubAndVerify('path', testUtils.getRandomPath());
-    });
-
-    it('and trigger a single \'change\' event when properties are changed', function() {
-      var wp = new Waypoint();
-      var changeEventCount = 0;
-
-      spyOn(wp, 'trigger').andCallFake(function(topic, waypoint) {
-        if (topic === 'change') {
-          changeEventCount++;
-          expect(waypoint).toEqual(wp);
-        }
+        expect(wp.trigger).toHaveBeenCalled();
+        expect(changeEventCount).toEqual(1);
       });
-
-      wp.set({
-        distance: 12345,
-        latLon: testUtils.getRandomLatLon(),
-        travelMode: 'SPACE_ELEVATOR'
-      });
-
-      expect(wp.trigger).toHaveBeenCalled();
-      expect(changeEventCount).toEqual(1);
     });
-  });
 
     describe('JSON import/export', function() {
       it('export as a JSON string', function() {
