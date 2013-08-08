@@ -36,6 +36,10 @@ define([
       spyOn(waypoint, 'getDistance').andReturn(options.distance);
     }
 
+    if (!_.isUndefined(options.selected)) {
+      spyOn(waypoint, 'isSelected').andReturn(options.selected);
+    }
+
     return waypoint;
   }
 
@@ -181,6 +185,50 @@ define([
 
         route.getNext(waypoint);
         expect(route.atOffset).toHaveBeenCalledWith(waypoint, 1);
+      });
+
+      describe('selected waypoints', function() {
+        it('should return selected waypoints', function() {
+          var route = new Route();
+          var selected = getStubbedWaypointCollection(3, { selected: true });
+          var notSelected = getStubbedWaypointCollection(3, { selected: false });
+
+          spyOn(route, 'getWaypoints').andReturn(selected.concat(notSelected));
+
+          expect(route.getSelected()).toEqual(selected);
+        });
+
+        it('should select all waypoints', function() {
+          var waypoints = getStubbedWaypointCollection();
+          var route = new Route();
+
+
+          _.each(waypoints, function(wp) {
+            testUtils.addSpies(
+              spyOn(wp, 'select')
+            );
+          });
+          spyOn(route, 'getWaypoints').andReturn(waypoints);
+
+          route.selectAll();
+          expect(testUtils.getSpies()).toHaveAllBeenCalled();
+        });
+
+        it('should deselect all waypoints', function() {
+          var waypoints = getStubbedWaypointCollection();
+          var route = new Route();
+
+          spyOn(route, 'getWaypoints').andReturn(waypoints);
+
+          _.each(waypoints, function(wp) {
+            testUtils.addSpies(
+              spyOn(wp, 'deselect')
+            );
+          });
+
+          route.deselectAll();
+          expect(testUtils.getSpies()).toHaveAllBeenCalled();
+        });
       });
 
       it('should check if a waypoint exists in a route', function() {

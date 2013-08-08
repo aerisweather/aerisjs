@@ -65,72 +65,134 @@ define([
         latLon: [-45, 90]
       });
 
-        expect(wp.getLatLon()).toEqual([-45, 90]);
+      expect(wp.getLatLon()).toEqual([-45, 90]);
 
-        // geocoded lat lon is considered more accurate, and preferred
-        wp.geocodedLatLon = [-45.1, 90.1];
-        expect(wp.getLatLon()).toEqual([-45.1, 90.1]);
-      });
-
-      describe('should set attributes', function() {
-
-        it('and trigger change:property events', function() {
-          var wp = new Waypoint();
-          var expectedCount = 0;
-          var actualCount = 0;
-
-          spyOn(wp, 'trigger');
-
-          function stubAndVerify(property, value) {
-            var setObj = {};
-
-            wp.trigger.andCallFake(function(topic, waypoint) {
-              // Ignore generic 'change' events
-              if (topic === 'change') { return; }
-
-              actualCount++;
-
-            expect(topic).toEqual('change:' + property);
-            expect(waypoint).toEqual(wp);
-          });
-
-          setObj[property] = value;
-          wp.set(setObj);
-
-          expectedCount++;
-          expect(actualCount).toEqual(expectedCount);
-        }
-
-        // Run run run
-        stubAndVerify('latLon', testUtils.getRandomLatLon());
-        stubAndVerify('geocodedLatLon', testUtils.getRandomLatLon());
-        stubAndVerify('followDirections', false);
-        stubAndVerify('travelMode', 'JETSKI');
-        stubAndVerify('path', testUtils.getRandomPath());
-      });
-
-        it('and trigger a single \'change\' event when properties are changed', function() {
-          var wp = new Waypoint();
-          var changeEventCount = 0;
-
-          spyOn(wp, 'trigger').andCallFake(function(topic, waypoint) {
-            if (topic === 'change') {
-              changeEventCount++;
-              expect(waypoint).toEqual(wp);
-            }
-          });
-
-          wp.set({
-            distance: 12345,
-            latLon: testUtils.getRandomLatLon(),
-            travelMode: 'SPACE_ELEVATOR'
-          });
-
-          expect(wp.trigger).toHaveBeenCalled();
-          expect(changeEventCount).toEqual(1);
-        });
-      });
+      // geocoded lat lon is considered more accurate, and preferred
+      wp.geocodedLatLon = [-45.1, 90.1];
+      expect(wp.getLatLon()).toEqual([-45.1, 90.1]);
     });
+
+    it('should select a waypoint, and optionally trigger a \'select\' event', function() {
+      var waypoint = new Waypoint();
+
+      spyOn(waypoint, 'set');
+      spyOn(waypoint, 'trigger');
+
+      waypoint.select();
+
+      expect(waypoint.set).toHaveBeenCalledWith({
+        selected: true
+      }, { trigger: true });
+
+      waypoint.select({ trigger: false });
+      expect(waypoint.set).toHaveBeenCalledWith({
+        selected: true
+      }, { trigger: false });
+    });
+
+    it('should deselect a waypoint, and optionally trigger a \'deselect\' event', function() {
+      var waypoint = new Waypoint();
+
+      spyOn(waypoint, 'set');
+      spyOn(waypoint, 'trigger');
+
+      waypoint.deselect();
+
+      expect(waypoint.set).toHaveBeenCalledWith({
+        selected: false
+      }, { trigger: true });
+
+      waypoint.deselect({ trigger: false });
+      expect(waypoint.set).toHaveBeenCalledWith({
+        selected: false
+      }, { trigger: false });
+    });
+
+    it('should tell you if the waypoint is selected', function() {
+      var waypoint = new Waypoint();
+
+      waypoint.selected = true;
+      expect(waypoint.isSelected()).toEqual(true);
+
+      waypoint.selected = false;
+      expect(waypoint.isSelected()).toEqual(false);
+    });
+
+    describe('should set attributes', function() {
+      it('and trigger a \'select\' event', function() {
+        var waypoint = new Waypoint();
+
+        spyOn(waypoint, 'trigger');
+
+        waypoint.set({ selected: true });
+        expect(waypoint.trigger).toHaveBeenCalledWith('select', waypoint);
+      });
+
+      it('and trigger a \'deselect\' event', function() {
+        var waypoint = new Waypoint();
+
+        spyOn(waypoint, 'trigger');
+
+        waypoint.set({ selected: false });
+        expect(waypoint.trigger).toHaveBeenCalledWith('deselect', waypoint);
+      });
+
+      it('and trigger change:property events', function() {
+        var wp = new Waypoint();
+        var expectedCount = 0;
+        var actualCount = 0;
+
+        spyOn(wp, 'trigger');
+
+        function stubAndVerify(property, value) {
+          var setObj = {};
+
+          wp.trigger.andCallFake(function(topic, waypoint) {
+            // Ignore generic 'change' events
+            if (topic === 'change') { return; }
+
+            actualCount++;
+
+          expect(topic).toEqual('change:' + property);
+          expect(waypoint).toEqual(wp);
+        });
+
+        setObj[property] = value;
+        wp.set(setObj);
+
+        expectedCount++;
+        expect(actualCount).toEqual(expectedCount);
+      }
+
+      // Run run run
+      stubAndVerify('latLon', testUtils.getRandomLatLon());
+      stubAndVerify('geocodedLatLon', testUtils.getRandomLatLon());
+      stubAndVerify('followDirections', false);
+      stubAndVerify('travelMode', 'JETSKI');
+      stubAndVerify('path', testUtils.getRandomPath());
+    });
+
+    it('and trigger a single \'change\' event when properties are changed', function() {
+      var wp = new Waypoint();
+      var changeEventCount = 0;
+
+      spyOn(wp, 'trigger').andCallFake(function(topic, waypoint) {
+        if (topic === 'change') {
+          changeEventCount++;
+          expect(waypoint).toEqual(wp);
+        }
+      });
+
+      wp.set({
+        distance: 12345,
+        latLon: testUtils.getRandomLatLon(),
+        travelMode: 'SPACE_ELEVATOR'
+      });
+
+      expect(wp.trigger).toHaveBeenCalled();
+      expect(changeEventCount).toEqual(1);
+    });
+  });
 
     describe('JSON import/export', function() {
       it('export as a JSON string', function() {
