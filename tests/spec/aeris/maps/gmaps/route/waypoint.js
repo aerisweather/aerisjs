@@ -65,41 +65,30 @@ define([
         latLon: [-45, 90]
       });
 
-      expect(wp.getLatLon()).toEqual([-45, 90]);
+        expect(wp.getLatLon()).toEqual([-45, 90]);
 
-      // geocoded lat lon is considered more accurate, and preferred
-      wp.geocodedLatLon = [-45.1, 90.1];
-      expect(wp.getLatLon()).toEqual([-45.1, 90.1]);
-    });
-
-    describe('Should trigger events', function() {
-      it('should trigger a change:distance event', function() {
-        var wp = new MockWaypoint();
-        var triggered = false;
-
-        wp.on('change:distance', function() {
-          triggered = true;
-        });
-
-        wp.setDistance(1921235456245123);
-        expect(triggered).toEqual(true);
+        // geocoded lat lon is considered more accurate, and preferred
+        wp.geocodedLatLon = [-45.1, 90.1];
+        expect(wp.getLatLon()).toEqual([-45.1, 90.1]);
       });
 
-      it('should trigger change:property events', function() {
-        var wp = new Waypoint();
-        var expectedCount = 0;
-        var actualCount = 0;
+      describe('should set attributes', function() {
 
-        spyOn(wp, 'trigger');
+        it('and trigger change:property events', function() {
+          var wp = new Waypoint();
+          var expectedCount = 0;
+          var actualCount = 0;
 
-        function stubAndVerify(property, value) {
-          var setObj = {};
+          spyOn(wp, 'trigger');
 
-          wp.trigger.andCallFake(function(topic, waypoint) {
-            // Ignore generic 'change' events
-            if (topic === 'change') { return; }
+          function stubAndVerify(property, value) {
+            var setObj = {};
 
-            actualCount++;
+            wp.trigger.andCallFake(function(topic, waypoint) {
+              // Ignore generic 'change' events
+              if (topic === 'change') { return; }
+
+              actualCount++;
 
             expect(topic).toEqual('change:' + property);
             expect(waypoint).toEqual(wp);
@@ -120,28 +109,26 @@ define([
         stubAndVerify('path', testUtils.getRandomPath());
       });
 
-      it('should trigger a single \'change\' event when properties are changed', function() {
-        var wp = new Waypoint();
-        var changeEventCount = 0;
+        it('and trigger a single \'change\' event when properties are changed', function() {
+          var wp = new Waypoint();
+          var changeEventCount = 0;
 
-        spyOn(wp, 'trigger').andCallFake(function(topic, waypoint) {
-          if (topic === 'change') {
-            changeEventCount++;
-            expect(waypoint).toEqual(wp);
-          }
+          spyOn(wp, 'trigger').andCallFake(function(topic, waypoint) {
+            if (topic === 'change') {
+              changeEventCount++;
+              expect(waypoint).toEqual(wp);
+            }
+          });
+
+          wp.set({
+            distance: 12345,
+            latLon: testUtils.getRandomLatLon(),
+            travelMode: 'SPACE_ELEVATOR'
+          });
+
+          expect(wp.trigger).toHaveBeenCalled();
+          expect(changeEventCount).toEqual(1);
         });
-
-        // Empty stub to limit test scope
-        spyOn(wp, 'setDistance');
-
-        wp.set({
-          distance: 12345,
-          latLon: testUtils.getRandomLatLon(),
-          travelMode: 'SPACE_ELEVATOR'
-        });
-
-        expect(wp.trigger).toHaveBeenCalled();
-        expect(changeEventCount).toEqual(1);
       });
     });
 
