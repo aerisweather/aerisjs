@@ -180,5 +180,67 @@ define([
         expect(listener.off).toHaveBeenCalledWith('change', updateThings, listener);
       });
     });
+
+    it('should proxy events to another object', function() {
+      var authentic = new Events();
+      var poser = new Events();
+      var authenticHandler = jasmine.createSpy('authenticHandler');
+      var poserHandler = jasmine.createSpy('poserHandler');
+      var message = {
+        foo: 'bar'
+      };
+
+      poser.proxyEvents(authentic);
+
+      authentic.on('keepingItReal', authenticHandler);
+      poser.on('keepingItReal', poserHandler);
+
+      authentic.trigger('keepingItReal', message);
+
+      expect(authenticHandler).toHaveBeenCalledWith(message);
+      expect(poserHandler).toHaveBeenCalledWith(message);
+
+      // And what if the poser calls the event itself?
+      poser.trigger('keepingItReal', 'just fake it til you make it');
+      // Acts just like normal
+      expect(poserHandler).toHaveBeenCalledWith('just fake it til you make it');
+      // And the original Event object doesn't get called
+      expect(authenticHandler.callCount).toEqual(1);
+    });
+
+    it('should customize the proxy event with using a callback', function() {
+      var child = new Events();
+      var parent = new Events();
+
+      parent.proxyEvents(child, function(topic, args) {
+        return {
+          topic: 'child:' + topic,
+          args: [child].concat(args)
+        };
+      }, parent);
+
+      spyOn(parent, 'trigger');
+
+      child.trigger('grow', '3 inches');
+
+      expect(parent.trigger).toHaveBeenCalledWith('child:grow', child, '3 inches');
+    });
+
+    it('should end a proxy', function() {
+      var authentic = new Events();
+      var poser = new Events();
+      var authenticHandler = jasmine.createSpy('authenticHandler');
+      var poserHandler = jasmine.createSpy('poserHandler');
+
+      poser.proxyEvents(authentic);
+      authentic.removeProxy();
+
+      authentic.on('keepingItReal', authenticHandler);
+      poser.on('keepingItReal', poserHandler);
+
+      authentic.trigger('keepingItReal');
+      expect(authenticHandler).toHaveBeenCalled();
+      expect(poserHandler).not.toHaveBeenCalled();
+    });
   });
 });
