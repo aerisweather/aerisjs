@@ -196,6 +196,12 @@ require([
       });
     });
 
+    it('should return it\'s renderer', function() {
+      factory.build();
+
+      expect(factory.getBuilder().getRenderer()).toEqual(factory.getRenderer());
+    });
+
 
     describe('Manage Waypoints using commands', function() {
       describe('should add a waypoint', function() {
@@ -241,6 +247,23 @@ require([
         });
       });
 
+      it('should move a waypoint', function() {
+        var waypoint = getStubbedWaypoint();
+        var latLon = testUtils.getRandomLatLon();
+
+        factory.build();
+
+        spyOn(factory.getCommandManager(), 'executeCommand').andCallFake(function(command) {
+          expect(command).toBeInstanceOf(aeris.maps.gmaps.route.commands.MoveWaypointCommand);
+        });
+        spyOn(aeris.maps.gmaps.route.commands, 'MoveWaypointCommand');
+
+        factory.getBuilder().moveWaypoint(waypoint, latLon);
+
+        expect(aeris.maps.gmaps.route.commands.MoveWaypointCommand).
+          toHaveBeenCalledWith(factory.getRoute(), waypoint, latLon);
+        expect(factory.getCommandManager().executeCommand).toHaveBeenCalled();
+      });
 
       it('should remove a waypoint', function() {
         var waypoint = getStubbedWaypoint();

@@ -4,8 +4,8 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     <style type="text/css">
       #map-canvas {
-        width: 600px;
-        height: 400px;
+        width: 800px;
+        height: 600px;
       }
       .float-left {
         float: left;
@@ -25,7 +25,7 @@
 
       function getRandomLatLon(from, to) {
         var center = [44.98, -93.2636];
-        var radius = 0.0075;
+        var radius = 0.125;
         from || (from = [center[0] - radius, center[1] - radius]);
         to || (to = [center[0] + radius, center[1] + radius]);
 
@@ -47,7 +47,7 @@
         ], function(AerisMap, Waypoint, Route, RouteBuilder, RouteRenderer, Click) {
           var map = new AerisMap("map-canvas", {
             center: [44.98, -93.2636],
-            zoom: 14
+            zoom: 12
           });
           var routeBuilder = new RouteBuilder({
             route: new Route(),
@@ -72,6 +72,10 @@
 
             click.on('click', function(latLon) {
               routeBuilder.addWaypoint(latLon);
+            });
+
+            routeBuilder.getRenderer().on('waypoint:dragend', function(waypoint, latLon) {
+              routeBuilder.moveWaypoint(waypoint, latLon);
             });
           }
 

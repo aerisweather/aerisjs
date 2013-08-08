@@ -302,8 +302,8 @@ define([
 
     describe('Event bindings', function() {
 
-      it('should trigger \'change\' events fired by child waypoints', function() {
-        var waypoint = sinon.createStubInstance(Waypoint);
+      it('should proxy \'change\' events fired by child waypoints', function() {
+        var waypoint = getStubbedWaypoint();
         var route = new Route();
 
 
@@ -316,6 +316,25 @@ define([
         route.add(waypoint);
 
         expect(route.trigger).toHaveBeenCalledWith('change', waypoint);
+      });
+
+      it('should proxy \'change:[property]\' events fired by child waypoints', function() {
+        var waypoint = getStubbedWaypoint();
+        var route = new Route();
+
+        spyOn(route, 'trigger');
+
+        // Immediately call waypoint.on('change') handler
+        testUtils.stubEvent(waypoint, 'change', [waypoint, {
+          properties: [
+            'someProp',
+            'anotherProp'
+          ]
+        }]);
+        route.add(waypoint);
+
+        expect(route.trigger).toHaveBeenCalledWith('change:someProp', waypoint);
+        expect(route.trigger).toHaveBeenCalledWith('change:anotherProp', waypoint);
       });
     });
 
