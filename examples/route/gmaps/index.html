@@ -77,6 +77,10 @@
             routeBuilder.getRenderer().on('waypoint:dragend', function(waypoint, latLon) {
               routeBuilder.moveWaypoint(waypoint, latLon);
             });
+
+            routeBuilder.getRenderer().on('waypoint:click', function(waypoint) {
+              waypoint.toggleSelect();
+            });
           }
 
           function updateUI() {
@@ -156,6 +160,9 @@
             });
             $('#clearRoute').click(function() {
               routeBuilder.resetRoute();
+            });
+            $('#clearSelected').click(function() {
+              route.remove(route.getSelected());
             });
 
             // Undo/Redo
@@ -243,6 +250,7 @@
 
       <div>
         <button id="clearRoute">Clear All</button>
+        <button id="clearSelected">Clear Selected</button>
       </div>
 
 

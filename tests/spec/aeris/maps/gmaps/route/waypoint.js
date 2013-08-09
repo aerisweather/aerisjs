@@ -108,13 +108,31 @@ define([
       }, { trigger: false });
     });
 
+    it('should toggle a waypoint\'s selected attribute', function() {
+      var waypoint = new Waypoint();
+
+      spyOn(waypoint, 'isSelected');
+      spyOn(waypoint, 'select');
+      spyOn(waypoint, 'deselect');
+
+      waypoint.isSelected.andReturn(false);
+      waypoint.toggleSelect();
+      expect(waypoint.select).toHaveBeenCalledInTheContextOf(waypoint);
+      expect(waypoint.deselect).not.toHaveBeenCalled();
+
+      waypoint.isSelected.andReturn(true);
+      waypoint.toggleSelect();
+      expect(waypoint.deselect).toHaveBeenCalledInTheContextOf(waypoint);
+      expect(waypoint.select.callCount).toEqual(1);   // wasn't called a second time
+    });
+
     it('should tell you if the waypoint is selected', function() {
       var waypoint = new Waypoint();
 
-      waypoint.selected = true;
+      waypoint.select();
       expect(waypoint.isSelected()).toEqual(true);
 
-      waypoint.selected = false;
+      waypoint.deselect();
       expect(waypoint.isSelected()).toEqual(false);
     });
 
