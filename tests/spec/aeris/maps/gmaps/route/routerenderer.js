@@ -3,14 +3,46 @@ define([
   'jasmine',
   'sinon',
   'testUtils',
+  'testErrors/untestedspecerror',
   'gmaps/utils',
   'vendor/underscore',
+  'base/markers/icon',
   'mocks/waypoint',
   'gmaps/route/route',
   'gmaps/route/waypoint',
   'gmaps/route/routerenderer',
   'gmaps/map'
-], function(aeris, jasmine, sinon, testUtils, mapUtils, _, MockWaypoint, Route, Waypoint, RouteRenderer, AerisMap) {
+], function(aeris, jasmine, sinon, testUtils, UntestedSpecError, mapUtils, _, Icon, MockWaypoint, Route, Waypoint, RouteRenderer, AerisMap) {
+
+  function getStubbedWaypoint(opt_options) {
+    var waypoint = sinon.createStubInstance(Waypoint);
+
+    waypoint.followDirections = opt_options.followDirections || waypoint.followDirections;
+
+    if (opt_options.selected) {
+      spyOn(waypoint, 'isSelected').andReturn(opt_options.selected);
+    }
+
+    if (opt_options.latLon) {
+      spyOn(waypoint, 'getLatLon').andReturn(opt_options.latLon);
+    }
+
+    return waypoint;
+  }
+
+  function getStubbedRoute(opt_waypoint) {
+    var route = sinon.createStubInstance(Route);
+
+    if (opt_waypoint) {
+      spyOn(route, 'has').andCallFake(function(waypoint) {
+        return waypoint === opt_waypoint;
+      });
+    }
+
+    return route;
+  }
+
+
   describe('A RouteRenderer', function() {
     var map;
 
@@ -23,14 +55,6 @@ define([
 
     afterEach(function() {
       map = null;
-    });
-
-    it('requires an AerisMap', function() {
-      expect(function() {
-        new RouteRenderer({foo: 'bar'});
-      }).toThrowType('InvalidArgumentError');
-
-      new RouteRenderer(map);
     });
 
 
@@ -49,7 +73,31 @@ define([
         });
       });
 
-      it('with an associated route', function() {
+      it('with an icon', function() {
+        var renderer = new RouteRenderer(map);
+        var exp_latLon = testUtils.getRandomLatLon();
+        var waypoint = getStubbedWaypoint({ latLon: exp_latLon });
+        var route = getStubbedRoute(waypoint);
+        var setMapSpy = jasmine.createSpy('setMap');
+
+        // Spy on Icon constructor
+        spyOn(aeris.maps.markers, 'Icon').andCallFake(function(latLon) {
+          expect(latLon).toEqual(exp_latLon);
+          return { setMap: setMapSpy };
+        });
+
+        // Limiting test scope...
+        waypoint.path = null;
+        spyOn(renderer, 'proxyEvents');
+
+        renderer.renderWaypoint(waypoint, route);
+        expect(aeris.maps.markers.Icon).toHaveBeenCalled();
+        expect(setMapSpy).toHaveBeenCalled();
+      });
+
+
+
+      it('and require the waypoint to belong to a route', function() {
         var renderer = new RouteRenderer(map);
         var waypoint = new MockWaypoint();
         var route = new Route([waypoint]);
@@ -66,7 +114,7 @@ define([
         renderer.renderWaypoint(waypoint, route);
       });
 
-      it('with a path', function() {
+      it('with a Polyline path', function() {
         var renderer = new RouteRenderer(map);
         var route, waypoint, setMapSpy;
 
@@ -106,6 +154,103 @@ define([
 
         // Test: Polyline added to map
         expect(setMapSpy).toHaveBeenCalled();
+      });
+
+
+      describe('should accept style options', function() {
+        beforeEach(function() {
+          // Stub as no-op
+          // to limit test scope
+          spyOn(RouteRenderer.prototype, 'proxyEvents');
+        });
+
+        function testWaypointOptions(isSelected) {
+          var renderer, rendererOptions = {};
+          var waypointOptions = {
+            url: 'internet.com/awesomeIcon.omg',
+            width: 923,
+            height: 123,
+            clickable: false,
+            draggable: false
+          };
+          var waypoint = getStubbedWaypoint({ selected: isSelected });
+          var route = getStubbedRoute(waypoint);
+
+          waypoint.path = null;
+
+          rendererOptions.waypoint = isSelected ? undefined : waypointOptions;
+          rendererOptions.selectedWaypoint = isSelected ? waypointOptions : undefined;
+
+          renderer = new RouteRenderer(map, {
+            waypoint: waypointOptions
+          });
+
+          spyOn(aeris.maps.markers, 'Icon').andCallFake(function(latLon, url, w, h, opts) {
+            expect(url).toEqual(waypointOptions.url);
+            expect(w).toEqual(waypointOptions.width);
+            expect(h).toEqual(waypointOptions.height);
+            expect(opts.clickable).toEqual(waypointOptions.clickable);
+            expect(opts.draggable).toEqual(waypointOptions.draggable);
+
+            return { setMap: function() {} };
+          });
+
+          renderer.renderWaypoint(waypoint, route);
+          expect(aeris.maps.markers.Icon).toHaveBeenCalled();
+        }
+
+        function testPathOptions(isFollowingDirections) {
+          var renderer, rendererOptions = {};
+          var pathOptions = {
+            strokeColor: 'purple',
+            strokeOpacity: 0.2537,
+            strokeWeight: 10
+          };
+          var waypoint = getStubbedWaypoint({ followDirections: isFollowingDirections});
+          var route = getStubbedRoute(waypoint);
+          var polylineSpy = google.maps.Polyline.isSpy ?
+            google.maps.Polyline :
+            spyOn(google.maps, 'Polyline');
+
+          rendererOptions.path = isFollowingDirections ? pathOptions : undefined;
+          rendererOptions.offPath = isFollowingDirections ? undefined : pathOptions;
+          renderer = new RouteRenderer(map, rendererOptions);
+
+          waypoint.path = testUtils.getRandomPath();
+
+          // Stub out icon rendering
+          spyOn(aeris.maps.markers, 'Icon').andReturn({
+            setMap: function() {}
+          });
+
+          // Mock Polyline constructor
+          polylineSpy.andCallFake(function(actual) {
+            expect(actual.strokeColor).toEqual(pathOptions.strokeColor);
+            expect(actual.strokeOpacity).toEqual(pathOptions.strokeOpacity);
+            expect(actual.strokeWeight).toEqual(pathOptions.strokeWeight);
+
+            return { setMap: function() {} };
+          });
+
+          renderer.renderWaypoint(waypoint, route);
+          expect(google.maps.Polyline).toHaveBeenCalled();
+        }
+
+        it('for a waypoint', function() {
+          testWaypointOptions(false);
+        });
+
+        it('for a selected waypoint', function() {
+          testWaypointOptions(false);
+        });
+
+        it('for a path', function() {
+          testPathOptions(true);
+        });
+
+        it('for a path not following directions', function() {
+          testPathOptions(false);
+        });
       });
     });
 
