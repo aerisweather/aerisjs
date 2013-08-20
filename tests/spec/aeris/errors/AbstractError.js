@@ -1,11 +1,11 @@
-define(['aeris', 'aeris/errors/AbstractError'], function(aeris) {
+define(['aeris/util', 'aeris/errors/AbstractError'], function(_, AbstractError) {
   describe('An Error', function() {
     var MyError = function() {
-      aeris.errors.AbstractError.apply(this, arguments);
+      AbstractError.apply(this, arguments);
     };
-    aeris.inherits(
+    _.inherits(
       MyError,
-      aeris.errors.AbstractError
+      AbstractError
     );
 
     MyError.prototype.setName = function() {
@@ -19,11 +19,11 @@ define(['aeris', 'aeris/errors/AbstractError'], function(aeris) {
 
     it('must implement a setName method', function() {
       var BadErrorClass = function() {
-        aeris.errors.AbstractError.apply(this, arguments);
+        AbstractError.apply(this, arguments);
       };
-      aeris.inherits(
+      _.inherits(
         BadErrorClass,
-        aeris.errors.AbstractError
+        AbstractError
       );
 
       expect(function() { throw new BadErrorClass('msg'); }).toThrow();

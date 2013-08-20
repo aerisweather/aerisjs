@@ -1,5 +1,5 @@
 require([
-  'vendor/underscore',
+  'aeris/util',
   'testUtils',
   'jasmine',
   'matchers/custom-matchers'

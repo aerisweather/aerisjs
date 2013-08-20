@@ -1,18 +1,17 @@
 define([
-  'aeris',
   'jasmine',
   'sinon',
   'testUtils',
   'testErrors/untestedspecerror',
   'gmaps/utils',
-  'vendor/underscore',
+  'aeris/util',
   'base/markers/icon',
   'mocks/waypoint',
   'gmaps/route/route',
   'gmaps/route/waypoint',
   'gmaps/route/routerenderer',
   'gmaps/map'
-], function(aeris, jasmine, sinon, testUtils, UntestedSpecError, mapUtils, _, Icon, MockWaypoint, Route, Waypoint, RouteRenderer, AerisMap) {
+], function(jasmine, sinon, testUtils, UntestedSpecError, mapUtils, _, Icon, MockWaypoint, Route, Waypoint, RouteRenderer, AerisMap) {
 
   function getStubbedWaypoint(opt_options) {
     var waypoint = sinon.createStubInstance(Waypoint);

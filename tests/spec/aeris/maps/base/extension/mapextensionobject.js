@@ -1,9 +1,7 @@
 define([
-  'aeris',
   'base/extension/mapextensionobject',
-  'testErrors/untestedspecerror',
-  'vendor/underscore'
-], function(aeris, MapExtensionObject, UntestedSpecError, _) {
+  'testErrors/untestedspecerror'
+], function(MapExtensionObject, UntestedSpecError) {
   describe('A MapExtensionObject', function() {
 
     it('should provide a unique \'id\'  property', function() {

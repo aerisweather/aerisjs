@@ -1,10 +1,10 @@
 define([
-  'aeris',
+  'aeris/util',
   'jasmine',
   'aeris/events',
   'testUtils',
   'testErrors/untestedspecerror'
-], function(aeris, jasmine, Events, testUtils, UntestedSpecError) {
+], function(_, jasmine, Events, testUtils, UntestedSpecError) {
   describe('Aeris Events', function() {
 
 
@@ -13,7 +13,7 @@ define([
       Events.apply(this);
     };
 
-    aeris.inherits(Person, Events);
+    _.inherits(Person, Events);
 
     Person.prototype.talk = function(words) {
       this.trigger('talk', words);

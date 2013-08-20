@@ -2,9 +2,9 @@ define([
   'jasmine',
   'sinon',
   'gmaps/route/directions/abstractdirectionsservice',
-  'aeris',
+  'aeris/util',
   'gmaps/route/waypoint'
-], function(jasmine, sinon, AbstractDirectionsService, aeris, Waypoint) {
+], function(jasmine, sinon, AbstractDirectionsService, _, Waypoint) {
 
   var StubbedWaypoint = function() {
     return sinon.createStubInstance(Waypoint);
@@ -13,7 +13,7 @@ define([
   var StubbedDirectionsService = function() {
     AbstractDirectionsService.apply(this, arguments);
   };
-  aeris.inherits(StubbedDirectionsService, AbstractDirectionsService);
+  _.inherits(StubbedDirectionsService, AbstractDirectionsService);
 
   StubbedDirectionsService.prototype.fetchDirectionsPath_ = jasmine.createSpy('fetchDirectionsPath_');
   StubbedDirectionsService.prototype.fetchDirectPath_ = jasmine.createSpy('fetchDirectPath_');

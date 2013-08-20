@@ -1,10 +1,10 @@
 define([
-  'aeris',
+  'aeris/util',
   'aeris/promise',
   'gmaps/route/commands/abstractroutecommand',
   'mocks/waypoint',
   'gmaps/route/route'
-], function(aeris, Promise, AbstractRouteCommand, MockWaypoint, Route) {
+], function(_, Promise, AbstractRouteCommand, MockWaypoint, Route) {
 
   /**
    *
@@ -19,7 +19,7 @@ define([
     this.mockWaypoint_ = new MockWaypoint();
   };
 
-  aeris.inherits(RouteCommand, AbstractRouteCommand);
+  _.inherits(RouteCommand, AbstractRouteCommand);
 
   RouteCommand.prototype.execute_ = function() {
     var self = this;

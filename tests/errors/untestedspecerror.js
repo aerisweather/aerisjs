@@ -1,7 +1,7 @@
 /**
  * @fileoverview Defines an UnimplementedSpecError.
 */
-define(['aeris', 'aeris/errors/abstracterror'], function(aeris, AbstractError) {
+define(['aeris/util', 'aeris/errors/abstracterror'], function(_, AbstractError) {
   /**
    * UnimplementedSpecError
    *
@@ -21,7 +21,7 @@ define(['aeris', 'aeris/errors/abstracterror'], function(aeris, AbstractError) {
     AbstractError.apply(this, arguments);
   };
 
-  aeris.inherits(
+  _.inherits(
     UntestedSpecError,
     AbstractError
   );

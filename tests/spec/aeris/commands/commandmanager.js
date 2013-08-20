@@ -1,11 +1,10 @@
 define([
-  'aeris',
   'testUtils',
   'aeris/commands/commandmanager',
   'aeris/promise',
   'mocks/command',
   'testErrors/untestedspecerror'
-], function(aeris, testUtils, CommandManager, Promise, MockCommand, UntestedSpecError) {
+], function(testUtils, CommandManager, Promise, MockCommand, UntestedSpecError) {
   describe('A CommandManager', function() {
 
 

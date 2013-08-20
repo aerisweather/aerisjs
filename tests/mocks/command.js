@@ -1,9 +1,8 @@
 define([
-  'aeris',
   'aeris/errors/invalidargumenterror',
   'aeris/commands/abstractcommand',
   'aeris/promise'
-], function(aeris, InvalidArgumentError, AbstractCommand, Promise) {
+], function(InvalidArgumentError, AbstractCommand, Promise) {
 
   // Testers specific to this mock implementation
   // To test whether the command has been executed/undone
@@ -44,7 +43,7 @@ define([
     // 1  --> executed
     this.state_ = -1;
   };
-  aeris.inherits(ConcreteCommand, AbstractCommand);
+  _.inherits(ConcreteCommand, AbstractCommand);
 
   ConcreteCommand.prototype.execute_ = function() {
     var promise = new Promise();

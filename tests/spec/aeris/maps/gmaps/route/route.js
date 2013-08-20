@@ -1,31 +1,27 @@
 define([
-  'aeris',
   'aeris/events',
   'jasmine',
   'sinon',
-  'aeris/utils',
+  'aeris/util',
   'testUtils',
   'testErrors/untestedspecerror',
   'gmaps/route/waypoint',
   'gmaps/route/directions/abstractdirectionsservice',
   'mocks/promise',
   'mocks/waypoint',
-  'gmaps/route/route',
-  'vendor/underscore'
+  'gmaps/route/route'
 ], function(
-  aeris,
   Events,
   jasmine,
   sinon,
-  utils,
+  _,
   testUtils,
   UntestedSpecError,
   Waypoint,
   DirectionsService,
   StubbedPromise,
   MockWaypoint,
-  Route,
-  _
+  Route
 ) {
 
   function getStubbedWaypoint(opt_options) {
@@ -69,10 +65,10 @@ define([
     it('should have a unique cid, with prefix \'route_\'', function() {
       var route;
 
-      spyOn(utils, 'uniqueId').andCallThrough();
+      spyOn(_, 'uniqueId').andCallThrough();
       route = new Route();
 
-      expect(utils.uniqueId).toHaveBeenCalled();
+      expect(_.uniqueId).toHaveBeenCalled();
       expect(route.cid).toBeDefined();
       expect(route.cid).toMatch(/^route_[0-9]*/);
     });

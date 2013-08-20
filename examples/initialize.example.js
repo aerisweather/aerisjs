@@ -14,7 +14,7 @@ require(['../lib/config'], function() {
         jquery: '//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min'
       },
       config: {
-        aeris: {
+        'aeris/config': {
           path: '../../../',
           apiId: '[YOUR CLIENT ID FOR THE AERIS API]',
           apiSecret: '[YOUR CLIENT SECRET FOR THE AERIS API]'

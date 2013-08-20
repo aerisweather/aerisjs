@@ -1,7 +1,7 @@
 define([
   'aeris/promise',
   'sinon',
-  'vendor/underscore'
+  'aeris/util'
 ], function(Promise, sinon, _) {
   /**
    * A factory for creating stubbed promise instances,

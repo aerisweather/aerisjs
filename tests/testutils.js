@@ -1,5 +1,5 @@
 define([
-  'vendor/underscore',
+  'aeris/util',
   'mocks/waypoint',
   'gmaps/route/route',
   'jasmine'

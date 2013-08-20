@@ -4,7 +4,7 @@
 define([
   'testUtils',
   'gmaps/utils',
-  'vendor/underscore',
+  'aeris/util',
   'googlemaps'
 ], function(testUtils, mapUtils, _) {
   /**

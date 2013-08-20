@@ -2,7 +2,7 @@ define([
   'gmaps/route/commands/addwaypointcommand',
   'gmaps/route/waypoint',
   'gmaps/route/route',
-  'vendor/underscore',
+  'aeris/util',
   'testErrors/untestedspecerror',
   'sinon'
 ], function(

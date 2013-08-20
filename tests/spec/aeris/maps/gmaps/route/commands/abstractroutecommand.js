@@ -3,10 +3,10 @@
  * as a proxy.
  */
 define([
-  'aeris',
+  'aeris/util',
   'gmaps/route/commands/abstractroutecommand',
   'gmaps/route/route'
-], function(aeris, AbstractRouteCommand, Route) {
+], function(_, AbstractRouteCommand, Route) {
   describe('An AbstractRouteCommand', function() {
     var ConcreteRouteCommand = function(route, opt_isResolving, opt_timeout) {
       AbstractRouteCommand.call(this, route);
@@ -19,7 +19,7 @@ define([
       // 1  --> executed
       this.state_ = -1;
     };
-    aeris.inherits(ConcreteRouteCommand, AbstractRouteCommand);
+    _.inherits(ConcreteRouteCommand, AbstractRouteCommand);
 
     ConcreteRouteCommand.prototype.execute_ = function() {
       var promise = new Promise();

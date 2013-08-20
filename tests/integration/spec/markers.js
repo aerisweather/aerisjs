@@ -1,12 +1,11 @@
 define([
-  'aeris',
   'gmaps/map',
   'vendor/jquery',
   'testUtils',
   'testErrors/untestedspecerror',
   'googlemaps',
   'packages/gmaps/markers'
-], function(aeris, AerisMap, $, testUtils, UntestedSpecError) {
+], function(AerisMap, $, testUtils, UntestedSpecError) {
   describe('The Markers Package for Google Maps', function() {
     var aerisMap;
     var $canvas = $('<div id="map-canvas"><div>');

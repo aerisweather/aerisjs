@@ -29,5 +29,6 @@ require.config({
       apiId: 'ezHWL0MiLsxwlN2ik8U4c',
       apiSecret: 'uCDMeSj91lBfIKCmeQkpeZjsAwUUQJHuKesCvqTm'
     }
-  }
+  },
+  waitSeconds: 10000
 });

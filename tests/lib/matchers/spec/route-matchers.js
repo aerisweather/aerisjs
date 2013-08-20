@@ -1,6 +1,6 @@
 require([
   'jasmine',
-  'vendor/underscore',
+  'aeris/util',
   'gmaps/route/waypoint',
   'mocks/waypoint',
   'gmaps/route/route',

@@ -3,12 +3,11 @@
  * as a proxy.
  */
 define([
-  'aeris',
   'mocks/command',
   'aeris/promise',
   'testErrors/untestedspecerror',
   'testUtils'
-], function(aeris, ConcreteCommand, Promise, UntestedSpecError, testUtils) {
+], function(ConcreteCommand, Promise, UntestedSpecError, testUtils) {
   describe('An AbstractCommand', function() {
 
 

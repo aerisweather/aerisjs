@@ -1,7 +1,7 @@
 define([
   'jasmine',
   'sinon',
-  'vendor/underscore',
+  'aeris/util',
   'gmaps/route/commands/removewaypointcommand',
   'gmaps/route/route',
   'gmaps/route/waypoint'

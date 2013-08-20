@@ -1,10 +1,9 @@
 define([
-  'aeris',
   'testUtils',
   'testErrors/untestedspecerror',
   'aeris/promise',
   'aeris/promisequeue'
-], function(aeris, testUtils, UntestedSpecError, Promise, PromiseQueue) {
+], function(testUtils, UntestedSpecError, Promise, PromiseQueue) {
   describe('A PromiseQueue', function() {
 
     function getPromiseFn() {

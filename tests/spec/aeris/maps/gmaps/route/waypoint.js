@@ -1,23 +1,19 @@
 define([
-  'aeris',
   'jasmine',
   'testErrors/untestedspecerror',
   'gmaps/route/waypoint',
   'mocks/waypoint',
   'mocks/directionsresults',
-  'vendor/underscore',
-  'aeris/utils',
+  'aeris/util',
   'testUtils',
   'gmaps/utils'
 ], function(
-  aeris,
   jasmine,
   UntestedSpecError,
   Waypoint,
   MockWaypoint,
   MockDirectionsResults,
   _,
-  utils,
   testUtils,
   mapUtils
 ) {
@@ -44,11 +40,11 @@ define([
     it('should have a unique client id, prefixed with \'wp_\'', function() {
       var wp;
 
-      spyOn(aeris.utils, 'uniqueId').andCallThrough();
+      spyOn(_, 'uniqueId').andCallThrough();
       wp = new Waypoint();
 
       expect(wp.cid).toBeDefined();
-      expect(aeris.utils.uniqueId).toHaveBeenCalled();
+      expect(_.uniqueId).toHaveBeenCalled();
       expect(wp.cid).toMatch(/^wp_[0-9]*/);
     });
 

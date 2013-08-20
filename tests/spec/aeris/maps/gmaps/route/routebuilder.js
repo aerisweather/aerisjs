@@ -1,10 +1,9 @@
 require([
-  'aeris',
   'aeris/promise',
   'jasmine',
   'sinon',
   'testUtils',
-  'vendor/underscore',
+  'aeris/util',
   'gmaps/route/waypoint',
   'gmaps/route/route',
   'gmaps/route/routerenderer',
@@ -15,7 +14,6 @@ require([
   'gmaps/route/commands/resetroutecommand',
   'testErrors/untestedspecerror'
 ], function(
-    aeris,
     Promise,
     jasmine,
     sinon,
