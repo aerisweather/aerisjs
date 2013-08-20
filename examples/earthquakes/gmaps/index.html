@@ -13,12 +13,14 @@
 
       function initialize() {
         require([
-          'aeris/maps/gmaps',
+          'aeris/maps/gmaps/map',
+          'base/layers/googleroadmap',
+          'base/layers/infobox',
           'base/markercollections/earthquakemarkers',
           'jquery',
           'handlebars',
           'examples/lib/helpers.handlebars'
-        ], function(aeris, EarthquakeMarkers, $, Handlebars) {
+        ], function(GoogleMap, GoogleRoadMap, InfoBox, EarthquakeMarkers, $, Handlebars) {
           var $loading = $('.loading');
           $loading.show();
 
@@ -50,7 +52,9 @@
 
           var handleMarkerClick = function(marker, data) {
             var html = template(data);
-            var infoBox = new aeris.maps.layers.InfoBox(marker.position, html);
+            var infoBox = new aeris.maps.layers.InfoBox(marker.position, html, {
+              hideMarker: true
+            });
             infoBox.setMap(map);
           };
 
@@ -112,7 +116,7 @@
         <label for="earthquake-type-moderate">Moderate</label>
         <br />
 
-        <input name="eartquake-type[]" value="strong" type="checkbox" id="earthquake-type-strong" checked="checked" />
+        <input name="earthquake-type[]" value="strong" type="checkbox" id="earthquake-type-strong" checked="checked" />
         <label for="earthquake-type-strong">Strong</label>
         <br />
 

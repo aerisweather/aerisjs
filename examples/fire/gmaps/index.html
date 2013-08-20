@@ -13,17 +13,19 @@
 
       function initialize() {
         require([
-          'aeris/maps/gmaps',
+          'aeris/maps/gmaps/map',
+          'base/layers/googleroadmap',
+          'base/layers/infobox',
           'base/markercollections/firemarkers',
           'jquery',
           'handlebars',
           'examples/lib/helpers.handlebars'
-        ], function(aeris, FireMarkers, $, Handlebars) {
+        ], function(GoogleMap, GoogleRoadMap, InfoBox, FireMarkers, $, Handlebars) {
           var $loading = $('.loading');
           $loading.show();
 
-          var map = new aeris.maps.gmaps.Map('map-canvas', {
-            baseLayer: new aeris.maps.layers.GoogleRoadMap(),
+          var map = new GoogleMap('map-canvas', {
+            baseLayer: new GoogleRoadMap(),
             center: [44.98, -93.2636],
             zoom: 4
           });
@@ -51,7 +53,9 @@
 
           var handleMarkerClick = function(marker, data) {
             var html = template(data);
-            var infoBox = new aeris.maps.layers.InfoBox(marker.position, html);
+            var infoBox = new InfoBox(marker.position, html, {
+              hideMarker: true
+            });
             infoBox.setMap(map);
           };
 

@@ -13,16 +13,20 @@
 
       function initialize() {
         require([
-          'aeris/maps/gmaps',
+          'aeris/maps/gmaps/map',
           'aeris/promise',
+          'base/layers/googleroadmap',
+          'base/layers/infobox',
           'base/markercollections/lightningmarkers',
-          'jquery'
-        ], function(aeris, Promise, LightningMarkers, $) {
+          'jquery',
+          'handlebars',
+          'examples/lib/helpers.handlebars'
+        ], function(GoogleMap, Promise, GoogleRoadMap, InfoBox, LightningMarkers, $, Handlebars) {
           var $loading = $('.loading');
           $loading.show();
 
-          var map = new aeris.maps.gmaps.Map('map-canvas', {
-            baseLayer: new aeris.maps.layers.GoogleRoadMap(),
+          var map = new GoogleMap('map-canvas', {
+            baseLayer: new GoogleRoadMap(),
             center: [44.98, -93.2636],
             zoom: 4
           });
