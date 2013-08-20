@@ -131,14 +131,6 @@ require([
         expect(builder.getRoute()).toEqual(route);
       });
 
-      it('should bind events to its route', function() {
-        spyOn(factory.getRoute(), 'bindEvents');
-
-        factory.build();
-
-        expect(factory.getRoute().bindEvents).toHaveBeenCalled();
-      });
-
       it('should set a Route', function() {
         var builder = getRouteBuilder({
           route: getStubbedRoute(),

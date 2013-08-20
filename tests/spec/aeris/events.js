@@ -20,164 +20,64 @@ define([
     };
     Person.prototype.eavesdrop = function() {};
 
-
-    describe('listenTo', function() {
-      it('should bind handler to object events', function() {
+    describe('off', function() {
+      it('should return the number of remaining handlers on the given topic', function () {
         var talker = new Person();
-        var busybody = new Person();
-
-        spyOn(busybody, 'eavesdrop');
-
-        busybody.listenTo(talker, 'talk', busybody.eavesdrop);
-        talker.talk('juicy gossip');
-
-        expect(busybody.eavesdrop).toHaveBeenCalledWith('juicy gossip');
-      });
-
-      it('should bind named handler to object', function() {
-        var talker = new Person();
-        var busybody = new Person();
-
-        spyOn(busybody, 'eavesdrop');
-
-        busybody.listenTo(talker, 'talk', 'eavesdrop');
-        talker.talk();
-
-        expect(busybody.eavesdrop).toHaveBeenCalled();
-      });
-
-      it('should not bind events to objects that don\'t extend from Events', function() {
-        var SomeObj = function() {};
-        var busybody = new Person();
-
-        expect(function() {
-          busybody.listenTo(SomeObj, 'do object things', busybody.eavesdrop);
-        }).toThrowType('InvalidArgumentError');
-      });
-
-      it('should call bound events in the context of listener', function() {
-        var talker = new Person();
-        var busybody = new Person();
-
-        spyOn(busybody, 'eavesdrop');
-
-        busybody.listenTo(talker, 'talk', busybody.eavesdrop);
-        talker.talk();
-
-        expect(busybody.eavesdrop).toHaveBeenCalledInTheContextOf(busybody);
+        var handlerA = function() {};
+        var handlerB = function() {};
+        var handlerC = function() {};
+        talker.on('talk', handlerA);
+        talker.on('talk', handlerB);
+        talker.on('talk', handlerC);
+        talker.on('walk', handlerA);
+        talker.on('walk', handlerB);
+        
+        expect(talker.off('talk', handlerA)).toEqual(2);
+        expect(talker.off('talk', handlerB)).toEqual(1);
+        expect(talker.off('walk')).toEqual(0);
+        expect(talker.off()).toEqual(0);
       });
     });
 
-    describe('stopListening', function() {
-      var talker, walker, busybody;
+    describe('Event hash', function() {
+      var evtObj;
+      var someCtx = { foo: 'bar' };
 
       beforeEach(function() {
-        talker = new Person();
-        busybody = new Person();
-        walker = new Person();
+        evtObj = new Events();
 
-        // Create spies
-        spyOn(busybody, 'eavesdrop');
-        walker.walk = jasmine.createSpy('walk').andCallFake(function() {
-          this.trigger('walk');
-        });
-        busybody.watch = jasmine.createSpy('watch');
-      });
-
-
-
-      it('should clear listeners from all objects', function() {
-        busybody.listenTo(talker, 'talk', busybody.eavesdrop);
-        busybody.listenTo(walker, 'walk', busybody.watch);
-
-        busybody.stopListening();
-
-        talker.talk();
-        walker.walk();
-
-        expect(busybody.eavesdrop).not.toHaveBeenCalled();
-        expect(busybody.watch).not.toHaveBeenCalled();
-      });
-
-      it('should clear all listeners bound to a specified object', function() {
-        busybody.listenTo(talker, 'talk', busybody.eavesdrop);
-        busybody.stopListening(talker);
-        talker.talk();
-
-        expect(busybody.eavesdrop).not.toHaveBeenCalled();
-      });
-
-      it('should not effect listeners bound to other objects', function() {
-        // bind events
-        busybody.listenTo(talker, 'talk', busybody.eavesdrop);
-        busybody.listenTo(walker, 'walk', busybody.watch);
-
-        // unbind from talker only
-        busybody.stopListening(talker);
-
-        // Test: only listening to walker
-        talker.talk();
-        walker.walk();
-        expect(busybody.eavesdrop).not.toHaveBeenCalled();
-        expect(busybody.watch).toHaveBeenCalled();
-      });
-    });
-
-    describe('Binding events', function() {
-      var updateStuff, updateThings, destroyEverything;
-      var eventsHash;
-      var listener, actor, someCtx;
-
-      beforeEach(function() {
-        listener = new Events();
-        actor = new Events();
-        someCtx = { foo: 'bar' };
-
-        // Some handler spies to play with
-        updateStuff = jasmine.createSpy('updateStuff');
-        updateThings = jasmine.createSpy('updateThings');
-        destroyEverything = jasmine.createSpy('destroyEverything');
+        evtObj.doSomething = jasmine.createSpy('doSomething');
+        evtObj.anotherThing = jasmine.createSpy('anotherThing');
 
         eventsHash = {
-          remove: destroyEverything,
+          remove: jasmine.createSpy('removeHandler'),
           change: [
-            updateStuff,
-            updateThings
+            'doSomething',
+            evtObj.anotherThing
           ]
         };
       });
 
-      it('should bind an events hash', function() {
-        spyOn(actor, 'on');
-
-        listener.bindEvents(eventsHash, actor, someCtx);
-        expect(actor.on).toHaveBeenCalledWith('remove', destroyEverything, someCtx);
-        expect(actor.on).toHaveBeenCalledWith('change', updateStuff, someCtx);
-        expect(actor.on).toHaveBeenCalledWith('change', updateThings, someCtx);
+      afterEach(function() {
+        evtObj.off();
       });
 
-      it('should unbind an events hash', function() {
-        spyOn(actor, 'off');
+      it('should accept multiple handler binding a single event', function () {
+        spyOn(Backbone.Events, 'on').andCallThrough();
+        evtObj.on(eventsHash, someCtx);
 
-        listener.unbindEvents(eventsHash, actor, someCtx);
-        expect(actor.off).toHaveBeenCalledWith('remove', destroyEverything, someCtx);
-        expect(actor.off).toHaveBeenCalledWith('change', updateStuff, someCtx);
-        expect(actor.off).toHaveBeenCalledWith('change', updateThings, someCtx);
+        expect(Backbone.Events.on).toHaveBeenCalledWith('remove', eventsHash.remove, someCtx);
+        expect(Backbone.Events.on).toHaveBeenCalledWith('change', evtObj.doSomething, someCtx);
+        expect(Backbone.Events.on).toHaveBeenCalledWith('change', evtObj.anotherThing, someCtx);
       });
 
-      it('should default to \'this\' as the target object and context', function() {
-        spyOn(listener, 'on');
-        spyOn(listener, 'off');
+      it('should accept multiple handler for unbinding a single event', function () {
+        spyOn(Backbone.Events, 'off').andCallThrough();
+        evtObj.off(eventsHash, someCtx);
 
-        listener.bindEvents(eventsHash);
-        expect(listener.on).toHaveBeenCalledWith('remove', destroyEverything, listener);
-        expect(listener.on).toHaveBeenCalledWith('change', updateStuff, listener);
-        expect(listener.on).toHaveBeenCalledWith('change', updateThings, listener);
-
-        listener.unbindEvents(eventsHash);
-        expect(listener.off).toHaveBeenCalledWith('remove', destroyEverything, listener);
-        expect(listener.off).toHaveBeenCalledWith('change', updateStuff, listener);
-        expect(listener.off).toHaveBeenCalledWith('change', updateThings, listener);
+        expect(Backbone.Events.off).toHaveBeenCalledWith('remove', eventsHash.remove, someCtx);
+        expect(Backbone.Events.off).toHaveBeenCalledWith('change', evtObj.doSomething, someCtx);
+        expect(Backbone.Events.off).toHaveBeenCalledWith('change', evtObj.anotherThing, someCtx);
       });
     });
 
