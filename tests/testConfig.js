@@ -10,8 +10,7 @@ require.config({
     matchers: '/tests/lib/matchers',
     testErrors: '/tests/errors',
     testUtils: '/tests/testUtils',
-    sinon: '/tests/lib/sinon',
-    jquery: '/tests/lib/jquery-1.10.2',
+    sinon: '/tests/lib/sinon'
   },
   shim: {
     jasmine: {

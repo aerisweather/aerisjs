@@ -1,7 +1,7 @@
 define([
   'aeris',
   'gmaps/map',
-  'jquery',
+  'vendor/jquery',
   'testUtils',
   'testErrors/untestedspecerror',
   'googlemaps',

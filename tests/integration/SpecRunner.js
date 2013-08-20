@@ -24,8 +24,6 @@ require([
       return reporter.specFilter(spec);
     };
 
-    window._ = underscore;
-
     require([
       'spec/markers'
     ], function() {
