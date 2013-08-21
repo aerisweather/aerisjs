@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+  <title>RouteAppBuilder Example</title>
+  <style type="text/css">
+    #app {
+      position: absolute;
+      top:0;
+      bottom:0;
+      left:0;
+      right:0;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+  <link rel="stylesheet" href="../../lib/aeris/builder/route/theme/default/css/style.css"/>
+
+  <script type="text/javascript"
+          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false&libraries=geometry">
+  </script>
+  <script type="text/javascript" src="../../externals/require.js" data-main="../initialize"></script>
+  <script type="text/javascript">
+    function initialize() {
+      require([
+        'aeris/builder/route/routeappbuilder'
+      ], function(RouteAppBuilder) {
+        var builder = new RouteAppBuilder({
+          div: document.getElementById('app'),
+          route: {
+            path: {
+              strokeColor: 'red',
+              strokeWeight: 6
+            },
+            offPath: {
+              strokeColor: 'green',
+              strokeWeight: 6
+            },
+            waypoint: {
+              url: 'icon_polaris_grey.png'
+            },
+            selectedWaypoint: {
+              url: 'icon_polaris.png'
+            }
+          }
+        });
+        builder.build()
+      });
+    }
+  </script>
+</head>
+<body>
+  <div id="app"></div>
+</body>
+</html>

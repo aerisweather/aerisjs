@@ -2142,7 +2142,7 @@ Handlebars.compile = function(input, options) {
     var ast = Handlebars.parse(input);
     var environment = new Compiler().compile(ast, options);
     var templateSpec = new JavaScriptCompiler().compile(environment, options, undefined, true);
-    return Handlebars.template(templateSpec);
+    return Handlebars.template_(templateSpec);
   }
 
   // Template is only compiled on first use and cached after that point.
@@ -2158,7 +2158,7 @@ Handlebars.compile = function(input, options) {
 // lib/handlebars/runtime.js
 
 Handlebars.VM = {
-  template: function(templateSpec) {
+  template_: function(templateSpec) {
     // Just add water
     var container = {
       escapeExpression: Handlebars.Utils.escapeExpression,
@@ -2242,7 +2242,7 @@ Handlebars.VM = {
   }
 };
 
-Handlebars.template = Handlebars.VM.template;
+Handlebars.template_ = Handlebars.VM.template_;
 ;
 // lib/handlebars/browser-suffix.js
 })(Handlebars);

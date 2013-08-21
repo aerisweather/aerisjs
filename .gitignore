@@ -5,3 +5,7 @@
 
 # environment specific files
 examples/initialize.js
+
+# SASS
+.sass-cache
+lib/aeris/builder/**/css

@@ -5,7 +5,6 @@ require([
   require([
     'jasmine-html',
     'matchers/matchers.package',
-    'vendor/underscore',
     'googlemaps'
   ], function(jasmine, underscore) {
     var jasmineEnv = jasmine.getEnv();
@@ -18,8 +17,6 @@ require([
     jasmineEnv.specFilter = function(spec) {
       return reporter.specFilter(spec);
     };
-
-    window._ = underscore;
 
     require([
       '/tests/lib/domReady.js!',

@@ -25,7 +25,8 @@ require([
     };
 
     require([
-      'spec/markers'
+      'spec/markers',
+      'spec/builder/route/routeappbuilder'
     ], function() {
       // Yes, it's a hack,
       // but it's solving some aweful async
