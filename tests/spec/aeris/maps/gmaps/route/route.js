@@ -56,6 +56,15 @@ define([
     var waypoints = getStubbedWaypointCollection(count, opt_options);
 
     spyOn(route, 'getWaypoints').andReturn(waypoints);
+    spyOn(route, 'has').andCallFake(function(wp) {
+      return _.indexOf(waypoints, wp) >= 0;
+    });
+
+    spyOn(route, 'at').andCallFake(function(index) {
+      return waypoints[index];
+    });
+
+
     return waypoints;
   }
 
@@ -371,6 +380,27 @@ define([
 
         route.recalculateDistance();
         expect(route.distance).toEqual(count * waypointDistance);
+      });
+
+      it('should return the distance to a given waypoint', function() {
+        var route = new Route();
+        var wpDistance = 123.456;
+        var waypoints = getStubbedWaypointsForRoute(route, 5, { distance: wpDistance });
+        var targetWaypoint = waypoints[3];
+        var expectedDistance = 4 * wpDistance;
+
+        spyOn(route, 'indexOf').andCallFake(function(waypoint) {
+          if (waypoint === targetWaypoint) {
+            return 3;
+          }
+          throw new Error('Spy was called with unexpected arguments');
+        });
+
+        expect(route.distanceTo(targetWaypoint)).toEqual(expectedDistance);
+
+        expect(function() {
+          route.distanceTo(getStubbedWaypoint);
+        }).toThrowType('InvalidArgumentError');
       });
     });
 
