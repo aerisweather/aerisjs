@@ -17,35 +17,50 @@ define([
    *
    * @param {Object=} opt_options
    * @param {Boolean=} opt_options.resolve Whether to call the `done` callback.
-   * @param {Boolean=} opt_options.fail Whether to call the `fail` callback.
    * @param {Array} opt_options.args Arguments to pass the callbacks.
+   * @param {number} opt_options.delay Delay in ms before calling callback
    * @return {aeris.Promise} Mock promise object.
    *
    * @constructor
+   * @class MockPromise
    */
   var StubbedPromise = function(opt_options) {
     var promise = sinon.createStubInstance(Promise);
 
     var options = _.extend({
       resolve: false,
-      fail: false,
-      args: []
+      args: [],
+      delay: 0
     }, opt_options);
 
-    spyOn(promise, 'done').andCallFake(function(callback, ctx) {
-      if (options.resolve) {
-        callback.apply(ctx, options.args);
+    var spyMethod = options.resolve ? 'done' : 'fail';
+    var resolvedState = options.resolve ? 'resolved' : 'rejected';
+
+    var callCallback = function(fn, args, ctx) {
+      var partialFn = _.bind.apply(_, [fn, ctx].concat(args));
+      if (opt_options.delay) {
+        window.setTimeout(partialFn, opt_options.delay);
       }
+      else {
+        partialFn();
+      }
+    };
+
+    spyOn(promise, 'getState').andReturn('pending');
+
+    // Setup chains
+    spyOn(promise, 'done').andReturn(promise);
+    spyOn(promise, 'fail').andReturn(promise);
+    spyOn(promise, 'always').andReturn(promise);
+
+    promise[spyMethod].andCallFake(function(callback, ctx) {
+      callCallback(callback, options.args, ctx);
+      promise.getState.andReturn(resolvedState);
       return promise;
     });
-    spyOn(promise, 'fail').andReturn(function(callback, ctx) {
-      if (options.fail) {
-        callback.apply(ctx, options.args);
-      }
-      return promise;
-    });
-    spyOn(promise, 'always').andReturn(function(callback, ctx) {
-      callback.apply(ctx, options.args);
+    promise.always.andCallFake(function(callback, ctx) {
+      callCallback(callback, options.args, ctx);
+      promise.getState.andReturn(resolvedState);
       return promise;
     });
 
