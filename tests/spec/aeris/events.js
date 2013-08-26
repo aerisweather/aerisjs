@@ -3,8 +3,9 @@ define([
   'jasmine',
   'aeris/events',
   'testUtils',
-  'testErrors/untestedspecerror'
-], function(_, jasmine, Events, testUtils, UntestedSpecError) {
+  'testErrors/untestedspecerror',
+  'vendor/backbone'
+], function(_, jasmine, Events, testUtils, UntestedSpecError, Backbone) {
   describe('Aeris Events', function() {
 
 

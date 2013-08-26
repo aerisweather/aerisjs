@@ -1,8 +1,9 @@
 define([
+  'aeris/util',
   'aeris/errors/invalidargumenterror',
   'aeris/commands/abstractcommand',
   'aeris/promise'
-], function(InvalidArgumentError, AbstractCommand, Promise) {
+], function(_, InvalidArgumentError, AbstractCommand, Promise) {
 
   // Testers specific to this mock implementation
   // To test whether the command has been executed/undone

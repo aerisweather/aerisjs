@@ -4,6 +4,7 @@ require([
 ], function() {
   require([
     'jasmine-html',
+    '../lib/vendor/config',
     'matchers/matchers.package',
     'googlemaps'
   ], function(jasmine, underscore) {
