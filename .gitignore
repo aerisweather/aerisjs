@@ -2,6 +2,7 @@
 .idea/
 .idea/*
 .DS_STORE
+*.log
 
 # environment specific files
 examples/initialize.js
@@ -9,3 +10,7 @@ examples/initialize.js
 # SASS
 .sass-cache
 lib/aeris/builder/**/css
+build/
+
+# node
+**/node_modules/
