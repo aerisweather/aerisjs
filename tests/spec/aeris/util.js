@@ -100,7 +100,7 @@ define(['aeris/util'], function(_) {
         expect(window.aeris.someNs.foo).toEqual(foo);
       });
 
-      it('should not overwrite existing namespaces', function() {
+      it('should extend existing namespaces', function() {
         var foo = 'bar';
 
         window.aeris = {};
@@ -112,6 +112,16 @@ define(['aeris/util'], function(_) {
           already: 'here',
           foo: 'bar'
         });
+      });
+
+      it('should not overwrite existing objects', function() {
+        var foo = 'bar';
+
+        window.aeris.foo = 'notBar';
+
+        _.expose(foo, 'aeris.foo', false);
+
+        expect(window.aeris.foo).toEqual('notBar');
       });
 
       it('should not expose globals outside of the aeris namespace', function() {
@@ -136,7 +146,7 @@ define(['aeris/util'], function(_) {
 
         _.provide('aeris.foo.bar');
 
-        expect(_.expose).toHaveBeenCalledWith({}, 'aeris.foo.bar');
+        expect(_.expose).toHaveBeenCalledWith({}, 'aeris.foo.bar', false);
       });
 
       it('should return the value from the expose method', function() {
