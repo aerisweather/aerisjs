@@ -143,5 +143,17 @@ define([
       expect(authenticHandler).toHaveBeenCalled();
       expect(poserHandler).not.toHaveBeenCalled();
     });
+
+    describe('global events', function() {
+
+      it('should publish and subscribe to global events', function() {
+        var subSpy = jasmine.createSpy('handler');
+
+        Events.subscribe('topic', subSpy);
+        Events.publish('topic', 'foo', 'bar');
+
+        expect(subSpy).toHaveBeenCalledWith('foo', 'bar');
+      });
+    });
   });
 });
