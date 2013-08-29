@@ -181,6 +181,20 @@ define(['aeris/promise'], function(Promise) {
         p3 = null;
       });
 
+      it('should reject non-promises', function () {
+        expect(function() {
+          Promise.when('foo');
+        }).toThrowType('InvalidArgumentError');
+
+        expect(function() {
+          Promise.when([
+            new Promise(),
+            'foo',
+            new Date()
+          ]);
+        }).toThrowType('InvalidArgumentError');
+      });
+
       it('should trigger callback when all promises are resolved', function() {
         Promise.when(p1, p2, p3).done(setFlag);
         expect(flag).toBe(false);
