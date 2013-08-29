@@ -4,25 +4,21 @@
  *  2. Enter you client ID and client secret
  *  3. Set the path property to the base dir of your repo
  */
-require(['../lib/config'], function() {
-  require(['./lib/domReady!'], function() {
+require.config({
+  baseUrl: '/lib',
+  paths: {
+    examples: '/examples'
+  }
+});
+require(['config'], function() {
+  require(['examples/lib/domReady!', 'vendor/config'], function() {
     require.config({
-      baseUrl: '../../../lib',
-      paths: {
-        examples: '../examples',
-        handlebars: '../examples/lib/handlebars',
-        jquery: '//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min'
-      },
+      baseUrl: '/lib',
       config: {
         'aeris/config': {
-          path: '../../../',
-          apiId: '[YOUR CLIENT ID FOR THE AERIS API]',
-          apiSecret: '[YOUR CLIENT SECRET FOR THE AERIS API]'
-        }
-      },
-      shim: {
-        'handlebars': {
-          exports: 'Handlebars'
+          path: '/',
+          apiId: '[YOUR AERIS API ID]',
+          apiSecret: '[YOUR AERIS API SECRET]'
         }
       }
     });
