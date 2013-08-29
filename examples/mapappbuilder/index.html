@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+  <title>RouteAppBuilder Example</title>
+  <style type="text/css">
+    #app {
+      position: absolute;
+      top:0;
+      bottom:0;
+      left:0;
+      right:0;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+  <link rel="stylesheet" href="../../lib/aeris/builder/route/theme/default/css/style.css"/>
+
+  <script type="text/javascript"
+          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false&libraries=geometry">
+  </script>
+  <script type="text/javascript" src="../../externals/require.js" data-main="../initialize"></script>
+  <script type="text/javascript">
+    function initialize() {
+      require([
+        'aeris/builder/maps/mapappbuilder',
+        'base/layers/aerisradar',
+        'base/layers/aerissatellite',
+        'base/layers/aerissatellitevisible',
+        'base/layers/aerisadvisories',
+        'base/layers/aerisseasurfacetemps',
+        'base/layers/aerissnowdepth',
+        'base/layers/aeristemps',
+        'base/layers/aeriswindchill',
+        'base/layers/aerishumidity'
+      ], function(
+        MapAppBuilder,
+        AerisRadar,
+        AerisSatellite,
+        AerisSatelliteVisible,
+        AerisAdvisories,
+        AerisSeaSurfaceTemps,
+        AerisSnowDepth,
+        AerisTemps,
+        AerisWindChill,
+        AerisHumidity
+      ) {
+        var builder = new MapAppBuilder({
+          el: document.getElementById('app'),
+          map: {
+            zoom: 4,
+            center: [39.2, -94.8]
+          },
+          layers: [
+            {
+              type: AerisRadar,
+              default: true
+            },
+            {
+              type: AerisSatellite,
+              default: true
+            },
+            {
+              type: AerisSatelliteVisible,
+              default: false
+            },
+            AerisAdvisories,
+            AerisSeaSurfaceTemps,
+            AerisSnowDepth,
+            AerisTemps,
+            AerisWindChill,
+            AerisHumidity
+          ],
+          controls: {
+            layers: true,
+            animate: true
+          }
+        });
+        builder.build()
+      });
+    }
+  </script>
+</head>
+<body>
+<div id="app"></div>
+</body>
+</html>
