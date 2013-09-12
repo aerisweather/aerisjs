@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Example: Geocoding - Aeris Interactive API</title>
+
+  <link rel="stylesheet" href="../css/example.css"/>
+
+  <script type="text/javascript"
+          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false">
+  </script>
+  <script type="text/javascript" src="../../externals/require.js" data-main="../initialize"></script>
+
+  <script type="text/javascript">
+    var map;
+
+    require.config({
+      config: {
+        'geocode/config': {
+          // PLEASE DO NOT USE THIS KEY
+          // It is Edan's personal key for MapQuest
+          // Please get a new MLG account key.
+          apiId: 'Fmjtd%7Cluub2dubl9%2C2g%3Do5-9u2l5z'
+        }
+      }
+    });
+
+    function bindUIControls() {
+      var $location = $('#location');
+      $('#search').click(function() {
+        showLoading();
+
+        gcs.geocode($location.val())
+          .done(function(res) {
+            showLocation(res.latLon);
+          })
+          .always(hideLoading)
+          .fail(function(res) {
+            console.log('Error data: ', res);
+
+            throw 'SomethingWentWrongError: Something went horribly wrong... See Error data.';
+          });
+      });
+
+      $('#setGeocoder').change(function() {
+        var gcsSelectMap = {
+          'mapquest': aeris.geocode.MapQuestGeocodeService,
+          'google': aeris.geocode.GoogleGeocodeService
+        };
+
+        window.gcs = new gcsSelectMap[$(this).val()]();
+      });
+    }
+
+    function showLocation(latLon) {
+      // Remove any existing infobox
+      if (window.infobox) {
+        window.infobox.remove()
+      }
+
+      // Create a new infobox
+      window.infobox = new aeris.maps.layers.InfoBox(
+        latLon,
+        'You are here: <br/>' +
+        '<small>' + latLon.join(', ') + '</small>'
+      );
+
+      // Show that thing
+      infobox.setMap(map);
+    }
+
+    function showLoading() {
+      $('#flash-message').fadeIn(150);
+    }
+
+    function hideLoading() {
+      $('#flash-message').stop().delay(200).fadeOut(150);
+    }
+
+
+    function initialize() {
+      require([
+        'gmaps/map',
+        'base/layers/googleroadmap',
+        'vendor/jquery',
+        'geocode/mapquestgeocodeservice',
+        'geocode/googlegeocodeservice',
+        'base/layers/infobox'
+      ], function(
+        AerisMap,
+        GoogleRoadMap,
+        $
+      ) {
+        window.$ = $;
+        window.gcs = new aeris.geocode.MapQuestGeocodeService();
+
+        map = new AerisMap('map-canvas', {
+          baseLayer: new GoogleRoadMap(),
+          center: [44.98, -93.2636],
+          zoom: 4
+        });
+
+        bindUIControls();
+      });
+    }
+  </script>
+</head>
+<body>
+  <div id="flash-message">
+    <div class="flash-content">Geocoding...</div>
+  </div>
+
+  <div id="map-canvas"></div>
+
+  <hr />
+
+  <input id="location" type="search" placeholder="Enter a location"/>
+  <button id="search">Go to location</button>
+
+  <label>
+    Set Geocoding Service Provider
+    <select id="setGeocoder">
+      <option value="mapquest">MapQuest</option>
+      <option value="google">Google</option>
+    </select>
+  </label>
+</body>
+</html>

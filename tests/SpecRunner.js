@@ -23,6 +23,8 @@ require([
       '/tests/lib/domReady.js!',
       'spec/aeris/util',
       'spec/aeris/events',
+      'spec/aeris/geocode/mapquestgeocodeservice',
+      'spec/aeris/geocode/googlegeocodeservice',
       'spec/aeris/commands/abstractcommand',
       'spec/aeris/commands/commandmanager',
       'spec/aeris/aerisapi',
