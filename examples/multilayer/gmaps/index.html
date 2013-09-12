@@ -28,7 +28,7 @@
           var satellite = new aeris.maps.layers.AerisSatellite();
           satellite.setMap(map);
 
-          var anim = new aeris.maps.animations.AnimationSync(
+          var anim = new aeris.maps.LayerAnimation(
             [radar, satellite]);
 
           var $animStart = $("#anim-start");
