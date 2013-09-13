@@ -1,4 +1,4 @@
-define(['aeris/util', 'aeris/events', 'base/map', 'base/mapoptions'], function(_, Events, Map, MapOptions) {
+define(['aeris/util', 'aeris/events', 'base/abstractmap', 'base/mapoptions'], function(_, Events, Map, MapOptions) {
 
 
   /**

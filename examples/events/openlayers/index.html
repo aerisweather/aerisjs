@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Example: Events - OpenLayers</title>
+  <link rel="stylesheet" href="../../css/example.css"/>
+  <script type="text/javascript"
+          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false&libraries=geometry">
+  </script>
+  <script type="text/javascript"
+          src="http://openlayers.org/api/OpenLayers.js">
+  </script>
+  <script type="text/javascript" src="../../../externals/require.js"
+    data-main="../../initialize.js"></script>
+  <script type="text/javascript">
+    function initialize() {
+      require([
+        'openlayers/map',
+        'base/layers/osm'
+      ], function() {
+        var map = new aeris.maps.openlayers.Map('map-canvas', {
+          baseLayer: new aeris.maps.layers.OSM(),
+          center: [44.98, -93.2636],
+          zoom: 4
+        });
+
+        map.on('click', function(evt) {
+          console.log('You clicked it!', evt);
+        });
+
+        map.on('dblclick', function(evt) {
+          console.log('You double-clicked it!', evt);
+        });
+      });
+    }
+  </script>
+</head>
+<body>
+  <div id="map-canvas"></div>
+</body>
+</html>
