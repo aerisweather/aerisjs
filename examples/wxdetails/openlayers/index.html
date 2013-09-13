@@ -2,12 +2,7 @@
 <html>
   <head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-    <style type="text/css">
-      #map-canvas {
-        width: 600px;
-        height: 400px;
-      }
-    </style>
+    <link rel="stylesheet" href="../../css/example.css"/>
     <link rel="stylesheet" type="text/css" href="../wx-details.css"/>
     <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
     <script src="../../lib/handlebars.js"></script>
@@ -30,27 +25,32 @@
         }
       });
       function initialize() {
-        require(["aeris/maps/openlayers"], function(aeris) {
+        require(['aeris/maps/openlayers', 'aeris/aerisapi'], function(aeris, AerisAPI) {
           var map = new aeris.maps.openlayers.Map("map-canvas", {
             baseLayer: new aeris.maps.layers.GoogleRoadMap(),
             center: [44.98, -93.2636],
             zoom: 4
           });
 
-          var wxClick = new aeris.maps.events.AerisWeatherDetailsClick();
-          wxClick.setMap(map);
-          wxClick.on('click', function(latLon, weather) {
-            var html = template({
-              latitude: Math.round(latLon[0] * 100) / 100,
-              longitude: Math.round(latLon[1] * 100) / 100,
-              place: weather.place,
-              obs: weather.observation,
-              fc1: weather.forecasts[0],
-              fc2: weather.forecasts[1],
-              fc3: weather.forecasts[2]
-            });
-            var infoBox = new aeris.maps.layers.InfoBox(latLon, html);
-            infoBox.setMap(map);
+          map.on('click', function(latLon) {
+            AerisAPI.getInstance()
+                    .fetchWeather(latLon, { limit: 3 })
+                    .done(function(weather) {
+                      var html = template({
+                        latitude: Math.round(latLon[0] * 100) / 100,
+                        longitude: Math.round(latLon[1] * 100) / 100,
+                        place: weather.place,
+                        obs: weather.observation,
+                        fc1: weather.forecasts[0],
+                        fc2: weather.forecasts[1],
+                        fc3: weather.forecasts[2]
+                      });
+                      var infoBox = new aeris.maps.layers.InfoBox(latLon, html);
+                      infoBox.setMap(map);
+                    })
+                    .fail(function() {
+                      console.log('failed to fetch weather data', arguments);
+                    });
           });
 
           var $radarVisibility = $("#radar-visibility");

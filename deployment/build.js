@@ -3,12 +3,11 @@
   mainConfigFile: '../lib/config.js',
   baseUrl: ".",
   modules: [
-    {
-      name: 'aeris/builder/route/routeappbuilder'
-    }
+    { name: 'aeris/builder/route/routeappbuilder' },
+    { name: 'aeris/builder/maps/mapappbuilder' }
   ],
   dir: '../build',
   namespace: 'aeris',
   fileExclusionRegExp: '^loader',
-  //optimize: 'none'
+  optimize: 'none'
 })

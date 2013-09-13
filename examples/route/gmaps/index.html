@@ -43,9 +43,8 @@
           'gmaps/route/route',
           'gmaps/route/routebuilder',
           'gmaps/route/routerenderer',
-          'gmaps/utils',
-          'base/events/click'
-        ], function(AerisMap, Waypoint, Route, RouteBuilder, RouteRenderer, mapUtils, Click) {
+          'gmaps/utils'
+        ], function(AerisMap, Waypoint, Route, RouteBuilder, RouteRenderer, mapUtils) {
           var map = new AerisMap("map-canvas", {
             center: [44.98, -93.2636],
             zoom: 12
@@ -68,10 +67,7 @@
 
           // Bind map events
           function bindMapEvents() {
-            var click = new Click();
-            click.setMap(map);
-
-            click.on('click', routeBuilder.addWaypoint, routeBuilder);
+            map.on('click', routeBuilder.addWaypoint, routeBuilder);
 
             routeBuilder.getRenderer().on('waypoint:dragend', function(waypoint, latLon) {
               routeBuilder.moveWaypoint(waypoint, latLon);
@@ -83,7 +79,7 @@
 
 
             routeBuilder.getRenderer().on('path:dragstart', function(waypoint, latLon) {
-              click.off('click');
+              map.off('click');
             });
             routeBuilder.getRenderer().on('path:dragend', function(waypoint, latLon) {
               var index = route.indexOf(waypoint);
@@ -93,7 +89,7 @@
               // click event firing both on the map
               // and on the path
               window.setTimeout(function() {
-                click.on('click', routeBuilder.addWaypoint, routeBuilder);
+                map.on('click', routeBuilder.addWaypoint, routeBuilder);
               }, 100);
             });
 

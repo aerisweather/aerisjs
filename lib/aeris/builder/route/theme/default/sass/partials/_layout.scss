@@ -52,3 +52,29 @@ $section-padding: 8px;
     @include overlay;
   }
 }
+
+
+.loading {
+  display: none;
+
+  position: absolute;
+  top:0; left: 0;
+  z-index: 9999;
+
+  text-align: center;
+  width: 100%;
+
+  .loading-content {
+    width:150px;
+    margin:35% auto;
+
+    padding: 20px;
+    text-align: center;
+
+    background: rgba(225, 225, 225, 0.95);
+
+    @include box-shadow(0 0 9999px 9999px rgba(0, 0, 0, 0.55));
+
+    @include border-radius(15px);
+  }
+}

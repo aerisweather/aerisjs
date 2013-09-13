@@ -32,7 +32,8 @@
         'base/layers/aerissnowdepth',
         'base/layers/aeristemps',
         'base/layers/aeriswindchill',
-        'base/layers/aerishumidity'
+        'base/layers/aerishumidity',
+        'base/layers/osm'
       ], function(
         MapAppBuilder,
         AerisRadar,
@@ -43,13 +44,15 @@
         AerisSnowDepth,
         AerisTemps,
         AerisWindChill,
-        AerisHumidity
+        AerisHumidity,
+        OSM
       ) {
         var builder = new MapAppBuilder({
           el: document.getElementById('app'),
           map: {
             zoom: 4,
-            center: [39.2, -94.8]
+            center: [39.2, -94.8],
+            baseLayer: OSM
           },
           layers: [
             {
@@ -74,6 +77,14 @@
           controls: {
             layers: true,
             animate: true
+          },
+          onload: function(map) {
+            map.on('click', function(evt) {
+              console.log('Click at: ', evt);
+            });
+            map.on('dblclick', function(evt) {
+              console.log('Double-click at: ', evt);
+            });
           }
         });
         builder.build()

@@ -2,12 +2,7 @@
 <html>
   <head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-    <style type="text/css">
-      #map-canvas {
-        width: 600px;
-        height: 400px;
-      }
-    </style>
+    <link rel="stylesheet" href="../../css/example.css"/>
     <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
     <script src="../../lib/handlebars.js"></script>
     <script type="text/javascript"
@@ -84,33 +79,39 @@
             }
           }
         });
-        req(["aeris/maps/openlayers"], function(aeris) {
+        req(['aeris/maps/openlayers', 'aeris/aerisapi'], function(aeris, AerisAPI) {
           var map = new aeris.maps.openlayers.Map("map-canvas", {
             baseLayer: new aeris.maps.layers.GoogleRoadMap(),
             center: [44.98, -93.2636],
             zoom: 4
           });
 
-          var sunMoonClick = new aeris.maps.events.AerisSunMoonDetailsClick();
-          sunMoonClick.setMap(map);
-          sunMoonClick.on('click', function(latLon, sunMoonData) {
-            var html = template({
-              latitude: Math.round(latLon[0] * 100) / 100,
-              longitude: Math.round(latLon[1] * 100) / 100,
-              place: sunMoonData.place,
-              profile: sunMoonData.profile,
-              sun: {
-                rise: getFormattedTime(sunMoonData.sun.riseISO),
-                set: getFormattedTime(sunMoonData.sun.setISO)
-              },
-              moon: {
-                rise: getFormattedTime(sunMoonData.moon.riseISO),
-                set: getFormattedTime(sunMoonData.moon.setISO),
-                phase: capitalizeWords(sunMoonData.moon.phase.name)
-              }
-            });
-            var infoBox = new aeris.maps.layers.InfoBox(latLon, html);
-            infoBox.setMap(map);
+          map.on('click', function(latLon) {
+            AerisAPI.getInstance().
+                    fetchSunMoon(latLon).
+                    done(function(sunMoonData) {
+                      var html = template({
+                        latitude: Math.round(latLon[0] * 100) / 100,
+                        longitude: Math.round(latLon[1] * 100) / 100,
+                        place: sunMoonData.place,
+                        profile: sunMoonData.profile,
+                        sun: {
+                          rise: getFormattedTime(sunMoonData.sun.riseISO),
+                          set: getFormattedTime(sunMoonData.sun.setISO)
+                        },
+                        moon: {
+                          rise: getFormattedTime(sunMoonData.moon.riseISO),
+                          set: getFormattedTime(sunMoonData.moon.setISO),
+                          phase: capitalizeWords(sunMoonData.moon.phase.name)
+                        }
+                      });
+                      var infoBox = new aeris.maps.layers.InfoBox(latLon, html);
+                      infoBox.setMap(map);
+                    }).
+                    fail(function() {
+                      console.log('Failed to fetch sun moon data', arguments);
+                    });
+
           });
 
           var $radarVisibility = $("#radar-visibility");
