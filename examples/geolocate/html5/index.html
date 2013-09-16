@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Example: Geolocate - HTML5</title>
+  <link rel="stylesheet" href="../../css/example.css" />
+  <script type="text/javascript"
+          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false">
+  </script>
+  <script type="text/javascript" src='../../../externals/require.js' data-main='../../initialize'></script>
+  <script type="text/javascript">
+    require.config({
+      // Tell the common example script which
+      // geolocation service to use
+      paths: {
+        'gls': 'aeris/geolocate/html5geolocateservice'
+      }
+    });
+  </script>
+  <script type="text/javascript" src='../script.js'></script>
+</head>
+<body>
+  <div id="map-canvas"></div>
+  <button id="locate">Find me</button>
+
+  <br />
+
+  <label>
+    <input id="watch" type="checkbox"/>
+    Watch position
+  </label>
+
+  <br />
+
+  <label>
+    <input id="disableGLS" type="checkbox"/>
+    Disable HTML5 Geolocation
+  </label>
+
+  <p>
+    Check the
+    <a href="https://chrome.google.com/webstore/detail/manual-geolocation/mfodligkojepnddfhkbkodbamcagfhlo/related" target="_blank">
+      Manual Geolocation Plugin for Chrome
+    </a>
+    to emulate different locations.
+  </p>
+
+  <div id="flash-message">
+    <div class="flash-content">Geolocating...</div>
+  </div>
+</body>
+</html>

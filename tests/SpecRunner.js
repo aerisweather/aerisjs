@@ -25,6 +25,8 @@ require([
       'spec/aeris/events',
       'spec/aeris/geocode/mapquestgeocodeservice',
       'spec/aeris/geocode/googlegeocodeservice',
+      'spec/aeris/geolocate/html5geolocateservice',
+      'spec/aeris/geolocate/freegeoipgeolocateservice',
       'spec/aeris/commands/abstractcommand',
       'spec/aeris/commands/commandmanager',
       'spec/aeris/aerisapi',

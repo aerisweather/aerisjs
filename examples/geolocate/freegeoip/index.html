@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Example: Geolocate - HTML5</title>
+  <link rel="stylesheet" href="../../css/example.css" />
+  <script type="text/javascript"
+          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false">
+  </script>
+  <script type="text/javascript" src='../../../externals/require.js' data-main='../../initialize'></script>
+  <script type="text/javascript">
+    require.config({
+      // Tell the common example script which
+      // geolocation service to use
+      paths: {
+        'gls': 'aeris/geolocate/freegeoipgeolocateservice'
+      }
+    });
+  </script>
+  <script type="text/javascript" src='../script.js'></script>
+</head>
+<body>
+  <div id="map-canvas"></div>
+  <button id="locate">Find me</button>
+
+  <br />
+
+  <label>
+    <input id="watch" type="checkbox"/>
+    Watch position
+  </label>
+
+  <div id="flash-message">
+    <div class="flash-content">Geolocating...</div>
+  </div>
+</body>
+</html>
