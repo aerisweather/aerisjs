@@ -34,10 +34,14 @@
   aeris.Loader.load({
     MapAppBuilder: {
       el: document.getElementById('app'),
+      layers: [
+        'AerisRadar',
+        'AerisSatellite'
+      ],
       map: {
-        zoom: 4,
+        zoom: 5,
         center: [39.2, -94.8],
-        baseLayer: 'GoogleHybrid'
+        baseLayer: 'GoogleTerrain'
       },
       onload: function(map) {
         $('.loading').delay(1500).fadeOut();

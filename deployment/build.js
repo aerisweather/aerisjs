@@ -9,5 +9,5 @@
   dir: '../build',
   namespace: 'aeris',
   fileExclusionRegExp: '^loader',
-  optimize: 'none'
+  //optimize: 'none'
 })
