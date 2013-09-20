@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>InfoWindow - Gmaps (Experiment)</title>
+  <link href="../../css/example.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript"
+          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false">
+  </script>
+
+  <script type="text/javascript" src="http://openlayers.org/api/OpenLayers.js"></script>
+
+  <script data-main="../../initialize" src="../../../externals/require.js"></script>
+  <script type="text/javascript" src="../script.js"></script>
+  <script type="text/javascript">
+    require.config({
+      map: {
+        '*': {
+          strategy: 'aeris/maps/gmaps'
+        }
+      }
+    });
+  </script>
+
+</head>
+<body>
+  <div id="map-canvas"></div>
+  <button id="changeLoc">Change Location</button>
+</body>
+</html>
