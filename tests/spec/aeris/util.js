@@ -1,4 +1,7 @@
-define(['aeris/util'], function(_) {
+define([
+  'sinon',
+  'aeris/util'
+], function(sinon, _) {
   describe('The Aeris Utility Library', function() {
     it('should provide unique ids', function() {
       var uuids = [];
@@ -158,5 +161,97 @@ define(['aeris/util'], function(_) {
         expect(_.provide('aeris.foo.bar')).toEqual(val);
       });
     });
+
+    describe('average', function() {
+      it('should return the average of an array of numbers', function() {
+        var arr = [
+          5,
+          10,
+          15,
+          25,
+          30
+        ];
+
+        expect(_.average(arr)).toEqual(17);
+      });
+
+      it('should reject non-arrays, or arrays which contain non-numbers', function() {
+        var nonArrays = [
+          'foo',
+          null,
+          12345,
+          new Date(),
+          [
+            'foo',
+            17,
+            32
+          ]
+        ];
+
+        _.each(nonArrays, function(bad) {
+          expect(_.bind(_.average, _, bad)).toThrow();
+        });
+      });
+    });
+
+    describe('delay', function() {
+      var clock, fn;
+
+      beforeEach(function() {
+        clock = sinon.useFakeTimers();
+        fn = jasmine.createSpy('fn');
+      });
+
+      afterEach(function() {
+        clock.restore();
+      });
+
+      it('should call the function in a given context', function() {
+        var ctx = { foo: 'bar' };
+        var wait = 200;
+
+        _.delay(fn, wait, ctx, 'yo', 'hey');
+
+        expect(fn).not.toHaveBeenCalled();
+
+        clock.tick(210);
+        expect(fn).toHaveBeenCalledInTheContextOf(ctx);
+        expect(fn).toHaveBeenCalledWith('yo', 'hey');
+      });
+    });
+
+    describe('interval', function() {
+      var clock, fn;
+
+      beforeEach(function() {
+        clock = sinon.useFakeTimers();
+        fn = jasmine.createSpy('fn');
+      });
+
+      afterEach(function() {
+        clock.restore();
+      });
+
+      it('should work like window.setInterval, but better', function() {
+        var ctx = { foo: 'bar' };
+        var wait = 200;
+
+        var interval = _.interval(fn, wait, ctx, 'yo', 'hey');
+
+        expect(fn).not.toHaveBeenCalled();
+
+        clock.tick(200);
+        expect(fn).toHaveBeenCalledInTheContextOf(ctx);
+        expect(fn).toHaveBeenCalledWith('yo', 'hey');
+
+        clock.tick(200);
+        expect(fn.callCount).toEqual(2);
+
+        window.clearInterval(interval);
+        clock.tick(200);
+        expect(fn.callCount).toEqual(2);
+      });
+    });
+
   });
 });
