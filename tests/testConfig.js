@@ -10,7 +10,8 @@ require.config({
     matchers: '/tests/lib/matchers',
     testErrors: '/tests/errors',
     testUtils: '/tests/testUtils',
-    sinon: '/tests/lib/sinon'
+    sinon: '/tests/lib/sinon',
+    strategy: 'aeris/maps/gmaps'
   },
   shim: {
     jasmine: {
@@ -30,5 +31,5 @@ require.config({
       apiSecret: 'uCDMeSj91lBfIKCmeQkpeZjsAwUUQJHuKesCvqTm'
     }
   },
-  waitSeconds: 10000
+  waitSeconds: 3000
 });

@@ -2,11 +2,8 @@
 <html>
   <head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" href="css/example.css"/>
     <style type="text/css">
-      #map-canvas {
-        width: 600px;
-        height: 400px;
-      }
       .float-left {
         float: left;
         margin-right: 10px;
@@ -45,7 +42,10 @@
               }
             }
           });
-          require(["aeris/maps/" + NS], function(aeris) {
+          require([
+            'aeris/maps/' + NS,
+            'base/animations/animationsync'
+          ], function(aeris, AnimationSync) {
         
             var layerRepo = new LayerRepository(aeris);
         
@@ -67,7 +67,6 @@
         
             var radar = new aeris.maps.layers.AerisRadar();
             radar.setMap(map);
-            radar.autoUpdate();
         
             var $radarVisibility = $("#radar-visibility");
             $radarVisibility.change(function() {
@@ -96,7 +95,6 @@
         
             var satellite = new aeris.maps.layers.AerisSatellite();
             satellite.setMap(map);
-            satellite.autoUpdate();
         
             var $satelliteVisibility = $("#satellite-visibility");
             $satelliteVisibility.change(function() {
@@ -125,7 +123,6 @@
         
             var advisories = new aeris.maps.layers.AerisAdvisoriesKML();
             advisories.setMap(map);
-            advisories.autoUpdate();
         
             var $advisoriesVisibility = $("#advisories-visibility");
             $advisoriesVisibility.change(function() {
@@ -180,7 +177,7 @@
         
             // Animate
         
-            var anim = new aeris.maps.animations.AnimationSync([radar, satellite]);
+            var anim = new AnimationSync([radar, satellite]);
         
             var $animStart = $("#anim-start");
             $animStart.click(function() {

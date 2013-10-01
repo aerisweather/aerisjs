@@ -1,0 +1,36 @@
+<div id="progressText">Loading...</div>
+<progress id='progress' max=1 value=0></progress>
+
+
+<p id="controls">
+<div>
+  <button id="start">Start</button>
+  <button id="stop">Stop</button>
+  <button id="pause">Pause</button>
+</div>
+<div>
+  <button id="prev">Prev</button>
+  <button id="next">Next</button>
+</div>
+</p>
+
+<p>
+  <label>
+    Set time
+    <input id='timeSelect' type="range" style="width:300px"/>
+    <span id="time"></span>
+  </label>
+</p>
+<p>
+  <label>
+    Set speed
+    <input id='speedSelect' max="1500" min="6" value="60" type="range" style="width:300px"/>
+    <span id="speedText"></span>
+  </label>
+</p>
+<p>
+  <label>
+    Set opacity
+    <input id='opacitySelect' max="100" min="0" value="85" type="range"/>
+  </label>
+</p>

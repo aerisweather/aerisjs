@@ -58,7 +58,7 @@ function initialize() {
   require([
     'gmaps/map',
     'base/layers/googleroadmap',
-    'base/layers/infobox',
+    'base/infobox',
     'vendor/jquery',
     'gls' // Mapped to a specific gls implementation in example file
   ], function(AerisMap, GoogleRoadMap, InfoBox, $, GLS) {

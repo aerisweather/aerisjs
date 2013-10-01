@@ -45,7 +45,7 @@
                         fc2: weather.forecasts[1],
                         fc3: weather.forecasts[2]
                       });
-                      var infoBox = new aeris.maps.layers.InfoBox(latLon, html);
+                      var infoBox = new aeris.maps.InfoBox(latLon, html);
                       infoBox.setMap(map);
                     })
                     .fail(function() {

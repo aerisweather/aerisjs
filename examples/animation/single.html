@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Example: Single LayerAnimation</title>
+  <link rel="stylesheet" href="../css/example.css"/>
+
+  <script type="text/javascript"
+          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false">
+  </script>
+  <script type="text/javascript" src="../../externals/openlayers/OpenLayers.debug.js"></script>
+  <script type="text/javascript" src="../../externals/require.js" data-main="../initialize"></script>
+  <script type="text/javascript">
+    function initialize() {
+      require.setStrategy('gmaps')
+      require([
+        'vendor/jquery',
+        'vendor/underscore',
+        'examples/animation/script/controls',
+        'base/map',
+        'base/layers/googleroadmap',
+        'base/layers/aerisradar',
+        'base/animations/aerisinteractivetile',
+        'base/layers'
+      ], function($, _, createControls, AerisMap, GoogleRoadMap, Layer, Animation) {
+        // Provide vendor libraries
+        // for messing around in the console
+        window.$ = $;
+        window._ = _;
+
+        window.map = new AerisMap('map-canvas', {
+          baseLayer: new GoogleRoadMap(),
+          center: [35.728985, -90.937419],
+          zoom: 4
+        });
+
+
+        $('input[name=layer]').change(function() {
+          if (window.anim) {
+            window.layer.remove();
+            window.anim.remove();
+          }
+
+          window.layer = new aeris.maps.layers[$(this).val()];
+          layer.setMap(map);
+
+          window.anim = new Animation(layer, {
+            limit: 100,
+            opacity: 0.85,
+            speed: 60,
+            endDelay: 1000
+          });
+
+          anim.start();
+
+          // Reset the controls
+          $('#animControls').empty();
+          createControls($('#animControls'), anim);
+        });
+        $('input[name=layer]:first').trigger('change');
+      });
+    }
+  </script>
+</head>
+<body>
+
+  <div class="float-left">
+    <div id="map-canvas"></div>
+    <div id="animControls"></div>
+  </div>
+
+
+  <div class="float-left" style="padding: 20px;">
+    <h2>Tile Layers</h2>
+
+    <div>
+      <input name="layer" type="radio" value="AerisRadar" id="AerisRadar" checked/>
+      <label for="AerisRadar">Radar</label>
+    </div>
+    <div>
+      <input name="layer" type="radio" value="AerisSatellite" id="AerisSatellite"/>
+      <label for="AerisSatellite">Satellite</label>
+    </div>
+    <div>
+      <input name="layer" type="radio" value="AerisSatelliteVisible" id="AerisSatelliteVisible" />
+      <label for="AerisSatelliteVisible">Visible Satellite</label>
+    </div>
+    <div>
+      <input name="layer" type="radio" value="AerisSatelliteGlobal" id="AerisSatelliteGlobal" />
+      <label for="AerisSatelliteGlobal">Global Satellite</label>
+    </div>
+    <div>
+      <input name="layer" type="radio" value="AerisAdvisories" id="AerisAdvisories" />
+      <label for="AerisAdvisories">Advisories</label>
+    </div>
+    <div>
+      <input name="layer" type="radio" value="AerisTemps" id="AerisTemps" />
+      <label for="AerisTemps">Current Temperatures</label>
+    </div>
+    <div>
+      <input name="layer" type="radio" value="AerisWinds" id="AerisWinds" />
+      <label for="AerisWinds">Current Winds</label>
+    </div>
+    <div>
+      <input name="layer" type="radio" value="AerisDewPoints" id="AerisDewPoints" />
+      <label for="AerisDewPoints">Current Dew Points</label>
+    </div>
+    <div>
+      <input name="layer" type="radio" value="AerisHeatIndex" id="AerisHeatIndex" />
+      <label for="AerisHeatIndex">Current Heat Index</label>
+    </div>
+    <div>
+      <input name="layer" type="radio" value="AerisHumidity" id="AerisHumidity" />
+      <label for="AerisHumidity">Current Humidity</label>
+    </div>
+    <div>
+      <input name="layer" type="radio" value="AerisSnowDepth" id="AerisSnowDepth" />
+      <label for="AerisSnowDepth">Snow Depth</label>
+    </div>
+    <div>
+      <input name="layer" type="radio" value="AerisWindChill" id="AerisWindChill" />
+      <label for="AerisWindChill">Current Wind Chill</label>
+    </div>
+  </div>
+</body>
+</html>

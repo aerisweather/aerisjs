@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sandbox</title>
+
+  <link rel="stylesheet" href="../../css/example.css"/>
+  <script type="text/javascript"
+          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false&libraries=geometry">
+  </script>
+  <script type="text/javascript"
+          src="../../../externals/openlayers/OpenLayers.debug.js">
+  </script>
+  <script type="text/javascript" src="../../../externals/require.js"
+          data-main="../../initialize.js"></script>
+  <script type="text/javascript">
+    function initialize() {
+      require.config({
+        map: {
+          '*': {
+            strategy: 'aeris/maps/openlayers'
+          }
+        }
+      });
+      require([
+        'base/map',
+        //'base/layers/googleterrain'
+        //'base/layers/googleroadmap'
+        //'base/layers/googlehybrid'
+        //'base/layers/googlesatellite'
+        'base/layers/osm',
+        'base/layers/aerisradar'
+      ], function (Map, Layer, Overlay) {
+        window.layer = new Layer();
+
+        window.map = new Map('map-canvas', {
+          baseLayer: layer,
+          center: [45, -90],
+          zoom: 6
+        });
+
+        window.overlay = new Overlay();
+        overlay.setMap(map);
+
+        map.on('load', function() {
+          console.log('map loaded');
+        });
+
+        overlay.on('load', function() {
+          console.log('overlay tiles loaded');
+        });
+      });
+    }
+  </script>
+</head>
+<body>
+  <div id="map-canvas"></div>
+</body>
+</html>

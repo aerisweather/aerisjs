@@ -15,7 +15,7 @@
         require([
           'aeris/maps/gmaps/map',
           'base/layers/googleroadmap',
-          'base/layers/infobox',
+          'base/infobox',
           'base/markercollections/stormreportmarkers',
           'jquery',
           'handlebars',
@@ -52,7 +52,7 @@
 
           var handleMarkerClick = function(marker, data) {
             var html = template(data);
-            var infoBox = new aeris.maps.layers.InfoBox(marker.position, html, {
+            var infoBox = new aeris.maps.InfoBox(marker.position, html, {
               hideMarker: true
             });
             infoBox.setMap(map);

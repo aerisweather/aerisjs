@@ -58,7 +58,7 @@
       }
 
       // Create a new infobox
-      window.infobox = new aeris.maps.layers.InfoBox(
+      window.infobox = new aeris.maps.InfoBox(
         latLon,
         'You are here: <br/>' +
         '<small>' + latLon.join(', ') + '</small>'
@@ -84,7 +84,7 @@
         'vendor/jquery',
         'geocode/mapquestgeocodeservice',
         'geocode/googlegeocodeservice',
-        'base/layers/infobox'
+        'base/infobox'
       ], function(
         AerisMap,
         GoogleRoadMap,

@@ -2,12 +2,9 @@
 <html>
   <head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-    <style type="text/css">
-      #map-canvas {
-        width: 600px;
-        height: 400px;
-      }
-    </style>
+
+    <link rel="stylesheet" href="../../css/example.css"/>
+
     <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
     <script type="text/javascript"
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false">
@@ -18,20 +15,19 @@
     <script data-main="../../initialize" src="../../../externals/require.js"></script>
     <script type="text/javascript">
       function initialize() {
-        require(["aeris/maps/openlayers"], function(aeris) {
-          var map = new aeris.maps.openlayers.Map("map-canvas", {
+        require.setStrategy('openlayers');
+        require([
+        'base/map',
+        'base/layers/aerisconvectivehazards'
+        ], function() {
+          window.map = new aeris.maps.Map("map-canvas", {
             baseLayer: new aeris.maps.layers.GoogleRoadMap(),
             center: [44.98, -93.2636],
             zoom: 4
           });
 
-          var convective = new aeris.maps.layers.AerisConvectiveHazards();
+          window.convective = new aeris.maps.layers.AerisConvectiveHazards();
           convective.setMap(map);
-
-          var $visibility = $("#visibility");
-          $visibility.change(function() {
-            convective[$visibility.val()]();
-          });
 
           var $opacity = $("#opacity");
           $opacity.change(function() {
@@ -43,13 +39,6 @@
   </head>
   <body>
     <div id="map-canvas"></div>
-    <div>
-      <label for="visibility">Visibility:</label>
-      <select id="visibility">
-        <option value="show" selected="selected">Show</option>
-        <option value="hide">Hide</option>
-      </select>
-    </div>
     <div>
       <label for="opacity">Opacity:</label>
       <select id="opacity">

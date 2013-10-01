@@ -2,12 +2,7 @@
 <html>
   <head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-    <style type="text/css">
-      #map-canvas {
-        width: 600px;
-        height: 400px;
-      }
-    </style>
+    <link rel="stylesheet" href="../../../css/example.css"/>
     <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
     <script type="text/javascript"
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false">
@@ -15,23 +10,42 @@
     <script data-main="../../../initialize" src="../../../../externals/require.js"></script>
     <script type="text/javascript">
       function initialize() {
-        require.config({
-          config: {
-            aeris: {
-              path: '../../../../'
-            }
-          }
-        });
-        require(["aeris/maps/gmaps"], function(aeris) {
-          var map = new aeris.maps.gmaps.Map("map-canvas", {
+        require([
+          'aeris/maps/gmaps',
+          'base/animations/aerisinteractivetile',
+          'vendor/underscore'
+        ], function(aeris, AIAnimation, _) {
+          window._ = _;
+          window.map = new aeris.maps.gmaps.Map("map-canvas", {
             baseLayer: new aeris.maps.layers.GoogleRoadMap(),
-            center: [44.98, -93.2636],
-            zoom: 4
+            center: [27.728985, -82.937419],
+            zoom: 6
+          });
+          window.gmap = map.getView();
+
+          window.radar = new aeris.maps.layers.AerisRadar();
+          radar.setMap(map);
+          window.radarAnim = new AIAnimation(radar, {
+            limit: 40,
+            timestep: 200
           });
 
-          var radar = new aeris.maps.layers.AerisRadar();
-          radar.setMap(map);
-          var radarAnim = radar.animate();
+          $('.loading').show();
+          radarAnim.on('load:progress', function(progress) {
+            $('#progress').
+              val(progress).
+              html((progress * 100).toFixed(0)+ '% done');
+
+            // Close modal at 30%
+            if (progress >= 0.15) {
+              $('.loading').fadeOut();
+              $('#progress').appendTo('body');
+            }
+          });
+
+          radarAnim.on('change:time', function(time) {
+            $('#timestamp').text(time.toLocaleString());
+          });
 
           var $animStart = $("#anim-start");
           $animStart.click(function() {
@@ -76,6 +90,14 @@
     <div>
       <a href="#" id="anim-prev">Previous</a> &#160;|&#160;
       <a href="#" id="anim-next">Next</a>
+    </div>
+    <h5 id="timestamp"></h5>
+
+    <div class="loading">
+      <div class="loading-content">
+        <h3>Buffering animations...</h3>
+        <progress id='progress' max='1' value='0'></progress>
+      </div>
     </div>
   </body>
 </html>

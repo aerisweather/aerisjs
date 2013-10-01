@@ -21,11 +21,11 @@
   padding: 20px;
   text-align: center;
 
-  background: rgba(0,0,0, .15);
+  background: rgba(255, 255, 255, .65);
 
-  -webkit-box-shadow: 0 0 9999px 9999px rgba(0, 0, 0, 0.5);
-  -moz-box-shadow: 0 0 9999px 9999px rgba(0, 0, 0, 0.5);
-  box-shadow: 0 0 9999px 9999px rgba(0, 0, 0, 0.5);
+  -webkit-box-shadow: 0 0 9999px 9999px rgba(0, 0, 0, 0.7);
+  -moz-box-shadow: 0 0 9999px 9999px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 0 9999px 9999px rgba(0, 0, 0, 0.7);
 
   -webkit-border-radius: 15px;
   -moz-border-radius: 15px;

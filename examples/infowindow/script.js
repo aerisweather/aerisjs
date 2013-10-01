@@ -1,7 +1,7 @@
 
 function initialize() {
   require([
-    'strategy/map',
+    'base/map',
     'base/infobox',
     'vendor/jquery',
     'base/layers/osm'
@@ -12,10 +12,10 @@ function initialize() {
       baseLayer: new OSM()
     });
 
-    window.infoWindow = new aeris.maps.InfoBox(
-      [45, -90],
-      '<h2>yo...</h2>'
-    );
+    window.infoWindow = new aeris.maps.InfoBox({
+      latLon: [45, -90],
+      content: '<h2>yo...</h2>'
+    });
     infoWindow.setMap(map);
 
     $('#changeLoc').click(function() {
@@ -23,6 +23,21 @@ function initialize() {
       window.somewhere = [window.somewhere[0] + 0.25, window.somewhere[1] + 0.25];
 
       infoWindow.setLocation(window.somewhere);
+    });
+
+    $('#changeContent').click(function() {
+      var hellos = [
+        'hola',
+        'heyo',
+        'hi guy',
+        'ca va?',
+        'what\'s up?',
+        'yo',
+        'go home.'
+      ];
+      var content = hellos[Math.floor(Math.random() * hellos.length)];
+
+      infoWindow.setContent('<h2>' + content + '</h2>');
     });
   });
 }

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Example: Animation Sync</title>
+  <link rel="stylesheet" href="../css/example.css"/>
+
+  <script type="text/javascript"
+          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false">
+  </script>
+  <script type="text/javascript" src="../../externals/openlayers/OpenLayers.debug.js"></script>
+  <script type="text/javascript" src="../../externals/require.js" data-main="../initialize"></script>
+  <script type="text/javascript">
+    function initialize() {
+      require.setStrategy('gmaps')
+      require([
+        'vendor/jquery',
+        'vendor/underscore',
+        'examples/animation/script/controls',
+        'base/map',
+        'base/layers/googleroadmap',
+        'base/layers/aerisradar',
+        'base/layers/aerissatellite',
+        'base/animations/aerisinteractivetile',
+        'base/animations/animationsync',
+        'base/layers'
+      ], function($, _, createControls, AerisMap, GoogleRoadMap, Radar, Satellite, LayerAnimation, AnimationSync) {
+        // Provide vendor libraries
+        // for messing around in the console
+        window.$ = $;
+        window._ = _;
+
+        window.map = new AerisMap('map-canvas', {
+          baseLayer: new GoogleRoadMap(),
+          center: [35.728985, -90.937419],
+          zoom: 4
+        });
+
+        window.anim = new AnimationSync(null, {
+          speed: 60
+        });
+
+        anim.start();
+
+        createControls($('#animControls'), anim);
+
+        $('input[name=layer]').change(function() {
+          var $input = $(this);
+          var layer = $input.data('layer');
+          var layerAnim = $input.data('anim');
+
+          // Bind the layer to the element,
+          // for safekeeping.
+          if (!$input.data('layer')) {
+            layer = new aeris.maps.layers[$input.val()];
+            layerAnim = new LayerAnimation(layer, {
+              limit: 20,
+              opacity: 0.5
+            });
+            $input.data('layer', layer);
+            $input.data('anim', layerAnim);
+          }
+
+          if ($input.prop('checked')) {
+            layer.setMap(map);
+            anim.add(layerAnim);
+          }
+          else {
+            layer.remove();
+            anim.remove(layerAnim);
+          }
+        });
+      });
+    }
+  </script>
+</head>
+<body>
+  <div class="float-left">
+    <div id="map-canvas"></div>
+    <div id="animControls"></div>
+  </div>
+
+  <div class="float-left" style="padding: 20px;">
+    <h2>Tile Layers</h2>
+
+    <div>
+      <input name="layer" type="checkbox" value="AerisRadar" id="AerisRadar"/>
+      <label for="AerisRadar">Radar</label>
+    </div>
+    <div>
+      <input name="layer" type="checkbox" value="AerisSatellite" id="AerisSatellite"/>
+      <label for="AerisSatellite">Satellite</label>
+    </div>
+    <div>
+      <input name="layer" type="checkbox" value="AerisSatelliteVisible" id="AerisSatelliteVisible" />
+      <label for="AerisSatelliteVisible">Visible Satellite</label>
+    </div>
+    <div>
+      <input name="layer" type="checkbox" value="AerisSatelliteGlobal" id="AerisSatelliteGlobal" />
+      <label for="AerisSatelliteGlobal">Global Satellite</label>
+    </div>
+    <div>
+      <input name="layer" type="checkbox" value="AerisAdvisories" id="AerisAdvisories" />
+      <label for="AerisAdvisories">Advisories</label>
+    </div>
+    <div>
+      <input name="layer" type="checkbox" value="AerisTemps" id="AerisTemps" />
+      <label for="AerisTemps">Current Temperatures</label>
+    </div>
+    <div>
+      <input name="layer" type="checkbox" value="AerisWinds" id="AerisWinds" />
+      <label for="AerisWinds">Current Winds</label>
+    </div>
+    <div>
+      <input name="layer" type="checkbox" value="AerisDewPoints" id="AerisDewPoints" />
+      <label for="AerisDewPoints">Current Dew Points</label>
+    </div>
+    <div>
+      <input name="layer" type="checkbox" value="AerisHeatIndex" id="AerisHeatIndex" />
+      <label for="AerisHeatIndex">Current Heat Index</label>
+    </div>
+    <div>
+      <input name="layer" type="checkbox" value="AerisHumidity" id="AerisHumidity" />
+      <label for="AerisHumidity">Current Humidity</label>
+    </div>
+    <div>
+      <input name="layer" type="checkbox" value="AerisSnowDepth" id="AerisSnowDepth" />
+      <label for="AerisSnowDepth">Snow Depth</label>
+    </div>
+    <div>
+      <input name="layer" type="checkbox" value="AerisWindChill" id="AerisWindChill" />
+      <label for="AerisWindChill">Current Wind Chill</label>
+    </div>
+  </div>
+</body>
+</html>

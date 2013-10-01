@@ -7,23 +7,24 @@
           src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false">
   </script>
 
-  <script type="text/javascript" src="http://openlayers.org/api/OpenLayers.js"></script>
+  <script type="text/javascript" src="../../../externals/openlayers/OpenLayers.debug.js"></script>
 
-  <script data-main="../../initialize" src="../../../externals/require.js"></script>
-  <script type="text/javascript" src="../script.js"></script>
   <script type="text/javascript">
-    require.config({
+    var require = {
       map: {
         '*': {
-          strategy: 'aeris/maps/gmaps'
+          strategy: 'aeris/maps/openlayers'
         }
       }
-    });
+    };
   </script>
+  <script data-main="../../initialize" src="../../../externals/require.js"></script>
+  <script type="text/javascript" src="../script.js"></script>
 
 </head>
 <body>
   <div id="map-canvas"></div>
   <button id="changeLoc">Change Location</button>
+  <button id="changeContent">Change content</button>
 </body>
 </html>

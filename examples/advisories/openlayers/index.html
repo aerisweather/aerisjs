@@ -2,24 +2,31 @@
 <html>
   <head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-    <style type="text/css">
-      #map-canvas {
-        width: 600px;
-        height: 400px;
-      }
-    </style>
+
+    <link rel="stylesheet" href="../../css/example.css"/>
+
     <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
     <script type="text/javascript"
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false">
     </script>
     <script type="text/javascript"
-      src="http://openlayers.org/api/OpenLayers.js">
+      src="../../../externals/openlayers/OpenLayers.debug.js">
     </script>
     <script data-main="../../initialize" src="../../../externals/require.js"></script>
     <script type="text/javascript">
       function initialize() {
-        require(["aeris/maps/openlayers"], function(aeris) {
-          var map = new aeris.maps.openlayers.Map("map-canvas", {
+        require.setStrategy('openlayers');
+        require([
+          'vendor/jquery',
+          'vendor/underscore',
+          'base/map',
+          'base/layers/googleroadmap',
+          'base/layers/aerisadvisorieskml'
+        ], function() {
+          window.$ = require('vendor/jquery');
+          window._ = require('vendor/underscore');
+
+          var map = new aeris.maps.Map("map-canvas", {
             baseLayer: new aeris.maps.layers.GoogleRoadMap(),
             center: [44.98, -93.2636],
             zoom: 4
@@ -27,11 +34,11 @@
 
           var advisories = new aeris.maps.layers.AerisAdvisoriesKML();
           advisories.setMap(map);
-          advisories.autoUpdate();
 
-          var $visibility = $("#visibility");
-          $visibility.change(function() {
-            advisories[$visibility.val()]();
+          var template = $('#advisoryTemplate').html();
+          advisories.on('click', function(latLon, data) {
+            var html = _.template(template, data);
+            $('#advisory').html(html);
           });
 
           var $opacity = $("#opacity");
@@ -44,13 +51,6 @@
   </head>
   <body>
     <div id="map-canvas"></div>
-    <div>
-      <label for="visibility">Visibility:</label>
-      <select id="visibility">
-        <option value="show" selected="selected">Show</option>
-        <option value="hide">Hide</option>
-      </select>
-    </div>
     <div>
       <label for="opacity">Opacity:</label>
       <select id="opacity">
@@ -67,5 +67,15 @@
         <option value="0">0%</option>
       </select>
     </div>
+
+    <script id="advisoryTemplate" type="text/template">
+      <h3><%= name %></h3>
+      <small>From <%= author %></small>
+      <p>
+        <%= description %>
+      </p>
+    </script>
+
+    <div id="advisory"></div>
   </body>
 </html>

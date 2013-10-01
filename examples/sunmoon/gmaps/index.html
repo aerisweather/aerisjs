@@ -94,7 +94,7 @@
                     phase: capitalizeWords(sunMoonData.moon.phase.name)
                   }
                 });
-                var infoBox = new aeris.maps.layers.InfoBox(latLon, html);
+                var infoBox = new aeris.maps.InfoBox(latLon, html);
                 infoBox.setMap(map);
               }).
               fail(function() {
