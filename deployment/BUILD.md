@@ -44,12 +44,16 @@ The loader component is built separately, in order to
 * Include the RequireJS AMD loader library
 * Include a facade for the aeris.Loader component (see `end.frag.js`)
 
+### Packages
+r.js Build configurations for packages are created and executed dynamically using the `deployment/packageConfigBuilder.js` script. 
+
+An alternative would be to use the `modules` configuration within `build.js.` However, this has not always worked out as smoothly as one would hope. I found when multiple modules were defined, r.js would fail to load in all of their dependencies.
+
+
 
 ### Vendor Libraries
 
 Vendor libraries are defined in `/lib/vendor/libs.js`. AMD module wrappers for vendor libraries are dynamically generated using the definition file (see `/lib/vendor/config.js`). The configuration script first checks if the vendor library exists in the global namespace, and if not, sets the module path to a remote file (eg. on a CDN).
-
-The build script also reads from the vendor definition file in order to tell the r.js optimizer not to attempt to build the vendor library paths. The `/deployment/vendorPathsBuildConfigGenerator.js` node script creates a temporary version of the the r.js build configuration file which defines `'empty:'` paths for all of  the dynamically generated vendor library modules.
 
 
 ### Compass projects

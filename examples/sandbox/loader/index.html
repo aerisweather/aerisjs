@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Loader sandbox</title>
+
+  <link rel="stylesheet" href="../../css/example.css"/>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+  <script type="text/javascript"
+          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false&libraries=geometry">
+  </script>
+  <script type="text/javascript" src="../../../externals/require.js"></script>
+  <script type="text/javascript">
+    require.config({
+      baseUrl: '/build'
+    });
+    require([
+      'config',
+      'vendor/config'
+    ], function() {
+      require([
+        'aeris/maps/packages/markers'
+      ], function() {
+        console.log('done');
+      });
+    });
+  </script>
+</head>
+<body>
+</body>
+</html>

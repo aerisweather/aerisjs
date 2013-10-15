@@ -18,15 +18,6 @@ echo "Compiling compass projects..."
 ./compileCompassProjects.sh themes.conf  >> $LOG_FILE  || { echo "Something went wrong! Check build.log" ; exit 1 ; }
 
 
-# Set the vendor paths in the build config to 'empty:'
-# And generate a tmp build config
-echo "Generating r.js application build file..."
-node vendorPathsBuildConfigGenerator.js build.js build.tmp.js >> $LOG_FILE || { echo "Something went wrong! Check build.log" ; exit 1 ; }
-
-echo "Generating r.js loader build file."
-node vendorPathsBuildConfigGenerator.js buildLoader.js buildLoader.tmp.js >> $LOG_FILE || { echo "Something went wrong! Check build.log" ; exit 1 ; }
-
-
 
 
 # Grab first argument as the deployed base directory
@@ -49,17 +40,18 @@ sed "s,{{DEPLOYED_BASE_DIR}},$DEPLOYED_BASE_DIR,g" end.frag.js.bak > end.frag.js
 
 # Run the r.js optimizer
 echo "Building application library..."
-r.js -o build.tmp.js >> $LOG_FILE
+r.js -o build.js >> $LOG_FILE
 
 echo "Building aeris.Loader..."
-r.js -o buildLoader.tmp.js >> $LOG_FILE
+r.js -o buildLoader.js >> $LOG_FILE
+
+echo "Building aeris maps packages"
+node packageConfigBuilder.js >> $LOG_FILE
 
 
 
 # Remove generated files
 echo "Removing temporary build files..."
-rm build.tmp.js
-rm buildLoader.tmp.js
 rm end.frag.js
 
 # Restore backup copy of end.frag.js

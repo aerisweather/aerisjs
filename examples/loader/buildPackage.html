@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Loader example</title>
+
+  <link rel="stylesheet" href="../css/example.css"/>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+  <script type="text/javascript"
+          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false&libraries=geometry">
+  </script>
+  <script type="text/javascript" src="../../build/loader/loader.js"></script>
+  <script type="text/javascript">
+
+    aeris.Loader.load({
+      maps: {
+        mapType: 'gmaps',
+        packages: ['markers'],
+        apiId: 'ezHWL0MiLsxwlN2ik8U4c',
+        apiSecret: 'uCDMeSj91lBfIKCmeQkpeZjsAwUUQJHuKesCvqTm',
+        path: '/'
+      },
+      onload: onload,
+      onerror: function(error) {
+        throw JSON.stringify(error);
+      }
+    });
+    function onload() {
+      console.assert(aeris.maps.Map);
+      console.assert(aeris.maps.StormReportMarkers);
+      window.map = new aeris.maps.Map('map-canvas');
+      window.markers = new aeris.maps.StormReportMarkers();
+      markers.setMap(map);
+    }
+  </script>
+</head>
+<body>
+  <div id="map-canvas"></div>
+</body>
+</html>

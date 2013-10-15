@@ -1,10 +1,3 @@
-
-  // Save reference to require
-  // Under aeris namespace
-  aeris.require = require;
-  aeris.requirejs = requirejs;
-  aeris.define = define;
-
   require.config({
     // This needs to be the absolute path of the deployed library.
     baseUrl: '{{DEPLOYED_BASE_DIR}}'
