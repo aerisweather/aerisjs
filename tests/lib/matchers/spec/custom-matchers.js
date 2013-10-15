@@ -112,5 +112,33 @@ require([
       });
     });
 
+    describe('toHaveBeenCalledWithSomeOf', function() {
+      var spy;
+
+      beforeEach(function() {
+        spy = jasmine.createSpy('spy');
+      });
+
+      it('should pass when any arguments match', function() {
+        spy('foo', 'bar');
+        expect(spy).toHaveBeenCalledWithSomeOf('foo');
+        expect(spy).toHaveBeenCalledWithSomeOf('bar');
+      });
+
+      it('should pass when all arguments match', function() {
+        spy('foo', 'bar');
+        expect(spy).toHaveBeenCalledWithSomeOf('foo', 'bar');
+      });
+
+      it('should fail when not all arguments match', function() {
+        spy('foo', 'bar');
+        expect(spy).not.toHaveBeenCalledWithSomeOf('foo', 'bar', 'waz');
+        expect(spy).not.toHaveBeenCalledWithSomeOf('foo', 'waz', 'bar');
+        expect(spy).not.toHaveBeenCalledWithSomeOf('yo', 'jo');
+        expect(spy).not.toHaveBeenCalledWithSomeOf('bar', 'waz', 'foo');
+      });
+
+    });
+
   });
 });

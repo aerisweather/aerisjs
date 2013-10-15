@@ -149,6 +149,42 @@ require([
         };
 
         return neverCalled.length < 1;
+      },
+
+      /**
+       * Checks that the spy was called with
+       * at least the arguments called.
+       *
+       * eg.
+       *  spy('foo', 'bar');
+       *  expect(spy).toHaveBeenCalledWithSomeOf('foo'); // passes
+       *  expect(spy).toHaveBeenCalledWithSomeOf('bar'); // passes
+       *  expect(spy).toHaveBeenCalledWithSomeOf('foo', 'bar'); // passes
+       *  expect(spy).toHaveBeenCalledWithSomeOf('foo', 'bar', 'baz'); // fails
+       *  expect(spy).toHaveBeenCalledWithSomeOf('baz'); // fails
+       *
+       * @param {*} var_args
+       * @return {Boolean}
+       */
+      toHaveBeenCalledWithSomeOf: function(var_args) {
+        var spy = this.actual;
+        var expectedArgs = _.argsToArray(arguments);
+        var isPassing = true;
+
+        _.each(spy.argsForCall, function(callArgs) {
+          if (_.difference(expectedArgs, callArgs).length !== 0) {
+            isPassing = false;
+          }
+        });
+
+        this.message = _.bind(function() {
+          var notWord = this.isNot ? 'not' : '';
+          return 'Expected spy \'' + spy.identity + '\' ' + notWord +
+            ' to have been called with ' + jasmine.pp(expectedArgs) + '. ' +
+            'Actual calls were ' + jasmine.pp(spy.argsForCall);
+        }, this);
+
+        return isPassing;
       }
     });
   });
