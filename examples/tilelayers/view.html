@@ -7,10 +7,14 @@
   <div>
     <input name="layer" type="checkbox" value="AerisRadar" id="AerisRadar" checked/>
     <label for="AerisRadar">Radar</label>
+    <input class="selectZIndex" data-layer="AerisRadar" type="range" min="0" max="1000" />
+    Z-Index: <span class='zIndex'></span>
   </div>
   <div>
-    <input name="layer" type="checkbox" value="AerisSatellite" id="AerisSatellite"/>
+    <input name="layer" type="checkbox" value="AerisSatellite" id="AerisSatellite" checked/>
     <label for="AerisSatellite">Satellite</label>
+    <input class="selectZIndex" data-layer="AerisSatellite" type="range" min="0" max="1000" />
+    Z-Index: <span class='zIndex'></span>
   </div>
   <div>
     <input name="layer" type="checkbox" value="AerisSatelliteVisible" id="AerisSatelliteVisible" />

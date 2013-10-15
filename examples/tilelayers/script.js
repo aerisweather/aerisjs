@@ -30,7 +30,12 @@ function initialize() {
     window.layers = {};
     $.each($('input[name="layer"]'), function() {
       var LayerName = $(this).val();
-      window.layers[LayerName] = new aeris.maps.layers[LayerName]();
+      var $zIndexSlider = $('.selectZIndex[data-layer="' + LayerName + '"]');
+      var $zIndexText = $zIndexSlider.siblings('.zIndex');
+      var layer = window.layers[LayerName] = new aeris.maps.layers[LayerName]();
+
+      $zIndexSlider.val(layer.get('zIndex'));
+      $zIndexText.text(layer.get('zIndex'));
     });
 
 
@@ -52,5 +57,14 @@ function initialize() {
 
     // Trigger select of already checked input
     $layerSelect.filter('[checked]').trigger('change');
+
+
+    // Set zIndex
+    $('.selectZIndex').change(function() {
+      var layer = layers[$(this).data('layer')];
+      var text = $(this).siblings('.zIndex');
+      layer.setZIndex($(this).val());
+      text.text($(this).val());
+    });
   });
 }
