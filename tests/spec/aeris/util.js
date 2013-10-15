@@ -253,5 +253,88 @@ define([
       });
     });
 
+
+    describe('boundsToPolygon', function() {
+
+      it('should convert a bounds object to a polygon object', function() {
+        var bounds = [[52.37, -135.52], [22.43, -55.016]];
+        expect(_.boundsToPolygon(bounds)).toEqual([52.37, -135.52, 22.43, -55.016]);
+      });
+
+      it('should not modify the original object', function() {
+        var bounds = [[52.37, -135.52], [22.43, -55.016]];
+        _.boundsToPolygon(bounds);
+        expect(bounds).toEqual([[52.37, -135.52], [22.43, -55.016]]);
+      });
+
+    });
+
+    describe('path', function() {
+
+      it('should return a property of an object', function() {
+        var obj = {
+          foo: 'bar'
+        };
+
+        expect(_.path('foo', obj)).toEqual('bar');
+      });
+
+      it('should return a nested property of an object', function() {
+        var obj = {
+          foo: {
+            bar: 'yo'
+          }
+        };
+
+        expect(_.path('foo.bar', obj)).toEqual('yo');
+      });
+
+      it('should return a deep nested property of an object', function() {
+        var obj = {
+          foo: {
+            bar: {
+              yo: 'jo'
+            }
+          }
+        };
+
+        expect(_.path('foo.bar.yo', obj)).toEqual('jo');
+      });
+
+      it('should default to looking in the global scope (window)', function() {
+        obj_orig = window.obj;
+        window.obj = {
+          foo: {
+            bar: {
+              yo: 'jo'
+            }
+          }
+        };
+
+        expect(_.path('obj.foo.bar.yo')).toEqual('jo');
+
+        window.obj = obj_orig;
+      });
+
+      it('should return undefined if no property exists', function() {
+        var obj = {
+          foo: {
+            bar: {
+              yo: 'jo'
+            }
+          }
+        };
+
+        expect(_.path('yolo', obj)).toEqual(undefined);
+        expect(_.path('foo.yolo', obj)).toEqual(undefined);
+        expect(_.path('foo.bar.yolo', obj)).toEqual(undefined);
+        expect(_.path('foo.bar.yo.yolo', obj)).toEqual(undefined);
+        expect(_.path('foo.bar.yo.somethingelse.yolo', obj)).toEqual(undefined);
+        expect(_.path('foo.bar.yo.somethingelse.andmore.yolo', obj)).toEqual(undefined);
+        expect(_.path('nada.yada.tada', obj)).toEqual(undefined);
+      });
+
+    });
+
   });
 });
