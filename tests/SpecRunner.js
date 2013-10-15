@@ -22,7 +22,8 @@ require([
     require([
       '/tests/lib/domReady.js!',
 
-      'spec/aeris/model',
+      //'spec/aeris/model',
+      'spec/aeris/collection',
       //'spec/aeris/util',
       //'spec/aeris/events',
       //'spec/aeris/aerisapi',
@@ -43,8 +44,9 @@ require([
       //'spec/aeris/commands/abstractcommand',
       //'spec/aeris/commands/commandmanager',
 
+      //'spec/aeris/api/model/pointdata',
 
-      'spec/aeris/maps/base/extension/mapextensionobject',
+      //'spec/aeris/maps/base/extension/mapextensionobject',
       //'spec/aeris/maps/base/layers',
       //'spec/aeris/maps/base/abstractlayer',
 
