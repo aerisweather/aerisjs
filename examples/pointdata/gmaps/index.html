@@ -75,6 +75,12 @@
           // Click event
           layer.on('click', function(latLon, markerData) {
             console.log('Clicked at ', latLon, '\n Marker data: ', markerData);
+            var tmpl = $('#dataTemplate').html();
+            var report = _.template(tmpl, {
+              data: markerData.toJSON().report
+            });
+
+            $('#report').html(report);
           });
         });
 
@@ -105,6 +111,8 @@
     <div class="flash-content">Loading...</div>
   </div>
 
+  <div id="report"></div>
+
   <script id="toggleTemplate" type="text/template">
     <div>
       <label>
@@ -112,6 +120,17 @@
         <%=markerName %>
       </label>
     </div>
+  </script>
+
+  <script type="text/template" id="dataTemplate">
+    <table>
+      <% _.each(data, function(value, key) { %>
+      <tr>
+        <td><%=key %></td>
+        <td><%=value %></td>
+      </tr>
+      <% }); %>
+    </table>
   </script>
 </body>
 </html>

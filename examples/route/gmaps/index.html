@@ -37,8 +37,9 @@
 
 
       function initialize() {
+        require.setStrategy('gmaps');
         require([
-          'aeris/maps/gmaps/map',
+          'base/map',
           'gmaps/route/waypoint',
           'gmaps/route/route',
           'gmaps/route/routebuilder',
@@ -67,7 +68,9 @@
 
           // Bind map events
           function bindMapEvents() {
-            map.on('click', routeBuilder.addWaypoint, routeBuilder);
+            map.on('click', function(latLon) {
+              routeBuilder.addWaypoint(latLon);
+            });
 
             routeBuilder.getRenderer().on('waypoint:dragend', function(waypoint, latLon) {
               routeBuilder.moveWaypoint(waypoint, latLon);
