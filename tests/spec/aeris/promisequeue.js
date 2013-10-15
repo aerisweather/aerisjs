@@ -1,25 +1,53 @@
 define([
   'aeris/util',
+  'sinon',
   'testUtils',
   'testErrors/untestedspecerror',
   'aeris/promise',
   'mocks/promise',
   'aeris/promisequeue'
-], function(_, testUtils, UntestedSpecError, Promise, MockPromise, PromiseQueue) {
+], function(_, sinon, testUtils, UntestedSpecError, Promise, MockPromise, PromiseQueue) {
+  var clock;
+
   describe('A PromiseQueue', function() {
 
     function getPromiseFn(opt_options, spyName) {
       var options = _.extend({
         resolve: true,
-        delay: 100
+        delay: 100,
+        args: []  // Arguments to resolve/reject the promise with.
       }, opt_options);
-      var promise = new MockPromise(options);
+      var promise = new Promise();
+
+      var fn = jasmine.createSpy(spyName).andCallFake(function() {
+        var completePromise = function() {
+          var completionMethod = options.resolve ? 'resolve' : 'reject';
+          promise[completionMethod].apply(promise, options.args);
+        };
+
+        if (options.delay) {
+          _.delay(completePromise, options.delay);
+        }
+        else {
+          completePromise();
+        }
+
+        return promise;
+      });
+
 
       return {
-        fn: jasmine.createSpy(spyName).andReturn(promise),
+        fn: fn,
         promise: promise
       };
     }
+
+    beforeEach(function() {
+      clock = sinon.useFakeTimers();
+    });
+    afterEach(function() {
+      clock.restore();
+    });
 
 
 
@@ -70,14 +98,10 @@ define([
 
         expect(queuePromise).toBeInstanceOf(Promise);
 
-        queuePromise.done(function() {
-          expect(promiseFn.promise.getState()).toEqual('resolved');
-
-          testUtils.setFlag();
-        });
-
         pq.dequeue();
-        waitsFor(testUtils.checkFlag, 'queue to resolve promise', 150);
+
+        clock.tick(100);
+        expect(queuePromise.getState()).toEqual('resolved');
       });
 
       it('should resolve or reject queue promises', function() {
@@ -125,7 +149,7 @@ define([
       });
 
 
-      it('should execute fn with in the correct order', function() {
+      it('should execute promise functions in the correct order', function() {
         var pq = new PromiseQueue();
         var pFn1 = getPromiseFn({ delay: 500 }, 'pFn1');
         var pFn2 = getPromiseFn({ delay: 300 }, 'pFn2');
@@ -139,19 +163,12 @@ define([
         // First method has been called
         expect(pFn1.fn).toHaveBeenCalled();
 
-        // Wait util pFnSlow is complete...
-        window.setTimeout(testUtils.setFlag, 515);
-        waitsFor(testUtils.checkFlag, 'timeout', 525);
-        runs(function() {
-          testUtils.resetFlag();
+        clock.tick(500);
 
-          // Next pFn should have been called,
-          // But not yet the one after that
-          expect(pFn2.fn).toHaveBeenCalled();
-          expect(pFn3.fn).not.toHaveBeenCalled();
-
-          pq.stop();
-        });
+        // Next pFn should have been called,
+        // But not yet the one after that
+        expect(pFn2.fn).toHaveBeenCalled();
+        expect(pFn3.fn).not.toHaveBeenCalled();
       });
 
       it('should wait to execute a function until the previous function has resolved its promise', function() {
@@ -197,7 +214,10 @@ define([
         pq.queue(promiseFn3.fn);
         pq.dequeue();
 
-        waitsFor(testUtils.checkFlag, 'fn3 to be called', 250);
+        clock.tick(250);
+
+        // promiseFn3 was called
+        expect(testUtils.checkFlag()).toEqual(true);
       });
 
       it('should execute functions queued after dequeueing', function() {
@@ -211,7 +231,8 @@ define([
 
         promiseFn2.promise.done(testUtils.setFlag);
 
-        waitsFor(testUtils.checkFlag, 'fn2 to resolved', 250);
+        clock.tick(250);
+        expect(promiseFn2.promise.getState()).toEqual('resolved');
       });
 
       it('should continue to execute the queue after a rejected promise', function() {
@@ -223,12 +244,10 @@ define([
         pq.queue(pFn2.fn);
         pq.dequeue();
 
-        window.setTimeout(testUtils.setFlag, 500);
-        waitsFor(testUtils.checkFlag, 550, 'pFn2 to resolve');
-        runs(function() {
-          expect(pFn1.fn).toHaveBeenCalled();
-          expect(pFn2.fn).toHaveBeenCalled();
-        });
+        clock.tick(500);
+
+        expect(pFn1.fn).toHaveBeenCalled();
+        expect(pFn2.fn).toHaveBeenCalled();
       });
 
       it('should break execution after a rejected promise, using break option', function() {
@@ -240,12 +259,9 @@ define([
         pq.queue(pFn2.fn);
         pq.dequeue({ break: true });
 
-        window.setTimeout(testUtils.setFlag, 500);
-        waitsFor(testUtils.checkFlag, 550, 'pFn2 to resolve');
-        runs(function() {
-          expect(pFn1.fn).toHaveBeenCalled();
-          expect(pFn2.fn).not.toHaveBeenCalled();
-        });
+        clock.tick(500);
+        expect(pFn1.fn).toHaveBeenCalled();
+        expect(pFn2.fn).not.toHaveBeenCalled();
       });
 
       it('should halt a queue with \'stop\'', function() {
@@ -264,8 +280,7 @@ define([
         });
 
         // Give fn3 a chance to run, if it's going to
-        window.setTimeout(testUtils.setFlag, 500);
-        waitsFor(testUtils.checkFlag, 'a timeout delay', 515);
+        clock.tick(500);
 
         runs(function() {
           expect(promiseFn3.fn).not.toHaveBeenCalled();
@@ -289,14 +304,10 @@ define([
         dq = pq.dequeue();
         expect(dq).toBeInstanceOf(Promise);
 
-        dq.done(function() {
-          expect(lastPromiseFn.fn).toHaveBeenCalled();
-          expect(lastPromiseFn.promise.getState()).toEqual('resolved');
-
-          testUtils.setFlag();
-        }, this);
-
-        waitsFor(testUtils.checkFlag, 'dequeue promise to resolve', 500);
+        clock.tick(500);
+        expect(dq.getState()).toEqual('resolved');
+        expect(lastPromiseFn.fn).toHaveBeenCalled();
+        expect(lastPromiseFn.promise.getState()).toEqual('resolved');
       });
 
       it('should refresh the promise to dequeue, when starting with a new stack', function() {
@@ -306,20 +317,59 @@ define([
         pq.queue(getPromiseFn().fn);
         pq.queue(getPromiseFn().fn);
 
-        pq.dequeue().done(function() {
-          var dqPromise;
 
-          pq.queue(getPromiseFn().fn);
-          pq.queue(getPromiseFn().fn);
-          pq.queue(getPromiseFn().fn);
+        pq.dequeue();
 
-          dqPromise = pq.dequeue();
-          expect(dqPromise.getState()).toEqual('pending');
+        // Wait for queue to clear
+        clock.tick(400);
 
-          dqPromise.done(testUtils.setFlag);
-        }, this);
+        // Then queue some more
+        pq.queue(getPromiseFn().fn);
+        pq.queue(getPromiseFn().fn);
+        pq.queue(getPromiseFn().fn);
+        expect(pq.dequeue().getState()).toEqual('pending');
 
-        waitsFor(testUtils.checkFlag, 'second round of dequeueing to complete', 700);
+      });
+
+      it('should resolve with an array of queue item resolution arguments', function() {
+        var pq = new PromiseQueue();
+        var argsArr = [
+          ['foo', 'bar'],
+          ['faz', 'baz'],
+          ['wiz', 'waz']
+        ];
+        var doneSpy = jasmine.createSpy('doneSpy');
+
+        // Queue up functions
+        // which each resolve with on of the
+        // args.
+        _.each(argsArr, function(arg) {
+          pq.queue(getPromiseFn({ args: arg, delay: 100 }).fn);
+        });
+
+        pq.dequeue().done(doneSpy);
+
+        clock.tick(300);
+        expect(doneSpy).toHaveBeenCalledWith(
+          ['foo', 'bar'],
+          ['faz', 'baz'],
+          ['wiz', 'waz']
+        );
+      });
+
+      it('should reject with the rejection arguments', function() {
+        var pq = new PromiseQueue();
+        var failArgs = ['fail', 'fml'];
+        var failSpy = jasmine.createSpy('failSpy');
+
+        pq.queue(getPromiseFn().fn);
+        pq.queue(getPromiseFn({ resolve: false, args: failArgs }).fn);
+        pq.queue(getPromiseFn().fn);
+
+        pq.dequeue({ break: true }).fail(failSpy);
+
+        clock.tick(300);
+        expect(failSpy).toHaveBeenCalledWith('fail', 'fml');
       });
 
     });
