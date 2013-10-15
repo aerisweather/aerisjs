@@ -1,10 +1,10 @@
 require([
   '../lib/config',
-  'testconfig'
+  'testconfig',
+  '../lib/vendor/config'
 ], function() {
   require([
     'jasmine-html',
-    '../lib/vendor/config',
     'matchers/matchers.package',
     'googlemaps'
   ], function(jasmine, underscore) {
