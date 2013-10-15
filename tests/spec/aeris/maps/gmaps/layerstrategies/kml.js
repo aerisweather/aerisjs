@@ -102,7 +102,7 @@ define([
         var test = testFactory();
 
         test.strategy.setMap(test.map);
-        test.strategy.remove();
+        test.strategy.setMap(null);
 
         expect(test.strategy.getView().setMap).
           toHaveBeenCalledWith(null);

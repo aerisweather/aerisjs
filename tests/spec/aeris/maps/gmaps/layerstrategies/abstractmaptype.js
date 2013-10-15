@@ -146,7 +146,7 @@ define([
           var test = testFactory();
 
           test.strategy.setMap(test.map, { baseLayer: true });
-          test.strategy.remove();
+          test.strategy.setMap(null);
 
           expect(test.map.getView().setMapTypeId).toHaveBeenCalledWith('PREV_MAP_TYPE_ID');
         });
@@ -171,7 +171,7 @@ define([
             }
           ]);
 
-          test.strategy.remove();
+          test.strategy.setMap(null);
           expect(test.mapView.overlayMapTypes.removeAt).toHaveBeenCalledWith(1);
         });
       });

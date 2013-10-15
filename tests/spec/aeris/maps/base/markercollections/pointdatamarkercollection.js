@@ -331,7 +331,7 @@ define([
         var test = new TestFactory();
         var marker = new MockMarker();
 
-        test.markers.remove();
+        test.markers.setMap(null);
 
         test.markers.add(marker);
         expect(marker.setMap).not.toHaveBeenCalled();

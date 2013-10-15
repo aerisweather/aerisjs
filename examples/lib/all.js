@@ -60,7 +60,7 @@ function initialize() {
         $radarVisibility.prop('disabled', false);
         $radarOpacity.prop('disabled', false);
       } else {
-        radar.remove();
+        radar.setMap(null);
         $radarVisibility.prop('disabled', true);
         $radarOpacity.prop('disabled', true);
       }
@@ -89,7 +89,7 @@ function initialize() {
         $satelliteVisibility.prop('disabled', false);
         $satelliteOpacity.prop('disabled', false);
       } else {
-        satellite.remove();;
+        satellite.setMap(null);;
         $satelliteVisibility.prop('disabled', true);
         $satelliteOpacity.prop('disabled', true);
       }
@@ -118,7 +118,7 @@ function initialize() {
         $advisoriesVisibility.prop('disabled', false);
         $advisoriesOpacity.prop('disabled', false);
       } else {
-        advisories.remove();;
+        advisories.setMap(null);;
         $advisoriesVisibility.prop('disabled', true);
         $advisoriesOpacity.prop('disabled', true);
       }
@@ -146,7 +146,7 @@ function initialize() {
         $convectiveVisibility.prop('disabled', false);
         $convectiveOpacity.prop('disabled', false);
       } else {
-        convective.remove();
+        convective.setMap(null);
         $convectiveVisibility.prop('disabled', true);
         $convectiveOpacity.prop('disabled', true);
       }

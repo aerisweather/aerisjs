@@ -47,7 +47,7 @@ function hideLoading() {
 function setMarkerAt(position) {
   console.log('Position: ', position);
   if (window.infoBox) {
-    infoBox.remove();
+    infoBox.setMap(null);
   }
   window.infoBox = new InfoBox(position.latLon, 'You are here');
   infoBox.setMap(map);

@@ -54,7 +54,7 @@
     function showLocation(latLon) {
       // Remove any existing infobox
       if (window.infobox) {
-        window.infobox.remove()
+        window.infobox.setMap(null)
       }
 
       // Create a new infobox

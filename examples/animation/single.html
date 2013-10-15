@@ -36,8 +36,8 @@
 
         $('input[name=layer]').change(function() {
           if (window.anim) {
-            window.layer.remove();
-            window.anim.remove();
+            window.layer.setMap(null);
+            window.anim.setMap(null);
           }
 
           window.layer = new aeris.maps.layers[$(this).val()];

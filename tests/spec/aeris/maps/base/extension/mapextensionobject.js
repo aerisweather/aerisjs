@@ -78,31 +78,82 @@ define([
         var test = testFactory();
         test.obj.set('map', null, { validate: true });
       });
+
+      it('should not allow setting the map to non-null falsy values', function() {
+        var spec = function(falsy) {
+          expect(function() {
+            var test = testFactory();
+            test.obj.set('map', falsy, { validate: true });
+          }).toThrowType('ValidationError');
+        };
+
+        _.each([
+          undefined,
+          -1,
+          0,
+          NaN,
+          false,
+          ''
+        ], spec, this);
+      });
     });
 
-    describe('remove', function() {
-      it('should set the map to null', function() {
-        var test = testFactory();
+    describe('setMap', function() {
+      var spies;
+      var test;
 
-        spyOn(test.obj, 'set');
-        spyOn(test.obj, 'get').andCallFake(function(prop) {
-          if (prop === 'map') { return test.map; }
-          return null;
-        });
+      beforeEach(function() {
+        test = testFactory();
+        spies = jasmine.createSpyObj('events', [
+          'onSet',
+          'onRemove'
+        ]);
 
-        test.obj.remove();
-        expect(test.obj.set).toHaveBeenCalledWith('map', null);
+        test.obj.on('map:set', spies.onSet);
+        test.obj.on('map:remove', spies.onRemove);
       });
 
-      it('should do nothing if there is no map set', function() {
-        var test = testFactory();
-
-        spyOn(test.obj, 'set');
-        spyOn(test.obj, 'get').andReturn(null);
-
-        test.obj.remove();
-        expect(test.obj.set).not.toHaveBeenCalled();
+      afterEach(function() {
+        test.obj.off();
       });
+
+      it('should trigger a \'map:set\' event when setting a map', function() {
+        test.obj.setMap(test.map);
+
+        expect(spies.onSet).toHaveBeenCalledWithSomeOf(test.obj, test.map);
+        expect(spies.onRemove).not.toHaveBeenCalled();
+      });
+
+      it('should not trigger a \'map:set\' if the map hasn\'t changed', function() {
+        test.obj.setMap(test.map);
+
+        test.obj.setMap(test.map);
+
+        // Map hasn't changed,
+        // So our handler should not be called a second time.
+        expect(spies.onSet.callCount).toEqual(1);
+      });
+
+      it('should trigger a \'map:remove\' event when unsetting a map', function() {
+        test.obj.setMap(test.map);
+
+        test.obj.setMap(null);
+        expect(spies.onRemove).toHaveBeenCalledWithSomeOf(test.obj, null);
+
+        // Should only have been called once from the
+        // original 'setMap(test.map)'
+        expect(spies.onSet.callCount).toEqual(1);
+      });
+
+      it('should not trigger a \'map:remove\' event if the map was already removed', function() {
+        test.obj.setMap(test.map);
+
+        test.obj.setMap(null);
+        test.obj.setMap(null);
+
+        expect(spies.onRemove.callCount).toEqual(1);
+      });
+
     });
 
   });

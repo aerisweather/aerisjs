@@ -81,7 +81,7 @@ define([
 
       runs(function() {
         marker.setMap(aerisMap);
-        marker.remove();
+        marker.setMap(null);
 
         expect(google.maps.Marker.prototype.setMap).toHaveBeenCalledWith(null);
       });
@@ -100,7 +100,7 @@ define([
           marker.setMap(aerisMap);
           expectedCalls.push([[aerisMap.map]]);
 
-          marker.remove();
+          marker.setMap(null);
           expectedCalls.push([[null]]);
         }
 

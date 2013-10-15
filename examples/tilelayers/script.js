@@ -5,7 +5,7 @@ function addLayer(LayerName) {
 }
 
 function removeLayer(LayerName) {
-  layers[LayerName].remove();
+  layers[LayerName].setMap(null);
 }
 
 
