@@ -14,22 +14,19 @@
           data-main="../../initialize.js"></script>
   <script type="text/javascript">
     function initialize() {
-      require.config({
-        map: {
-          '*': {
-            strategy: 'aeris/maps/openlayers'
-          }
-        }
-      });
+      require.setStrategy('openlayers')
       require([
         'base/map',
+        'openlayers/utils',
         //'base/layers/googleterrain'
         //'base/layers/googleroadmap'
         //'base/layers/googlehybrid'
         //'base/layers/googlesatellite'
         'base/layers/osm',
         'base/layers/aerisradar'
-      ], function (Map, Layer, Overlay) {
+      ], function (Map, mapUtil, Layer, Overlay) {
+        window.mapUtil = mapUtil;
+
         window.layer = new Layer();
 
         window.map = new Map('map-canvas', {

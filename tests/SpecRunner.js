@@ -23,7 +23,7 @@ require([
       '/tests/lib/domReady.js!',
 
       //'spec/aeris/model',
-      'spec/aeris/collection',
+      //'spec/aeris/collection',
       //'spec/aeris/util',
       //'spec/aeris/events',
       //'spec/aeris/aerisapi',
@@ -44,14 +44,21 @@ require([
       //'spec/aeris/commands/abstractcommand',
       //'spec/aeris/commands/commandmanager',
 
-      //'spec/aeris/api/model/pointdata',
+      //'spec/aeris/api/endpoint/model/pointdata',
+      //'spec/aeris/api/params/model/params',
+      //'spec/aeris/api/endpoint/collection/aerisapicollection',
+      //'spec/aeris/api/params/model/filter',
+      //'spec/aeris/api/params/collection/filtercollection',
 
       //'spec/aeris/maps/base/extension/mapextensionobject',
       //'spec/aeris/maps/base/layers',
       //'spec/aeris/maps/base/abstractlayer',
 
+      //'spec/aeris/maps/base/markers/pointdatamarker',
+
       //'spec/aeris/maps/base/markercollection',
       //'spec/aeris/maps/base/markercollections/apiendpoint',
+      //'spec/aeris/maps/base/markercollections/pointdatamarkercollection'
 
       //'spec/aeris/maps/base/animations/abstractanimation',
       //'spec/aeris/maps/base/animations/animationsync',
@@ -61,6 +68,8 @@ require([
       //'spec/aeris/maps/gmaps/layerstrategies/googlemaptype',
       //'spec/aeris/maps/gmaps/layerstrategies/tile',
       //'spec/aeris/maps/gmaps/layerstrategies/kml'
+
+      //'spec/polaris/maps/base/markercollections/poimarkercollection'
     ], function() {
       // Yes, it's a hack,
       // but it's solving some aweful async

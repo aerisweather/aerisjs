@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Example: Point Data</title>
+
+  <link rel="stylesheet" href="../../css/example.css"/>
+
+  <script type="text/javascript"
+          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false">
+  </script>
+  <script type="text/javascript" src="../../../externals/openlayers/OpenLayers.debug.js"></script>
+  <script type="text/javascript" src="../../../externals/require.js" data-main="../../initialize"></script>
+
+  <script type="text/javascript">
+
+    function initialize() {
+      require.setStrategy('gmaps');
+      require([
+        'base/map',
+        'vendor/jquery',
+        'aeris/util',
+        'base/markercollections/earthquakemarkercollection',
+        'base/markercollections/firemarkercollection',
+        'base/markercollections/lightningmarkercollection',
+        'base/markercollections/stormreportmarkercollection'
+      ], function() {
+        window.$ = require('vendor/jquery');
+        window._ = require('aeris/util');
+
+        window.map = new aeris.maps.Map('map-canvas');
+
+        // Store instantiated layers by name
+        window.layers = {};
+
+        // An array of layers which are currently
+        // loading.
+        window.loadingLayers = [];
+
+        // Create map controls
+        _.each([
+          'EarthquakeMarkers',
+          'FireMarkers',
+          'LightningMarkers',
+          'StormReportMarkers'
+        ], function(markerName) {
+          var html = _.template($('#toggleTemplate').html(), {
+            markerName: markerName
+          });
+          $('#controls').append(html);
+
+          layers[markerName] = new aeris.maps[markerName];
+        });
+
+
+        // Setup loading
+        function updateLoadingUI() {
+          if (loadingLayers.length) {
+            $('#loading').fadeIn(200);
+          }
+          else {
+            $('#loading').delay(1000).fadeOut(200);
+          }
+        }
+        _.each(layers, function(layer, layerName) {
+          // Loading event
+          layer.on('load:start', function() {
+            loadingLayers.push(layerName);
+            updateLoadingUI();
+          });
+          layer.on('load', function() {
+            loadingLayers = _.without(loadingLayers, layerName);
+            updateLoadingUI();
+          });
+
+          // Click event
+          layer.on('click', function(latLon, markerData) {
+            console.log('Clicked at ', latLon, '\n Marker data: ', markerData);
+          });
+        });
+
+
+        // Bind toggle controls
+        $('#controls').on('change', 'input', function() {
+          var isSelected = $(this).prop('checked');
+          var layer = layers[$(this).data('markername')];
+
+          if (isSelected) {
+            layer.setMap(map);
+          }
+          else {
+            layer.removeMap();
+          }
+        });
+      });
+    }
+  </script>
+
+</head>
+<body>
+  <div id="map-canvas"></div>
+
+  <div id="controls"></div>
+
+  <div id="loading" class="flash-message">
+    <div class="flash-content">Loading...</div>
+  </div>
+
+  <script id="toggleTemplate" type="text/template">
+    <div>
+      <label>
+        <input data-markername="<%=markerName %>" type="checkbox"/>
+        <%=markerName %>
+      </label>
+    </div>
+  </script>
+</body>
+</html>

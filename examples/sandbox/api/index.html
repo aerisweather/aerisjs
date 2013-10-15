@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style type="text/css">
+    label {
+      display: block;
+    }
+  </style>
+  <title>Aeris API Sandbox</title>
+
+  <link rel="stylesheet" href="../../css/example.css"/>
+
+  <script type="text/javascript"
+          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false&libraries=geometry">
+  </script>
+  <script type="text/javascript" src="../../../externals/require.js"
+          data-main="../../initialize.js"></script>
+
+  <script type="text/javascript">
+    window.logArgs = function () {
+      console.log.apply(console, arguments);
+    };
+    function initialize() {
+      require.setStrategy('gmaps');
+      require([
+        'vendor/jquery',
+        'aeris/util',
+        'aeris/datehelper',
+        'base/map',
+        'base/markercollections/lightningmarkercollection'
+      ], function($, _, DateHelper, Map, MarkerCollection) {
+        window.$ = $;
+        window._ = _;
+
+        window.map = new Map('map-canvas');
+        console.log(map.get('bounds'));
+
+        window.markers = new MarkerCollection();
+        markers.setMap(map);
+
+        markers.on('click', logArgs);
+
+
+        $('#selectFromDays').on('change', function() {
+          var daysAgo = $(this).val();
+          var from = (new DateHelper()).addDays(-daysAgo);
+          $('#fromText').text(daysAgo);
+          markers.setFrom(from);
+        });
+        
+        $('#selectToDays').on('change', function() {
+          var daysAgo = $(this).val();
+          var to = (new DateHelper()).addDays(-daysAgo);
+          $('#toText').text(daysAgo);
+          markers.setTo(to);
+        });
+        $('#selectToDays').add('#selectFromDays').trigger('change');
+
+        $('#selectFilter').on('change', 'input', function() {
+          var isSelected = $(this).prop('checked');
+
+          if (isSelected) {
+            markers.setFilter($(this).val());
+          }
+          else {
+            markers.unsetFilter($(this).val());
+          }
+        });
+      });
+    }
+  </script>
+</head>
+<body>
+  <div id="map-canvas"></div>
+  <div>
+    <label>
+      From <span id="fromText"></span> days ago
+      <input max="100" min="1" id="selectFromDays" type="range" value="2"/>
+    </label>
+  </div>
+  <div>
+    <label>
+      To <span id="toText"></span> days ago
+      <input max="100" min="0" id="selectToDays" type="range" value="0"/>
+    </label>
+  </div>
+  <div id="selectFilter">
+    <label>
+      <input type="checkbox" value="mini" />
+      Mini
+    </label>
+    <label>
+      <input type="checkbox" value="minor" />
+      Minor
+    </label>
+    <label>
+      <input type="checkbox" value="light" />
+      Light
+    </label>
+    <label>
+      <input type="checkbox" value="moderate" />
+      Moderate
+    </label>
+    <label>
+      <input type="checkbox" value="strong" />
+      Strong
+    </label>
+    <label>
+      <input type="checkbox" value="major" />
+      Major
+    </label>
+    <label>
+      <input type="checkbox" value="great" />
+      Great
+    </label>
+    <label>
+      <input type="checkbox" value="shallow" />
+      Shallow
+    </label>
+  </div>
+</body>
+</html>

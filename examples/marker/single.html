@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Example: Marker (single)</title>
+  <link rel="stylesheet" href="../css/example.css"/>
+
+  <script type="text/javascript"
+          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false">
+  </script>
+  <script type="text/javascript" src="../../externals/openlayers/OpenLayers.debug.js"></script>
+  <script type="text/javascript" src="../../externals/require.js" data-main="../initialize"></script>
+
+  <script type="text/javascript">
+
+    function initialize() {
+      require.setStrategy('gmaps');
+      require.config({
+        'aeris/config': {
+          path: '../../'
+        }
+      })
+      require([
+        'aeris/util',
+        'vendor/jquery',
+        'base/map',
+        'base/marker'
+      ], function(_, $, Map, Marker) {
+        window._ = _;
+        window.$ = $;
+
+        function getRandom(arr) {
+          return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        window.map = new Map('map-canvas', {
+          center: [45, -90],
+          zoom: 8
+        });
+
+        window.marker = new Marker({
+          position: [45, -90],
+          //url: _.config.path + 'assets/marker_green.png',
+          width: 20,
+          height: 20
+        });
+
+        marker.setMap(map);
+
+
+        $('#changeUrl').click(function() {
+          var icon = getRandom([
+            'marker_green',
+            'marker_grey',
+            'marker_yellow',
+            'lightning_blue',
+            'lightning_orange',
+            'lightning_red',
+            'lightning_white',
+            'lightning_yellow'
+          ]);
+          marker.setUrl(_.config.path + 'assets/' + icon + '.png');
+        });
+
+        $('#changePosition').click(function() {
+          var latDirection = (Math.random() > 0.5) ? 1 : -1;
+          var lonDirection = (Math.random() > 0.5) ? 1 : -1;
+          var lat = 45 + (Math.random() * latDirection);
+          var lon = -90 + (Math.random() * lonDirection);
+
+          marker.setPosition([lat, lon]);
+        });
+
+      });
+    }
+  </script>
+
+</head>
+<body>
+  <div id="map-canvas"></div>
+  <button id="changeUrl">Change Icon</button>
+  <button id="changePosition">Move</button>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style type="text/css">
+    label {
+      display: block;
+    }
+  </style>
+  <title>Aeris API Sandbox</title>
+
+  <link rel="stylesheet" href="../../css/example.css"/>
+
+  <script type="text/javascript"
+          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false&libraries=geometry">
+  </script>
+  <script type="text/javascript" src="../../../externals/require.js"
+          data-main="../../initialize.js"></script>
+
+  <script type="text/javascript">
+    window.logArgs = function () {
+      console.log.apply(console, arguments);
+    };
+    function initialize() {
+      require.setStrategy('gmaps');
+      require([
+        'vendor/jquery',
+        'aeris/util',
+        'api/endpoint/collection/earthquakecollection'
+      ], function($, _, Collection) {
+        window.$ = $;
+        window._ = _;
+
+        window.collection = new Collection();
+      });
+    }
+  </script>
+</head>
+<body>
+</body>
+</html>
