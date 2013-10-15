@@ -50,6 +50,10 @@ require([
       //'spec/aeris/api/params/model/filter',
       //'spec/aeris/api/params/collection/filtercollection',
 
+      //'spec/aeris/loader/loader',
+
+      //'spec/aeris/maps/loader',
+
       //'spec/aeris/maps/base/extension/mapextensionobject',
       //'spec/aeris/maps/base/layers',
       //'spec/aeris/maps/base/abstractlayer',

@@ -24,9 +24,7 @@
           maps: {
             mapType: 'gmaps',
             packages: ['layers'],
-            markercollections: ['EarthquakeMarkerCollection', 'FireMarkerCollection'],
-            apiId: 'ezHWL0MiLsxwlN2ik8U4c',
-            apiSecret: 'uCDMeSj91lBfIKCmeQkpeZjsAwUUQJHuKesCvqTm'
+            markercollections: ['EarthquakeMarkerCollection', 'FireMarkerCollection']
           },
           onload: onload,
           onerror: function(error) {
@@ -48,8 +46,6 @@
       window.map = new aeris.maps.Map('map-canvas', {
         baseLayer: new aeris.maps.layers.GoogleSatellite()
       });
-      window.markers = new aeris.maps.EarthquakeMarkers();
-      markers.setMap(map);
 
       $('#backInStyle').delay(1000).slideDown();
       window.setInterval(function() {

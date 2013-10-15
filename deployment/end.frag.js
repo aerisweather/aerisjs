@@ -24,7 +24,8 @@
       // Load the 'real' Loader
       // And make it run.
       require(['aeris/loader/loader'], function(Loader) {
-        Loader.load(loaderConfig);
+        var loader = new Loader();
+        loader.load(loaderConfig);
       });
     });
   };
