@@ -21,10 +21,11 @@
       })
       require([
         'aeris/util',
+        'aeris/config',
         'vendor/jquery',
         'base/map',
         'base/marker'
-      ], function(_, $, Map, Marker) {
+      ], function(_, config, $, Map, Marker) {
         window._ = _;
         window.$ = $;
 
@@ -39,7 +40,6 @@
 
         window.marker = new Marker({
           position: [45, -90],
-          //url: _.config.path + 'assets/marker_green.png',
           width: 20,
           height: 20
         });
@@ -58,7 +58,7 @@
             'lightning_white',
             'lightning_yellow'
           ]);
-          marker.setUrl(_.config.path + 'assets/' + icon + '.png');
+          marker.setUrl(config.path + 'assets/' + icon + '.png');
         });
 
         $('#changePosition').click(function() {
