@@ -59,36 +59,6 @@ define([
 
         expect(test.strategy).toHaveBeenCalled();
       });
-
-      it('should validate model', function() {
-        var test;
-        spyOn(MapExtensionObject.prototype, 'isValid');
-
-        test = testFactory();
-        expect(MapExtensionObject.prototype.isValid).
-          toHaveBeenCalledInTheContextOf(test.obj);
-      });
-
-      it('should throw an error if validation fails', function() {
-        var UselessMapObject = function() {
-          MapExtensionObject.apply(this, arguments);
-        };
-
-        _.inherits(UselessMapObject, MapExtensionObject);
-
-        UselessMapObject.prototype.validate = function() {
-          if (true === true) {
-            return {
-              name: 'ValidationError',
-              message: 'Unable to define truth: all truth is relative'
-            };
-          }
-        };
-
-        expect(function() {
-          new UselessMapObject(null, { strategy: getStubbedStrategy() });
-        }).toThrowType('ValidationError');
-      });
     });
 
     describe('validate', function() {
