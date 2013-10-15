@@ -11,7 +11,7 @@ function removeLayer(LayerName) {
 
 function initialize() {
   require.setStrategy(window.strategy);
-  require(['vendor/text!examples/tilelayers/view.html', 'base/map', 'base/layers', 'vendor/underscore', 'vendor/jquery'], function(html) {
+  require(['vendor/text!examples/tilelayers/view.html', 'base/map', 'packages/layers', 'vendor/underscore', 'vendor/jquery'], function(html) {
     window._ = require('vendor/underscore');
     window.$ = require('vendor/jquery');
 
