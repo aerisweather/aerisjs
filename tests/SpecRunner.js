@@ -69,11 +69,14 @@ require([
       //'spec/aeris/maps/base/animations/abstractanimation',
       //'spec/aeris/maps/base/animations/animationsync',
       //'spec/aeris/maps/base/animations/aerisinteractivetile',
+
+      //'spec/aeris/maps/gmaps/events',
       //'spec/aeris/maps/gmaps/route',
       //'spec/aeris/maps/gmaps/layerstrategies/abstractmaptype',
       //'spec/aeris/maps/gmaps/layerstrategies/googlemaptype',
       //'spec/aeris/maps/gmaps/layerstrategies/tile',
       //'spec/aeris/maps/gmaps/layerstrategies/kml'
+
 
       //'spec/polaris/maps/base/markercollections/poimarkercollection'
     ], function() {
