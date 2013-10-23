@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-  <title>RouteAppBuilder Example</title>
+  <title>MapAppBuilder</title>
+
+  <link rel="stylesheet" href="theme/default/css/style.css"/>
+
   <style type="text/css">
     #app {
       position: absolute;
@@ -13,86 +15,87 @@
       width: 100%;
       height: 100%;
     }
+
+    /* Quick and dirty full-screen map */
+    .aeris-fullScreen, #aeris-mapContainer, .aeris-map-canvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    .aeris-map-controls {
+      bottom: 3%;
+      right: 2%;
+      top: inherit !important;
+    }
   </style>
-  <link rel="stylesheet" href="../../lib/aeris/builder/route/theme/default/css/style.css"/>
 
   <script type="text/javascript"
           src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false&libraries=geometry">
   </script>
+
   <script type="text/javascript" src="../../externals/require.js" data-main="../initialize"></script>
+
   <script type="text/javascript">
+    function logArgs(args) {
+      console.log('logArgs: ', args);
+    }
+
     function initialize() {
+      require.setStrategy('gmaps');
       require([
-        'aeris/builder/maps/mapappbuilder',
-        'base/layers/aerisradar',
-        'base/layers/aerissatellite',
-        'base/layers/aerissatellitevisible',
-        'base/layers/aerisadvisories',
-        'base/layers/aerisseasurfacetemps',
-        'base/layers/aerissnowdepth',
-        'base/layers/aeristemps',
-        'base/layers/aeriswindchill',
-        'base/layers/aerishumidity',
-        'base/layers/osm'
-      ], function(
-        MapAppBuilder,
-        AerisRadar,
-        AerisSatellite,
-        AerisSatelliteVisible,
-        AerisAdvisories,
-        AerisSeaSurfaceTemps,
-        AerisSnowDepth,
-        AerisTemps,
-        AerisWindChill,
-        AerisHumidity,
-        OSM
-      ) {
-        var builder = new MapAppBuilder({
-          el: document.getElementById('app'),
-          map: {
-            zoom: 4,
-            center: [39.2, -94.8],
-            baseLayer: OSM
-          },
+        'mapbuilder/mapappbuilder',
+        'mapbuilder/core/vent',
+        'packages/layers',
+        'packages/markers',
+        'polaris/maps/base/markercollections/dealermarkercollection',
+        'polaris/maps/base/markercollections/poimarkercollection'
+      ], function(Builder, vent) {
+        var builder = new Builder({
+          el: '#app',
+          markers: [
+            {
+              name: 'EarthquakeMarkers',
+              default: true
+            },
+            'StormReportMarkers',
+            'FireMarkers',
+            'LightningMarkers'
+          ],
+          poi: [
+            'DealerMarkers',
+            'POIMarkers'
+          ],
           layers: [
             {
-              type: AerisRadar,
+              name: 'AerisRadar',
               default: true
-            },
-            {
-              type: AerisSatellite,
-              default: true
-            },
-            {
-              type: AerisSatelliteVisible,
-              default: false
-            },
-            AerisAdvisories,
-            AerisSeaSurfaceTemps,
-            AerisSnowDepth,
-            AerisTemps,
-            AerisWindChill,
-            AerisHumidity
+            }/*,
+            *//*'AerisSatellite',
+            'AerisAdvisories',
+            'AerisHeatIndex',
+            'AerisTemps',
+            'AerisSnowDepth'*/
           ],
           controls: {
-            layers: true,
-            animate: true
-          },
-          onload: function(map) {
-            map.on('click', function(evt) {
-              console.log('Click at: ', evt);
-            });
-            map.on('dblclick', function(evt) {
-              console.log('Double-click at: ', evt);
-            });
+            markers: true,
+            layers: false,
+            poi: true
           }
         });
-        builder.build()
+
+        builder.build().
+          done(function(maps) {
+            window.maps = maps;
+            maps.state.on('change', function() {
+              //console.log(maps.router.getQueryParams());
+            });
+          });
       });
     }
   </script>
 </head>
 <body>
-<div id="app"></div>
+  <div id="app"></div>
+
 </body>
 </html>

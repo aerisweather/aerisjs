@@ -35,6 +35,9 @@ require([
       //'spec/aeris/datehelper',
 
       //'spec/aeris/builder/maps/loader',
+      //'spec/aeris/builder/maps/options/mapappbuilderoptions',
+      //'spec/aeris/builder/maps/core/model/toggle'
+      //'spec/aeris/builder/maps/core/model/state'
       //'spec/aeris/builder/route/controller/controlscontroller',
 
       //'spec/aeris/geocode/mapquestgeocodeservice',

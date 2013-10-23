@@ -1,7 +1,7 @@
 define([
   'aeris/util',
   'aeris/promise',
-  'aeris/builder/maps/loader',
+  'mapbuilder/loader',
   'mocks/require',
   'sinon'
 ], function(_, Promise, Loader, MockRequire, sinon) {
