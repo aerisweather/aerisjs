@@ -41,7 +41,8 @@
         window.marker = new Marker({
           position: [45, -90],
           width: 20,
-          height: 20
+          height: 20,
+          draggable: true
         });
 
         marker.setMap(map);
@@ -70,6 +71,10 @@
           marker.setPosition([lat, lon]);
         });
 
+        marker.on('change:position', function(model, latLon) {
+          $('#position').html('Marker at: ' + latLon[0] + ', ' + latLon[1]);
+        });
+
       });
     }
   </script>
@@ -79,5 +84,6 @@
   <div id="map-canvas"></div>
   <button id="changeUrl">Change Icon</button>
   <button id="changePosition">Move</button>
+  <div id="position"></div>
 </body>
 </html>

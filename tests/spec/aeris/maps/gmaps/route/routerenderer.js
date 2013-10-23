@@ -12,15 +12,11 @@ define([
 
   var TestFactory = function() {
     var polyline = new MockPolylineFactory();
-    var marker = new MockMarkerFactory();
 
     this.Polyline = polyline.ctor;
     this.polyline = polyline.instance;
-    this.Marker = marker.ctor;
-    this.marker = marker.instance;
 
     this.renderer = this.rR = new RouteRenderer({
-      Marker: this.Marker,
       Polyline: this.Polyline
     });
   };
@@ -30,49 +26,21 @@ define([
    * @constructor
    */
   var MockPolylineFactory = function() {
-    var polyline = {};
-
-    var MockPolyline = jasmine.createSpy('Polyline Ctor').andCallFake(function() {
-      return _.extend(polyline, this);
-    });
-    _.inherits(MockPolyline, google.maps.Polyline);
-
-    _.extend(MockPolyline.prototype,
+    var polyline = _.extend(
       sinon.createStubInstance(google.maps.Polyline),
       jasmine.createSpyObj('MockPolyline', [
         'setMap'
       ])
     );
 
+    var MockPolyline = jasmine.createSpy('Polyline Ctor').andCallFake(function() {
+      return polyline;
+    });
+    _.inherits(MockPolyline, google.maps.Polyline);
+
     return {
       ctor: MockPolyline,
       instance: polyline
-    };
-  };
-
-  /**
-   * @return {Function} Mock Marker constructor.
-   * @constructor
-   */
-  var MockMarkerFactory = function() {
-    var marker = {};
-
-    // Mixin events
-    _.extend(marker, Events);
-    Events.call(marker);
-
-    var MockMarker = jasmine.createSpy('Marker Ctor').andCallFake(function() {
-      return _.extend(marker, this);
-    });
-    _.inherits(MockMarker, Marker);
-
-    _.extend(MockMarker.prototype, sinon.createStubInstance(Marker), jasmine.createSpyObj('MockMarker', [
-      'setMap'
-    ]));
-
-    return {
-      ctor: MockMarker,
-      instance: marker
     };
   };
 
@@ -105,14 +73,21 @@ define([
 
     _.extend(this, sinon.createStubInstance(Waypoint),
       jasmine.createSpyObj('Waypoint', [
+        'get',
         'getLatLon',
-        'isSelected'
+        'isSelected',
+        'set',
+        'setMap'
       ])
     );
 
     this.cid = _.uniqueId('mockwp_');
 
-    this.path = options.path;
+    this.get.andCallFake(function(attr) {
+      if (attr === 'path') {
+        return options.path;
+      }
+    });
   };
   _.inherits(MockWaypoint, Waypoint);
 
@@ -133,12 +108,22 @@ define([
 
 
   describe('A RouteRenderer', function() {
+    var gEvent_orig = google.maps.event;
 
 
     beforeEach(function() {
+      google.maps.event = jasmine.createSpyObj('google events', [
+        'addListener',
+        'removeListener'
+      ]);
+
       spyOn(mapUtil, 'pathToLatLng').andCallFake(function(path) {
         return path;
       });
+    });
+
+    afterEach(function() {
+      google.maps.event = gEvent_orig;
     });
 
 
@@ -204,27 +189,22 @@ define([
 
       it('should render the waypoint\'s path', function() {
         var rR = new TestFactory().renderer;
-        var waypoint = new MockWaypoint();
+        var waypoint = new MockWaypoint({ path: ['foo'] });
         var route = new MockRoute({ waypoints: [waypoint] });
-
-        waypoint.path = ['foo'];
 
         rR.renderWaypoint(waypoint, route);
 
-        expect(rR.renderPath).toHaveBeenCalledWithSomeOf(waypoint.path);
+        expect(rR.renderPath).toHaveBeenCalledWithSomeOf(waypoint.get('path'));
       });
 
-      it('should render a marker at the waypoint\'s position', function() {
+      it('should render the waypoint\'s marker', function() {
         var rR = new TestFactory().renderer;
         var waypoint = new MockWaypoint();
         var route = new MockRoute({ waypoints: [waypoint] });
-        var latLon = [45, -90];
-
-        waypoint.getLatLon.andReturn(latLon);
 
         rR.renderWaypoint(waypoint, route);
 
-        expect(rR.renderMarker).toHaveBeenCalledWithSomeOf(latLon);
+        expect(rR.renderMarker).toHaveBeenCalledWithSomeOf(waypoint);
       });
 
       it('should proxy events for the rendered marker', function() {
@@ -313,33 +293,28 @@ define([
 
     describe('renderMarker', function() {
 
-      it('should create a marker at the specified lat lon', function() {
+      it('should set view properties on the waypoint', function() {
         var test = new TestFactory();
-        var latLon = [45, -90];
+        var waypoint = new MockWaypoint();
+        var options = {
+          url: 'foo',
+          clickable: 'bar',
+          draggable: 'waamo'
+        };
 
-        test.rR.renderMarker(latLon);
+        waypoint.set.andCallFake(function(attrs) {
+          expect(attrs).toEqual(options);
+        });
 
-        expect(test.Marker).toHaveBeenCalled();
-        expect(test.Marker.argsForCall[0][0].position).toEqual(latLon);
-      });
-
-      it('should set the marker to the map', function() {
-        var test = new TestFactory();
-        var latLon = [45, -90];
-        var map = new MockMap();
-
-        test.rR.setMap(map);
-
-        test.rR.renderMarker(latLon);
-
-        expect(test.marker.setMap).toHaveBeenCalledWith(map);
+        test.rR.renderMarker(waypoint,  options);
+        expect(waypoint.set).toHaveBeenCalled();
       });
 
       it('should return the marker', function() {
         var test = new TestFactory();
-        var latLon = [45, -90];
+        var waypoint = new MockWaypoint();
 
-        expect(test.rR.renderMarker(latLon)).toEqual(test.marker);
+        expect(test.rR.renderMarker(waypoint)).toEqual(waypoint);
       });
 
     });
@@ -397,10 +372,8 @@ define([
 
       beforeEach(function() {
         test = new TestFactory();
-        waypoint = new MockWaypoint();
+        waypoint = new MockWaypoint({ path: [[1, -1], [2, -2]] });
         route = new MockRoute({ waypoints: [waypoint] });
-
-        waypoint.path = [[1, -1], [2, -2]];
 
         test.rR.renderWaypoint(waypoint, route);
       });
@@ -408,23 +381,13 @@ define([
       it('should remove the waypoint\'s marker from the map', function() {
         test.rR.eraseWaypoint(waypoint, route);
 
-        expect(test.marker.setMap).toHaveBeenCalledWith(null);
+        expect(waypoint.setMap).toHaveBeenCalledWith(null);
       });
 
       it('should erase the waypoint\'s path (google polyline)', function() {
         test.rR.eraseWaypoint(waypoint, route);
 
         expect(test.polyline.setMap).toHaveBeenCalledWith(null);
-      });
-
-      it('should clean up events', function() {
-        spyOn(test.marker, 'removeProxy');
-        spyOn(google.maps.event, 'clearInstanceListeners');
-
-        test.rR.eraseWaypoint(waypoint, route);
-
-        expect(test.marker.removeProxy).toHaveBeenCalled();
-        expect(google.maps.event.clearInstanceListeners).toHaveBeenCalledWith(test.polyline);
       });
     });
 
@@ -453,40 +416,43 @@ define([
 
       it('should set rendered markers to the map', function() {
         var map = new MockMap();
-        var baseCallCount = test.Marker.prototype.setMap.callCount;
 
         test.rR.setMap(map);
 
-        expect(test.marker.setMap).toHaveBeenCalledWith(map);
-        expect(test.Marker.prototype.setMap.callCount).toEqual(baseCallCount + 4);
+        _.each(waypointSets, function(waypoints) {
+          _.each(waypoints, function(wp) {
+            expect(wp.setMap).toHaveBeenCalledWith(map);
+          });
+        });
       });
 
       it('should set rendered polylines to the map', function() {
         var map = new MockMap();
-        var baseCallCount = test.Polyline.prototype.setMap.callCount;
+        var baseCallCount = test.polyline.setMap.callCount;
 
         test.rR.setMap(map);
 
         expect(test.polyline.setMap).toHaveBeenCalledWith(map.getView());
-        expect(test.Polyline.prototype.setMap.callCount).toEqual(baseCallCount + 4);
+        expect(test.polyline.setMap.callCount).toEqual(baseCallCount + 4);
       });
 
       it('should remove markers from the map, if null', function() {
-        var baseCallCount = test.Marker.prototype.setMap.callCount;
-
         test.rR.setMap(null);
 
-        expect(test.marker.setMap).toHaveBeenCalledWith(null);
-        expect(test.Marker.prototype.setMap.callCount).toEqual(baseCallCount + 4);
+        _.each(waypointSets, function(waypoints) {
+          _.each(waypoints, function(wp) {
+            expect(wp.setMap).toHaveBeenCalledWith(null);
+          });
+        });
       });
 
       it('should remove polylines from the map, if null', function() {
-        var baseCallCount = test.Polyline.prototype.setMap.callCount;
+        var baseCallCount = test.polyline.setMap.callCount;
 
         test.rR.setMap(null);
 
         expect(test.polyline.setMap).toHaveBeenCalledWith(null);
-        expect(test.Polyline.prototype.setMap.callCount).toEqual(baseCallCount + 4);
+        expect(test.polyline.setMap.callCount).toEqual(baseCallCount + 4);
       });
 
     });
