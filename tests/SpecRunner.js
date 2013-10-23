@@ -71,11 +71,23 @@ require([
       //'spec/aeris/maps/base/animations/aerisinteractivetile',
 
       //'spec/aeris/maps/gmaps/events',
-      //'spec/aeris/maps/gmaps/route',
       //'spec/aeris/maps/gmaps/layerstrategies/abstractmaptype',
       //'spec/aeris/maps/gmaps/layerstrategies/googlemaptype',
       //'spec/aeris/maps/gmaps/layerstrategies/tile',
       //'spec/aeris/maps/gmaps/layerstrategies/kml'
+
+
+      //'spec/aeris/maps/gmaps/route/waypoint',
+      //'spec/aeris/maps/gmaps/route/route',
+      //'spec/aeris/maps/gmaps/route/routebuilder',
+      //'spec/aeris/maps/gmaps/route/routerenderer',
+      //'spec/aeris/maps/gmaps/route/commands/abstractroutecommand',
+      //'spec/aeris/maps/gmaps/route/commands/addwaypointcommand',
+      //'spec/aeris/maps/gmaps/route/commands/removewaypointcommand',
+      //'spec/aeris/maps/gmaps/route/commands/resetroutecommand',
+      //'spec/aeris/maps/gmaps/route/commands/movewaypointcommand',
+      //'spec/aeris/maps/gmaps/route/directions/abstractdirectionsservice',
+      //'spec/aeris/maps/gmaps/route/directions/googledirectionsservice'
 
 
       //'spec/polaris/maps/base/markercollections/poimarkercollection'
