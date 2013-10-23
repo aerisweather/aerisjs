@@ -3,6 +3,8 @@
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
   <title>RouteAppBuilder Example</title>
+  <link rel="stylesheet" href="../mapappbuilder/theme/default/css/style.css"/>
+
   <style type="text/css">
     #app {
       position: absolute;
@@ -13,8 +15,24 @@
       width: 100%;
       height: 100%;
     }
+
+      /* Quick and dirty full-screen map */
+    .aeris-fullScreen, #aeris-mapContainer, .aeris-map-canvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    .aeris-map-controls {
+      bottom: 3%;
+      right: 2%;
+      top: inherit !important;
+    }
+
+    #aeris-routeBuilderControls .aeris-map-controls {
+      bottom: inherit !important;
+      top: 15% !important;
+    }
   </style>
-  <link rel="stylesheet" href="../../lib/aeris/builder/route/theme/default/css/style.css"/>
 
   <script type="text/javascript"
           src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false&libraries=geometry">
@@ -24,10 +42,28 @@
     function initialize() {
       require.setStrategy('gmaps');
       require([
-        'aeris/builder/route/routeappbuilder'
+        'routebuilder/routeappbuilder',
+        'packages/layers',
+        'packages/markers'
       ], function(RouteAppBuilder) {
         var builder = new RouteAppBuilder({
           el: document.getElementById('app'),
+          markers: [
+            {
+              name: 'EarthquakeMarkers',
+              default: true
+            }
+          ],
+          layers: [
+            {
+              name: 'AerisRadar',
+              default: true
+            }
+          ],
+          controls: {
+            markers: true,
+            layers: true
+          },
           route: {
             path: {
               strokeColor: 'red',

@@ -1,9 +1,0 @@
-/**
- * _mixins.scss
-*/
-
-@mixin overlay($opacity: 0.9, $color: $grey-lt) {
-  @include opacity($opacity);
-  background-color: $color;
-  @include box-shadow(0, 0, 3px 3px, rgba($grey-dk, 0.75));
-}

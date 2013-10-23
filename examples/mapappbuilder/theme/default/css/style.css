@@ -354,9 +354,8 @@ optgroup::-moz-focus-inner {
   *vertical-align: auto;
   zoom: 1;
   *display: inline;
-  padding: 8px;
-  width: 45px;
-  height: 45px;
+  padding: 10px;
+  margin-right: 5px;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   -ms-border-radius: 5px;
@@ -370,24 +369,24 @@ optgroup::-moz-focus-inner {
   text-align: center;
   cursor: pointer;
 }
-/* line 30, ../sass/partials/_forms.scss */
+/* line 29, ../sass/partials/_forms.scss */
 .aeris-maps-app .aeris-btnBox.aeris-disabled {
   background-color: #787878;
   color: #3a3a3a;
   cursor: default;
 }
-/* line 37, ../sass/partials/_forms.scss */
+/* line 36, ../sass/partials/_forms.scss */
 .aeris-maps-app .aeris-btnBox:hover {
   background-color: #787878;
   text-decoration: none;
 }
-/* line 42, ../sass/partials/_forms.scss */
+/* line 41, ../sass/partials/_forms.scss */
 .aeris-maps-app .aeris-btnBox:active {
   -webkit-box-shadow: 1px 1px 2px 1px rgba(0, 0, 0, 0.5) inset;
   -moz-box-shadow: 1px 1px 2px 1px rgba(0, 0, 0, 0.5) inset;
   box-shadow: 1px 1px 2px 1px rgba(0, 0, 0, 0.5) inset;
 }
-/* line 47, ../sass/partials/_forms.scss */
+/* line 46, ../sass/partials/_forms.scss */
 .aeris-maps-app .aeris-toggleBtn {
   display: -moz-inline-stack;
   display: inline-block;
@@ -396,18 +395,18 @@ optgroup::-moz-focus-inner {
   zoom: 1;
   *display: inline;
 }
-/* line 50, ../sass/partials/_forms.scss */
+/* line 49, ../sass/partials/_forms.scss */
 .aeris-maps-app .aeris-toggleBtn input {
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
   opacity: 0;
   margin: 0;
   width: 0;
 }
-/* line 55, ../sass/partials/_forms.scss */
+/* line 54, ../sass/partials/_forms.scss */
 .aeris-maps-app .aeris-toggleBtn input:checked + label {
   background-color: #787878;
 }
-/* line 59, ../sass/partials/_forms.scss */
+/* line 58, ../sass/partials/_forms.scss */
 .aeris-maps-app .aeris-toggleBtn input + label {
   color: #fff;
   font-size: 11px;
@@ -422,7 +421,7 @@ optgroup::-moz-focus-inner {
   width: 100%;
   height: 100%;
 }
-/* line 52, ../../../../../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+/* line 52, ../../../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
 .aeris-maps-app div, .aeris-maps-app span, .aeris-maps-app applet, .aeris-maps-app object, .aeris-maps-app iframe,
 .aeris-maps-app h1, .aeris-maps-app h2, .aeris-maps-app h3, .aeris-maps-app h4, .aeris-maps-app h5, .aeris-maps-app h6, .aeris-maps-app p, .aeris-maps-app blockquote, .aeris-maps-app pre,
 .aeris-maps-app a, .aeris-maps-app abbr, .aeris-maps-app acronym, .aeris-maps-app address, .aeris-maps-app big, .aeris-maps-app cite, .aeris-maps-app code,
@@ -443,27 +442,27 @@ optgroup::-moz-focus-inner {
   font-size: 100%;
   vertical-align: baseline;
 }
-/* line 55, ../../../../../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+/* line 55, ../../../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
 .aeris-maps-app table {
   border-collapse: collapse;
   border-spacing: 0;
 }
-/* line 57, ../../../../../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+/* line 57, ../../../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
 .aeris-maps-app caption, .aeris-maps-app th, .aeris-maps-app td {
   text-align: left;
   font-weight: normal;
   vertical-align: middle;
 }
-/* line 59, ../../../../../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+/* line 59, ../../../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
 .aeris-maps-app q, .aeris-maps-app blockquote {
   quotes: none;
 }
-/* line 103, ../../../../../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+/* line 103, ../../../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
 .aeris-maps-app q:before, .aeris-maps-app q:after, .aeris-maps-app blockquote:before, .aeris-maps-app blockquote:after {
   content: "";
   content: none;
 }
-/* line 61, ../../../../../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+/* line 61, ../../../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
 .aeris-maps-app a img {
   border: none;
 }

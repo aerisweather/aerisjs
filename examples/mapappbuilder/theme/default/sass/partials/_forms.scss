@@ -12,9 +12,8 @@
   .aeris-btnBox {
     @include inline-block;
 
-    padding: 8px;
-    width: 45px;
-    height: 45px;
+    padding: 10px;
+    margin-right: 5px;
     @include border-radius(5px);
 
     background-color: $grey-dk;
