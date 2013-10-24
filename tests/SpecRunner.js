@@ -35,6 +35,9 @@ require([
       //'spec/aeris/datehelper',
       //'spec/aeris/classfactory',
 
+      //'spec/aeris/application/form/collection/radiocollection',
+      //'spec/aeris/application/form/controller/togglebuttoncontroller'
+
       //'spec/aeris/builder/maps/loader',
       //'spec/aeris/builder/maps/options/mapappbuilderoptions',
       //'spec/aeris/builder/maps/core/model/toggle'
