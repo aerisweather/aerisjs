@@ -37,6 +37,26 @@ define([
       expect(wp.getDistance()).toEqual(0);
     });
 
+    it('should reset the geocoded lat/lon when the position changes', function() {
+      var wp = new Waypoint();
+
+      wp.set({
+        position: [1, 2],
+        geocodedLatLon: [1.1, 2.2]
+      });
+
+      expect(wp.get('position')).toEqual([1, 2]);
+      expect(wp.get('geocodedLatLon')).toEqual([1.1, 2.2]);
+
+      wp.set('position', [100, 200]);
+      expect(wp.get('position')).toEqual([100, 200]);
+      expect(wp.get('geocodedLatLon')).toBeNull();
+
+      wp.set('geocodedLatLon', [100.1, 200.2]);
+      expect(wp.get('geocodedLatLon')).toEqual([100.1, 200.2]);
+      expect(wp.get('position')).toEqual([100, 200]);
+    });
+
     it('should return the most accurate lat/lon', function() {
       var wp = new Waypoint({
         position: [-45, 90]
