@@ -33,6 +33,7 @@ require([
       //'spec/aeris/promisequeue',
       //'spec/aeris/errors',
       //'spec/aeris/datehelper',
+      //'spec/aeris/classfactory',
 
       //'spec/aeris/builder/maps/loader',
       //'spec/aeris/builder/maps/options/mapappbuilderoptions',
