@@ -1,7 +1,9 @@
 define([
   'aeris/util',
-  'mapbuilder/options/mapappbuilderoptions'
-], function(_, Options) {
+  'wire!spec/aeris/builder/maps/options/context'
+], function(_, context) {
+  // Load wired Options module
+  var Options = context.MapAppBuilderOptions;
 
   describe('MapAppBuilderOptions', function() {
 
@@ -26,6 +28,7 @@ define([
         _.each(options.get('layers'), function(lyrOpt) {
           expect(lyrOpt.name).toBeDefined();
           expect(lyrOpt.default).toBeDefined();
+          expect(lyrOpt.filters).toBeDefined();
         });
       });
 
@@ -69,31 +72,6 @@ define([
         expect(options.get('layers')[0].default).toEqual(true);   // Layer A
         expect(options.get('layers')[1].default).toEqual(true);   // Layer B
         expect(options.get('layers')[2].default).toEqual(false);   // Layer C
-      });
-
-    });
-
-    describe('getDefaultOptions', function() {
-
-      it('should define all options', function() {
-        var options = new Options();
-        var defaultOptions = options.getDefaultOptions();
-
-        _.each([
-          'map',
-          'map.zoom',
-          'map.center',
-          'map.scrollZoom',
-          'layers',
-          'markers',
-          'autoAnimate',
-          'controls',
-          'controls.layers',
-          'controls.animation'
-        ], function(propPath) {
-          var prop = _.path(propPath, defaultOptions);
-          expect(prop).toBeDefined();
-        });
       });
 
     });
