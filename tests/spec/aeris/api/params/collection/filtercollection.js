@@ -172,6 +172,28 @@ define([
         expect(filters.at(1).get('operator')).toEqual('OR');
       });
 
+      it('should remove all filters, if called with no arguments', function() {
+        var filters = new FilterCollection([
+          { name: 'sieve', operator: 'AND' },
+          { name: 'colander', operator: 'OR' }
+        ]);
+
+        filters.reset();
+
+        expect(filters.length).toEqual(0);
+      });
+
+      it('should remove all filter, if called with an empty array', function() {
+        var filters = new FilterCollection([
+          { name: 'sieve', operator: 'AND' },
+          { name: 'colander', operator: 'OR' }
+        ]);
+
+        filters.reset([]);
+
+        expect(filters.length).toEqual(0);
+      });
+
     });
 
     describe('remove', function() {
