@@ -2,9 +2,20 @@ define([
   'aeris/util',
   'aeris/model',
   'aeris/collection',
-  'api/params/collection/filtercollection',
-  'api/params/model/filter'
-], function(_, Model, BaseCollection, FilterCollection, Filter) {
+  'api/params/collection/filtercollection'
+], function(_, Model, BaseCollection, BaseFilterCollection) {
+
+  // Create a test version of a FilterCollection,
+  // which uses a generic model.
+  var FilterCollection = function(opt_attrs, opt_options) {
+    var options = _.defaults(opt_options || {}, {
+      model: Model
+    });
+
+    BaseFilterCollection.call(this, opt_attrs, options);
+  };
+  _.inherits(FilterCollection, BaseFilterCollection);
+
 
   describe('An AerisApiFilterCollection', function() {
 
@@ -57,7 +68,7 @@ define([
 
         filters.add('sieve');
         expect(filters.length).toEqual(1);
-        expect(filters.at(0)).toBeInstanceOf(Filter);
+        expect(filters.at(0)).toBeInstanceOf(Model);
         expect(filters.at(0).get('name')).toEqual('sieve');
 
       });
@@ -91,7 +102,7 @@ define([
           { name: 'colander', operator: 'OR' }
         ]);
 
-        expect(filters.at(0)).toBeInstanceOf(Filter);
+        expect(filters.at(0)).toBeInstanceOf(Model);
         expect(filters.at(0).get('name')).toEqual('sieve');
         expect(filters.at(0).get('operator')).toEqual('AND');
         expect(filters.at(1).get('name')).toEqual('colander');
@@ -105,14 +116,14 @@ define([
       it('should create a filter from a name string', function() {
         var filters = new FilterCollection();
 
-        filters.add(new Filter({
+        filters.add(new Model({
           name: 'wire mesh',
           operator: 'AND'
         }));
 
         filters.reset('sieve');
         expect(filters.length).toEqual(1);
-        expect(filters.at(0)).toBeInstanceOf(Filter);
+        expect(filters.at(0)).toBeInstanceOf(Model);
         expect(filters.at(0).get('name')).toEqual('sieve');
 
       });
@@ -121,7 +132,7 @@ define([
         var filters = new FilterCollection();
         var filterNames = ['sieve', 'colander', 'coffee filter'];
 
-        filters.add(new Filter({
+        filters.add(new Model({
           name: 'wire mesh',
           operator: 'AND'
         }));
@@ -138,7 +149,7 @@ define([
         var filters = new FilterCollection();
         var filterNames = ['sieve', 'colander', 'coffee filter'];
 
-        filters.add(new Filter({
+        filters.add(new Model({
           name: 'wire mesh',
           operator: 'AND'
         }));
@@ -154,7 +165,7 @@ define([
       it('should allow for standard aeris.Collection#reset syntax', function() {
         var filters = new FilterCollection();
 
-        filters.add(new Filter({
+        filters.add(new Model({
           name: 'wire mesh',
           operator: 'AND'
         }));
@@ -165,7 +176,7 @@ define([
         ]);
 
         expect(filters.length).toEqual(2);
-        expect(filters.at(0)).toBeInstanceOf(Filter);
+        expect(filters.at(0)).toBeInstanceOf(Model);
         expect(filters.at(0).get('name')).toEqual('sieve');
         expect(filters.at(0).get('operator')).toEqual('AND');
         expect(filters.at(1).get('name')).toEqual('colander');
@@ -199,8 +210,8 @@ define([
     describe('remove', function() {
 
       it('should remove a single filter by name', function() {
-        var fatedFilter = new Filter({ name: 'sieve', operator: 'AND' });
-        var luckyFilter = new Filter({ name: 'colander', operator: 'OR' });
+        var fatedFilter = new Model({ name: 'sieve', operator: 'AND' });
+        var luckyFilter = new Model({ name: 'colander', operator: 'OR' });
         var filters = new FilterCollection([luckyFilter, fatedFilter]);
 
         filters.remove('sieve');
@@ -210,9 +221,9 @@ define([
       });
 
       it('should remove multiple filters by name', function() {
-        var fatedFilterA = new Filter({ name: 'sieve', operator: 'AND' });
-        var fatedFilterB = new Filter({ name: 'wire mesh', operator: 'OR' });
-        var luckyFilter = new Filter({ name: 'colander', operator: 'OR' });
+        var fatedFilterA = new Model({ name: 'sieve', operator: 'AND' });
+        var fatedFilterB = new Model({ name: 'wire mesh', operator: 'OR' });
+        var luckyFilter = new Model({ name: 'colander', operator: 'OR' });
         var filters = new FilterCollection([fatedFilterA, luckyFilter, fatedFilterB]);
 
         filters.remove(['sieve', 'wire mesh']);
@@ -221,9 +232,9 @@ define([
       });
 
       it('should remove a multiple filters with the same name', function() {
-        var fatedFilterA = new Filter({ name: 'sieve', operator: 'AND' });
-        var fatedFilterB = new Filter({ name: 'sieve', operator: 'OR' });
-        var luckyFilter = new Filter({ name: 'colander', operator: 'OR' });
+        var fatedFilterA = new Model({ name: 'sieve', operator: 'AND' });
+        var fatedFilterB = new Model({ name: 'sieve', operator: 'OR' });
+        var luckyFilter = new Model({ name: 'colander', operator: 'OR' });
         var filters = new FilterCollection([fatedFilterA, luckyFilter, fatedFilterB]);
 
         filters.remove('sieve');
@@ -232,9 +243,9 @@ define([
       });
 
       it('should allow for standard aeris.Collection#remove syntax', function() {
-        var fatedFilterA = new Filter({ name: 'sieve', operator: 'AND' });
-        var fatedFilterB = new Filter({ name: 'sieve', operator: 'OR' });
-        var luckyFilter = new Filter({ name: 'colander', operator: 'OR' });
+        var fatedFilterA = new Model({ name: 'sieve', operator: 'AND' });
+        var fatedFilterB = new Model({ name: 'sieve', operator: 'OR' });
+        var luckyFilter = new Model({ name: 'colander', operator: 'OR' });
         var filters = new FilterCollection([fatedFilterA, luckyFilter, fatedFilterB]);
 
         spyOn(BaseCollection.prototype, 'remove');
@@ -242,6 +253,40 @@ define([
 
         expect(BaseCollection.prototype.remove).toHaveBeenCalledWith([fatedFilterA, fatedFilterB]);
         expect(BaseCollection.prototype.remove).toHaveBeenCalledInTheContextOf(filters);
+      });
+
+    });
+
+    describe('getValidFilters', function() {
+
+      it('should return valid filters', function() {
+        var filters = new FilterCollection(undefined, {
+          validFilters: [
+            'foo', 'bar'
+          ]
+        });
+
+        expect(filters.getValidFilters()).toEqual(['foo', 'bar']);
+      });
+
+      it('should return a safe copy of the valid filters', function() {
+        var filters = new FilterCollection(undefined, {
+          validFilters: [
+            'foo', 'bar'
+          ]
+        });
+
+        var validFilters = filters.getValidFilters();
+        validFilters.push('waz');
+        validFilters.splice(0, 2, 'hello', 'y\'all');
+
+        expect(filters.getValidFilters()).toEqual(['foo', 'bar']);
+
+        // Round 2
+        validFilters = filters.getValidFilters();
+        validFilters.length = 0;
+
+        expect(filters.getValidFilters()).toEqual(['foo', 'bar']);
       });
 
     });

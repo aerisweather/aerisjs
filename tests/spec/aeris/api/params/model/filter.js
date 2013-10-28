@@ -1,39 +1,64 @@
 define([
   'aeris/util',
-  'api/params/model/filter'
-], function(_, Filter) {
+  'api/params/model/filter',
+  'aeris/collection'
+], function(_, Filter, Collection) {
 
   describe('An AerisApiFilter', function() {
 
-    describe('constructor', function() {
+    describe('Event bindings', function() {
+      it('should run validation when added to a collection', function() {
+        var filter;
+        var collection = new Collection();
 
-      it('should run validation', function() {
-        spyOn(Filter.prototype, 'isValid');
+        spyOn(Filter.prototype, 'validate');
 
-        new Filter();
-        expect(Filter.prototype.isValid).toHaveBeenCalled();
+        filter = new Filter();
+        expect(Filter.prototype.validate).not.toHaveBeenCalled();
+
+        collection.add(filter);
+        expect(Filter.prototype.validate).toHaveBeenCalled();
       });
-
     });
 
     describe('validation', function() {
 
-      it('should require a valid name', function() {
-        var options = {
-          validFilters: ['foo', 'bar']
-        };
+      describe('filter name', function() {
+        var collection;
 
-        expect(function() {
-          new Filter({ name: 'wazaam' }, options);
-        }).toThrowType('ValidationError');
+        beforeEach(function() {
+          collection = new Collection();
+          collection.getValidFilters = jasmine.createSpy('getValidFilters').
+            andReturn(['foo', 'bar']);
+        });
 
-        // Shouldn't throw error
-        new Filter({ name: 'foo' }, options);
-        new Filter({ name: 'bar' }, options);
-      });
+        afterEach(function() {
+          collection.off();
+        });
 
-      it('should not require a valid name, if no validFilters options is set', function() {
-        new Filter({ name: 'wazaam' });
+        it('should not run validate the name if no collection is defined', function() {
+          // Just make sure this doesn't throw
+          // some error, trying to access
+          // the collection.
+          new Filter({ name: 'wazaam' });
+        });
+
+        it('should require a valid filter name, as defined by it\'s collection', function() {
+          expect(function() {
+            collection.add(new Filter({ name: 'wazaam' }));
+          }).toThrowType('ValidationError');
+
+          // Shouldn't throw error
+          /*collection.add(new Filter({ name: 'foo' }));
+          collection.add(new Filter({ name: 'bar' }));*/
+        });
+
+        it('should not require a valid name, if no validFilters are defined', function() {
+          collection.getValidFilters.andReturn(undefined);
+
+          // Shouldn't throw an error
+          collection.add(new Filter({ name: 'wazaam' }));
+        });
       });
 
     });
