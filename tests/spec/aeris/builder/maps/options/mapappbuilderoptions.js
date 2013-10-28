@@ -12,9 +12,8 @@ define([
       it('should set default options', function() {
         var options;
         var cannedDefaults = { foo: 'bar' };
-        spyOn(Options.prototype, 'getDefaultOptions').andReturn(cannedDefaults);
 
-        options = new Options();
+        options = new Options(undefined, { defaults: cannedDefaults});
         expect(options.get('foo')).toEqual('bar');
       });
 
