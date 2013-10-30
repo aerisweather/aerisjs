@@ -336,5 +336,194 @@ define([
 
     });
 
+    describe('isNumeric', function() {
+
+      it('should return true for numeric objects', function() {
+        expect(_.isNumeric(123)).toEqual(true);
+        expect(_.isNumeric('123')).toEqual(true);
+      });
+
+      it('should return false for non-numberic objects', function() {
+        expect(_.isNumeric('foo')).toEqual(false);
+        expect(_.isNumeric('10px')).toEqual(false);
+        expect(_.isNumeric('')).toEqual(false);
+        expect(_.isNumeric({ foo: 'bar' })).toEqual(false);
+        expect(_.isNumeric([{name: 'FireMarkers'}])).toEqual(false);
+        expect(_.isNumeric(new Date())).toEqual(false);
+      });
+
+    });
+
+    describe('container', function() {
+
+      it('should return true if the array contains the value', function() {
+        expect(_(['a', 'b', 'c']).contains('a')).toEqual(true);
+      });
+
+      it('should return false if the array does not contain the value', function() {
+        expect(_(['a', 'b', 'c']).contains('x')).toEqual(false);
+      });
+
+    });
+
+    describe('parseObjectValues', function() {
+
+      it('should parse strings', function() {
+        expect(_.parseObjectValues('NaN')).toBeNaN();
+        expect(_.parseObjectValues('undefined')).toEqual(undefined);
+        expect(_.parseObjectValues('null')).toEqual(null);
+        expect(_.parseObjectValues('true')).toEqual(true);
+        expect(_.parseObjectValues('false')).toEqual(false);
+        expect(_.parseObjectValues('17')).toEqual(17);
+        expect(_.parseObjectValues('17.5')).toEqual(17.5);
+      });
+
+      it('should parse arrays', function() {
+        expect(_.parseObjectValues(
+          ['true', 'false', '17']
+        )).toEqual([true, false, 17]);
+      });
+
+      it('should parse objects', function() {
+        expect(_.parseObjectValues(
+          {
+            boolTrue: 'true',
+            boolFalse: 'false',
+            num: '17',
+            str: 'foo'
+          }
+        )).toEqual(
+          {
+            boolTrue: true,
+            boolFalse: false,
+            num: 17,
+            str: 'foo'
+          }
+        );
+      });
+
+      it('should parse objects nested in arrays', function() {
+        expect(_.parseObjectValues(
+          [
+            {
+              boolTrue: 'true',
+              boolFalse: 'false',
+              num: '17',
+              str: 'foo'
+            }
+          ]
+        )).toEqual(
+          [
+            {
+              boolTrue: true,
+              boolFalse: false,
+              num: 17,
+              str: 'foo'
+            }
+          ]
+        );
+      });
+
+      it('should parse arrays nested in objects', function() {
+        expect(_.parseObjectValues(
+          {
+            parentObj: ['true', 'false', '17']
+          }
+        )).toEqual(
+          {
+            parentObj: [true, false, 17]
+          }
+        );
+      });
+
+      it('should parse arrays nested in arrays', function() {
+        expect(_.parseObjectValues(
+          [
+            ['true', 'false', '17']
+          ]
+        )).toEqual(
+          [
+            [true, false, 17]
+          ]
+        );
+      });
+
+      it('should parse objects nested in objects', function() {
+        expect(_.parseObjectValues(
+          {
+            obj: {
+              boolTrue: 'true',
+              boolFalse: 'false',
+              num: '17',
+              str: 'foo'
+            }
+          }
+        )).toEqual(
+          {
+            obj: {
+              boolTrue: true,
+              boolFalse: false,
+              num: 17,
+              str: 'foo'
+            }
+          }
+        );
+      });
+
+      it('should parse deep nested jungles', function() {
+        var deepObject = {
+          num: '18.5',
+          arr: [
+            'true',
+            {
+              obj: {
+                boolFalse: 'false',
+                nums: ['16.5', 82, '19.001']
+              }
+            }
+          ],
+          obj: {
+            str: 'str',
+            boolTrue: 'true',
+            boolTrueReal: true,
+            nums: {
+              numsA: [22, '15'],
+              numsB: [18, {
+                num: '-96.15'
+              }]
+            }
+          }
+        };
+        var parsedObj = {
+          num: 18.5,
+          arr: [
+            true,
+            {
+              obj: {
+                boolFalse: false,
+                nums: [16.5, 82, 19.001]
+              }
+            }
+          ],
+          obj: {
+            str: 'str',
+            boolTrue: true,
+            boolTrueReal: true,
+            nums: {
+              numsA: [22, 15],
+              numsB: [18, {
+                num: -96.15
+              }]
+            }
+          }
+        };
+
+        expect(_.parseObjectValues(deepObject)).toEqual(parsedObj);
+      });
+
+
+
+    });
+
   });
 });
