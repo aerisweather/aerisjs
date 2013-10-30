@@ -27,7 +27,6 @@ define([
         _.each(options.get('layers'), function(lyrOpt) {
           expect(lyrOpt.name).toBeDefined();
           expect(lyrOpt.default).toBeDefined();
-          expect(lyrOpt.filters).toBeDefined();
         });
       });
 
@@ -71,6 +70,35 @@ define([
         expect(options.get('layers')[0].default).toEqual(true);   // Layer A
         expect(options.get('layers')[1].default).toEqual(true);   // Layer B
         expect(options.get('layers')[2].default).toEqual(false);   // Layer C
+      });
+
+      describe('Normalizing markers', function() {
+
+        it('should provide an empty \'filters\' array, if none is provided', function() {
+          var options = new Options({
+            markers: [
+              {
+                name: 'MarkerA'
+              }
+            ]
+          });
+
+          expect(options.get('markers')[0].filters).toEqual([]);
+        });
+
+        it('should not overwrite a provided \'filters\' array', function() {
+          var options = new Options({
+            markers: [
+              {
+                name: 'MarkerA',
+                filters: ['A', 'B', 'C']
+              }
+            ]
+          });
+
+          expect(options.get('markers')[0].filters).toEqual(['A', 'B', 'C']);
+        });
+
       });
 
     });
