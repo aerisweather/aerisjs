@@ -520,8 +520,265 @@ define([
 
         expect(_.parseObjectValues(deepObject)).toEqual(parsedObj);
       });
+      
+    });
+    
+    describe('extendArrayObjects', function() {
+      
+      it('should require arrays as arguments', function() {
+        expect(function() {
+          _.extendArrayObjects('foo', []);
+        }).toThrow();
+        expect(function() {
+          _.extendArrayObjects([], 'foo');
+        }).toThrow();
+      });
 
+      it('should replace itemB with itemA, if one or both are not object', function() {
+        var arrA = [
+          { foo: 'bar' },
+          'arrA'
+        ];
+        var arrB = [
+          'arrB',
+          { hello: 'world' }
+        ];
+        expect(_.extendArrayObjects(arrA, arrB)).toEqual(['arrB', { hello: 'world' }]);
+      });
 
+      it('should add items from arrB, if arrA is shorter in length', function() {
+        var arrA = [
+          'a',
+          'b',
+          'c'
+        ];
+        var arrB = [
+          1,
+          2,
+          3,
+          4,
+          5
+        ];
+        expect(_.extendArrayObjects(arrA, arrB)).toEqual([
+          1,
+          2,
+          3,
+          4,
+          5
+        ]);
+      });
+
+      it('should extend items, if both are objects', function() {
+        var arrA = [
+          {
+            foo: 'bar',
+            hello: 'world'
+          },
+          {
+            yaz: 'shazaam'
+          }
+        ];
+        var arrB = [
+          {
+            hello: 'universe',
+            yipee: 'kayo-kayai'
+          },
+          {
+            yowza: 'wazaam'
+          }
+        ];
+
+        expect(_.extendArrayObjects(arrA, arrB)).toEqual([
+          {
+            foo: 'bar',
+            hello: 'universe',
+            yipee: 'kayo-kayai'
+          },
+          {
+            yaz: 'shazaam',
+            yowza: 'wazaam'
+          }
+        ]);
+      });
+
+      it('should not change the original arrays', function() {
+        var arrA = [
+          {
+            foo: 'bar',
+            hello: 'world'
+          },
+          {
+            yaz: 'shazaam'
+          }
+        ];
+        var arrB = [
+          {
+            hello: 'universe',
+            yipee: 'kayo-kayai'
+          },
+          {
+            yowza: 'wazaam'
+          }
+        ];
+        _.extendArrayObjects(arrA, arrB);
+
+        expect(arrA).toEqual([
+          {
+            foo: 'bar',
+            hello: 'world'
+          },
+          {
+            yaz: 'shazaam'
+          }
+        ]);
+
+        expect(arrB).toEqual([
+          {
+            hello: 'universe',
+            yipee: 'kayo-kayai'
+          },
+          {
+            yowza: 'wazaam'
+          }
+        ]);
+      });
+      
+    });
+
+    describe('extendFactorySpec', function() {
+      /** @constant */
+      var SPEC_ORIG = {
+        create: {
+          module: 'base/module',
+          args: [
+            'a',
+            {
+              foo: 'bar',
+              hello: 'world'
+            }
+          ]
+        },
+        properties: {
+          propA: 'valA',
+          propB: 'valB'
+        }
+      };
+      function getSpec() {
+        return {
+          create: {
+            module: 'base/module',
+            args: [
+              'a',
+              {
+                foo: 'bar',
+                hello: 'world'
+              }
+            ]
+          },
+          properties: {
+            propA: 'valA',
+            propB: 'valB'
+          }
+        }
+      }
+
+      it('should maintain the factory module', function() {
+        var ext = {
+          create: {
+            args: ['a', 'b', 'c']
+          }
+        };
+        expect(_.extendFactorySpec(getSpec(), ext).create.module).toEqual('base/module');
+      });
+
+      it('should override the factory module', function() {
+        var ext = {
+          create: {
+            module: 'ext/module'
+          }
+        };
+
+        expect(_.extendFactorySpec(getSpec(), ext).create.module).toEqual('ext/module');
+      });
+
+      it('should override other spec properties', function() {
+        var ext = {
+          properties: {
+            propA: 'valA_ext',
+            foo: 'bar'
+          },
+          someOther: 'spec property'
+        };
+
+        expect(_.extendFactorySpec(getSpec(), ext).properties).toEqual({
+          propA: 'valA_ext',
+          foo: 'bar'
+        });
+        expect(_.extendFactorySpec(getSpec(), ext).someOther).toEqual('spec property');
+      });
+
+      it('should maintain other spec properties', function() {
+        var ext = {
+          create: {
+            args: ['a', 'b']
+          }
+        };
+
+        expect(_.extendFactorySpec(getSpec(), ext).properties).toEqual({
+          propA: 'valA',
+          propB: 'valB'
+        });
+      });
+
+      it('should extend the factory arguments', function() {
+        var ext = {
+          create: {
+            args: [
+              { yo: 'jo' },
+              {
+                hello: 'universe',
+                hey: 'ho'
+              },
+              42
+            ]
+          }
+        };
+
+        expect(_.extendFactorySpec(getSpec(), ext).create.args).toEqual([
+          { yo: 'jo' },
+          {
+            foo: 'bar',
+            hello: 'universe',
+            hey: 'ho'
+          },
+          42
+        ]);
+      });
+
+      it('should return a new object (and not change the original objects)', function() {
+        var ext = {
+          module: 'ext/module',
+          args: [
+            'x',
+            {
+              hello: 'universe'
+            }
+          ]
+        };
+
+        _.extendFactorySpec(getSpec(), ext);
+
+        expect(ext).toEqual({
+          module: 'ext/module',
+          args: [
+            'x',
+            {
+              hello: 'universe'
+            }
+          ]
+        });
+        expect(getSpec()).toEqual(SPEC_ORIG);
+      });
 
     });
 
