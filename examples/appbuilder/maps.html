@@ -69,16 +69,14 @@
             markers: true,
             layers: true,
             poi: true
+          },
+          onload: function(maps) {
+            window.maps = maps;
+            console.log('onload called, with:', arguments);
           }
         });
 
-        builder.build().
-          done(function(maps) {
-            window.maps = maps;
-            maps.state.on('change', function() {
-              //console.log(maps.router.getQueryParams());
-            });
-          });
+        builder.build();
       });
     }
   </script>
