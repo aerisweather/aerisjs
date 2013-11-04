@@ -23,12 +23,11 @@
       require.setStrategy('gmaps');
       require([
         'mapbuilder/mapappbuilder',
-        'mapbuilder/core/vent',
         'packages/layers',
         'packages/markers',
         'polaris/maps/base/markercollections/dealermarkercollection',
         'polaris/maps/base/markercollections/poimarkercollection'
-      ], function(Builder, vent) {
+      ], function(Builder) {
         var builder = new Builder({
           el: '#app',
           markers: [
