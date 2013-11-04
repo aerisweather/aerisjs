@@ -30,10 +30,13 @@
       ], function(Builder) {
         var builder = new Builder({
           el: '#app',
+          mapOptions: {
+            zoom: 4
+          },
           markers: [
             {
               name: 'EarthquakeMarkers',
-              default: false,
+              default: true,
               filters: [
                 'mini',
                 'minor',
@@ -43,8 +46,8 @@
             },
             {
               name: 'StormReportMarkers',
-              default: false,
-              filters: ['rain']       // These filters will be on, by default
+              default: true,
+              filters: ['snow']       // These filters will be on, by default
             }/*,
             'FireMarkers',
             'LightningMarkers'*/
