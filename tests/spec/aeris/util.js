@@ -761,23 +761,15 @@ define([
           args: [
             'x',
             {
-              hello: 'universe'
+              hello: { big: 'world' }
             }
           ]
         };
+        var spec = getSpec();
 
-        _.extendFactorySpec(getSpec(), ext);
+        _.extendFactorySpec(spec, ext);
 
-        expect(ext).toEqual({
-          module: 'ext/module',
-          args: [
-            'x',
-            {
-              hello: 'universe'
-            }
-          ]
-        });
-        expect(getSpec()).toEqual(SPEC_ORIG);
+        expect(spec).toEqual(SPEC_ORIG);
       });
 
     });
@@ -822,7 +814,7 @@ define([
         })
       });
 
-      it('should wap a simple factory spec in a ClassFactory spec', function() {
+      it('should wrap a simple factory spec in a ClassFactory spec', function() {
         var spec = _.classFactorySpec({
           create: 'some/parent/type',
           foo: 'bar'
