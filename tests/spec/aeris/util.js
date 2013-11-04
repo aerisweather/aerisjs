@@ -782,5 +782,64 @@ define([
 
     });
 
+    describe('classFactorySpec', function() {
+
+      it('should wrap a factory spec in a ClassFactory spec', function() {
+        var spec = _.classFactorySpec({
+          create: {
+            module: 'mapbuilder/core/model/mapobjectstate',
+            args: [
+              undefined,
+              {
+                namespace: 'aeris.maps.layers'
+              }
+            ],
+            someConfig: 'someValue'
+          },
+          properties: {
+            foo: 'bar'
+          }
+        });
+
+        expect(spec).toEqual({
+          create: {
+            module: 'aeris/classfactory',
+            args: [
+              { module: 'mapbuilder/core/model/mapobjectstate' },
+              [
+                undefined,
+                {
+                  namespace: 'aeris.maps.layers'
+                }
+              ],
+              { extendArgObjects: true }
+            ],
+            someConfig: 'someValue'
+          },
+          properties: {
+            foo: 'bar'
+          }
+        })
+      });
+
+      it('should wap a simple factory spec in a ClassFactory spec', function() {
+        var spec = _.classFactorySpec({
+          create: 'some/parent/type',
+          foo: 'bar'
+        });
+
+        expect(spec).toEqual({
+          create: {
+            module: 'aeris/classfactory',
+            args: [
+              { module: 'some/parent/type' }
+            ]
+          },
+          foo: 'bar'
+        });
+      });
+
+    });
+
   });
 });
