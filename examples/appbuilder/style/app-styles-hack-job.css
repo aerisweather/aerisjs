@@ -84,3 +84,10 @@
   background: white;
 
 }
+
+.aeris-dragHandle {
+  cursor: -webkit-grab;
+}
+.aeris-dragHandle:active {
+  cursor: -webkit-grabbing;
+}
