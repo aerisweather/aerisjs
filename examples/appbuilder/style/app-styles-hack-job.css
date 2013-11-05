@@ -17,6 +17,18 @@
   height: 100%;
 }
 
+.aeris-maps-app {
+  width: 90%;
+  height: 90%;
+  margin: 1% auto;
+  box-sizing: border-box;
+
+  overflow: hidden;
+  position: relative;
+
+  outline: 1px solid black;
+}
+
 .aeris-markerTypeControls {
   margin-top: 15px !important;
 }
@@ -51,12 +63,24 @@
 
 .aeris-maps-app .aeris-markerDetails  {
   position: absolute;
-  bottom: 0;
+  bottom: 0px;
   left: 0;
   width: 100%;
+  z-index: 1;
+  box-sizing: border-box;
+}
+
+.aeris-maps-app .aeris-markerDetails .aeris-content {
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+
+  width: 100%;
+  box-sizing: border-box;
+
+  border-top: 1px solid rgba(0,0,0,.25);
+
   padding: 10px;
   background: white;
-  z-index: 1;
-  border-top: 1px solid rgba(0,0,0,.25);
-  box-sizing: border-box;
+
 }
