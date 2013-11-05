@@ -13,7 +13,6 @@
 $section-padding: 8px;
 
 .aeris-maps-app {
-  @include nested-reset;
   position: relative;
   width: 100%;
   height: 100%;
