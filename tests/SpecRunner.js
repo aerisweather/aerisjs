@@ -37,6 +37,7 @@ require([
 
       //'spec/aeris/application/menu/controller/menucontroller',
       //'spec/aeris/application/form/model/recursivetoggle',
+      //'spec/aeris/application/form/model/combotoggle',
       //'spec/aeris/application/form/collection/radiocollection',
       //'spec/aeris/application/form/controller/togglebuttoncontroller'
 
