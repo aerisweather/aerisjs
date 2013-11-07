@@ -511,10 +511,11 @@ optgroup::-moz-focus-inner {
 /* line 98, ../sass/partials/_layout.scss */
 .aeris-navBar .aeris-navItem {
   position: relative;
-}
-/* line 101, ../sass/partials/_layout.scss */
-.aeris-navBar .aeris-navItem .aeris-navItemLabel {
   display: inline-block;
+}
+/* line 102, ../sass/partials/_layout.scss */
+.aeris-navBar .aeris-navItem .aeris-navItemLabel {
+  display: block;
   margin-right: 10px;
   padding: 10px 15px;
   border-radius: 5px;
@@ -525,35 +526,34 @@ optgroup::-moz-focus-inner {
   text-decoration: none;
   cursor: pointer;
 }
-/* line 116, ../sass/partials/_layout.scss */
+/* line 117, ../sass/partials/_layout.scss */
 .aeris-navBar .aeris-navItem .aeris-navItemLabel:hover {
   background: #932026;
 }
-/* line 121, ../sass/partials/_layout.scss */
+/* line 122, ../sass/partials/_layout.scss */
 .aeris-navBar .aeris-navItem .aeris-subMenu {
   position: absolute;
   margin-top: 5px;
-  display: none;
   padding: 3px;
   background: #f8f8f8;
   border: 1px solid #a3a3a3;
   border-top: none;
 }
-/* line 135, ../sass/partials/_layout.scss */
+/* line 134, ../sass/partials/_layout.scss */
 .aeris-navBar .aeris-navItem .aeris-subMenu .aeris-subMenuItem label, .aeris-navBar .aeris-navItem .aeris-subMenu .aeris-subMenuItem input {
   cursor: pointer;
 }
-/* line 139, ../sass/partials/_layout.scss */
+/* line 138, ../sass/partials/_layout.scss */
 .aeris-navBar .aeris-navItem .aeris-subMenu .aeris-subMenuItem label {
   display: inline-block;
   padding: 8px 10px;
   border-radius: 3px;
 }
-/* line 145, ../sass/partials/_layout.scss */
+/* line 144, ../sass/partials/_layout.scss */
 .aeris-navBar .aeris-navItem .aeris-subMenu .aeris-subMenuItem input {
   display: none;
 }
-/* line 149, ../sass/partials/_layout.scss */
+/* line 148, ../sass/partials/_layout.scss */
 .aeris-navBar .aeris-navItem .aeris-subMenu .aeris-subMenuItem:hover label {
   background: #a72026;
   color: #fff;

@@ -97,9 +97,10 @@ $navBorderColor: #a3a3a3;
 
   .aeris-navItem {
     position: relative;
+    display: inline-block;
 
     .aeris-navItemLabel {
-      display: inline-block;
+      display: block;
       margin-right: 10px;
 
       padding: 10px 15px;
