@@ -48,15 +48,13 @@
               name: 'StormReportMarkers',
               default: true,
               filters: ['snow']       // These filters will be on, by default
-            }/*,
-            'FireMarkers',
-            'LightningMarkers'*/
+            }
           ],
           poi: [
             'DealerMarkers',
             'POIMarkers'
           ],
-          layers: [/*
+          layers: [
             {
               name: 'AerisRadar',
               default: true
@@ -65,12 +63,11 @@
             'AerisAdvisories',
             'AerisHeatIndex',
             'AerisTemps',
-            'AerisSnowDepth'*/
+            'AerisSnowDepth'
           ],
           controls: {
-            markers: true,
-            layers: true,
-            poi: true
+            //markers: true,
+            layers: true
           },
           onload: function(maps) {
             window.maps = maps;
