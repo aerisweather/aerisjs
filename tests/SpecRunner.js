@@ -35,6 +35,7 @@ require([
       //'spec/aeris/datehelper',
       //'spec/aeris/classfactory',
 
+      //'spec/aeris/application/module/module',
       //'spec/aeris/application/menu/controller/menucontroller',
       //'spec/aeris/application/form/model/recursivetoggle',
       //'spec/aeris/application/form/model/combotoggle',
@@ -43,7 +44,6 @@ require([
 
       //'spec/aeris/builder/maps/loader',
       //'spec/aeris/builder/maps/options/mapappbuilderoptions',
-      //'spec/aeris/builder/maps/core/module/module'
       //'spec/aeris/builder/maps/core/model/toggle'
       //'spec/aeris/builder/maps/core/model/state'
       //'spec/aeris/builder/route/controller/controlscontroller',

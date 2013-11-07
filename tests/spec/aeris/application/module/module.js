@@ -1,6 +1,6 @@
 define([
   'aeris/util',
-  'mapbuilder/core/module/module',
+  'application/module/module',
   'sinon'
 ], function(_, Module, sinon) {
 
