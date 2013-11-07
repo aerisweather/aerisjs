@@ -83,3 +83,72 @@ $section-padding: 8px;
     @include border-radius(15px);
   }
 }
+
+$navGrey: #f8f8f8;
+$navBorderColor: #a3a3a3;
+.aeris-navBar {
+  position: absolute;
+  width: 100%;
+  padding: 5px 15px;
+  z-index: 100;
+
+  background: $navGrey;
+  border-bottom: 1px solid $navBorderColor;
+
+  .aeris-navItem {
+    position: relative;
+
+    .aeris-navItemLabel {
+      display: inline-block;
+      margin-right: 10px;
+
+      padding: 10px 15px;
+      border-radius: 5px;
+      background: #a72026;
+
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+      text-decoration: none;
+
+      cursor: pointer;
+
+      &:hover {
+        background: #932026;
+      }
+    }
+
+    .aeris-subMenu {
+      position: absolute;
+      margin-top: 5px;
+
+      padding: 3px;
+
+      background: $navGrey;
+      border: 1px solid $navBorderColor;
+      border-top: none;
+
+      .aeris-subMenuItem {
+
+        label, input {
+          cursor: pointer;
+        }
+
+        label {
+          display: inline-block;
+          padding: 8px 10px;
+          border-radius: 3px;
+        }
+
+        input {
+          display: none;
+        }
+
+        &:hover label {
+          background: #a72026;
+          color: #fff;
+        }
+      }
+    }
+  }
+}
