@@ -41,6 +41,7 @@ require([
       //'spec/aeris/application/form/model/combotoggle',
       //'spec/aeris/application/form/collection/radiocollection',
       //'spec/aeris/application/form/controller/togglebuttoncontroller'
+      //'spec/aeris/application/plugin/events'
 
       //'spec/aeris/builder/maps/loader',
       //'spec/aeris/builder/maps/options/mapappbuilderoptions',
