@@ -1,15 +1,15 @@
 define([
   'aeris/util',
   'sinon',
+  'testUtils',
   'base/extension/mapextensionobject',
   'testErrors/untestedspecerror',
   'base/abstractstrategy',
   'mocks/map'
-], function(_, Sinon, MapExtensionObject, UntestedSpecError, AbstractStrategy, MockMap) {
+], function(_, sinon, testUtil, MapExtensionObject, UntestedSpecError, AbstractStrategy, MockMap) {
 
   function testFactory(opt_options) {
     var options = _.extend({
-      strategy: getStubbedStrategy(),
       map: getStubbedMap()
     }, opt_options);
 
@@ -18,23 +18,19 @@ define([
     });
 
     return {
-      strategy: options.strategy,
       obj: obj,
       map: options.map
     };
   }
 
 
-  function getStubbedStrategy() {
-    var ns = {};
-    ns.Strategy = function() {
+  var StrategyFactory = function() {
+    var Strategy = jasmine.createSpy(_.uniqueId('MockStrategyCtor_'));
 
-    };
+    Strategy.prototype.destroy = jasmine.createSpy('MockStrategy#destroy');
 
-    spyOn(ns, 'Strategy');
-
-    return ns.Strategy;
-  }
+    return Strategy;
+  };
 
 
   function getStubbedMap() {
@@ -42,23 +38,56 @@ define([
   }
 
 
+  function errBack(e) {
+    throw e;
+  }
+
+
 
   describe('A MapExtensionObject', function() {
 
     describe('constructor', function() {
-      it('should require a strategy', function() {
-        expect(function() {
-          testFactory({
-            strategy: null
-          });
-        }).toThrowType('InvalidArgumentError');
+
+      it('should set a strategy', function() {
+        var Strategy = StrategyFactory();
+
+        spyOn(MapExtensionObject.prototype, 'setStrategy');
+
+        new MapExtensionObject(undefined, {
+          strategy: Strategy
+        });
+
+        expect(MapExtensionObject.prototype.setStrategy).toHaveBeenCalledWith(Strategy);
       });
 
-      it('should instantiate a strategy', function() {
-        var test = testFactory();
+      it('should load a strategy from a string path', function() {
+        spyOn(MapExtensionObject.prototype, 'loadStrategy');
 
-        expect(test.strategy).toHaveBeenCalled();
+        new MapExtensionObject(undefined, {
+          strategy: 'mock/strategy'
+        });
+
+        expect(MapExtensionObject.prototype.loadStrategy).toHaveBeenCalledWith('mock/strategy');
       });
+
+      it('should not require a strategy argument', function() {
+        // Shouldn't throw an error
+        new MapExtensionObject();
+      });
+
+      it('should accept null as a strategy', function() {
+        new MapExtensionObject(undefined, {
+          strategy: null
+        });
+      });
+
+
+      it('should set the map to null, if no map is set', function() {
+        var obj = new MapExtensionObject();
+
+        expect(obj.get('map')).toEqual(null);
+      });
+
     });
 
     describe('validate', function() {
@@ -97,6 +126,124 @@ define([
         ], spec, this);
       });
     });
+
+
+    describe('setStrategy', function() {
+
+      it('should instantiate a strategy', function() {
+        var Strategy = StrategyFactory();
+        var obj = new MapExtensionObject();
+
+        obj.setStrategy(Strategy);
+        expect(Strategy).toHaveBeenCalledWith(obj);
+      });
+
+      it('should remove any existing strategy', function() {
+        var OldStrategy = StrategyFactory();
+        var NewStrategy = StrategyFactory();
+        var obj = new MapExtensionObject();
+
+        obj.setStrategy(OldStrategy);
+
+        spyOn(obj, 'removeStrategy');
+        obj.setStrategy(NewStrategy);
+
+        expect(obj.removeStrategy).toHaveBeenCalled();
+      });
+
+      it('should reject invalid constructor', function() {
+        var invalids = [
+          { foo: 'bar' },
+          new Date(),
+          undefined
+        ];
+        var obj = new MapExtensionObject();
+
+        _(invalids).each(function(baddy) {
+          expect(function() {
+            obj.setStrategy(baddy);
+          }).toThrowType('InvalidArgumentError');
+        });
+
+      });
+
+    });
+
+
+    describe('loadStrategy', function() {
+      var Strategy;
+
+      beforeEach(function() {
+        Strategy = StrategyFactory();
+
+        define('strategy/mockStrategy', function() {
+          return Strategy;
+        });
+
+        spyOn(MapExtensionObject.prototype, 'setStrategy');
+      });
+
+      it('should set the strategy to a named ReqJS module', function() {
+        var obj = new MapExtensionObject();
+
+        obj.loadStrategy('mockStrategy').
+          done(testUtil.setFlag).
+          fail(errBack);
+
+        waitsFor(testUtil.checkFlag, 100, 'load to complete');
+        runs(function() {
+          expect(obj.setStrategy).toHaveBeenCalledWith(Strategy);
+          expect(obj.setStrategy).toHaveBeenCalledInTheContextOf(obj);
+        });
+      });
+
+      it('should complain if the strategy module doesn\'t exist', function() {
+        var obj = new MapExtensionObject();
+
+        obj.loadStrategy('no/module/here').
+          fail(function(e) {
+            expect(e.name).toEqual('InvalidArgumentError');
+            testUtil.setFlag();
+          });
+
+        waitsFor(testUtil.checkFlag, 100, 'load promise to be rejected');
+      });
+
+    });
+    
+    
+    describe('removeStrategy', function() {
+      
+      it('should do nothing if no strategy exists', function() {
+        var obj = new MapExtensionObject();
+
+        // Just don't throw an error
+        obj.removeStrategy();
+      });
+      
+      it('should destroy any existing strategy', function() {
+        var obj = new MapExtensionObject();
+        var Strategy = StrategyFactory();
+
+        obj.setStrategy(Strategy);
+
+        obj.removeStrategy();
+        expect(Strategy.prototype.destroy).toHaveBeenCalled();
+      });
+      
+      it('should do nothing the second time you call it, because it has no longer has a reference to the strategy.', function() {
+        var obj = new MapExtensionObject();
+        var Strategy = StrategyFactory();
+
+        obj.setStrategy(Strategy);
+
+        obj.removeStrategy();
+        obj.removeStrategy();
+        expect(Strategy.prototype.destroy.callCount).toEqual(1);
+      });
+      
+    });
+
 
     describe('setMap', function() {
       var spies;
