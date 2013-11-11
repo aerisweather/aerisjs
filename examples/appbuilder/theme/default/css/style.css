@@ -554,22 +554,9 @@ optgroup::-moz-focus-inner {
   display: none;
 }
 /* line 148, ../sass/partials/_layout.scss */
-.aeris-navBar .aeris-navItem .aeris-subMenu .aeris-subMenuItem:hover label {
+.aeris-navBar .aeris-navItem .aeris-subMenu .aeris-subMenuItem.aeris-selected label, .aeris-navBar .aeris-navItem .aeris-subMenu .aeris-subMenuItem:hover label {
   background: #a72026;
   color: #fff;
-}
-
-/* line 157, ../sass/partials/_layout.scss */
-.aeris-infoPanel {
-  position: absolute;
-  z-index: 2;
-  width: 60%;
-  bottom: 0;
-  left: 0;
-  padding: 15px;
-  background: white;
-  opacity: 0.95;
-  outline: 1px solid #a1a0a0;
 }
 
 /**
@@ -591,4 +578,34 @@ optgroup::-moz-focus-inner {
 /* line 20, ../sass/partials/_controls.scss */
 .aeris-maps-app .aeris-section-latlon input[type=text] {
   width: 35px;
+}
+
+/**
+ * Styles for the MapApp info panel
+*/
+/* line 5, ../sass/partials/_infopanel.scss */
+.aeris-infoPanel .aeris-content {
+  position: absolute;
+  z-index: 2;
+  width: 400px;
+  bottom: 0;
+  left: 0;
+  padding: 15px;
+  background: white;
+  opacity: 0.95;
+  outline: 1px solid #a1a0a0;
+}
+/* line 16, ../sass/partials/_infopanel.scss */
+.aeris-infoPanel .aeris-content h3 {
+  font-size: 16px;
+  margin: 0;
+}
+/* line 21, ../sass/partials/_infopanel.scss */
+.aeris-infoPanel .aeris-content small {
+  font-size: 11px;
+}
+/* line 25, ../sass/partials/_infopanel.scss */
+.aeris-infoPanel .aeris-content p {
+  margin: 0;
+  font-size: 13px;
 }

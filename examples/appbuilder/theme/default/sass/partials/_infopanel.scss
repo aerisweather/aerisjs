@@ -1,0 +1,32 @@
+/**
+ * Styles for the MapApp info panel
+*/
+.aeris-infoPanel  {
+  .aeris-content {
+    position: absolute;
+    z-index: 2;
+    width: 400px;
+    bottom: 0;
+    left: 0;
+    padding: 15px;
+    background: white;
+    opacity: 0.95;
+    outline: 1px solid rgb(161, 160, 160);
+
+    h3 {
+      font-size: 16px;
+      margin: 0;
+    }
+
+    small {
+      font-size: 11px;
+    }
+
+    p {
+      margin: 0;
+      font-size: 13px;
+    }
+
+
+  }
+}
