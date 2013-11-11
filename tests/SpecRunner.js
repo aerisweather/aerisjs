@@ -85,6 +85,7 @@ require([
       //'spec/aeris/maps/base/animations/aerisinteractivetile',
 
       //'spec/aeris/maps/gmaps/events',
+      //'spec/aeris/maps/gmaps/abstractstrategy',
       //'spec/aeris/maps/gmaps/layerstrategies/abstractmaptype',
       //'spec/aeris/maps/gmaps/layerstrategies/googlemaptype',
       //'spec/aeris/maps/gmaps/layerstrategies/tile',
