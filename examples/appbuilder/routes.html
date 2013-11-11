@@ -19,59 +19,6 @@
       width: 100%;
       height: 100%;
     }
-
-      /* Quick and dirty full-screen map */
-    .aeris-fullScreen, #aeris-mapContainer, .aeris-map-canvas {
-      width: 100%;
-      height: 100%;
-    }
-
-    #aeris-routeBuilderControls .aeris-map-controls {
-      bottom: inherit !important;
-      top: 15% !important;
-    }
-
-    .aeris-map-controls {
-      bottom: 3%;
-      right: 2%;
-      top: inherit !important;
-    }
-
-    .aeris-map-controls {
-      bottom: 3%;
-      right: 2%;
-      top: inherit !important;
-    }
-
-    .aeris-markerTypeControls {
-      margin-top: 15px !important;
-    }
-    .aeris-markerTypeControls:first-child {
-      margin-top: 0 !important;
-    }
-
-    .aeris-markerFilterSelect {
-      border: 1px solid #ccc !important
-    }
-
-    .aeris-markerToggle {
-      cursor: pointer;
-      padding: 5px  !important;
-      background: #BCD9E1 !important;
-      box-shadow: 1px 1px 2px 1px rgba(0,0,0, 0.5);
-    }
-    .aeris-markerToggle:active {
-      box-shadow: none;
-    }
-    .aeris-markerToggle:hover {
-      background: #BCCFE1 !important;
-    }
-    .aeris-markerToggle input[type=checkbox] {
-      display: none;
-    }
-    .aeris-markerFilterSelect {
-      font-size: 12px !important;
-    }
   </style>
 
   <script type="text/javascript"
@@ -96,17 +43,16 @@
             {
               name: 'EarthquakeMarkers',
               default: true
-            }
+            },
+            'StormReportMarkers'
           ],
           layers: [
-            {
-              name: 'AerisRadar',
-              default: true
-            }
+            'AerisRadar',
+            'AerisSatellite'
           ],
           controls: {
             markers: true,
-            layers: false,
+            layers: true,
             routes: true
           },
           route: {

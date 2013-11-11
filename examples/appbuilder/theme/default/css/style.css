@@ -559,6 +559,19 @@ optgroup::-moz-focus-inner {
   color: #fff;
 }
 
+/* line 157, ../sass/partials/_layout.scss */
+.aeris-infoPanel {
+  position: absolute;
+  z-index: 2;
+  width: 60%;
+  bottom: 0;
+  left: 0;
+  padding: 15px;
+  background: white;
+  opacity: 0.95;
+  outline: 1px solid #a1a0a0;
+}
+
 /**
  * controls.scss
 */

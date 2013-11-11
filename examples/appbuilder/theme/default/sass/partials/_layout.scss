@@ -153,3 +153,15 @@ $navBorderColor: #a3a3a3;
     }
   }
 }
+
+.aeris-infoPanel {
+  position: absolute;
+  z-index: 2;
+  width: 60%;
+  bottom: 0;
+  left: 0;
+  padding: 15px;
+  background: white;
+  opacity: 0.95;
+  outline: 1px solid rgb(161, 160, 160);
+}
