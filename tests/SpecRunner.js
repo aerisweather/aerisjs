@@ -70,6 +70,7 @@ require([
       //'spec/aeris/maps/loader',
 
       //'spec/aeris/maps/base/extension/mapextensionobject',
+      //'spec/aeris/maps/base/abstractstrategy',
       //'spec/aeris/maps/base/layers',
       //'spec/aeris/maps/base/abstractlayer',
 
