@@ -109,6 +109,92 @@ define([
       });
 
     });
+    
+    
+    describe('getAtPath', function() {
+
+      it('should resolve a deep path', function() {
+        var model = new Model({
+          deepObj: {
+            levelA: {
+              levelB: {
+                foo: 'bar'
+              }
+            }
+          }
+        });
+
+        expect(model.getAtPath('deepObj.levelA.levelB.foo')).toEqual('bar');
+        expect(model.getAtPath('deepObj.levelA.levelB')).toEqual({ foo: 'bar' });
+      });
+
+      it('should resolve a shallow path', function() {
+        var model = new Model({
+          foo: 'bar'
+        });
+
+        expect(model.getAtPath('foo')).toEqual('bar');
+      });
+      
+      it('should return undefined if the path cannot be resolved', function() {
+        var model = new Model({
+          deepObj: {
+            levelA: {
+              levelB: {
+                foo: 'bar'
+              }
+            }
+          }
+        });
+
+        _.each([
+          'foo.bar',
+          'foo.bar.faz',
+          'deepObj.foo',
+          'deepObj.levelA.foo',
+          'deepObj.levelXYZ',
+          'deepObj.levelA.levelB.foo.levelC.levelD'
+        ], function(path) {
+          expect(model.getAtPath(path)).toBeUndefined();
+        });
+      });
+
+      it('should return undefined if the reference does not exist', function() {
+        var model = new Model({
+          deepObj: {
+            levelA: {
+              levelB: {
+                foo: 'bar'
+              }
+            }
+          }
+        });
+
+        _.each([
+          'foo',
+          'deepObj.foo',
+          'deepObj.levelA.foo',
+          'deepObj.levelA.levelB.foo.bar'
+        ], function(path) {
+            expect(model.getAtPath(path)).toBeUndefined();
+        });
+      });
+
+      it('should throw a TypeError if called with anything but a string', function() {
+        var model = new Model();
+
+        _.each([
+          true, false, undefined, null, NaN,
+          new Date(), ['foo'], { foo: 'bar' }, function() {},
+          1, -1, 0, Infinity
+        ], function(path) {
+          expect(function() {
+            model.getAtPath(path);
+          }).toThrowType('TypeError');
+        });
+      });
+      
+    })
 
   });
 });
