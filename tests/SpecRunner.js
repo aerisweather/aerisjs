@@ -90,6 +90,7 @@ require([
       //'spec/aeris/maps/gmaps/layerstrategies/googlemaptype',
       //'spec/aeris/maps/gmaps/layerstrategies/tile',
       //'spec/aeris/maps/gmaps/layerstrategies/kml'
+      //'spec/aeris/maps/gmaps/markerstrategies/markerclusterstrategy'
 
 
       //'spec/aeris/maps/gmaps/route/waypoint',
