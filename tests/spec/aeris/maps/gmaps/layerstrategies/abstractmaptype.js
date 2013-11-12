@@ -146,7 +146,7 @@ define([
           var test = testFactory();
 
           test.strategy.setMap(test.map, { baseLayer: true });
-          test.strategy.setMap(null);
+          test.strategy.remove();
 
           expect(test.map.getView().setMapTypeId).toHaveBeenCalledWith('PREV_MAP_TYPE_ID');
         });
@@ -171,12 +171,16 @@ define([
             }
           ]);
 
-          test.strategy.setMap(null);
+          test.strategy.remove();
           expect(test.mapView.overlayMapTypes.removeAt).toHaveBeenCalledWith(1);
         });
       });
 
     });
 
+  });
+}, function(e) {
+  _.defer(function() {
+    throw e;
   });
 });

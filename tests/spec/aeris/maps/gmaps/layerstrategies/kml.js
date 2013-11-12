@@ -5,7 +5,7 @@ define([
   'mocks/layer',
   'gmaps/layerstrategies/kml',
   'mocks/gmap'
-], function(_, sinon, MockLayer, Strategy, MockMap) {
+], function(_, sinon, MockLayer, KMLStrategy, MockMap) {
 
   function testFactory(opt_options) {
     var options = _.extend({
@@ -13,7 +13,7 @@ define([
       layerView: getStubbedLayerView(),
       stubView: true
     }, opt_options);
-    var strategy = new Strategy(options.layer);
+    var strategy = new KMLStrategy(options.layer);
 
     if (options.stubView) {
       spyOn(strategy, 'getView').andReturn(options.layerView);
@@ -102,7 +102,7 @@ define([
         var test = testFactory();
 
         test.strategy.setMap(test.map);
-        test.strategy.setMap(null);
+        test.strategy.remove();
 
         expect(test.strategy.getView().setMap).
           toHaveBeenCalledWith(null);
