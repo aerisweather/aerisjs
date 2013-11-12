@@ -177,17 +177,30 @@ define([
       beforeEach(function() {
         Strategy = StrategyFactory();
 
-        define('strategy/mockStrategy', function() {
+
+        require.config({
+          map: {
+            '*': {
+              strategy: 'mockStrategyType'
+            }
+          }
+        });
+
+        define('mockStrategyType/mockStrategyModule', function() {
           return Strategy;
         });
 
         spyOn(MapExtensionObject.prototype, 'setStrategy');
       });
+      afterEach(function() {
+        require.setStrategy('gmaps');
+      });
+
 
       it('should set the strategy to a named ReqJS module', function() {
         var obj = new MapExtensionObject();
 
-        obj.loadStrategy('mockStrategy').
+        obj.loadStrategy('mockStrategyModule').
           done(testUtil.setFlag).
           fail(errBack);
 

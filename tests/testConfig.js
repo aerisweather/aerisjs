@@ -1,3 +1,19 @@
+/**
+ * Maps the strategy path
+ * to a specified path within aeris/maps/.
+ *
+ * @param {string} strategy
+ */
+require.setStrategy = function(strategy) {
+  require.config({
+    map: {
+      '*': {
+        'strategy': strategy
+      }
+    }
+  });
+};
+
 require.config({
   baseUrl: '/lib',
   //urlArgs: 'cb=' + Math.random(),                   // Cache buster

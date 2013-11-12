@@ -115,4 +115,8 @@ require([
       }, 500);
     });
   });
+}, function(e) {
+  _.defer(function() {
+    throw e;
+  });
 });
