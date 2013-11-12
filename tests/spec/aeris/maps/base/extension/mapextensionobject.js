@@ -2,11 +2,12 @@ define([
   'aeris/util',
   'sinon',
   'testUtils',
+  'aeris/promise',
   'base/extension/mapextensionobject',
   'testErrors/untestedspecerror',
   'base/abstractstrategy',
   'mocks/map'
-], function(_, sinon, testUtil, MapExtensionObject, UntestedSpecError, AbstractStrategy, MockMap) {
+], function(_, sinon, testUtil, Promise, MapExtensionObject, UntestedSpecError, AbstractStrategy, MockMap) {
 
   function testFactory(opt_options) {
     var options = _.extend({
@@ -61,7 +62,7 @@ define([
       });
 
       it('should load a strategy from a string path', function() {
-        spyOn(MapExtensionObject.prototype, 'loadStrategy');
+        spyOn(MapExtensionObject.prototype, 'loadStrategy').andReturn(new Promise());
 
         new MapExtensionObject(undefined, {
           strategy: 'mock/strategy'
