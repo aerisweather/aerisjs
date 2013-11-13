@@ -2,12 +2,13 @@ define([
   'aeris/util',
   'aeris/events',
   'aeris/model',
+  'aeris/promise',
   'sinon',
   'base/markercollections/pointdatamarkercollection',
   'aeris/collection',
   'api/endpoint/collection/pointdatacollection',
   'api/params/model/params'
-], function(_, Events, Model, sinon, MarkerCollection, Collection, PointDataCollection, Params) {
+], function(_, Events, Model, Promise, sinon, PointDataMarkerCollection, Collection, PointDataCollection, Params) {
   var TestFactory = function(opt_options) {
     var options = _.extend({
       data: new MockData(),
@@ -15,7 +16,7 @@ define([
       strategy: null
     }, opt_options);
 
-    this.markers = new MarkerCollection(null, _.pick(options, [
+    this.markers = new PointDataMarkerCollection(null, _.pick(options, [
       'marker',
       'url',
       'data',
@@ -97,16 +98,143 @@ define([
   }
 
 
+  beforeEach(function() {
+    // Stub out mixed-in methods
+    _.each([
+      'loadStrategy',
+      'setStrategy',
+      'removeStrategy'
+    ], function(method) {
+      spyOn(PointDataMarkerCollection.prototype, method);
+    });
+
+    PointDataMarkerCollection.prototype.loadStrategy.andCallFake(function() {
+      return new Promise();
+    });
+  });
+
+
   describe('A PointDataMarkerCollection', function() {
 
     describe('constructor', function() {
 
+      beforeEach(function() {
+        // Stub out methods called in constructor
+        _.each([
+          'startClustering',
+          'listenTo'
+        ], function(method) {
+          spyOn(PointDataMarkerCollection.prototype, method);
+        });
+      });
+
       it('should require a valid data collection', function() {
         expect(function() {
-          new MarkerCollection({
+          new PointDataMarkerCollection({
             data: 'foo'
           });
         }).toThrowType('InvalidArgumentError');
+      });
+
+
+      it('should set specified cluster styles', function() {
+        var styles = {
+          fooStyle: [
+            { url: 'bar1.png', width: 10, height: 10 },
+            { url: 'bar2.png', width: 20, height: 20 }
+          ],
+          fazStyle: [
+            { url: 'baz1.png', width: 10, height: 10 },
+            { url: 'baz2.png', width: 20, height: 20 }
+          ]
+        };
+        var markers = new PointDataMarkerCollection(undefined, {
+          clusterStyles: styles,
+          data: new MockData()
+        });
+
+        expect(markers.getClusterStyle('fooStyle')).toEqual(styles.fooStyle);
+        expect(markers.getClusterStyle('fazStyle')).toEqual(styles.fazStyle);
+      });
+
+
+      it('should set default cluster styles, if no styles are specified', function() {
+        var markers = new PointDataMarkerCollection(undefined, {
+          data: new MockData()
+        });
+
+        expect(markers.getClusterStyle()).toBeDefined();
+        _.each(markers.getClusterStyle(), function(style) {
+          expect(style.url).toBeDefined();
+          expect(style.height).toBeDefined();
+          expect(style.width).toBeDefined();
+        });
+      });
+
+      it('should set default cluster styles, if non-default styles are specified', function() {
+        var styles = {
+          fooStyle: [
+            { url: 'bar1.png', width: 10, height: 10 },
+            { url: 'bar2.png', width: 20, height: 20 }
+          ],
+          fazStyle: [
+            { url: 'baz1.png', width: 10, height: 10 },
+            { url: 'baz2.png', width: 20, height: 20 }
+          ]
+        };
+        var markers = new PointDataMarkerCollection(undefined, {
+          data: new MockData(),
+          clusterStyles: styles
+        });
+
+        expect(markers.getClusterStyle()).toBeDefined();
+        _.each(markers.getClusterStyle(), function(style) {
+          expect(style.url).toBeDefined();
+          expect(style.height).toBeDefined();
+          expect(style.width).toBeDefined();
+        });
+      });
+
+      it('should turn on clustering by default', function() {
+        new PointDataMarkerCollection(undefined, {
+          data: new MockData()
+        });
+
+        expect(PointDataMarkerCollection.prototype.startClustering).toHaveBeenCalled();
+      });
+
+      it('should turn on clustering if clustering option is set to true', function() {
+        new PointDataMarkerCollection(undefined, {
+          data: new MockData()
+        });
+
+        expect(PointDataMarkerCollection.prototype.startClustering).toHaveBeenCalled();
+      });
+
+      it('should not turn on clustering if clustering option is set to false', function() {
+        new PointDataMarkerCollection(undefined, {
+          data: new MockData(),
+          cluster: false
+        });
+
+        expect(PointDataMarkerCollection.prototype.startClustering).not.toHaveBeenCalled();
+      });
+
+      it('should set clusterBy property, as specifeid', function() {
+        var markers = new PointDataMarkerCollection(undefined, {
+          data: new MockData(),
+          clusterBy: 'foo.bar'
+        });
+
+        expect(markers.getClusterBy()).toEqual('foo.bar');
+      });
+
+      it('should set a default clusterBy property of null', function() {
+        var markers = new PointDataMarkerCollection(undefined, {
+          data: new MockData()
+        });
+
+        expect(markers.getClusterBy()).toEqual(null);
       });
 
     });
@@ -273,6 +401,26 @@ define([
         expect(marker.setMap).toHaveBeenCalledWith(map);
       });
 
+      it('should trigger a \'map:set\' event', function() {
+        var markers = new PointDataMarkerCollection(undefined, {
+          data: new MockData()
+        });
+        var map = new MockMap();
+        var evtListener = jasmine.createSpy('evtListener');
+
+        markers.on('map:set', evtListener);
+
+        markers.setMap(map);
+        expect(evtListener).toHaveBeenCalledWith(markers, map, {});
+
+        // Should only be called once
+        expect(evtListener.callCount).toEqual(1);
+
+        // Should not be called redundantly
+        markers.setMap(map);
+        expect(evtListener.callCount).toEqual(1);
+      });
+
       describe('map events', function() {
 
         it('should bind bounds parameter to map bounds', function() {
@@ -315,7 +463,7 @@ define([
 
     });
 
-    describe('remove', function() {
+    describe('removeMap', function() {
 
       it('should remove all markers from the map', function() {
         var test = new TestFactory();
@@ -339,7 +487,104 @@ define([
         expect(marker.setMap).not.toHaveBeenCalled();
       });
 
+      it('should trigger a \'map:remove\' event', function() {
+        var markers = new PointDataMarkerCollection(undefined, {
+          data: new MockData()
+        });
+        var evtListener = jasmine.createSpy('evtListener');
+
+        markers.on('map:remove', evtListener);
+
+        markers.removeMap();
+        expect(evtListener).toHaveBeenCalledWith(markers, null, {});
+
+        // Should only be called once
+        expect(evtListener.callCount).toEqual(1);
+      });
+
     });
+
+
+    describe('setClusterBy', function() {
+
+      it('should set the \'clusterBy\' property', function() {
+        var markers = new PointDataMarkerCollection(undefined, {
+          data: new MockData()
+        });
+
+        markers.setClusterBy('foo.bar');
+        expect(markers.getClusterBy()).toEqual('foo.bar');
+      });
+
+      it('should trigger a \'change:clusterBy\' event', function() {
+        var markers = new PointDataMarkerCollection(undefined, {
+          data: new MockData()
+        });
+        var evtListener = jasmine.createSpy('evtListener');
+
+        markers.on('change:clusterBy', evtListener);
+
+        markers.setClusterBy('foo.bar');
+        expect(evtListener).toHaveBeenCalledWith(markers, 'foo.bar', {});
+      });
+
+    });
+
+
+    describe('startClustering', function() {
+
+      it('should load the cluster strategy (clusterStrategy is string)', function() {
+        var markers = new PointDataMarkerCollection(undefined, {
+          data: new MockData(),
+          clusterStrategy: 'some/strategy',
+          cluster: false
+        });
+
+        markers.startClustering();
+        expect(markers.loadStrategy).toHaveBeenCalledWith('some/strategy');
+      });
+
+      it('should set the cluster strategy (clusterStrategy is ctor)', function() {
+        var MockStrategy = jasmine.createSpy('clusterStrategy#ctor');
+        var markers = new PointDataMarkerCollection(undefined, {
+          data: new MockData(),
+          clusterStrategy: MockStrategy,
+          cluster: false
+        });
+
+        markers.startClustering();
+        expect(markers.setStrategy).toHaveBeenCalledWith(MockStrategy);
+      });
+
+    });
+
+
+    describe('stopClustering', function() {
+
+      it('should do nothing if clustering hasn\'t been started', function() {
+        var markers = new PointDataMarkerCollection(undefined, {
+          data: new MockData(),
+          cluster: false
+        });
+
+        markers.stopClustering();
+        expect(markers.removeStrategy).not.toHaveBeenCalled();
+      });
+
+      it('should destroy it\'s strategy', function() {
+        var markers = new PointDataMarkerCollection(undefined, {
+          data: new MockData(),
+          cluster: false
+        });
+
+        markers.startClustering();
+
+        markers.stopClustering();
+        expect(markers.removeStrategy).toHaveBeenCalled();
+      });
+
+    });
+
 
   });
 });
