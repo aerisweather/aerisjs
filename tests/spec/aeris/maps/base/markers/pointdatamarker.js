@@ -1,10 +1,11 @@
 define([
   'aeris/util',
   'aeris/events',
+  'aeris/model',
   'sinon',
   'base/markers/pointdatamarker',
   'api/endpoint/model/pointdata'
-], function(_, Events, sinon, PointDataMarker, PointData) {
+], function(_, Events, Model, sinon, PointDataMarker, PointData) {
 
   function TestFactory(opt_options) {
     var options = _.extend({
@@ -13,7 +14,7 @@ define([
       }
     }, opt_options);
     options = _.extend({
-      data: new MockModel({
+      data: new MockPointData({
         attrs: options.attrs
       })
     }, options);
@@ -27,24 +28,44 @@ define([
     this.data = options.data;
   }
 
-  function MockModel(opt_options) {
-    var options = _.extend({
-      attrs: {
-        foo: 'bar',
-        hello: 'yo'
-      }
-    }, opt_options);
 
-    spyOn(this, 'toJSON').andReturn(options.attrs);
-
-    Events.call(this);
-    _.extend(this, Events.prototype);
-  }
-  _.inherits(MockModel, PointData);
-  MockModel.prototype = sinon.createStubInstance(PointData);
+  var MockPointData = function() {
+    // Use the base model constructor
+    Model.apply(this, arguments);
+  };
+  _.inherits(MockPointData, PointData);
 
 
   describe('A PointDataMarker', function() {
+
+    describe('constructor', function() {
+
+      it('should set the icon url, using the iconLookup option', function() {
+        var marker;
+
+        spyOn(PointDataMarker.prototype, 'getType').andReturn('snow');
+
+        marker = new PointDataMarker({
+          data: new MockPointData({
+            report: {
+              type: 'snow'
+            }
+          })
+        }, {
+          // Not necessary, as getType has been stubbed.
+          // Showing here only for demonstration
+          typeAttribute: 'data.report.type',
+          iconLookup: {
+            snow: 'snow_icon'
+          },
+          iconPath: 'icons/{name}.png'
+        });
+
+        expect(marker.get('url')).toEqual('icons/snow_icon.png');
+      });
+
+    });
+
 
     describe('validation', function() {
 
@@ -57,7 +78,7 @@ define([
 
         // Should not throw an error
         new TestFactory({
-          data: new MockModel()
+          data: new MockPointData()
         });
       });
 
@@ -77,12 +98,77 @@ define([
 
     });
 
-    describe('getData', function() {
+
+    describe('getType', function() {
+
+      it('should return the reference describe by the typeAttribute option', function() {
+        var marker = new PointDataMarker({
+          data: new MockPointData({
+            foo: {
+              report: {
+                type: 'snow'
+              }
+            }
+          })
+        }, {
+          typeAttribute: 'foo.report.type'
+        });
+
+        expect(marker.getType()).toEqual('snow');
+      });
+
+      it('should return undefined if the typeAttribute reference cannot be resolved', function() {
+        var marker = new PointDataMarker({
+          data: new MockPointData({
+            foo: {
+              report: {
+                type: 'snow'
+              }
+            }
+          })
+        }, {
+          typeAttribute: 'foo.bar.faz'
+        });
+
+        expect(marker.getType()).toEqual(undefined);
+      });
+
+      it('should use the iconLookup option to choose from multiple types', function() {
+        var marker = new PointDataMarker({
+          data: new MockPointData({
+            foo: {
+              report: {
+                type: ['heavy', 'snow', 'wet']
+              }
+            }
+          })
+        }, {
+          typeAttribute: 'foo.report.type',
+          iconLookup: {
+            snow: 'some_icon'
+          }
+        });
+
+        expect(marker.getType()).toEqual('snow');
+      });
+    });
+
+    describe('toJSON', function() {
 
       it('should return JSON data', function() {
-        var test = new TestFactory();
+        var marker = new PointDataMarker({
+          data: new MockPointData({
+            foo: {
+              bar: 'baz'
+            }
+          })
+        });
 
-        expect(test.marker.getData()).toEqual(test.options.attrs);
+        expect(marker.toJSON()).toEqual({
+          foo: {
+            bar: 'baz'
+          }
+        });
       });
 
     });
