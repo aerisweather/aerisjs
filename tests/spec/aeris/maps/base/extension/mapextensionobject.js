@@ -1,9 +1,11 @@
 define([
   'aeris/util',
+  'testUtils',
   'base/extension/mapextensionobject',
+  'base/abstractstrategy',
   'testErrors/untestedspecerror',
   'mocks/map'
-], function(_, MapExtensionObject, UntestedSpecError,  MockMap) {
+], function(_, testUtil, MapExtensionObject, AbstractStrategy, UntestedSpecError,  MockMap) {
 
   function testFactory(opt_options) {
     var options = _.extend({
@@ -23,6 +25,11 @@ define([
 
   function getStubbedMap() {
     return new MockMap();
+  }
+
+
+  function throwError(e) {
+    throw e;
   }
 
 
@@ -134,6 +141,87 @@ define([
         expect(spies.onRemove.callCount).toEqual(1);
       });
 
+    });
+    
+    
+    describe('getView', function() {
+      
+      it('should return the strategy\'s view', function() {
+        throw new UntestedSpecError();
+      });
+      
+      
+      it('should complain if there\'s no strategy set', function() {
+        throw new UntestedSpecError();
+      });
+      
+    });
+    
+    
+    describe('requestView', function() {
+      var view;
+
+
+      var MockStrategy = function() {
+      };
+      _.inherits(MockStrategy, AbstractStrategy);
+
+      MockStrategy.prototype.getView = jasmine.createSpy('getView').
+        andCallFake(function() {
+          return view;
+        });
+
+      require.setStrategy('gmaps');
+      define('gmaps/mockStrategy', function() {
+        return MockStrategy;
+      });
+
+      beforeEach(function() {
+        view = { id: _.uniqueId('StubView_') };
+      });
+
+      
+      it('should immediately resolve with the strategy\'s view, if a strategy is set', function() {
+        var obj = new MapExtensionObject();
+        var onResolved = jasmine.createSpy('onResolved');
+
+        obj.setStrategy(MockStrategy);
+
+        obj.requestView().
+          done(function(res) {
+            expect(res).toEqual(view);
+          }).
+          done(onResolved).
+          fail(throwError);
+
+        expect(onResolved).toHaveBeenCalled();
+      });
+      
+      it('should resolve with a strategy\'s view, once the strategy is loaded', function() {
+        var obj = new MapExtensionObject();
+        var onResolved = jasmine.createSpy('onResolved');
+
+        obj.requestView().
+          done(function(res) {
+            expect(res).toEqual(view);
+          }).
+          done(onResolved).
+          fail(throwError);
+
+        obj.loadStrategy('mockStrategy').
+          done(testUtil.setFlag).
+          fail(throwError);
+
+        // Request view shouldn't be resolved yet:
+        // Strategy needs to load first (async)
+        expect(onResolved).not.toHaveBeenCalled();
+
+        waitsFor(testUtil.checkFlag, 100, 'loadStrategy to resolve');
+        runs(function() {
+          expect(onResolved).toHaveBeenCalled();
+        });
+      });
+      
     });
 
   });
