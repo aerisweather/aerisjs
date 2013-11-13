@@ -42,7 +42,7 @@ define([
       andReturn(options.clusterBy);
 
     // Cans to return { icon: 'GROUPNAME_ICON' }
-    this.getClusterStyles = jasmine.createSpy('getClusterStyles').
+    this.getClusterStyle = jasmine.createSpy('getClusterStyle').
       andCallFake(function(groupName) {
         groupName || (groupName = 'SINGLE');
         return { url: groupName.toUpperCase() + '_ICON' };
