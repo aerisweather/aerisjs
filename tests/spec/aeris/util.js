@@ -334,6 +334,30 @@ define([
         expect(_.path('nada.yada.tada', obj)).toEqual(undefined);
       });
 
+      it('should return undefined for all falsey values', function() {
+        var obj = {
+          foo: {
+            bar: {
+              yo: 'jo'
+            }
+          }
+        };
+
+        expect(_.path('', obj)).toBeUndefined();
+        expect(_.path(null, obj)).toBeUndefined();
+        expect(_.path(undefined, obj)).toBeUndefined();
+        expect(_.path(false, obj)).toBeUndefined();
+        expect(_.path(-1, obj)).toBeUndefined();
+        expect(_.path(NaN, obj)).toBeUndefined();
+
+        expect(_.path('')).toBeUndefined();
+        expect(_.path(null)).toBeUndefined();
+        expect(_.path(undefined)).toBeUndefined();
+        expect(_.path(false)).toBeUndefined();
+        expect(_.path(-1)).toBeUndefined();
+        expect(_.path(NaN)).toBeUndefined();
+      });
+
     });
 
     describe('isNumeric', function() {
