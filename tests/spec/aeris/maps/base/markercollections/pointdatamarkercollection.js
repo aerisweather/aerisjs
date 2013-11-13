@@ -11,13 +11,15 @@ define([
   var TestFactory = function(opt_options) {
     var options = _.extend({
       data: new MockData(),
-      map: undefined
+      map: undefined,
+      strategy: null
     }, opt_options);
 
     this.markers = new MarkerCollection(null, _.pick(options, [
       'marker',
       'url',
-      'data'
+      'data',
+      'strategy'
     ]));
 
     this.data = options.data;
@@ -197,7 +199,7 @@ define([
         var marker = new MockMarker();
 
         test.markers.trigger('remove', marker);
-        expect(marker.remove).toHaveBeenCalled();
+        expect(marker.setMap).toHaveBeenCalledWith(null);
       });
 
       it('should reset markers on the map', function() {
@@ -219,7 +221,7 @@ define([
 
         // Old markers are removed from the map
         _.each(oldMarkers, function(marker) {
-          expect(marker.remove).toHaveBeenCalled();
+          expect(marker.setMap).toHaveBeenCalledWith(null);
         });
 
         // New markers are added to the map
@@ -323,7 +325,7 @@ define([
         test.markers.removeMap();
 
         _.each(markers, function(marker) {
-          expect(marker.remove).toHaveBeenCalled();
+          expect(marker.setMap).toHaveBeenCalledWith(null);
         });
       });
 
