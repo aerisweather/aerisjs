@@ -44,6 +44,7 @@ define([
     // Cans to return { icon: 'GROUPNAME_ICON' }
     this.getClusterStyles = jasmine.createSpy('getClusterStyles').
       andCallFake(function(groupName) {
+        groupName || (groupName = 'SINGLE');
         return { url: groupName.toUpperCase() + '_ICON' };
       });
 
@@ -191,6 +192,42 @@ define([
         expect(strategy.getView().rain).toBeInstanceOf(MarkerClusterer);
         expect(strategy.getView().snow).toBeInstanceOf(MarkerClusterer);
       });
+      
+      it('should group together markers which do not define the property specified by \'clusterBy\'', function() {
+        var newMarker;
+        var obj = new MockObject();
+        var MarkerClusterer = MockMarkerClustererFactory();
+        var markers = [
+          new MockMarker({ data: { report: { type: 'snow' } } }),
+          new MockMarker({ data: { report: { type: 'snow' } } }),
+          new MockMarker({ data: { report: { type: 'rain' } } }),
+          new MockMarker({ data: { report: { fooType: 'barType' } } }),
+          new MockMarker({ foo: 'shazaam' }),
+          new MockMarker({ foo: 'bar' }),
+          new MockMarker()
+        ];
+        var strategy = new MarkerClusterStrategy(obj, {
+          MarkerClusterer: MarkerClusterer
+        });
+        var singleClusterer;
+
+        // Add markers
+        _.each(markers, strategy.addMarker, strategy);
+
+        // Created 3 clusters: 'snow', 'rain', none-of-the-above (singleClusterer);
+        expect(_(strategy.getView()).keys().length).toEqual(3);
+        singleClusterer = strategy.getView()[MarkerClusterStrategy.SINGLE_CLUSTER_GROUPNAME];
+        expect(singleClusterer).toBeDefined();
+
+        singleClusterer.addMarker = jasmine.createSpy('SINGLE#addMarker');
+
+        // Add another non-matching marker
+        // --> should be added to non-matching group
+        newMarker = new MockMarker({ data: { foo: 'bar '}});
+        strategy.addMarker(newMarker);
+        expect(strategy.getView()[MarkerClusterStrategy.SINGLE_CLUSTER_GROUPNAME].addMarker).
+          toHaveBeenCalledWith(newMarker.getView())
+      });
 
       it('should trigger \'clusterer:create\' \'clusterer:add\' events', function() {
         var obj = new MockObject();
@@ -220,6 +257,38 @@ define([
 
       it('should use a single MarkerClusterer, if no clusterBy option is defined', function() {
         var obj = new MockObject(undefined, { clusterBy: null });
+        var MarkerClusterer = MockMarkerClustererFactory();
+        var strategy = new MarkerClusterStrategy(obj, { MarkerClusterer: MarkerClusterer });
+        var singleClusterer;
+
+        var markers = [
+          new MockMarker({ data: { report: { type: 'snow' } } }),
+          new MockMarker({ data: { report: { type: 'snow' } } }),
+          new MockMarker({ data: { report: { type: 'rain' } } }),
+          new MockMarker({ data: { report: { type: 'hail' } } })
+        ];
+
+        // Add all of the markers
+        _.each(markers, strategy.addMarker, strategy);
+
+        // Only one MarkerClusterer instance should have been created.
+        expect(MarkerClusterer.callCount).toEqual(1);
+
+        // The view should only reference a single group
+        singleClusterer = strategy.getClusterer(MarkerClusterStrategy.SINGLE_CLUSTER_GROUPNAME);
+        expect(singleClusterer).toBeInstanceOf(MarkerClusterer);
+        expect(_(strategy.getView()).keys().length).toEqual(1);
+
+        // All of the markers should have been added
+        expect(singleClusterer.addMarker).toHaveBeenCalledWith(markers[0].getView());
+        expect(singleClusterer.addMarker).toHaveBeenCalledWith(markers[1].getView());
+        expect(singleClusterer.addMarker).toHaveBeenCalledWith(markers[2].getView());
+        expect(singleClusterer.addMarker).toHaveBeenCalledWith(markers[3].getView());
+        expect(singleClusterer.addMarker.callCount).toEqual(4);
+      });
+
+      it('should use a single MarkerClusterer, if \'clusterBy\' is an empty string', function() {
+        var obj = new MockObject(undefined, { clusterBy: '' });
         var MarkerClusterer = MockMarkerClustererFactory();
         var strategy = new MarkerClusterStrategy(obj, { MarkerClusterer: MarkerClusterer });
         var singleClusterer;
