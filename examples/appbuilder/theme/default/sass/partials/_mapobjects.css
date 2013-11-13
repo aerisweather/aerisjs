@@ -1,0 +1,53 @@
+/*
+Syntax error: Invalid CSS after "  content: '',": expected expression (e.g. 1px, bold), was "}"
+        on line 4 of _mapobjects.scss
+
+1: .cluster:after {
+2:   content: '',
+3: 
+4: }
+
+Backtrace:
+_mapobjects.scss:4
+/Library/Ruby/Gems/1.8/gems/sass-3.3.0.alpha.121/bin/../lib/sass/scss/parser.rb:1187:in `expected'
+/Library/Ruby/Gems/1.8/gems/sass-3.3.0.alpha.121/bin/../lib/sass/script/lexer.rb:203:in `expected!'
+/Library/Ruby/Gems/1.8/gems/sass-3.3.0.alpha.121/bin/../lib/sass/script/parser.rb:502:in `assert_expr'
+/Library/Ruby/Gems/1.8/gems/sass-3.3.0.alpha.121/bin/../lib/sass/script/parser.rb:278:in `expr'
+/Library/Ruby/Gems/1.8/gems/sass-3.3.0.alpha.121/bin/../lib/sass/script/parser.rb:501:in `send'
+/Library/Ruby/Gems/1.8/gems/sass-3.3.0.alpha.121/bin/../lib/sass/script/parser.rb:501:in `assert_expr'
+/Library/Ruby/Gems/1.8/gems/sass-3.3.0.alpha.121/bin/../lib/sass/script/parser.rb:59:in `parse'
+/Library/Ruby/Gems/1.8/gems/sass-3.3.0.alpha.121/bin/../lib/sass/scss/parser.rb:1058:in `send'
+/Library/Ruby/Gems/1.8/gems/sass-3.3.0.alpha.121/bin/../lib/sass/scss/parser.rb:1058:in `sass_script'
+/Library/Ruby/Gems/1.8/gems/sass-3.3.0.alpha.121/bin/../lib/sass/scss/parser.rb:916:in `value!'
+/Library/Ruby/Gems/1.8/gems/sass-3.3.0.alpha.121/bin/../lib/sass/scss/parser.rb:889:in `declaration'
+/Library/Ruby/Gems/1.8/gems/sass-3.3.0.alpha.121/bin/../lib/sass/scss/parser.rb:607:in `declaration_or_ruleset'
+/Library/Ruby/Gems/1.8/gems/sass-3.3.0.alpha.121/bin/../lib/sass/scss/parser.rb:1161:in `call'
+/Library/Ruby/Gems/1.8/gems/sass-3.3.0.alpha.121/bin/../lib/sass/scss/parser.rb:1161:in `rethrow'
+/Library/Ruby/Gems/1.8/gems/sass-3.3.0.alpha.121/bin/../lib/sass/scss/parser.rb:617:in `declaration_or_ruleset'
+/Library/Ruby/Gems/1.8/gems/sass-3.3.0.alpha.121/bin/../lib/sass/scss/parser.rb:579:in `block_child'
+/Library/Ruby/Gems/1.8/gems/sass-3.3.0.alpha.121/bin/../lib/sass/scss/parser.rb:568:in `block_contents'
+/Library/Ruby/Gems/1.8/gems/sass-3.3.0.alpha.121/bin/../lib/sass/scss/parser.rb:559:in `block'
+/Library/Ruby/Gems/1.8/gems/sass-3.3.0.alpha.121/bin/../lib/sass/scss/parser.rb:553:in `ruleset'
+/Library/Ruby/Gems/1.8/gems/sass-3.3.0.alpha.121/bin/../lib/sass/scss/parser.rb:578:in `block_child'
+/Library/Ruby/Gems/1.8/gems/sass-3.3.0.alpha.121/bin/../lib/sass/scss/parser.rb:568:in `block_contents'
+/Library/Ruby/Gems/1.8/gems/sass-3.3.0.alpha.121/bin/../lib/sass/scss/parser.rb:102:in `stylesheet'
+/Library/Ruby/Gems/1.8/gems/sass-3.3.0.alpha.121/bin/../lib/sass/scss/parser.rb:39:in `parse'
+/Library/Ruby/Gems/1.8/gems/sass-3.3.0.alpha.121/bin/../lib/sass/engine.rb:389:in `_to_tree'
+/Library/Ruby/Gems/1.8/gems/sass-3.3.0.alpha.121/bin/../lib/sass/engine.rb:265:in `render'
+/Library/Ruby/Gems/1.8/gems/sass-3.3.0.alpha.121/bin/../lib/sass/plugin/compiler.rb:325:in `update_stylesheet'
+/Library/Ruby/Gems/1.8/gems/sass-3.3.0.alpha.121/bin/../lib/sass/plugin/compiler.rb:182:in `update_stylesheets'
+/Library/Ruby/Gems/1.8/gems/sass-3.3.0.alpha.121/bin/../lib/sass/plugin/compiler.rb:179:in `each'
+/Library/Ruby/Gems/1.8/gems/sass-3.3.0.alpha.121/bin/../lib/sass/plugin/compiler.rb:179:in `update_stylesheets'
+/Library/Ruby/Gems/1.8/gems/sass-3.3.0.alpha.121/bin/../lib/sass/plugin.rb:81:in `update_stylesheets'
+/Library/Ruby/Gems/1.8/gems/sass-3.3.0.alpha.121/bin/../lib/sass/exec.rb:456:in `watch_or_update'
+/Library/Ruby/Gems/1.8/gems/sass-3.3.0.alpha.121/bin/../lib/sass/exec.rb:317:in `process_result'
+/Library/Ruby/Gems/1.8/gems/sass-3.3.0.alpha.121/bin/../lib/sass/exec.rb:41:in `parse'
+/Library/Ruby/Gems/1.8/gems/sass-3.3.0.alpha.121/bin/../lib/sass/exec.rb:21:in `parse!'
+/Library/Ruby/Gems/1.8/gems/sass-3.3.0.alpha.121/bin/scss:9
+/usr/bin/scss:23:in `load'
+/usr/bin/scss:23
+*/
+body:before {
+  white-space: pre;
+  font-family: monospace;
+  content: "Syntax error: Invalid CSS after \"  content: '',\": expected expression (e.g. 1px, bold), was \"}\"\A         on line 4 of _mapobjects.scss\A \A 1: .cluster:after {\A 2:   content: '',\A 3: \A 4: }"; }

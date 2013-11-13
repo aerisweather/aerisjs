@@ -60,7 +60,7 @@ textarea:focus {
   z-index: 1;
 }
 
-/* line 35, ../sass/partials/_formreset.scss */
+/* line 34, ../sass/partials/_formreset.scss */
 input[type="file"]:focus, input[type="file"]:active,
 input[type="radio"]:focus,
 input[type="radio"]:active,
@@ -71,7 +71,7 @@ input[type="checkbox"]:active {
   box-shadow: none;
 }
 
-/* line 44, ../sass/partials/_formreset.scss */
+/* line 40, ../sass/partials/_formreset.scss */
 button,
 a.button,
 input[type="reset"],
@@ -159,7 +159,7 @@ button {
   *padding-bottom: 1px;
 }
 
-/* line 111, ../sass/partials/_formreset.scss */
+/* line 97, ../sass/partials/_formreset.scss */
 textarea,
 select,
 input[type="date"],
@@ -222,7 +222,7 @@ input[type="week"][disabled] {
   background-color: #eeeeee;
 }
 
-/* line 145, ../sass/partials/_formreset.scss */
+/* line 139, ../sass/partials/_formreset.scss */
 button[disabled],
 input[disabled],
 select[disabled],
@@ -241,32 +241,32 @@ a.button_disabled {
   cursor: default;
 }
 
-/* line 159, ../sass/partials/_formreset.scss */
+/* line 158, ../sass/partials/_formreset.scss */
 input::-webkit-input-placeholder,
 textarea::-webkit-input-placeholder {
   color: #888888;
 }
 
-/* line 164, ../sass/partials/_formreset.scss */
+/* line 163, ../sass/partials/_formreset.scss */
 input:-moz-placeholder,
 textarea:-moz-placeholder {
   color: #888888;
 }
 
-/* line 169, ../sass/partials/_formreset.scss */
+/* line 168, ../sass/partials/_formreset.scss */
 input.placeholder_text,
 textarea.placeholder_text {
   color: #888888;
 }
 
-/* line 175, ../sass/partials/_formreset.scss */
+/* line 173, ../sass/partials/_formreset.scss */
 textarea,
 select[size],
 select[multiple] {
   height: auto;
 }
 
-/* line 182, ../sass/partials/_formreset.scss */
+/* line 181, ../sass/partials/_formreset.scss */
 select[size="0"],
 select[size="1"] {
   height: 1.8em;
@@ -274,7 +274,7 @@ select[size="1"] {
 }
 
 @media (-webkit-min-device-pixel-ratio: 0) {
-  /* line 192, ../sass/partials/_formreset.scss */
+  /* line 190, ../sass/partials/_formreset.scss */
   select[size],
   select[multiple],
   select[multiple][size] {
@@ -282,7 +282,7 @@ select[size="1"] {
     padding-right: 3px;
   }
 
-  /* line 198, ../sass/partials/_formreset.scss */
+  /* line 196, ../sass/partials/_formreset.scss */
   select,
   select[size="0"],
   select[size="1"] {
@@ -306,7 +306,7 @@ select[size="1"] {
     min-height: 16px;
   }
 
-  /* line 219, ../sass/partials/_formreset.scss */
+  /* line 217, ../sass/partials/_formreset.scss */
   ::-webkit-validation-bubble-arrow,
   ::-webkit-validation-bubble-top-outer-arrow,
   ::-webkit-validation-bubble-top-inner-arrow {
@@ -608,4 +608,29 @@ optgroup::-moz-focus-inner {
 .aeris-infoPanel .aeris-content p {
   margin: 0;
   font-size: 13px;
+}
+
+/* line 2, ../sass/partials/_mapobjects.scss */
+.aeris-cluster:after {
+  content: '';
+  position: absolute;
+  top: -11px;
+  right: -14px;
+  width: 21px;
+  height: 18px;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #a90329), color-stop(44%, #8f0222), color-stop(100%, #6d0019));
+  background-image: -webkit-linear-gradient(top, #a90329 0%, #8f0222 44%, #6d0019 100%);
+  background-image: -moz-linear-gradient(top, #a90329 0%, #8f0222 44%, #6d0019 100%);
+  background-image: -o-linear-gradient(top, #a90329 0%, #8f0222 44%, #6d0019 100%);
+  background-image: linear-gradient(top, #a90329 0%, #8f0222 44%, #6d0019 100%);
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+}
+/* line 18, ../sass/partials/_mapobjects.scss */
+.aeris-cluster div {
+  z-index: 2;
 }

@@ -1,6 +1,7 @@
 /**
  * Default Aeris Maps theme
 */
+@import "compass";
 @import "compass/css3";
 @import "compass/reset/utilities";
 
@@ -15,3 +16,4 @@
 @import "partials/controls";
 
 @import "partials/infopanel";
+@import "partials/mapobjects";
