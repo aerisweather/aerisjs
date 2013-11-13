@@ -79,7 +79,7 @@ require([
 
       //'spec/aeris/maps/base/markercollection',
       //'spec/aeris/maps/base/markercollections/apiendpoint',
-      //'spec/aeris/maps/base/markercollections/pointdatamarkercollection'
+      //'spec/aeris/maps/base/markercollections/pointdatamarkercollection',
 
       //'spec/aeris/maps/base/animations/abstractanimation',
       //'spec/aeris/maps/base/animations/animationsync',
@@ -118,7 +118,5 @@ require([
     });
   });
 }, function(e) {
-  _.defer(function() {
-    throw e;
-  });
+  throw e;
 });
