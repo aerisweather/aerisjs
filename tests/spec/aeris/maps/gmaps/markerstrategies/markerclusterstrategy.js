@@ -1,9 +1,13 @@
 define([
   'aeris/util',
+  'sinon',
   'gmaps/markerstrategies/markerclusterstrategy',
   'aeris/collection',
-  'aeris/model'
-], function(_, MarkerClusterStrategy, Collection, Model) {
+  'aeris/model',
+  'aeris/promise'
+], function(_, sinon, MarkerClusterStrategy, Collection, Model, Promise) {
+  var clock;
+  var ASYNC_DELAY = 100;
 
   var MockMarkerClustererFactory = function() {
     var MockMarkerClusterer = jasmine.createSpy('MarkerClusterer ctor');
@@ -16,9 +20,26 @@ define([
 
 
 
-  var MockMarker = function() {
+  var MockMarker = function(opt_attrs, opt_options) {
+    var options = _.defaults(opt_options || {}, {
+      type: undefined
+    });
+
+    var markerView = _.uniqueId('MarkerView_');
+
+    this.getType = jasmine.createSpy('Marker#getType').andReturn(options.type);
+
     this.getView = jasmine.createSpy('Marker#getView').
-      andReturn(_.uniqueId('MarkerView_'));
+      andReturn(markerView);
+
+    this.requestView = jasmine.createSpy('Marker#requestView').
+      andCallFake(function() {
+        var promise = new Promise();
+
+        _.delay(promise.resolve, ASYNC_DELAY, promise, markerView);
+
+        return promise;
+      });
 
     Model.apply(this, arguments);
   };
@@ -28,7 +49,6 @@ define([
   var MockObject = function(opt_models, opt_options) {
     var options = _.defaults(opt_options || {}, {
       map: new MockMap(),
-      clusterBy: 'data.report.type',
       model: MockMarker
     });
 
@@ -37,9 +57,6 @@ define([
 
     this.getMap = jasmine.createSpy('getMap').
       andReturn(options.map);
-
-    this.getClusterBy = jasmine.createSpy('getClusterBy').
-      andReturn(options.clusterBy);
 
     // Cans to return { icon: 'GROUPNAME_ICON' }
     this.getClusterStyle = jasmine.createSpy('getClusterStyle').
@@ -62,6 +79,15 @@ define([
   };
   _.inherits(MockMap, Model);
 
+
+
+  beforeEach(function() {
+    clock = sinon.useFakeTimers();
+  });
+
+  afterEach(function() {
+    clock.restore();
+  });
 
 
 
@@ -124,13 +150,6 @@ define([
           expect(strategy.resetClusters).toHaveBeenCalled();
         });
 
-        it('should reset the MarkerClusterers if the object\'s \'clusterBy\' option changes', function() {
-          spyOn(strategy, 'resetClusters');
-
-          obj.trigger('change:clusterBy', obj, 'some.new.path', { some: 'opts' });
-          expect(strategy.resetClusters).toHaveBeenCalled();
-        });
-
         it('should repaint clusters when marker properties change', function() {
           spyOn(strategy, 'repaint');
 
@@ -158,20 +177,22 @@ define([
         var obj = new MockObject();
         var MarkerClusterer = MockMarkerClustererFactory();
         var markers = [
-          new MockMarker({ data: { report: { type: 'snow' } } }),
-          new MockMarker({ data: { report: { type: 'snow' } } }),
-          new MockMarker({ data: { report: { type: 'rain' } } })
+          new MockMarker(undefined, { type: 'snow' }),
+          new MockMarker(undefined, { type: 'snow' }),
+          new MockMarker(undefined, { type: 'rain' })
         ];
         var strategy = new MarkerClusterStrategy(obj, { MarkerClusterer: MarkerClusterer });
 
         // Add a marker with a new group
         // --> Create a MarkerClusterer for the group
         strategy.addMarker(markers[0]);
+        clock.tick(ASYNC_DELAY);
         expect(MarkerClusterer).toHaveBeenCalledWith(
           obj.getMap().getView(),
           [],
           {
-            styles: { url: 'SNOW_ICON' }
+            styles: { url: 'SNOW_ICON' },
+            clusterClass: 'aeris-cluster'
           }
         );
         expect(strategy.getView().snow).toBeInstanceOf(MarkerClusterer);
@@ -180,6 +201,7 @@ define([
         // Add another of the same type
         // --> Should NOT create another MarkerClusterer instance
         strategy.addMarker(markers[1]);
+        clock.tick(ASYNC_DELAY);
         expect(MarkerClusterer.callCount).toEqual(1);
         expect(MarkerClusterer.prototype.addMarker).toHaveBeenCalledWith(markers[1].getView());
         expect(strategy.getView().snow).toBeInstanceOf(MarkerClusterer);
@@ -187,23 +209,23 @@ define([
         // Add another of a different type
         // --> Should create another MarkerClusterer instance
         strategy.addMarker(markers[2]);
+        clock.tick(ASYNC_DELAY);
         expect(MarkerClusterer.callCount).toEqual(2);
         expect(MarkerClusterer.prototype.addMarker).toHaveBeenCalledWith(markers[2].getView());
         expect(strategy.getView().rain).toBeInstanceOf(MarkerClusterer);
         expect(strategy.getView().snow).toBeInstanceOf(MarkerClusterer);
       });
       
-      it('should group together markers which do not define the property specified by \'clusterBy\'', function() {
+      it('should group together markers which do not define a type', function() {
         var newMarker;
         var obj = new MockObject();
         var MarkerClusterer = MockMarkerClustererFactory();
         var markers = [
-          new MockMarker({ data: { report: { type: 'snow' } } }),
-          new MockMarker({ data: { report: { type: 'snow' } } }),
-          new MockMarker({ data: { report: { type: 'rain' } } }),
-          new MockMarker({ data: { report: { fooType: 'barType' } } }),
-          new MockMarker({ foo: 'shazaam' }),
-          new MockMarker({ foo: 'bar' }),
+          new MockMarker(undefined, { type: 'snow' }),
+          new MockMarker(undefined, { type: 'snow' }),
+          new MockMarker(undefined, { type: 'rain' }),
+          new MockMarker(),
+          new MockMarker(),
           new MockMarker()
         ];
         var strategy = new MarkerClusterStrategy(obj, {
@@ -213,6 +235,7 @@ define([
 
         // Add markers
         _.each(markers, strategy.addMarker, strategy);
+        clock.tick(ASYNC_DELAY * markers.length);
 
         // Created 3 clusters: 'snow', 'rain', none-of-the-above (singleClusterer);
         expect(_(strategy.getView()).keys().length).toEqual(3);
@@ -223,8 +246,9 @@ define([
 
         // Add another non-matching marker
         // --> should be added to non-matching group
-        newMarker = new MockMarker({ data: { foo: 'bar '}});
+        newMarker = new MockMarker();
         strategy.addMarker(newMarker);
+        clock.tick(ASYNC_DELAY);
         expect(strategy.getView()[MarkerClusterStrategy.SINGLE_CLUSTER_GROUPNAME].addMarker).
           toHaveBeenCalledWith(newMarker.getView())
       });
@@ -232,9 +256,9 @@ define([
       it('should trigger \'clusterer:create\' \'clusterer:add\' events', function() {
         var obj = new MockObject();
         var markers = [
-          new MockMarker({ data: { report: { type: 'snow' } } }),
-          new MockMarker({ data: { report: { type: 'snow' } } }),
-          new MockMarker({ data: { report: { type: 'rain' } } })
+          new MockMarker(undefined, { type: 'snow' }),
+          new MockMarker(undefined, { type: 'snow' }),
+          new MockMarker(undefined, { type: 'rain' })
         ];
         var strategy = new MarkerClusterStrategy(obj, {
           MarkerClusterer: MockMarkerClustererFactory()
@@ -255,70 +279,6 @@ define([
         expect(listeners.add).toHaveBeenCalledWith(strategy.getClusterer('rain'), 'rain');
       });
 
-      it('should use a single MarkerClusterer, if no clusterBy option is defined', function() {
-        var obj = new MockObject(undefined, { clusterBy: null });
-        var MarkerClusterer = MockMarkerClustererFactory();
-        var strategy = new MarkerClusterStrategy(obj, { MarkerClusterer: MarkerClusterer });
-        var singleClusterer;
-
-        var markers = [
-          new MockMarker({ data: { report: { type: 'snow' } } }),
-          new MockMarker({ data: { report: { type: 'snow' } } }),
-          new MockMarker({ data: { report: { type: 'rain' } } }),
-          new MockMarker({ data: { report: { type: 'hail' } } })
-        ];
-
-        // Add all of the markers
-        _.each(markers, strategy.addMarker, strategy);
-
-        // Only one MarkerClusterer instance should have been created.
-        expect(MarkerClusterer.callCount).toEqual(1);
-
-        // The view should only reference a single group
-        singleClusterer = strategy.getClusterer(MarkerClusterStrategy.SINGLE_CLUSTER_GROUPNAME);
-        expect(singleClusterer).toBeInstanceOf(MarkerClusterer);
-        expect(_(strategy.getView()).keys().length).toEqual(1);
-
-        // All of the markers should have been added
-        expect(singleClusterer.addMarker).toHaveBeenCalledWith(markers[0].getView());
-        expect(singleClusterer.addMarker).toHaveBeenCalledWith(markers[1].getView());
-        expect(singleClusterer.addMarker).toHaveBeenCalledWith(markers[2].getView());
-        expect(singleClusterer.addMarker).toHaveBeenCalledWith(markers[3].getView());
-        expect(singleClusterer.addMarker.callCount).toEqual(4);
-      });
-
-      it('should use a single MarkerClusterer, if \'clusterBy\' is an empty string', function() {
-        var obj = new MockObject(undefined, { clusterBy: '' });
-        var MarkerClusterer = MockMarkerClustererFactory();
-        var strategy = new MarkerClusterStrategy(obj, { MarkerClusterer: MarkerClusterer });
-        var singleClusterer;
-
-        var markers = [
-          new MockMarker({ data: { report: { type: 'snow' } } }),
-          new MockMarker({ data: { report: { type: 'snow' } } }),
-          new MockMarker({ data: { report: { type: 'rain' } } }),
-          new MockMarker({ data: { report: { type: 'hail' } } })
-        ];
-
-        // Add all of the markers
-        _.each(markers, strategy.addMarker, strategy);
-
-        // Only one MarkerClusterer instance should have been created.
-        expect(MarkerClusterer.callCount).toEqual(1);
-
-        // The view should only reference a single group
-        singleClusterer = strategy.getClusterer(MarkerClusterStrategy.SINGLE_CLUSTER_GROUPNAME);
-        expect(singleClusterer).toBeInstanceOf(MarkerClusterer);
-        expect(_(strategy.getView()).keys().length).toEqual(1);
-
-        // All of the markers should have been added
-        expect(singleClusterer.addMarker).toHaveBeenCalledWith(markers[0].getView());
-        expect(singleClusterer.addMarker).toHaveBeenCalledWith(markers[1].getView());
-        expect(singleClusterer.addMarker).toHaveBeenCalledWith(markers[2].getView());
-        expect(singleClusterer.addMarker).toHaveBeenCalledWith(markers[3].getView());
-        expect(singleClusterer.addMarker.callCount).toEqual(4);
-      });
-
     });
 
 
@@ -332,10 +292,10 @@ define([
         var newMap = new MockMap();
 
         strategy.addMarkers([
-          new MockMarker({ data: { report: { type: 'snow' } } }),
-          new MockMarker({ data: { report: { type: 'snow' } } }),
-          new MockMarker({ data: { report: { type: 'rain' } } }),
-          new MockMarker({ data: { report: { type: 'hail' } } })
+          new MockMarker(undefined, { type: 'snow'}),
+          new MockMarker(undefined, { type: 'snow'}),
+          new MockMarker(undefined, { type: 'rain'}),
+          new MockMarker(undefined, { type: 'hail'})
         ]);
 
         // Spy on MarkerClusterer#setMap
@@ -361,10 +321,10 @@ define([
         });
 
         strategy.addMarkers([
-          new MockMarker({ data: { report: { type: 'snow' } } }),
-          new MockMarker({ data: { report: { type: 'snow' } } }),
-          new MockMarker({ data: { report: { type: 'rain' } } }),
-          new MockMarker({ data: { report: { type: 'hail' } } })
+          new MockMarker(undefined, { type: 'snow'}),
+          new MockMarker(undefined, { type: 'snow'}),
+          new MockMarker(undefined, { type: 'rain'}),
+          new MockMarker(undefined, { type: 'hail'})
         ]);
 
         // Spy on MarkerClusterer#setMap
@@ -408,9 +368,9 @@ define([
           MarkerClusterer: MockMarkerClustererFactory() 
         });
         var markers = [
-          new MockMarker({ data: { report: { type: 'rain' } } }),
-          new MockMarker({ data: { report: { type: 'rain' } } }),
-          new MockMarker({ data: { report: { type: 'snow' } } })
+          new MockMarker(undefined, { type: 'rain'}),
+          new MockMarker(undefined, { type: 'rain'}),
+          new MockMarker(undefined, { type: 'snow'})
         ];
 
         strategy.addMarkers(markers);
@@ -419,12 +379,15 @@ define([
         strategy.getClusterer('snow').removeMarker = jasmine.createSpy('removeSnowMarker');
 
         strategy.removeMarker(markers[0]);
+        clock.tick(ASYNC_DELAY);
         expect(strategy.getClusterer('rain').removeMarker).toHaveBeenCalledWith(markers[0].getView());
 
         strategy.removeMarker(markers[1]);
+        clock.tick(ASYNC_DELAY);
         expect(strategy.getClusterer('rain').removeMarker).toHaveBeenCalledWith(markers[1].getView());
 
         strategy.removeMarker(markers[2]);
+        clock.tick(ASYNC_DELAY);
         expect(strategy.getClusterer('snow').removeMarker).toHaveBeenCalledWith(markers[2].getView());
       });
     });
@@ -436,9 +399,9 @@ define([
           MarkerClusterer: MockMarkerClustererFactory()
         });
         var markers = [
-          new MockMarker({ data: { report: { type: 'rain' } } }),
-          new MockMarker({ data: { report: { type: 'rain' } } }),
-          new MockMarker({ data: { report: { type: 'snow' } } })
+          new MockMarker(undefined, { type: 'rain'}),
+          new MockMarker(undefined, { type: 'rain'}),
+          new MockMarker(undefined, { type: 'snow'})
         ];
         var rainClusterer, snowClusterer;
 
@@ -463,9 +426,9 @@ define([
           MarkerClusterer: MockMarkerClustererFactory()
         });
         var markers = [
-          new MockMarker({ data: { report: { type: 'rain' } } }),
-          new MockMarker({ data: { report: { type: 'rain' } } }),
-          new MockMarker({ data: { report: { type: 'snow' } } })
+          new MockMarker(undefined, { type: 'rain'}),
+          new MockMarker(undefined, { type: 'rain'}),
+          new MockMarker(undefined, { type: 'snow'})
         ];
         var rainClusterer, snowClusterer;
         var removeListener = jasmine.createSpy('removeListener');
@@ -489,10 +452,10 @@ define([
 
       it('should remove and re-add all markers', function() {
         var obj = new MockObject([
-          { data: { report: { type: 'rain' } } },
-          { data: { report: { type: 'snow' } } },
-          { data: { report: { type: 'rain' } } },
-          { data: { report: { type: 'fog' } } }
+          new MockMarker(undefined, { type: 'rain'}),
+          new MockMarker(undefined, { type: 'snow'}),
+          new MockMarker(undefined, { type: 'rain'}),
+          new MockMarker(undefined, { type: 'fog'})
         ]);
         var strategy = new MarkerClusterStrategy(obj, {
           MarkerClusterer: MockMarkerClustererFactory()
@@ -519,10 +482,10 @@ define([
         });
 
         strategy.addMarkers([
-          new MockMarker({ data: { report: { type: 'snow' } } }),
-          new MockMarker({ data: { report: { type: 'snow' } } }),
-          new MockMarker({ data: { report: { type: 'rain' } } }),
-          new MockMarker({ data: { report: { type: 'hail' } } })
+          new MockMarker(undefined, { type: 'snow'}),
+          new MockMarker(undefined, { type: 'snow'}),
+          new MockMarker(undefined, { type: 'rain'}),
+          new MockMarker(undefined, { type: 'hail'})
         ]);
 
         // Spy on MarkerClusterer#repaint

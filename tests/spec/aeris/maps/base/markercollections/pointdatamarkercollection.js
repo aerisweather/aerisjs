@@ -220,23 +220,6 @@ define([
         expect(PointDataMarkerCollection.prototype.startClustering).not.toHaveBeenCalled();
       });
 
-      it('should set clusterBy property, as specifeid', function() {
-        var markers = new PointDataMarkerCollection(undefined, {
-          data: new MockData(),
-          clusterBy: 'foo.bar'
-        });
-
-        expect(markers.getClusterBy()).toEqual('foo.bar');
-      });
-
-      it('should set a default clusterBy property of null', function() {
-        var markers = new PointDataMarkerCollection(undefined, {
-          data: new MockData()
-        });
-
-        expect(markers.getClusterBy()).toEqual(null);
-      });
-
     });
 
     describe('PointDataCollection Events', function() {
@@ -500,32 +483,6 @@ define([
 
         // Should only be called once
         expect(evtListener.callCount).toEqual(1);
-      });
-
-    });
-
-
-    describe('setClusterBy', function() {
-
-      it('should set the \'clusterBy\' property', function() {
-        var markers = new PointDataMarkerCollection(undefined, {
-          data: new MockData()
-        });
-
-        markers.setClusterBy('foo.bar');
-        expect(markers.getClusterBy()).toEqual('foo.bar');
-      });
-
-      it('should trigger a \'change:clusterBy\' event', function() {
-        var markers = new PointDataMarkerCollection(undefined, {
-          data: new MockData()
-        });
-        var evtListener = jasmine.createSpy('evtListener');
-
-        markers.on('change:clusterBy', evtListener);
-
-        markers.setClusterBy('foo.bar');
-        expect(evtListener).toHaveBeenCalledWith(markers, 'foo.bar', {});
       });
 
     });
