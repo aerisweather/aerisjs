@@ -45,8 +45,8 @@ $section-padding: 8px;
 
   .aeris-map-controls {
     position: absolute;
-    top: 10%;
-    right: 5%;
+    top: 60px;
+    right: 15px;
 
     z-index: 100;
 
@@ -89,15 +89,24 @@ $navBorderColor: #a3a3a3;
 .aeris-navBar {
   position: absolute;
   width: 100%;
+
+  @include box-sizing(border-box);
+
   padding: 5px 15px;
   z-index: 100;
 
   background: $navGrey;
   border-bottom: 1px solid $navBorderColor;
 
+  &:after {
+    content: '';
+    clear: both;
+  }
+
   .aeris-navItem {
     position: relative;
     display: inline-block;
+    float: left;
 
     .aeris-navItemLabel {
       display: block;

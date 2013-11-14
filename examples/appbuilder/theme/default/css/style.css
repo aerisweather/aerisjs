@@ -60,7 +60,7 @@ textarea:focus {
   z-index: 1;
 }
 
-/* line 34, ../sass/partials/_formreset.scss */
+/* line 35, ../sass/partials/_formreset.scss */
 input[type="file"]:focus, input[type="file"]:active,
 input[type="radio"]:focus,
 input[type="radio"]:active,
@@ -71,7 +71,7 @@ input[type="checkbox"]:active {
   box-shadow: none;
 }
 
-/* line 40, ../sass/partials/_formreset.scss */
+/* line 44, ../sass/partials/_formreset.scss */
 button,
 a.button,
 input[type="reset"],
@@ -159,7 +159,7 @@ button {
   *padding-bottom: 1px;
 }
 
-/* line 97, ../sass/partials/_formreset.scss */
+/* line 111, ../sass/partials/_formreset.scss */
 textarea,
 select,
 input[type="date"],
@@ -222,7 +222,7 @@ input[type="week"][disabled] {
   background-color: #eeeeee;
 }
 
-/* line 139, ../sass/partials/_formreset.scss */
+/* line 145, ../sass/partials/_formreset.scss */
 button[disabled],
 input[disabled],
 select[disabled],
@@ -241,32 +241,32 @@ a.button_disabled {
   cursor: default;
 }
 
-/* line 158, ../sass/partials/_formreset.scss */
+/* line 159, ../sass/partials/_formreset.scss */
 input::-webkit-input-placeholder,
 textarea::-webkit-input-placeholder {
   color: #888888;
 }
 
-/* line 163, ../sass/partials/_formreset.scss */
+/* line 164, ../sass/partials/_formreset.scss */
 input:-moz-placeholder,
 textarea:-moz-placeholder {
   color: #888888;
 }
 
-/* line 168, ../sass/partials/_formreset.scss */
+/* line 169, ../sass/partials/_formreset.scss */
 input.placeholder_text,
 textarea.placeholder_text {
   color: #888888;
 }
 
-/* line 173, ../sass/partials/_formreset.scss */
+/* line 175, ../sass/partials/_formreset.scss */
 textarea,
 select[size],
 select[multiple] {
   height: auto;
 }
 
-/* line 181, ../sass/partials/_formreset.scss */
+/* line 182, ../sass/partials/_formreset.scss */
 select[size="0"],
 select[size="1"] {
   height: 1.8em;
@@ -274,7 +274,7 @@ select[size="1"] {
 }
 
 @media (-webkit-min-device-pixel-ratio: 0) {
-  /* line 190, ../sass/partials/_formreset.scss */
+  /* line 192, ../sass/partials/_formreset.scss */
   select[size],
   select[multiple],
   select[multiple][size] {
@@ -282,7 +282,7 @@ select[size="1"] {
     padding-right: 3px;
   }
 
-  /* line 196, ../sass/partials/_formreset.scss */
+  /* line 198, ../sass/partials/_formreset.scss */
   select,
   select[size="0"],
   select[size="1"] {
@@ -306,7 +306,7 @@ select[size="1"] {
     min-height: 16px;
   }
 
-  /* line 217, ../sass/partials/_formreset.scss */
+  /* line 219, ../sass/partials/_formreset.scss */
   ::-webkit-validation-bubble-arrow,
   ::-webkit-validation-bubble-top-outer-arrow,
   ::-webkit-validation-bubble-top-inner-arrow {
@@ -458,8 +458,8 @@ optgroup::-moz-focus-inner {
 /* line 46, ../sass/partials/_layout.scss */
 .aeris-maps-app .aeris-map-controls {
   position: absolute;
-  top: 10%;
-  right: 5%;
+  top: 60px;
+  right: 15px;
   z-index: 100;
   padding: 10px;
   line-height: 1.75em;
@@ -503,17 +503,26 @@ optgroup::-moz-focus-inner {
 .aeris-navBar {
   position: absolute;
   width: 100%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
   padding: 5px 15px;
   z-index: 100;
   background: #f8f8f8;
   border-bottom: 1px solid #a3a3a3;
 }
-/* line 98, ../sass/partials/_layout.scss */
+/* line 101, ../sass/partials/_layout.scss */
+.aeris-navBar:after {
+  content: '';
+  clear: both;
+}
+/* line 106, ../sass/partials/_layout.scss */
 .aeris-navBar .aeris-navItem {
   position: relative;
   display: inline-block;
+  float: left;
 }
-/* line 102, ../sass/partials/_layout.scss */
+/* line 111, ../sass/partials/_layout.scss */
 .aeris-navBar .aeris-navItem .aeris-navItemLabel {
   display: block;
   margin-right: 10px;
@@ -526,11 +535,11 @@ optgroup::-moz-focus-inner {
   text-decoration: none;
   cursor: pointer;
 }
-/* line 117, ../sass/partials/_layout.scss */
+/* line 126, ../sass/partials/_layout.scss */
 .aeris-navBar .aeris-navItem .aeris-navItemLabel:hover {
   background: #932026;
 }
-/* line 122, ../sass/partials/_layout.scss */
+/* line 131, ../sass/partials/_layout.scss */
 .aeris-navBar .aeris-navItem .aeris-subMenu {
   position: absolute;
   margin-top: 5px;
@@ -539,21 +548,21 @@ optgroup::-moz-focus-inner {
   border: 1px solid #a3a3a3;
   border-top: none;
 }
-/* line 134, ../sass/partials/_layout.scss */
+/* line 143, ../sass/partials/_layout.scss */
 .aeris-navBar .aeris-navItem .aeris-subMenu .aeris-subMenuItem label, .aeris-navBar .aeris-navItem .aeris-subMenu .aeris-subMenuItem input {
   cursor: pointer;
 }
-/* line 138, ../sass/partials/_layout.scss */
+/* line 147, ../sass/partials/_layout.scss */
 .aeris-navBar .aeris-navItem .aeris-subMenu .aeris-subMenuItem label {
   display: inline-block;
   padding: 8px 10px;
   border-radius: 3px;
 }
-/* line 144, ../sass/partials/_layout.scss */
+/* line 153, ../sass/partials/_layout.scss */
 .aeris-navBar .aeris-navItem .aeris-subMenu .aeris-subMenuItem input {
   display: none;
 }
-/* line 148, ../sass/partials/_layout.scss */
+/* line 157, ../sass/partials/_layout.scss */
 .aeris-navBar .aeris-navItem .aeris-subMenu .aeris-subMenuItem.aeris-selected label, .aeris-navBar .aeris-navItem .aeris-subMenu .aeris-subMenuItem:hover label {
   background: #a72026;
   color: #fff;
@@ -633,4 +642,16 @@ optgroup::-moz-focus-inner {
 /* line 18, ../sass/partials/_mapobjects.scss */
 .aeris-cluster div {
   z-index: 2;
+}
+
+/* line 2, ../sass/partials/geosearch.scss */
+.aeris-navBar .aeris-geolocate {
+  float: right;
+}
+/* line 5, ../sass/partials/geosearch.scss */
+.aeris-navBar .aeris-geolocate button {
+  font-size: 24px;
+  font-weight: bold;
+  padding: 3px 6px;
+  line-height: 1em;
 }

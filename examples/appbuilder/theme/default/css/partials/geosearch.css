@@ -1,0 +1,11 @@
+/* line 2, ../../sass/partials/geosearch.scss */
+.aeris-navBar .aeris-geolocate {
+  float: right;
+}
+/* line 5, ../../sass/partials/geosearch.scss */
+.aeris-navBar .aeris-geolocate button {
+  font-size: 24px;
+  font-weight: bold;
+  padding: 3px 6px;
+  line-height: 1em;
+}
