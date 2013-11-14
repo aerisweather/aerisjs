@@ -644,14 +644,49 @@ optgroup::-moz-focus-inner {
   z-index: 2;
 }
 
-/* line 2, ../sass/partials/geosearch.scss */
+/* line 2, ../sass/partials/_geosearch.scss */
+.aeris-navBar input[type=text].placeholder {
+  font-size: 10px;
+  color: #6d6d6d;
+  font-style: italic;
+}
+/* line 3, ../sass/partials/_geosearch.scss */
+.aeris-navBar input[type=text]:-moz-placeholder {
+  font-size: 10px;
+  color: #6d6d6d;
+  font-style: italic;
+}
+/* line 4, ../sass/partials/_geosearch.scss */
+.aeris-navBar input[type=text]::-webkit-input-placeholder {
+  font-size: 10px;
+  color: #6d6d6d;
+  font-style: italic;
+}
+/* line 17, ../sass/partials/_geosearch.scss */
 .aeris-navBar .aeris-geolocate {
   float: right;
+  margin: 5px 0 0 5px;
 }
-/* line 5, ../sass/partials/geosearch.scss */
+/* line 21, ../sass/partials/_geosearch.scss */
 .aeris-navBar .aeris-geolocate button {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: bold;
-  padding: 3px 6px;
+  padding: 1px 3px 1px 6px;
   line-height: 1em;
+}
+/* line 29, ../sass/partials/_geosearch.scss */
+.aeris-navBar .aeris-geocode {
+  float: right;
+  margin: 5px 0 0 5px;
+}
+/* line 33, ../sass/partials/_geosearch.scss */
+.aeris-navBar .aeris-geocode input[type=submit] {
+  font-size: 12px;
+  font-weight: bold;
+  padding: 4px 6px;
+  line-height: 1em;
+}
+/* line 40, ../sass/partials/_geosearch.scss */
+.aeris-navBar .aeris-geocode input[type=text] {
+  width: 160px;
 }
