@@ -257,40 +257,6 @@ define([
 
     });
 
-    describe('getValidFilters', function() {
-
-      it('should return valid filters', function() {
-        var filters = new FilterCollection(undefined, {
-          validFilters: [
-            'foo', 'bar'
-          ]
-        });
-
-        expect(filters.getValidFilters()).toEqual(['foo', 'bar']);
-      });
-
-      it('should return a safe copy of the valid filters', function() {
-        var filters = new FilterCollection(undefined, {
-          validFilters: [
-            'foo', 'bar'
-          ]
-        });
-
-        var validFilters = filters.getValidFilters();
-        validFilters.push('waz');
-        validFilters.splice(0, 2, 'hello', 'y\'all');
-
-        expect(filters.getValidFilters()).toEqual(['foo', 'bar']);
-
-        // Round 2
-        validFilters = filters.getValidFilters();
-        validFilters.length = 0;
-
-        expect(filters.getValidFilters()).toEqual(['foo', 'bar']);
-      });
-
-    });
-
   });
 
 });
