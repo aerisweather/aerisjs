@@ -3,26 +3,36 @@ define([
   'jasmine',
   'sinon',
   'aeris/util',
+  'aeris/model',
   'testUtils',
   'testErrors/untestedspecerror',
   'gmaps/route/waypoint',
   'gmaps/route/directions/abstractdirectionsservice',
   'mocks/promise',
-  'mocks/waypoint',
+  'aeris/promise',
   'gmaps/route/route'
 ], function(
   Events,
   jasmine,
   sinon,
   _,
+  Model,
   testUtils,
   UntestedSpecError,
   Waypoint,
   DirectionsService,
   StubbedPromise,
-  MockWaypoint,
+  Promise,
   Route
 ) {
+
+  var MockWaypoint = function(opt_attrs, opt_options) {
+    // Use Model ctor
+    Model.apply(this, arguments);
+  };
+  _.inherits(MockWaypoint, Waypoint);
+
+
 
   function getStubbedWaypoint(opt_options) {
     var options = _.extend({}, opt_options);
@@ -404,36 +414,6 @@ define([
       });
     });
 
-    describe('Event bindings', function() {
-      it('should proxy events fired by child waypoints', function() {
-        var waypoint = getStubbedWaypoint();
-        var route = new Route();
-
-        spyOn(route, 'proxyEvents').andCallFake(function(obj, cb, ctx) {
-          var fakeArgs = ['some', 'args'];
-          
-          ctx || (ctx = route);
-          
-          expect(obj).toEqual(waypoint);
-          expect(cb.call(ctx, 'change', fakeArgs)).toEqual({
-            topic: 'change',
-            args: [waypoint].concat(fakeArgs)
-          });
-          expect(cb.call(ctx, 'change:someProp', fakeArgs)).toEqual({
-            topic: 'change:someProp',
-            args: [waypoint].concat(fakeArgs)
-          });
-          expect(cb.call(ctx, 'someEvent', fakeArgs)).toEqual({
-            topic: 'waypoint:someEvent',
-            args: [waypoint].concat(fakeArgs)
-          });
-        });
-
-        route.add(waypoint);
-        expect(route.proxyEvents).toHaveBeenCalled();
-      });
-    });
-
     describe('should update a waypoint\'s path', function() {
       var route, waypoint, next, prev;
 
@@ -517,41 +497,45 @@ define([
 
     it('should update a path between two waypoints', function() {
       var route = new Route();
-      var origin = getStubbedWaypoint(), destination = getStubbedWaypoint();
+      var origin = getStubbedWaypoint();
+      var destination = new MockWaypoint({
+        followDirections: true,
+        travelMode: 'DRIVING'
+      });
       var res = {
         path: testUtils.getRandomPath(),
         distance: 12345
       };
-      var directionsPromise = new StubbedPromise({
-        resolve: true,      // StubbedPromise will be immediately invoked
-        args: [res]
-      });
-      var options = {
-        followDirections: true,
-        travelMode: 'DRIVING'
-      };
-
-      _.extend(destination, options);
 
       // This would be a good candidate for dependency injection
       // so we don't have to provide public access to the service
       spyOn(route.getDirectionsService(), 'fetchPath').
-        andReturn(directionsPromise);
+        andCallFake(function(wpOrig, wpDest, opts) {
+          var promise = new Promise();
+
+          expect(wpOrig).toEqual(origin);
+          expect(wpDest).toEqual(destination);
+          expect(opts).toEqual({
+            followDirections: true,
+            travelMode: 'DRIVING'
+          });
+
+          promise.resolve(res);
+          return promise;
+        });
 
       spyOn(destination, 'set');
       spyOn(origin, 'set');
-      spyOn(origin, 'getLatLon').andReturn(testUtils.getRandomLatLon());
 
       route.updatePathBetween(origin, destination);
 
       // Test: Service was called
-      expect(route.getDirectionsService().fetchPath).toHaveBeenCalledWith(
-        origin, destination, options
-      );
+      expect(route.getDirectionsService().fetchPath).toHaveBeenCalled();
 
       // Test: destination path was updated
       expect(destination.set).toHaveBeenCalledWith({
         path: res.path,
+        position: res.path[res.path.length - 1],
         distance: res.distance
       });
     });

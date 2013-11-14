@@ -1,73 +1,122 @@
 define([
-  'jasmine',
-  'sinon',
   'testUtils',
+  'aeris/model',
   'gmaps/route/commands/movewaypointcommand',
   'gmaps/route/waypoint',
   'gmaps/route/route'
 ], function(
-  jasmine,
-  sinon,
-  testUtils,
+  testUtil,
+  Model,
   MoveWaypointCommand,
   Waypoint,
   Route
 ) {
 
-  function getStubbedWaypoint() {
-    var waypoint = sinon.createStubInstance(Waypoint);
-    waypoint.set = jasmine.createSpy('set');
-    return waypoint;
+  var MockWaypoint = function() {
+    Model.apply(this, arguments);
+
+    spyOn(this, 'getPosition').andReturn(this.get('position'));
+  };
+  _.inherits(MockWaypoint, Waypoint);
+
+
+  var MockRoute = function() {
+  };
+  _.inherits(MockRoute, Route);
+
+
+  function throwError(err) {
+    console.log('Error: ', arguments);
+
+    if (err instanceof Error) {
+      throw err;
+    }
   }
 
-  function getStubbedRoute() {
-    return sinon.createStubInstance(Route);
-  }
-
-  var TestFactory = function() {
-    this.route_ = getStubbedRoute();
-    this.waypoint_ = getStubbedWaypoint();
-    this.newLatLon_ = testUtils.getRandomLatLon();
-    this.originalLatLon_ = this.newLatLon_.slice(0);
-    this.originalGeocodedLatLon_ = testUtils.getRandomLatLon();
-    this.command_ = new MoveWaypointCommand(this.getRoute(), this.getWaypoint(), this.getNewLatLon());
-
-    this.getWaypoint().getPosition = jasmine.createSpy('getPosition').
-      andReturn(this.getOriginalGeocodedLatLon());
-
-    this.getWaypoint().latLon = this.getOriginalLatLon();
-  };
-  TestFactory.prototype = {
-    getRoute: function() { return this.route_; },
-    getWaypoint: function() { return this.waypoint_; },
-    getCommand: function() { return this.command_; },
-    getNewLatLon: function() { return this.newLatLon_; },
-    getOriginalLatLon: function() { return this.originalLatLon_; },
-    getOriginalGeocodedLatLon: function() { return this.originalGeocodedLatLon_; }
-  };
 
   describe('A MoveWaypointCommand', function() {
-    var f;
-    beforeEach(function() {
-      f = new TestFactory();
-    });
 
-    it('should set a waypoint\'s latLon property', function() {
-      f.getCommand().execute();
+    describe('execute', function() {
 
-      expect(f.getWaypoint().set).toHaveBeenCalledWith({
-        latLon: f.getNewLatLon()
+      it('should set the new position on the waypoint', function() {
+        var waypoint = new MockWaypoint({
+          position: [45, -90]
+        });
+
+        var command = new MoveWaypointCommand(new MockRoute(), waypoint, [30, -20]);
+
+        command.execute().
+          done(testUtil.setFlag).
+          fail(throwError);
+
+        waitsFor(testUtil.checkFlag, 100, 'Command to execute');
+        runs(function() {
+          expect(waypoint.get('position')).toEqual([30, -20])
+        });
       });
+
     });
 
-    it('should undo', function() {
-      f.getCommand().execute();
-      f.getCommand().undo();
+    describe('undo', function() {
 
-      expect(f.getWaypoint().set.callCount).toEqual(2);
-      expect(f.getWaypoint().set.mostRecentCall.args[0]).toEqual({
-        latLon: f.getOriginalLatLon()
+      it('should reset the waypoint to the old position', function() {
+        var waypoint = new MockWaypoint({
+          position: [45, -90]
+        });
+
+        var command = new MoveWaypointCommand(new MockRoute(), waypoint, [30, -20]);
+
+        command.execute().
+          done(testUtil.setFlag).
+          fail(throwError);
+
+        waitsFor(testUtil.checkFlag, 100, 'Command to execute');
+        runs(testUtil.resetFlag);
+        runs(function() {
+          command.undo().
+            done(function() {
+              expect(waypoint.get('position')).toEqual([45, -90]);
+            }).
+            done(testUtil.setFlag).
+            fail(throwError);
+        });
+        waitsFor(testUtil.checkFlag, 100, 'Command to undo');
       });
+
+      it('should use a copy of the old position', function() {
+        var position_orig = [45, -90];
+        var waypoint = new MockWaypoint({
+          position: position_orig
+        });
+
+        var command = new MoveWaypointCommand(new MockRoute(), waypoint, [30, -20]);
+
+        command.execute().
+          done(testUtil.setFlag).
+          fail(throwError);
+
+        waitsFor(testUtil.checkFlag, 100, 'Command to execute');
+        runs(testUtil.resetFlag);
+        runs(function() {
+          // Modifiy original position
+          position_orig.splice(1, 0, 'foo', 'bar');
+
+          command.undo().
+            done(function() {
+              // Modifiy original position
+              position_orig.splice(1, 0, 'foo', 'bar');
+
+              // Should change new position
+              expect(waypoint.get('position')).toEqual([45, -90]);
+            }).
+            done(testUtil.setFlag).
+            fail(throwError);
+        });
+        waitsFor(testUtil.checkFlag, 100, 'Command to undo');
+      });
+
     });
+
   });
+
 });
