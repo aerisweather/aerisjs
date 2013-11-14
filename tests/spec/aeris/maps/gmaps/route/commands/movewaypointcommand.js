@@ -32,11 +32,10 @@ define([
     this.originalGeocodedLatLon_ = testUtils.getRandomLatLon();
     this.command_ = new MoveWaypointCommand(this.getRoute(), this.getWaypoint(), this.getNewLatLon());
 
-    this.getWaypoint().getLatLon = jasmine.createSpy('getLatLon').
+    this.getWaypoint().getPosition = jasmine.createSpy('getPosition').
       andReturn(this.getOriginalGeocodedLatLon());
 
     this.getWaypoint().latLon = this.getOriginalLatLon();
-    this.getWaypoint().geocodedLatLon = this.getOriginalGeocodedLatLon();
   };
   TestFactory.prototype = {
     getRoute: function() { return this.route_; },
@@ -57,8 +56,7 @@ define([
       f.getCommand().execute();
 
       expect(f.getWaypoint().set).toHaveBeenCalledWith({
-        latLon: f.getNewLatLon(),
-        geocodedLatLon: null
+        latLon: f.getNewLatLon()
       });
     });
 
@@ -68,8 +66,7 @@ define([
 
       expect(f.getWaypoint().set.callCount).toEqual(2);
       expect(f.getWaypoint().set.mostRecentCall.args[0]).toEqual({
-        latLon: f.getOriginalLatLon(),
-        geocodedLatLon: f.getOriginalGeocodedLatLon()
+        latLon: f.getOriginalLatLon()
       });
     });
   });

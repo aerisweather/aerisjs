@@ -8,7 +8,7 @@ require([
   function isSameWaypoint(wp1, wp2) {
     var match = true;
     var compareProps = [
-      'path', 'latLon', 'geocodedLatLon', 'followDirections', 'travelMode'
+      'path', 'latLon', 'position', 'followDirections', 'travelMode'
     ];
 
     if (!(wp1 instanceof Waypoint) || !(wp2 instanceof Waypoint)) {

@@ -37,8 +37,7 @@ define(['gmaps/route/waypoint','aeris/util'], function(Waypoint, _) {
         getRandomLatLon(),
         getRandomLatLon()
       ],
-      latLon: getRandomLatLon(),
-      geocodedLatLon: getRandomLatLon()
+      latLon: getRandomLatLon()
     }, opt_options);
 
     return new Waypoint(wpOptions);

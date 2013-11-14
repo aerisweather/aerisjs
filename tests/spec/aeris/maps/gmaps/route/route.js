@@ -552,13 +552,7 @@ define([
       // Test: destination path was updated
       expect(destination.set).toHaveBeenCalledWith({
         path: res.path,
-        geocodedLatLon: res.path[res.path.length - 1],
         distance: res.distance
-      });
-
-      // Test: origin was updated with geocoded latLon
-      expect(origin.set).toHaveBeenCalledWith({
-        geocodedLatLon: res.path[0]
       });
     });
 

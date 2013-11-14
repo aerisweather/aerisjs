@@ -26,7 +26,7 @@ require([
 
     waypoint.latLon = testUtils.getRandomLatLon();
   };
-  StubbedWaypoint.prototype.getLatLon = function() {
+  StubbedWaypoint.prototype.getPosition = function() {
     return this.latLon;
   };
 
@@ -50,8 +50,8 @@ require([
         spyOn(service, 'getServiceAPI').andReturn(api);
 
         api.route.andReturn(function(request) {
-          expect(request.origin).toEqual(mapUtils.arrayToLatLng(origin.getLatLon()));
-          expect(request.destination).toEqual(mapUtils.arrayToLatLng(destination.getLatLon()));
+          expect(request.origin).toEqual(mapUtils.arrayToLatLng(origin.getPosition()));
+          expect(request.destination).toEqual(mapUtils.arrayToLatLng(destination.getPosition()));
         });
 
         service.fetchPath(origin, destination, options);
@@ -128,8 +128,8 @@ require([
 
         expect(google.maps.geometry.spherical.computeDistanceBetween).
           toHaveBeenCalledWith(
-            mapUtils.arrayToLatLng(origin.getLatLon()),
-            mapUtils.arrayToLatLng(destination.getLatLon())
+            mapUtils.arrayToLatLng(origin.getPosition()),
+            mapUtils.arrayToLatLng(destination.getPosition())
           );
       });
 
@@ -150,8 +150,8 @@ require([
 
         expect(Promise.prototype.resolve).toHaveBeenCalledWith({
           path: [
-            origin.getLatLon(),
-            destination.getLatLon()
+            origin.getPosition(),
+            destination.getPosition()
           ],
           distance: distance,
           status: {
