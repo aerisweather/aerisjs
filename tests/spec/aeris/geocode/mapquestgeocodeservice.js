@@ -115,6 +115,29 @@ define([
       expect(failSpy).toHaveBeenCalled();
     });
 
+    it('should reject the promise if no results are returned', function() {
+      var test;
+      var failSpy = jasmine.createSpy('failSpy');
+      var resp = getSuccessResponse();
+      resp.results = [];
+
+      // Set expectations on failSpy params
+      failSpy.andCallFake(function(res) {
+        expect(res.latLon).toEqual([]);
+        expect(res.status.code).toEqual(GeocodeServiceStatus.NO_RESULTS);
+      });
+
+
+      test = testFactory({
+        apiResponse: resp
+      });
+
+      test.gcs.geocode('someplace').
+        fail(failSpy);
+
+      expect(failSpy).toHaveBeenCalled()
+    });
+
     it('should return sucessful api responses', function() {
       var test = testFactory({
         apiResponse: getSuccessResponse()
