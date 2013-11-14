@@ -49,14 +49,18 @@ function setMarkerAt(position) {
   if (window.infoBox) {
     infoBox.setMap(null);
   }
-  window.infoBox = new InfoBox(position.latLon, 'You are here');
+  window.infoBox = new InfoBox({
+    latLon: position.latLon,
+    content: 'You are here.'
+  });
   infoBox.setMap(map);
 }
 
 
 function initialize() {
+  require.setStrategy('gmaps')
   require([
-    'gmaps/map',
+    'base/map',
     'base/layers/googleroadmap',
     'base/infobox',
     'vendor/jquery',

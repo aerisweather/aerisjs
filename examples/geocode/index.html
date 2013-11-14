@@ -35,9 +35,13 @@
           })
           .always(hideLoading)
           .fail(function(res) {
-            console.log('Error data: ', res);
-
-            throw 'SomethingWentWrongError: Something went horribly wrong... See Error data.';
+            if (res.status.code === aeris.geocode.GeocodeServiceStatus.NO_RESULTS) {
+              alert('Unable to find ' + $location.val());
+            }
+            else {
+              console.log('Error data: ', res);
+              throw 'SomethingWentWrongError: Something went horribly wrong... See Error data.';
+            }
           });
       });
 
@@ -58,11 +62,11 @@
       }
 
       // Create a new infobox
-      window.infobox = new aeris.maps.InfoBox(
-        latLon,
-        'You are here: <br/>' +
-        '<small>' + latLon.join(', ') + '</small>'
-      );
+      window.infobox = new aeris.maps.InfoBox({
+        latLon: latLon,
+        content: 'You are here: <br/>' +
+                '<small>' + latLon.join(', ') + '</small>'
+      });
 
       // Show that thing
       infobox.setMap(map);
@@ -78,8 +82,9 @@
 
 
     function initialize() {
+      require.setStrategy('gmaps');
       require([
-        'gmaps/map',
+        'base/map',
         'base/layers/googleroadmap',
         'vendor/jquery',
         'geocode/mapquestgeocodeservice',
