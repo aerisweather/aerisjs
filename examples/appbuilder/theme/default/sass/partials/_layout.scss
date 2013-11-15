@@ -128,6 +128,10 @@ $navBorderColor: #a3a3a3;
       }
     }
 
+    &.aeris-selected .aeris-navItemLabel {
+      background: #125169;
+    }
+
     .aeris-subMenu {
       position: absolute;
       margin-top: 5px;
