@@ -33,6 +33,11 @@ define([
   _.inherits(MockWaypoint, Waypoint);
 
 
+  var MockDirectionsService = function() {
+    this.fetchPath = jasmine.createSpy('DirectionsService#fetchPath');
+  };
+
+
 
   function getStubbedWaypoint(opt_options) {
     var options = _.extend({}, opt_options);
@@ -93,6 +98,15 @@ define([
     });
 
     describe('should manage waypoints', function() {
+
+      beforeEach(function() {
+        // Stub out waypoint path updating
+        // stub out path updating
+        spyOn(Route.prototype, 'updatePaths').andReturn(new Promise());
+        spyOn(Route.prototype, 'updatePathBetween').andReturn(new Promise());
+      })
+
+
       it('should construct with no waypoints or distance', function() {
         var route = new Route();
         expect(route.distance).toEqual(0);
@@ -104,8 +118,7 @@ define([
 
         beforeEach(function() {
           route = new Route();
-          waypoint = getStubbedWaypoint();
-          spyOn(route, 'trigger');
+          waypoint = new MockWaypoint();
         });
 
         it('should add a waypoint', function() {
@@ -115,20 +128,18 @@ define([
         });
 
         it('should trigger an \'add\' event', function() {
+          var addListener = jasmine.createSpy('addListener');
+
+          route.on('add', addListener);
+
           route.add(waypoint);
-          expect(route.trigger).toHaveBeenCalledWith('add', waypoint, route);
+          expect(addListener).toHaveBeenCalled();
         });
 
         it('should not a add waypoint that already exists in the route', function() {
-          spyOn(route, 'has');
-
-          route.has.andReturn(false);
           route.add(waypoint);
-
-          route.has.andReturn(true);
-          expect(function() {
-            route.add(waypoint);
-          }).toThrowType('InvalidArgumentError');
+          route.add(waypoint);
+          expect(route.length).toEqual(1);
         });
 
         it('should add a waypoint at an index', function() {
@@ -160,7 +171,7 @@ define([
           var waypoints = getStubbedWaypointCollection();
 
           spyOn(route, 'trigger');
-          spyOn(route, 'has').andReturn(false);
+          spyOn(route, 'contains').andReturn(false);
 
           route.add(waypoints);
           expect(route.getWaypoints()).toEqual(waypoints);
@@ -185,20 +196,19 @@ define([
       });
 
       it('should return a waypoint at an offset from another', function() {
-        var route = new Route();
-        var waypoint = getStubbedWaypoint();
-        var waypointIndex = 2;
-        var offset = 1;
-
-        spyOn(route, 'indexOf').andCallFake(function(waypoint) {
-          expect(waypoint).toEqual(waypoint);
-          return waypointIndex;
+        var route = new Route(undefined, {
+          directionsService: new MockDirectionsService()
         });
+        var waypoints = [new MockWaypoint(), new MockWaypoint(), new MockWaypoint()];
 
-        spyOn(route, 'at');
+        route.add(waypoints);
 
-        route.atOffset(waypoint, offset);
-        expect(route.at).toHaveBeenCalledWith(waypointIndex + offset);
+        expect(route.atOffset(waypoints[0], 1)).toEqual(waypoints[1]);
+        expect(route.atOffset(waypoints[0], 2)).toEqual(waypoints[2]);
+        expect(route.atOffset(waypoints[1], 1)).toEqual(waypoints[2]);
+        expect(route.atOffset(waypoints[1], -1)).toEqual(waypoints[0]);
+        expect(route.atOffset(waypoints[2], -1)).toEqual(waypoints[1]);
+        expect(route.atOffset(waypoints[2], -2)).toEqual(waypoints[0]);
       });
 
       it('should return the previous waypoint', function() {
@@ -223,45 +233,58 @@ define([
 
       describe('selected waypoints', function() {
         it('should return selected waypoints', function() {
-          var route = new Route();
-          var selected = getStubbedWaypointCollection(3, { selected: true });
-          var notSelected = getStubbedWaypointCollection(3, { selected: false });
+          var waypoints = [
+            new MockWaypoint({ selected: true }),   // 0
+            new MockWaypoint({ selected: false }),  // 1
+            new MockWaypoint({ selected: true }),   // 2
+            new MockWaypoint({ selected: false }),  // 3
+            new MockWaypoint({ selected: true })    // 4
+          ];
+          var route = new Route(waypoints);
 
-          spyOn(route, 'getWaypoints').andReturn(selected.concat(notSelected));
-
-          expect(route.getSelected()).toEqual(selected);
+          expect(route.getSelected()).toEqual([
+            waypoints[0], waypoints[2], waypoints[4]
+          ]);
         });
 
         it('should select all waypoints', function() {
-          var waypoints = getStubbedWaypointCollection();
-          var route = new Route();
+          var waypoints = [
+            new MockWaypoint(),
+            new MockWaypoint(),
+            new MockWaypoint()
+          ];
+          var route = new Route(waypoints);
 
-
-          _.each(waypoints, function(wp) {
-            testUtils.addSpies(
-              spyOn(wp, 'select')
-            );
+          // Spy on 'select' method
+          _.each(waypoints, function(wp, i) {
+            wp.select = jasmine.createSpy('select_' + i);
           });
-          spyOn(route, 'getWaypoints').andReturn(waypoints);
 
           route.selectAll();
-          expect(testUtils.getSpies()).toHaveAllBeenCalled();
+
+          _.each(waypoints, function(wp) {
+            expect(wp.select).toHaveBeenCalled();
+          });
         });
 
         it('should deselect all waypoints', function() {
-          var waypoints = getStubbedWaypointCollection();
-          var route = new Route();
+          var waypoints = [
+            new MockWaypoint(),
+            new MockWaypoint(),
+            new MockWaypoint()
+          ];
+          var route = new Route(waypoints);
 
-          spyOn(route, 'getWaypoints').andReturn(waypoints);
-
-          _.each(waypoints, function(wp) {
-            testUtils.addSpies(
-              spyOn(wp, 'deselect')
-            );
+          // Spy on 'select' method
+          _.each(waypoints, function(wp, i) {
+            wp.deselect = jasmine.createSpy('select_' + i);
           });
 
           route.deselectAll();
-          expect(testUtils.getSpies()).toHaveAllBeenCalled();
+
+          _.each(waypoints, function(wp) {
+            expect(wp.deselect).toHaveBeenCalled();
+          });
         });
       });
 
@@ -274,98 +297,10 @@ define([
         spyOn(route, 'trigger');
 
         route.add(waypoint);
-        expect(route.has(waypoint)).toEqual(true);
-        expect(route.has(someOtherWaypoint)).toEqual(false);
+        expect(route.contains(waypoint)).toEqual(true);
+        expect(route.contains(someOtherWaypoint)).toEqual(false);
       });
 
-      it('should remove a waypoint', function() {
-        var route = new Route();
-        var waypoint = getStubbedWaypoint();
-        var waypointIndex = 0;
-
-        spyOn(route, 'trigger');
-        route.add(waypoint);
-
-        // Stub waypoint index
-        spyOn(route, 'indexOf').andCallFake(function(wp) {
-          expect(wp).toEqual(waypoint);
-          return waypointIndex;
-        });
-        spyOn(route, 'has').andReturn(true);
-        spyOn(waypoint, 'removeProxy');
-
-        route.remove(waypoint);
-
-        expect(route.getWaypoints().length).toEqual(0);
-        expect(route.trigger).toHaveBeenCalledWith('remove', waypoint, waypointIndex);
-        expect(waypoint.removeProxy).toHaveBeenCalled();
-      });
-
-      it('should remove multiple waypoints', function() {
-        var route = new Route();
-        var waypoints = getStubbedWaypointCollection();
-
-        spyOn(route, 'trigger');
-
-        route.add(waypoints);
-        route.remove(waypoints);
-
-        expect(route.getWaypoints().length).toEqual(0);
-      });
-
-      it('should not allow removing a waypoint that doesn\'t exist', function() {
-        var route = new Route();
-        var waypoint = getStubbedWaypoint();
-
-        spyOn(route, 'trigger');
-        spyOn(route, 'has').andCallFake(function(waypoint) {
-          expect(waypoint).toEqual(waypoint);
-          return false;
-        });
-
-        expect(function() { route.remove(waypoint); }).toThrowType('InvalidArgumentError');
-      });
-
-      it('should remove all waypoints with reset', function() {
-        var count = 3;
-        var waypoints = getStubbedWaypointCollection(count);
-        var route = new Route();
-
-        spyOn(route, 'getWaypoints').andReturn(waypoints);
-        spyOn(route, 'remove').andCallFake(function(waypoint, options) {
-          expect(waypoints.indexOf(waypoint)).not.toEqual(-1);
-          expect(options).toEqual({ trigger: false });
-        });
-
-        route.reset();
-
-        expect(route.remove.callCount).toEqual(count);
-      });
-
-      it('should reset to an array of Waypoints', function() {
-        var route = new Route();
-        var count = 3;
-        var oldWaypoints = getStubbedWaypointCollection(count);
-        var newWaypoints = getStubbedWaypointCollection(count);
-
-        spyOn(route, 'trigger');
-        spyOn(route, 'add');
-        spyOn(route, 'remove');
-        spyOn(route, 'getWaypoints').andReturn(oldWaypoints);
-
-        route.reset(newWaypoints);
-
-        // Test: removed old waypoint
-        expect(route.remove).toHaveBeenCalledWith(oldWaypoints[count - 1], { trigger: false });
-        expect(route.remove.callCount).toEqual(count);
-
-        // Test: add new waypoint
-        expect(route.add).toHaveBeenCalledWith(newWaypoints[count - 1], { trigger: false });
-        expect(route.add.callCount).toEqual(count);
-
-        // Test: trigger reset
-        expect(route.trigger).toHaveBeenCalledWith('reset', route.getWaypoints());
-      });
 
       it('should return the last waypoint in the route', function() {
         var route = new Route();
@@ -392,24 +327,35 @@ define([
         expect(route.distance).toEqual(count * waypointDistance);
       });
 
+    });
+
+    describe('distanceTo', function() {
       it('should return the distance to a given waypoint', function() {
-        var route = new Route();
-        var wpDistance = 123.456;
-        var waypoints = getStubbedWaypointsForRoute(route, 5, { distance: wpDistance });
-        var targetWaypoint = waypoints[3];
-        var expectedDistance = 4 * wpDistance;
+        var waypoints = [
+          new MockWaypoint({ distance: 0 }),    // 0
+          new MockWaypoint({ distance: 100 }),  // 1
+          new MockWaypoint({ distance: 50 }),   // 2
+          new MockWaypoint({ distance: 25 })    // 3
+        ];
+        var route = new Route(waypoints);
 
-        spyOn(route, 'indexOf').andCallFake(function(waypoint) {
-          if (waypoint === targetWaypoint) {
-            return 3;
-          }
-          throw new Error('Spy was called with unexpected arguments');
-        });
+        expect(route.distanceTo(waypoints[0])).toEqual(0);
+        expect(route.distanceTo(waypoints[1])).toEqual(100);
+        expect(route.distanceTo(waypoints[2])).toEqual(150);
+        expect(route.distanceTo(waypoints[3])).toEqual(175);
+      });
 
-        expect(route.distanceTo(targetWaypoint)).toEqual(expectedDistance);
+      it('should complain if the waypoint doesn\'t exist', function() {
+        var waypoints = [
+          new MockWaypoint({ distance: 0 }),    // 0
+          new MockWaypoint({ distance: 100 }),  // 1
+          new MockWaypoint({ distance: 50 }),   // 2
+          new MockWaypoint({ distance: 25 })    // 3
+        ];
+        var route = new Route(waypoints);
 
         expect(function() {
-          route.distanceTo(getStubbedWaypoint);
+          route.distanceTo(new MockWaypoint({ distance: 999 }));
         }).toThrowType('InvalidArgumentError');
       });
     });
@@ -428,7 +374,7 @@ define([
       });
 
       it('when it is added to a route, or moved', function() {
-        spyOn(route, 'has').andReturn(true);
+        spyOn(route, 'contains').andReturn(true);
         spyOn(route, 'getNext').andReturn(next);
         spyOn(route, 'getPrevious').andReturn(prev);
 
@@ -448,7 +394,7 @@ define([
         }
 
         beforeEach(function() {
-          spyOn(route, 'has').andReturn(false);
+          spyOn(route, 'contains').andReturn(false);
           spyOn(next, 'set');
           spyOn(prev, 'set');
         });
@@ -496,7 +442,10 @@ define([
 
 
     it('should update a path between two waypoints', function() {
-      var route = new Route();
+      var directionsService = new MockDirectionsService();
+      var route = new Route(undefined, {
+        directionsService: directionsService
+      });
       var origin = getStubbedWaypoint();
       var destination = new MockWaypoint({
         followDirections: true,
@@ -507,10 +456,8 @@ define([
         distance: 12345
       };
 
-      // This would be a good candidate for dependency injection
-      // so we don't have to provide public access to the service
-      spyOn(route.getDirectionsService(), 'fetchPath').
-        andCallFake(function(wpOrig, wpDest, opts) {
+      // Mock Directions service
+      directionsService.fetchPath.andCallFake(function(wpOrig, wpDest, opts) {
           var promise = new Promise();
 
           expect(wpOrig).toEqual(origin);
@@ -530,7 +477,7 @@ define([
       route.updatePathBetween(origin, destination);
 
       // Test: Service was called
-      expect(route.getDirectionsService().fetchPath).toHaveBeenCalled();
+      expect(directionsService.fetchPath).toHaveBeenCalled();
 
       // Test: destination path was updated
       expect(destination.set).toHaveBeenCalledWith({
@@ -544,28 +491,6 @@ define([
     describe('should import/export to JSON', function() {
 
       describe('should export an array of waypoints', function() {
-        it('as a JSON object, using toJSON', function() {
-          var route = new Route();
-          var waypoints = [getWaypoint('a'), getWaypoint('b'), getWaypoint('c')];
-
-          function fakeJSON(someId) {
-            return { someId: someId };
-          }
-
-          // Get stubbed waypoint
-          // with stubbed toJSON method
-          function getWaypoint(someId) {
-            var waypoint = getStubbedWaypoint();
-            spyOn(waypoint, 'toJSON').andReturn(fakeJSON(someId));
-            return waypoint;
-          }
-
-          spyOn(route, 'getWaypoints').andReturn(waypoints);
-
-          expect(route.toJSON()).toEqual([
-            fakeJSON('a'), fakeJSON('b'), fakeJSON('c')
-          ]);
-        });
 
         it('as a JSON string, using export', function() {
           var route = new Route();
@@ -605,18 +530,6 @@ define([
             route.import('some json string');
           }).toThrowType('JSONParseError');
         });
-      });
-
-      it('should accept a collection of waypoints as a constructor param', function() {
-        var route, waypoints;
-
-        // Spy on method called in route constructor
-        spyOn(Route.prototype, 'reset');
-
-        waypoints = getStubbedWaypointCollection();
-        new Route(waypoints);
-
-        expect(Route.prototype.reset).toHaveBeenCalledWith(waypoints);
       });
     });
   });

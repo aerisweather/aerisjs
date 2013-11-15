@@ -269,7 +269,7 @@ require([
         spyOn(factory.getCommandManager(), 'executeCommand');
 
         // Get passed 'waypoint exists in route' check
-        spyOn(factory.getRoute(), 'has').andCallFake(function(wp) {
+        spyOn(factory.getRoute(), 'contains').andCallFake(function(wp) {
           expect(wp).toEqual(waypoint);
           return true;
         });
