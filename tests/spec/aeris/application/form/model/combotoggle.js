@@ -8,16 +8,15 @@ define([
 ], function(_, ComboToggle, sinon, Toggle, Collection, Model) {
 
   var MockToggle = function(opt_attrs) {
-    var model = new Model(opt_attrs, {
+    Model.call(this, opt_attrs, {
       idAttribute: 'name'
     });
 
-    model.select = jasmine.createSpy('MockToggle#select');
-    model.deselect = jasmine.createSpy('MockToggle#deselect');
-    model.toggle = jasmine.createSpy('MockToggle#toggle');
-
-    return model;
+    this.select = jasmine.createSpy('MockToggle#select');
+    this.deselect = jasmine.createSpy('MockToggle#deselect');
+    this.toggle = jasmine.createSpy('MockToggle#toggle');
   };
+  _.inherits(MockToggle, Toggle);
 
   function getToggleSet (opt_count, opt_attrs) {
     var toggles = [];
@@ -32,7 +31,27 @@ define([
 
   describe('A ComboToggle', function() {
 
-    describe('constructor', function() {
+    describe('validate', function() {
+
+      it('should reject invalid childToggles', function() {
+        var combo = new ComboToggle(undefined, {
+          childTogglesAttribute: 'myToggles'
+        });
+
+        _.each([
+          ['foo', 'bar'],
+          [1, 2, 3],
+          [new Date()],
+          new MockToggle(),
+          new Model(),
+          [new Model()],
+          [new MockToggle(), new Model()]
+        ], function(invalidToggles) {
+          expect(function() {
+            combo.set('myToggles', invalidToggles, { validate: true });
+          }).toThrowType('ValidationError');
+        });
+      });
 
     });
 
@@ -109,6 +128,55 @@ define([
         _.each(toggles, function(t) {
           expect(t.toggle).toHaveBeenCalled();
         });
+      });
+
+    });
+
+
+    describe('addToggles', function() {
+
+      it('should add an array of Toggle models', function() {
+        var togglesA = getToggleSet(3);
+        var togglesB = getToggleSet(3);
+        var combo = new ComboToggle();
+
+        combo.addToggles(togglesA);
+        expect(combo.get('childToggles')).toEqual(togglesA);
+
+        combo.addToggles(togglesB);
+        expect(combo.get('childToggles')).toEqual(togglesA.concat(togglesB));
+      });
+
+      it('should add the toggles to the specified childTogglesAttribute', function() {
+        var toggles = getToggleSet();
+        var combo = new ComboToggle(undefined, {
+          childTogglesAttribute: 'myToggles'
+        });
+
+        combo.addToggles(toggles);
+        expect(combo.get('myToggles')).toEqual(toggles);
+      });
+
+      it('should add all Toggle models in a ToggleCollection', function() {
+        var toggleCollectionA = new Collection(getToggleSet(3));
+        var toggleCollectionB = new Collection(getToggleSet(3));
+        var combo = new ComboToggle();
+
+        combo.addToggles(toggleCollectionA);
+        expect(combo.get('childToggles')).toEqual(toggleCollectionA.models);
+
+        combo.addToggles(toggleCollectionB);
+        expect(combo.get('childToggles')).toEqual(toggleCollectionA.models.concat(toggleCollectionB.models));
+      });
+
+      it('should not add duplicate child Toggle models', function() {
+        var toggles = getToggleSet(3);
+        var combo = new ComboToggle();
+
+        combo.addToggles(toggles);
+        combo.addToggles([toggles[1]]);
+
+        expect(combo.get('childToggles')).toEqual(toggles);
       });
 
     });
