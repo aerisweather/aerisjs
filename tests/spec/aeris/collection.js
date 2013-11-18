@@ -14,15 +14,21 @@ define([
     this.collection = new Collection(options.models, options.options);
   }
 
-  function MockModel(opt_options) {
-    var options = _.extend({
-      isValid: true
-    }, opt_options);
+  var MockModel;
 
-    spyOn(this, 'isValid').andReturn(options.isValid);
-  }
-  _.inherits(MockModel, Model);
-  MockModel.prototype = sinon.createStubInstance(Model);
+  beforeEach(function() {
+    MockModel = jasmine.createSpy('MockModel ctor')
+      .andCallFake(function MockModel(opt_options) {
+        var options = _.extend({
+          isValid: true
+        }, opt_options);
+
+        spyOn(this, 'isValid').andReturn(options.isValid);
+      });
+
+    _.inherits(MockModel, Model);
+    MockModel.prototype = sinon.createStubInstance(Model);
+  });
 
 
   describe('A Collection', function() {
@@ -47,6 +53,27 @@ define([
         expect(Collection.prototype.isValid).not.toHaveBeenCalled();
       });
     });
+
+
+    describe('add', function() {
+      it('should create a model, passing in modelOptions as options', function() {
+        var collection = new Collection(undefined, {
+          model: MockModel,
+          modelOptions: {
+            foo: 'bar'
+          }
+        });
+
+        MockModel.andCallFake(function(attrs, opts) {
+          expect(attrs).toEqual({ some: 'attr' });
+          expect(opts.foo).toEqual('bar');
+        });
+
+        collection.add({ some: 'attr' });
+        expect(MockModel).toHaveBeenCalled();
+      });
+    });
+
 
     describe('isValid', function() {
 
