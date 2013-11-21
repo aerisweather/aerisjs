@@ -34,10 +34,8 @@ define([
 
 
   var loudspeaker = jasmine.createSpy('loudspeaker').
-    andCallFake(function(words) {
-      return _.map(words, function(str) {
-        return str.toUpperCase();
-      });
+    andCallFake(function(talker, words) {
+      return words.toUpperCase();
     });
   define('loudspeaker', function() {
     return loudspeaker;
@@ -46,10 +44,8 @@ define([
 
   define('transformers', {
     loudspeaker: loudspeaker,
-    muffler: function(args) {
-      return _.map(args, function(str) {
-        return str.toLowerCase();
-      });
+    muffler: function(talk, words) {
+      return words.toLowerCase()
     }
   });
 
@@ -85,17 +81,11 @@ define([
           },
           plugins: plugins
         }).then(function (ctx) {
-            ctx.talkerA.trigger('talk', 'hello', 'you');
-            expect(ctx.listener.listen).toHaveBeenCalledWith('hello', 'you');
+            ctx.talkerA.trigger('talk', 'hello you');
+            expect(ctx.listener.listen).toHaveBeenCalledWith('hello you');
 
-            ctx.talkerA.trigger('whisper', 'hey', 'guy');
-            expect(ctx.listener.listenClosely).toHaveBeenCalledWith('hey', 'guy');
-
-            ctx.talkerB.trigger('talk', 'whats', 'up', 'doc');
-            expect(ctx.listener.listen).toHaveBeenCalledWith('whats', 'up', 'doc');
-
-            ctx.talkerB.trigger('whisper', 'wazzaaap');
-            expect(ctx.listener.listenClosely).toHaveBeenCalledWith('wazzaaap');
+            ctx.talkerA.trigger('whisper', 'hey guy');
+            expect(ctx.listener.listenClosely).toHaveBeenCalledWith('hey guy');
 
             testUtil.setFlag();
           }).otherwise(throwUncatchable);
@@ -123,10 +113,9 @@ define([
 
           plugins: plugins
         }).then(function (ctx) {
-            ctx.talker.trigger('whisper', 'hey', 'guy');
+            ctx.talker.trigger('whisper', ctx.talker, 'hey guy');
 
-            expect(ctx.loudspeaker).toHaveBeenCalledWith(['hey', 'guy']);
-            expect(ctx.listener.listen).toHaveBeenCalledWith('HEY', 'GUY');
+            expect(ctx.listener.listen).toHaveBeenCalledWith('HEY GUY');
 
             testUtil.setFlag();
           }).otherwise(throwUncatchable);
@@ -154,11 +143,11 @@ define([
 
           plugins: plugins
         }).then(function (ctx) {
-            ctx.talker.trigger('whisper', 'hey', 'guy');
-            expect(ctx.listener.listen).toHaveBeenCalledWith('HEY', 'GUY');
+            ctx.talker.trigger('whisper', ctx.talker, 'hey guy');
+            expect(ctx.listener.listen).toHaveBeenCalledWith('HEY GUY');
 
-            ctx.talker.trigger('shout', 'YO', 'DUDE');
-            expect(ctx.listener.listen).toHaveBeenCalledWith('yo', 'dude');
+            ctx.talker.trigger('shout', ctx.talker, 'YO DUDE');
+            expect(ctx.listener.listen).toHaveBeenCalledWith('yo dude');
 
             testUtil.setFlag();
           }).otherwise(throwUncatchable);
