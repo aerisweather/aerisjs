@@ -1,0 +1,22 @@
+<div class="title">
+  <h2>{{ service.name }}</h2>
+  <small>near {{ place.name }}, {{ place.state }}</small>
+</div>
+<article>
+  <p>
+    {{ service.name }}<br/><br/>
+    {{ service.address }}<br />
+    {{ place.name }}, {{ place.state }} {{ service.postalCode }}<br/>
+    {{ service.phone }}<br/>
+    <a href="{{ service.url }}" target="_blank">{{ service.url }}</a>
+  </p>
+</article>
+<aside>
+  {{ service.type }}
+</aside>
+<aside>
+  OPEN
+</aside>
+
+<div style="clear: both"></div>
+<button class="closeBtn">close</button>
