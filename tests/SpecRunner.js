@@ -37,6 +37,7 @@ require([
       //'spec/aeris/datehelper',
       //'spec/aeris/classfactory',
 
+      //'spec/aeris/application/model/eventparambag',
       //'spec/aeris/application/module/module',
       //'spec/aeris/application/menu/controller/menucontroller',
       //'spec/aeris/application/form/model/recursivetoggle',
