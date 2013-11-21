@@ -1,0 +1,32 @@
+<div class="title">
+  <h2>{{ name }}</h2>
+  <small>near {{ place.name }}, {{ place.state }}</small>
+</div>
+<div class="feature">
+  <label>Distance</label>
+
+  <div class="featureValue">{{toMiles distance }}<small>MI</small></div>
+</div>
+<div class="feature">
+  <label>Snow depth</label>
+
+  <div class="featureValue">11.7<small>IN</small></div>
+</div>
+<article>
+  <p>
+    {{ description }}... <br /><br />
+    Remember the time he ate my goldfish? And you lied
+    and said I never had goldfish. Then why did I have
+    the bowl, Bart? *Why did I have the bowl?*<br /><br />
+    Weaseling out of things is important to learn. It's what
+    separates us from the animals… except the weasel.
+  </p>
+  <aside>
+    {{#if openclose.isclosed}}
+      CLOSED
+    {{else}}
+      OPEN
+    {{/if}}
+  </aside>
+
+</article>
