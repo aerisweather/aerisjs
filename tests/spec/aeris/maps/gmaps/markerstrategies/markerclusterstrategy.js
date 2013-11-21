@@ -14,6 +14,7 @@ define([
     MockMarkerClusterer.prototype.addMarker = jasmine.createSpy('MarkerClusterer#addMarker');
     MockMarkerClusterer.prototype.setMap = jasmine.createSpy('MarkerClusterer#setMap');
     MockMarkerClusterer.prototype.clearMarkers = jasmine.createSpy('MarkerClusterer#clearMarkers');
+    MockMarkerClusterer.prototype.getMarkers = jasmine.createSpy('MarkerClusterer#getMarkers').andReturn([]);
 
     return MockMarkerClusterer;
   };
