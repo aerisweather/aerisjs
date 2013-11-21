@@ -6,12 +6,13 @@ define([
   'sinon',
   'base/markercollections/pointdatamarkercollection',
   'aeris/collection',
+  'api/endpoint/model/pointdata',
   'api/endpoint/collection/pointdatacollection',
   'api/params/model/params'
-], function(_, Events, Model, Promise, sinon, PointDataMarkerCollection, Collection, PointDataCollection, Params) {
+], function(_, Events, Model, Promise, sinon, PointDataMarkerCollection, Collection, PointData, PointDataCollection, Params) {
   var TestFactory = function(opt_options) {
     var options = _.extend({
-      data: new MockData(),
+      data: new MockDataCollection(),
       map: undefined,
       strategy: null
     }, opt_options);
@@ -42,7 +43,7 @@ define([
   MockMap.prototype = sinon.createStubInstance(Model);
 
 
-  var MockData = function() {
+  var MockDataCollection = function() {
     var params = new MockParams();
 
     // Run a standard Collection,
@@ -56,7 +57,14 @@ define([
   };
   // Inherit from PointDataCollection
   // to pass instanceof checks.
-  _.inherits(MockData, PointDataCollection);
+  _.inherits(MockDataCollection, PointDataCollection);
+
+
+  var MockDataModel = function() {
+    Model.apply(this, arguments);
+  };
+  _.inherits(MockDataModel, PointData);
+
 
 
   var MockParams = function() {
@@ -150,7 +158,7 @@ define([
         };
         var markers = new PointDataMarkerCollection(undefined, {
           clusterStyles: styles,
-          data: new MockData()
+          data: new MockDataCollection()
         });
 
         expect(markers.getClusterStyle('fooStyle')).toEqual(styles.fooStyle);
@@ -160,7 +168,7 @@ define([
 
       it('should set default cluster styles, if no styles are specified', function() {
         var markers = new PointDataMarkerCollection(undefined, {
-          data: new MockData()
+          data: new MockDataCollection()
         });
 
         expect(markers.getClusterStyle()).toBeDefined();
@@ -183,7 +191,7 @@ define([
           ]
         };
         var markers = new PointDataMarkerCollection(undefined, {
-          data: new MockData(),
+          data: new MockDataCollection(),
           clusterStyles: styles
         });
 
@@ -197,7 +205,7 @@ define([
 
       it('should turn on clustering by default', function() {
         new PointDataMarkerCollection(undefined, {
-          data: new MockData()
+          data: new MockDataCollection()
         });
 
         expect(PointDataMarkerCollection.prototype.startClustering).toHaveBeenCalled();
@@ -205,7 +213,7 @@ define([
 
       it('should turn on clustering if clustering option is set to true', function() {
         new PointDataMarkerCollection(undefined, {
-          data: new MockData()
+          data: new MockDataCollection()
         });
 
         expect(PointDataMarkerCollection.prototype.startClustering).toHaveBeenCalled();
@@ -213,7 +221,7 @@ define([
 
       it('should not turn on clustering if clustering option is set to false', function() {
         new PointDataMarkerCollection(undefined, {
-          data: new MockData(),
+          data: new MockDataCollection(),
           cluster: false
         });
 
@@ -228,7 +236,7 @@ define([
           url: 'someUrl'
         });
         var latLon = [45.123, -90.123];
-        var dataModel = new Model({
+        var dataModel = new MockDataModel({
           latLon: latLon
         });
 
@@ -243,7 +251,7 @@ define([
 
       it('should remove a marker when data is removed', function() {
         var test = new TestFactory();
-        var dataModel = new Model();
+        var dataModel = new MockDataModel();
         var marker;
 
         spyOn(test.markers, 'remove');
@@ -270,7 +278,7 @@ define([
         // Create 3 models
         _.times(3, function() {
           var latLon = [Math.random() * 100, Math.random() * 100];
-          var model = new Model({
+          var model = new MockDataModel({
             latLon: latLon
           });
 
@@ -345,20 +353,6 @@ define([
 
     describe('setMap', function() {
 
-      it('should fetch data when a map is set', function() {
-        var test = new TestFactory();
-        test.markers.setMap(new MockMap());
-
-        expect(test.data.fetch).toHaveBeenCalled();
-      });
-
-      it('should fetch data only once', function() {
-        var test = new TestFactory();
-        test.markers.setMap(new MockMap());
-
-        expect(test.data.fetch.callCount).toEqual(1);
-      });
-
       it('should set all markers to the map', function() {
         var test = new TestFactory();
         var markers = getMockMarkers();
@@ -386,7 +380,7 @@ define([
 
       it('should trigger a \'map:set\' event', function() {
         var markers = new PointDataMarkerCollection(undefined, {
-          data: new MockData()
+          data: new MockDataCollection()
         });
         var map = new MockMap();
         var evtListener = jasmine.createSpy('evtListener');
@@ -430,18 +424,6 @@ define([
           expect(test.data.getParams().setBounds).toHaveBeenCalledWith(bounds);
         });
 
-        it('should re-fetch data when map bounds change', function() {
-          var test = new TestFactory();
-          var map = new MockMap();
-          var initFetchCount;
-
-          test.markers.setMap(map);
-          initFetchCount = test.data.fetch.callCount;
-
-          map.trigger('change:bounds');
-          expect(test.data.fetch.callCount).toEqual(initFetchCount + 1);
-        });
-
       });
 
     });
@@ -472,7 +454,7 @@ define([
 
       it('should trigger a \'map:remove\' event', function() {
         var markers = new PointDataMarkerCollection(undefined, {
-          data: new MockData()
+          data: new MockDataCollection()
         });
         var evtListener = jasmine.createSpy('evtListener');
 
@@ -492,7 +474,7 @@ define([
 
       it('should load the cluster strategy (clusterStrategy is string)', function() {
         var markers = new PointDataMarkerCollection(undefined, {
-          data: new MockData(),
+          data: new MockDataCollection(),
           clusterStrategy: 'some/strategy',
           cluster: false
         });
@@ -504,7 +486,7 @@ define([
       it('should set the cluster strategy (clusterStrategy is ctor)', function() {
         var MockStrategy = jasmine.createSpy('clusterStrategy#ctor');
         var markers = new PointDataMarkerCollection(undefined, {
-          data: new MockData(),
+          data: new MockDataCollection(),
           clusterStrategy: MockStrategy,
           cluster: false
         });
@@ -520,7 +502,7 @@ define([
 
       it('should do nothing if clustering hasn\'t been started', function() {
         var markers = new PointDataMarkerCollection(undefined, {
-          data: new MockData(),
+          data: new MockDataCollection(),
           cluster: false
         });
 
@@ -530,7 +512,7 @@ define([
 
       it('should destroy it\'s strategy', function() {
         var markers = new PointDataMarkerCollection(undefined, {
-          data: new MockData(),
+          data: new MockDataCollection(),
           cluster: false
         });
 

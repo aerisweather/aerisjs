@@ -187,14 +187,6 @@ define([
         // --> Create a MarkerClusterer for the group
         strategy.addMarker(markers[0]);
         clock.tick(ASYNC_DELAY);
-        expect(MarkerClusterer).toHaveBeenCalledWith(
-          obj.getMap().getView(),
-          [],
-          {
-            styles: { url: 'SNOW_ICON' },
-            clusterClass: 'aeris-cluster'
-          }
-        );
         expect(strategy.getView().snow).toBeInstanceOf(MarkerClusterer);
         expect(MarkerClusterer.prototype.addMarker).toHaveBeenCalledWith(markers[0].getView());
 
