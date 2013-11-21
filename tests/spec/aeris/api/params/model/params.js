@@ -10,7 +10,65 @@ define([
 
 
   describe('A Params model', function() {
-    
+
+    describe('constructor', function() {
+
+      it('should trigger change events when query parameters change', function() {
+        var query = new Model();
+        var params = new Params({
+          query: query
+        });
+        var listeners = jasmine.createSpyObj('listeners', [
+          'change',
+          'changeAttr'
+        ]);
+
+        params.on('change', listeners.change);
+        params.on('change:query', listeners.changeAttr);
+
+        query.set('value', 'foo');
+        expect(listeners.change.callCount).toEqual(1);
+        expect(listeners.changeAttr.callCount).toEqual(1);
+      });
+
+      it('should trigger change events when the query attribute is overwritten', function() {
+        var queryA = new Model();
+        var queryB = new Model();
+        var params = new Params({
+          query: queryA
+        });
+
+        var listeners = jasmine.createSpyObj('listeners', [
+          'change',
+          'changeAttr'
+        ]);
+
+        params.set('query', queryB);
+
+        params.on('change', listeners.change);
+        params.on('change:query', listeners.changeAttr);
+
+        // Old query model change -->
+        // params shouldn't trigger change
+        queryA.set('value', 'foo');
+        expect(listeners.change).not.toHaveBeenCalled();
+        expect(listeners.changeAttr).not.toHaveBeenCalled();
+
+        // New query model changes -->
+        // params should trigger chnage
+        queryB.set('value', 'foo');
+        expect(listeners.change.callCount).toEqual(1);
+        expect(listeners.changeAttr.callCount).toEqual(1);
+      });
+
+      it('should not require a query parameter', function() {
+        // Should throw error
+        new Params();
+      });
+
+    });
+
+
     describe('validation', function() {
       it('should require \'to\' to be a date', function() {
         var test = new TestFactory();
@@ -22,7 +80,7 @@ define([
         // Should not throw error
         test.params.set('to', new Date(), { validate: true });
       });
-      
+
       it('should not require \'to\' to be set', function() {
         var test = new TestFactory();
 
@@ -51,19 +109,48 @@ define([
         // Should not throw error
         test.params.isValid();
       });
+
+      it('should require \'query\' to be a model', function() {
+        expect(function() {
+          var params = new Params({
+            query: 'foo'
+          });
+
+          params.isValid();
+        }).toThrowType('ValidationError');
+      });
+
+      it('should not requre \'query\' to be set', function() {
+        var params = new Params({
+          query: undefined
+        });
+
+        // Should not throw error
+        params.isValid();
+      });
     });
 
 
     describe('toJSON', function() {
 
       it('should convert date objects to UNIX timestamps', function() {
-        var params = new Params({
-          someTime: new Date('March 8, 1987').setMilliseconds('11'),
-          from: new Date('September 9, 1981').setMilliseconds('17'),
-          to: new Date('November 21, 2013').setMilliseconds('23')
+        var dates = {
+          someTime: new Date('March 8, 1987'),
+          from: new Date('September 9, 1981'),
+          to: new Date('November 21, 2013')
+        };
+
+        var params, json;
+
+        // Add some ms onto each date,
+        // so we can check that toJSON
+        // returns whole numbers.
+        _.each(dates, function(d) {
+          d.setMilliseconds('11');
         });
 
-        var json = params.toJSON();
+        params = new Params(dates);
+        json = params.toJSON();
 
         expect(json.someTime).toEqual(542181601);
         expect(json.from).toEqual(368859601);
@@ -80,15 +167,6 @@ define([
           andReturn('foo/bar');
 
         expect(params.toJSON().filter).toEqual('foo/bar');
-      });
-
-      it('should not require a filters attribute to be set', function() {
-        var params = new Params({
-          filter: undefined
-        });
-
-        // Should not throw error
-        params.toJSON();
       });
 
       it('should convert the \'p\' param to a comma-separated string', function() {
@@ -109,21 +187,27 @@ define([
       });
 
       it('should convert the query param to the Aeris query format', function() {
-        var params = new Param({
-          query: {
-            'place.name': 'Seattle',
-            'ob.hail.prob': '40:80',
-            'ob.hail.prob': '!0'
-          }
-        })
+        var query = new Model();
+        var params = new Params({
+          query: query
+        });
+
+        spyOn(query, 'toString').andReturn('foo:bar;foo:shabaaz');
+
+        expect(params.toJSON().query).toEqual('foo:bar;foo:shabaaz');
       });
 
       it('should not require a query param', function() {
-        throw new UntestedSpecError();
+        var params = new Params({
+          query: undefined
+        });
+
+        // Should not throw error
+        params.toJSON();
       });
 
     });
-    
+
   });
 
 });
