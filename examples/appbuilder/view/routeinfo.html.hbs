@@ -21,6 +21,14 @@
     Weaseling out of things is important to learn. It's what
     separates us from the animals… except the weasel.
   </p>
+
+  {{#if photo.thumb}}
+    <p>
+      <a href="{{ photo.url }}" target="_blank">
+        <img src="{{ photo.thumb }}" alt="{{ description }}" width="100%"/>
+      </a>
+    </p>
+  {{/if}}
 </article>
 <aside>
   {{#if openclose.isclosed}}
