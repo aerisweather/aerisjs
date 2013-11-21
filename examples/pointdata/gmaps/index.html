@@ -49,36 +49,38 @@
           });
           $('#controls').append(html);
 
-          layers[markerName] = new aeris.maps[markerName];
+          layers[markerName] = new aeris.maps[markerName](undefined, {
+            cluster: true
+          });
+          fetchData(layers[markerName])
+
+          // Bind data 'p' param to map
+          map.on('change:bounds', function() {
+            layers[markerName].getParams().set('p', map.get('bounds'));
+            fetchData(layers[markerName])
+          })
         });
 
 
-        // Setup loading
-        function updateLoadingUI() {
-          if (loadingLayers.length) {
-            $('#loading').fadeIn(200);
-          }
-          else {
-            $('#loading').delay(1000).fadeOut(200);
-          }
+        function fetchData(markers) {
+          markers.fetchData().
+                  done(function(res) {
+                    console.log('Done loading data for ', markers, res);
+                  }).
+                  fail(function(err) {
+                    console.warn('Error loading data for', markers, err);
+                  });
         }
-        _.each(layers, function(layer, layerName) {
-          // Loading event
-          layer.on('load:start', function() {
-            loadingLayers.push(layerName);
-            updateLoadingUI();
-          });
-          layer.on('load', function() {
-            loadingLayers = _.without(loadingLayers, layerName);
-            updateLoadingUI();
-          });
 
+
+
+        _.each(layers, function(layer, layerName) {
           // Click event
-          layer.on('click', function(latLon, markerData) {
-            console.log('Clicked at ', latLon, '\n Marker data: ', markerData);
+          layer.on('click', function(latLon, marker) {
+            console.log('Clicked at ', latLon, '\n Marker data: ', marker.getData().toJSON());
             var tmpl = $('#dataTemplate').html();
             var report = _.template(tmpl, {
-              data: markerData.toJSON().report
+              data: marker.getData().toJSON().report
             });
 
             $('#report').html(report);
@@ -95,7 +97,7 @@
             layer.setMap(map);
           }
           else {
-            layer.removeMap();
+            layer.setMap(null);
           }
         });
       });

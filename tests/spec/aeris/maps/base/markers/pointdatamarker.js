@@ -21,7 +21,7 @@ define([
 
     this.options = options;
 
-    this.marker = new PointDataMarker({
+    this.marker = new PointDataMarker(undefined, {
       data: options.data
     });
 
@@ -45,13 +45,12 @@ define([
 
         spyOn(PointDataMarker.prototype, 'getType').andReturn('snow');
 
-        marker = new PointDataMarker({
+        marker = new PointDataMarker(undefined, {
           data: new MockPointData({
             report: {
               type: 'snow'
             }
-          })
-        }, {
+          }),
           // Not necessary, as getType has been stubbed.
           // Showing here only for demonstration
           typeAttribute: 'data.report.type',
@@ -84,16 +83,17 @@ define([
 
     });
 
-    describe('events', function() {
+    describe('attributeTransforms', function() {
 
       it('should bind its position to the data\'s latLon', function() {
-        var test = new TestFactory();
+        var data = new MockPointData();
+        var marker = new PointDataMarker(undefined, {
+          data: data
+        });
         var latLon = [45, -90];
 
-        spyOn(test.marker, 'setPosition');
-
-        test.data.trigger('change:latLon', test.data, latLon);
-        expect(test.marker.setPosition).toHaveBeenCalledWith(latLon);
+        data.set('latLon', latLon);
+        expect(marker.get('position')).toEqual(latLon);
       });
 
     });
@@ -102,15 +102,14 @@ define([
     describe('getType', function() {
 
       it('should return the reference describe by the typeAttribute option', function() {
-        var marker = new PointDataMarker({
+        var marker = new PointDataMarker(undefined, {
           data: new MockPointData({
             foo: {
               report: {
                 type: 'snow'
               }
             }
-          })
-        }, {
+          }),
           typeAttribute: 'foo.report.type'
         });
 
@@ -118,15 +117,14 @@ define([
       });
 
       it('should return undefined if the typeAttribute reference cannot be resolved', function() {
-        var marker = new PointDataMarker({
+        var marker = new PointDataMarker(undefined, {
           data: new MockPointData({
             foo: {
               report: {
                 type: 'snow'
               }
             }
-          })
-        }, {
+          }),
           typeAttribute: 'foo.bar.faz'
         });
 
@@ -134,15 +132,14 @@ define([
       });
 
       it('should use the iconLookup option to choose from multiple types', function() {
-        var marker = new PointDataMarker({
+        var marker = new PointDataMarker(undefined, {
           data: new MockPointData({
             foo: {
               report: {
                 type: ['heavy', 'snow', 'wet']
               }
             }
-          })
-        }, {
+          }),
           typeAttribute: 'foo.report.type',
           iconLookup: {
             snow: 'some_icon'
@@ -151,26 +148,6 @@ define([
 
         expect(marker.getType()).toEqual('snow');
       });
-    });
-
-    describe('toJSON', function() {
-
-      it('should return JSON data', function() {
-        var marker = new PointDataMarker({
-          data: new MockPointData({
-            foo: {
-              bar: 'baz'
-            }
-          })
-        });
-
-        expect(marker.toJSON()).toEqual({
-          foo: {
-            bar: 'baz'
-          }
-        });
-      });
-
     });
 
   });
