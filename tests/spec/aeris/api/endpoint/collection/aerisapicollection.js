@@ -32,44 +32,7 @@ define([
 
   describe('An AerisApiCollection', function() {
 
-    describe('constructor', function() {
-
-      it('should require endpoints', function() {
-        expect(function() {
-          new TestFactory({
-            endpoints: null
-          });
-        }).toThrowType('InvalidArgumentError');
-
-        expect(function() {
-          new TestFactory({
-            endpoints: []
-          });
-        }).toThrowType('InvalidArgumentError');
-
-        // Should not throw error
-        new TestFactory({
-          endpoints: [{ name: 'someendpoint' }]
-        });
-      });
-
-    });
-
     describe('sync', function() {
-
-      it('should call AerisAPI.fetchBatch with endpoints and params', function() {
-        var test = new TestFactory({
-          endpoints: [{ foo: 'bar' }],
-          params: { limit: 'the sky' }
-        });
-
-        test.collection.sync('read');
-
-        expect(test.options.api.fetchBatch).toHaveBeenCalledWith(
-          test.options.endpoints,
-          test.options.params
-        );
-      });
 
       it('should restrict usage to GET requests', function() {
         var test = new TestFactory();

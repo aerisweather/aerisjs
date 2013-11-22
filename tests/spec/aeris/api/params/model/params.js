@@ -1,8 +1,10 @@
 define([
   'aeris/util',
   'api/params/model/params',
-  'aeris/model'
-], function(_, Params, Model) {
+  'aeris/model',
+  'aeris/collection',
+  'api/params/collection/chainedquery'
+], function(_, Params, Model, Collection, ChainedQuery) {
 
   function TestFactory() {
     this.params = new Params();
@@ -14,29 +16,48 @@ define([
     describe('constructor', function() {
 
       it('should trigger change events when query parameters change', function() {
-        var query = new Model();
+        var query = new Collection();
         var params = new Params({
           query: query
-        });
+        }, { QueryType: Collection });
         var listeners = jasmine.createSpyObj('listeners', [
           'change',
           'changeAttr'
         ]);
 
+        // Listen to params change events
         params.on('change', listeners.change);
         params.on('change:query', listeners.changeAttr);
 
-        query.set('value', 'foo');
+        // Add event query model
+        query.add({ id: 'foo' });
         expect(listeners.change.callCount).toEqual(1);
         expect(listeners.changeAttr.callCount).toEqual(1);
+
+        // Change query model
+        query.get('foo').set('hello', 'world');
+        expect(listeners.change.callCount).toEqual(2);
+        expect(listeners.changeAttr.callCount).toEqual(2);
+
+        // Remove query model
+        query.remove('foo');
+        expect(listeners.change.callCount).toEqual(3);
+        expect(listeners.changeAttr.callCount).toEqual(3);
+
+
+        // Reset query models
+        query.reset([{ id: 'foo' }, { id: 'bar' }]);
+        expect(listeners.change.callCount).toEqual(4);
+        expect(listeners.changeAttr.callCount).toEqual(4);
       });
 
       it('should trigger change events when the query attribute is overwritten', function() {
-        var queryA = new Model();
-        var queryB = new Model();
+        var queryA = new Collection();
+        var queryB = new Collection();
+        var queryC = new Collection();
         var params = new Params({
           query: queryA
-        });
+        }, { QueryType: Collection });
 
         var listeners = jasmine.createSpyObj('listeners', [
           'change',
@@ -50,20 +71,49 @@ define([
 
         // Old query model change -->
         // params shouldn't trigger change
-        queryA.set('value', 'foo');
+        queryA.add({ id: 'foo' });
         expect(listeners.change).not.toHaveBeenCalled();
         expect(listeners.changeAttr).not.toHaveBeenCalled();
 
         // New query model changes -->
         // params should trigger chnage
-        queryB.set('value', 'foo');
+        queryB.add({ id: 'bar' });
         expect(listeners.change.callCount).toEqual(1);
         expect(listeners.changeAttr.callCount).toEqual(1);
+
+        // Set a new query object
+        params.set('query', queryC);
+        expect(listeners.change.callCount).toEqual(2);
+        expect(listeners.changeAttr.callCount).toEqual(2);
+
+        queryC.add({ id: 'yo' });
+        expect(listeners.change.callCount).toEqual(3);
+        expect(listeners.changeAttr.callCount).toEqual(3);
       });
 
       it('should not require a query parameter', function() {
         // Should throw error
         new Params();
+      });
+
+      it('should convert a query array to a ChainedQuery object', function() {
+        var MockQuery = jasmine.createSpy('MockQuery');
+        var params = new Params({
+          query: ['foo', 'bar']
+        }, { QueryType: MockQuery });
+
+        expect(MockQuery).toHaveBeenCalledWith(['foo', 'bar']);
+        expect(params.get('query')).toBeInstanceOf(MockQuery);
+      });
+
+      it('should accept a Query object as a query', function() {
+        var MockQuery = jasmine.createSpy('MockQuery');
+        var query = new MockQuery();
+        var params = new Params({
+          query: query
+        }, { QueryType: MockQuery });
+
+        expect(params.get('query')).toEqual(query);
       });
 
     });
@@ -110,11 +160,11 @@ define([
         test.params.isValid();
       });
 
-      it('should require \'query\' to be a model', function() {
+      it('should require \'query\' to be a ChainedQuery', function() {
         expect(function() {
-          var params = new Params({
-            query: 'foo'
-          });
+          var params = new Params();
+
+          params.set('query', 'foo', { validate: true })
 
           params.isValid();
         }).toThrowType('ValidationError');
