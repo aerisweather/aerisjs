@@ -1,0 +1,25 @@
+<div class="title">
+  <h2>{{ name }}</h2>
+  {{#if place.name }}
+    <small>near {{ place.name }}, {{ place.state }}</small>
+  {{/if}}
+</div>
+<article>
+  <p>
+    {{ description }}
+    Dear Mr. President, There are too many states nowadays. Please, eliminate three.
+    P.S. I am not a crackpot. <br/>
+    Whoa, slow down there, maestro. There's a *New* Mexico?<br/>
+    Books are useless! I only ever read one book, "To Kill A Mockingbird,"
+    and it gave me absolutely no insight on how to kill mockingbirds!
+  </p>
+
+  {{#if photo.thumb}}
+    <a href="{{ photo.url }}" target="_blank">
+      <img src="{{ photo.thumb }}" alt="" width="100%"/>
+    </a>
+  {{/if}}
+</article>
+
+<div style="clear: both"></div>
+<button class="closeBtn">close</button>
