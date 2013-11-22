@@ -3,15 +3,15 @@ define([
   'aeris/events',
   'sinon',
   'mapbuilder/core/model/state',
-  'mapbuilder/core/collection/mapobjectstatecollection'
-], function(_, Events, sinon, State, MapObjectStateCollection) {
+  'mapbuilder/core/collection/mapobjecttogglecollection'
+], function(_, Events, sinon, State, MapObjectToggleCollection) {
   var MockMapObjectStateCollection = function() {
     Events.call(this);
   };
-  _.inherits(MockMapObjectStateCollection, MapObjectStateCollection);
+  _.inherits(MockMapObjectStateCollection, MapObjectToggleCollection);
 
   // Stub out methods
-  MockMapObjectStateCollection.prototype = sinon.createStubInstance(MapObjectStateCollection);
+  MockMapObjectStateCollection.prototype = sinon.createStubInstance(MapObjectToggleCollection);
 
   // Spy on methods
   _.extend(MockMapObjectStateCollection.prototype, jasmine.createSpyObj('MockCollection', [

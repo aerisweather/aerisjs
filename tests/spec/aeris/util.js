@@ -803,7 +803,7 @@ define([
       it('should wrap a factory spec in a ClassFactory spec', function() {
         var spec = _.classFactorySpec({
           create: {
-            module: 'mapbuilder/core/model/mapobjectstate',
+            module: 'mapbuilder/core/model/mapobjecttoggle',
             args: [
               undefined,
               {
@@ -821,7 +821,7 @@ define([
           create: {
             module: 'aeris/classfactory',
             args: [
-              { module: 'mapbuilder/core/model/mapobjectstate' },
+              { module: 'mapbuilder/core/model/mapobjecttoggle' },
               [
                 undefined,
                 {
