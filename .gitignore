@@ -10,7 +10,9 @@ examples/initialize.js
 # SASS
 .sass-cache
 lib/aeris/builder/**/css
+lib/polaris/builder/**/css
 examples/appbuilder/theme/**/css
+
 build/
 
 # node
