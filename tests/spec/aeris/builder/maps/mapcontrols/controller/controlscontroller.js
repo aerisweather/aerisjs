@@ -34,7 +34,7 @@ define([
 
       describe('Event bindings', function() {
 
-        it('should add only white-listed controls on mapControls:render', function() {
+        it('should add only white-listed controls on mapControls:ready', function() {
           var controller;
           var eventHub = new Events();
           var layerControls = new MockController();
@@ -56,14 +56,14 @@ define([
           });
           controller.render();
 
-          eventHub.trigger('mapControls:render', layerControls, 'layers');
-          expect(ControlsController.prototype.addControls).toHaveBeenCalledWith(layerControls);
+          eventHub.trigger('mapControls:ready', layerControls, 'layers');
+          expect(ControlsController.prototype.renderControlsView).toHaveBeenCalledWith(layerControls, 'layers');
 
-          eventHub.trigger('mapControls:render', waypointControls, 'waypoints');
-          expect(ControlsController.prototype.addControls).toHaveBeenCalledWith(waypointControls);
+          eventHub.trigger('mapControls:ready', waypointControls, 'waypoints');
+          expect(ControlsController.prototype.renderControlsView).toHaveBeenCalledWith(waypointControls, 'waypoints');
 
-          eventHub.trigger('mapControls:render', trailsControls, 'trails');
-          expect(ControlsController.prototype.addControls).not.toHaveBeenCalledWith(trailsControls);
+          eventHub.trigger('mapControls:ready', trailsControls, 'trails');
+          expect(ControlsController.prototype.renderControlsView).not.toHaveBeenCalledWith(trailsControls, 'trails');
 
         });
 
