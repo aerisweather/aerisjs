@@ -2,8 +2,10 @@ define([
   'aeris/util',
   'mapbuilder/mapcontrols/controller/controlscontroller',
   'aeris/events',
-  'aeris/model'
-], function(_, ControlsController, Events, Model) {
+  'aeris/model',
+  'application/controller/layoutcontroller',
+  'vendor/marionette'
+], function(_, ControlsController, Events, Model, LayoutController, Marionette) {
 
   var MockBuilderOptions = function(opt_attrs) {
     var attrs = _.defaults(opt_attrs || {}, {
@@ -28,9 +30,16 @@ define([
   };
 
 
+  var MockRegion = function() {
+    spyOn(this, 'show');
+    spyOn(this, 'close');
+  };
+  _.inherits(MockRegion, Marionette.Region);
+
+
   describe('A ControlsController', function() {
 
-    describe('constructor', function() {
+    describe('render', function() {
 
       describe('Event bindings', function() {
 
@@ -41,7 +50,7 @@ define([
           var waypointControls = new MockController();
           var trailsControls = new MockController();
 
-          spyOn(ControlsController.prototype, 'addControls');
+          spyOn(ControlsController.prototype, 'renderControlsView');
 
           controller = new ControlsController({
             template: '<div></div>',
@@ -56,13 +65,13 @@ define([
           });
           controller.render();
 
-          eventHub.trigger('mapControls:ready', layerControls, 'layers');
+          eventHub.trigger('mapControls:render', layerControls, 'layers');
           expect(ControlsController.prototype.renderControlsView).toHaveBeenCalledWith(layerControls, 'layers');
 
-          eventHub.trigger('mapControls:ready', waypointControls, 'waypoints');
+          eventHub.trigger('mapControls:render', waypointControls, 'waypoints');
           expect(ControlsController.prototype.renderControlsView).toHaveBeenCalledWith(waypointControls, 'waypoints');
 
-          eventHub.trigger('mapControls:ready', trailsControls, 'trails');
+          eventHub.trigger('mapControls:render', trailsControls, 'trails');
           expect(ControlsController.prototype.renderControlsView).not.toHaveBeenCalledWith(trailsControls, 'trails');
 
         });
@@ -71,22 +80,49 @@ define([
 
     });
 
-    describe('addControls', function() {
+    describe('renderControlsView', function() {
 
-      it('should append the controller element to view', function() {
+      it('should render the controls view in a region', function() {
+        var mapOptionControls, geosearchControls;
+        var controlsController = new ControlsController({
+          eventHub: new Events(),
+          builderOptions: new MockBuilderOptions(),
+          regions: {
+            mapOptionControlsRegion: '.someSelector',
+            geosearchControlsRegion: '.someOther .selector'
+          },
+          controlsRegions: {
+            mapOptionControlsView: 'mapOptionControlsRegion',
+            geosearchControlsView: 'geosearchControlsRegion'
+          }
+        });
+
+        // Mock layout regions
+        controlsController.mapOptionControlsRegion = new MockRegion();
+        controlsController.geosearchControlsRegion = new MockRegion();
+
+        // Mock controls
+        mapOptionControls = new MockController();
+        geosearchControls = new MockController();
+
+        controlsController.renderControlsView(mapOptionControls, 'mapOptionControlsView');
+        expect(controlsController.mapOptionControlsRegion.show).toHaveBeenCalledWith(mapOptionControls);
+
+        controlsController.renderControlsView(geosearchControls, 'geosearchControlsView');
+        expect(controlsController.geosearchControlsRegion.show).toHaveBeenCalledWith(geosearchControls);
+      });
+
+      it('should throw an error if the region doesn\'t exist', function() {
         var controller = new ControlsController({
           eventHub: new Events(),
-          builderOptions: new MockBuilderOptions()
+          builderOptions: new MockBuilderOptions(),
+          controlsRegions: {}
         });
         var controls = new MockController();
 
-        controller.render();
-
-        spyOn(controller.$el, 'append');
-
-        controller.addControls(controls);
-
-        expect(controller.$el.append).toHaveBeenCalledWith(controls.$el);
+        expect(function() {
+          controller.renderControlsView(controls, 'someControlsView');
+        }).toThrowType('InvalidArgumentError');
       });
 
     });
