@@ -58,8 +58,9 @@ require([
 
           wrongTypeMsg = this.isNot ?
             'Expected not to throw error type \'' + errorName + '\'' :
-            'Expected to throw error type \'' + errorName + '\',' +
-              'but instead threw error type \'' + e.name + '\'';
+            'Expected to throw error type "' + errorName + '",' +
+              'but instead threw error type "' + e.name + '",' +
+              ' with message: "' + e.message + '"';
 
 
           this.message = function() {
