@@ -13,54 +13,101 @@ define([
 
 
   describe('A ViewMixin', function() {
+    var $el, $button, $form, $div;
+    var eventListener;
+
+    beforeEach(function() {
+      $button = $('<button></button>').addClass('btnSelector');
+      $form = $('<form></form>').addClass('formSelector');
+      $div = $('<div></div>').addClass('divSelector');
+
+      $el = $('<div></div>').
+        append($button).
+        append($form).
+        append($div);
+
+      eventListener = jasmine.createSpy('eventListener')
+    });
+
+
 
     describe('bindUIEvent', function() {
-      var ConcreteViewWithUI = function() {
-        this.ui = {
-          'someButton': 'button'
-        };
-
-        ConcreteView.apply(this, arguments);
-      };
-      _.inherits(ConcreteViewWithUI, ConcreteView);
-      
-      var stubbedFn = function() { return 'foo'; };
-
-      beforeEach(function() {
-        spyOn(Marionette.View.prototype, 'delegateEvents');
-      });
 
       it('should delegate events using the ui selector, (before binding)', function() {
-        var view = new ConcreteViewWithUI();
-        view.bindUIEvent('click', 'someButton', stubbedFn);
-
-        expect(view.delegateEvents).toHaveBeenCalledWith({
-          'click button': stubbedFn
+        var view = new ConcreteView({
+          el: $el
         });
+
+        view.ui = {
+          someButton: 'button'
+        };
+
+        view.bindUIEvent('click', 'someButton', eventListener);
+
+        $button.trigger('click');
+
+        expect(eventListener).toHaveBeenCalled();
+        expect(eventListener.callCount).toEqual(1);
       });
 
-      it('should delegate events using the ui selector (after binding)', function() {
-        var view = new ConcreteViewWithUI();
-        view.bindUIEvent('click', 'someButton', stubbedFn);
+      it('should delegate events using the ui selector (after binding UI)', function() {
+        var view = new ConcreteView({
+          el: $el
+        });
+
+        view.ui = {
+          someButton: '.btnSelector'
+        };
 
         view.bindUIElements();
+        view.bindUIEvent('click', 'someButton', eventListener);
 
-        expect(view.delegateEvents).toHaveBeenCalledWith({
-          'click button': stubbedFn
+        $button.trigger('click');
+
+        expect(eventListener).toHaveBeenCalled();
+        expect(eventListener.callCount).toEqual(1);
+      });
+
+      it('should delegate events multiple times', function() {
+        var view = new ConcreteView({
+          el: $el
         });
+        var listeners = jasmine.createSpyObj('listeners', [
+          'form', 'button', 'div'
+        ]);
+
+        view.ui = {
+          someButton: 'button',
+          someForm: 'form',
+          someDiv: 'div'
+        };
+
+        view.bindUIElements();
+        view.bindUIEvent('click', 'someButton', listeners.button);
+        view.bindUIEvent('click', 'someForm', listeners.form);
+        view.bindUIEvent('click', 'someDiv', listeners.div);
+
+        $button.trigger('click');
+        expect(listeners.button).toHaveBeenCalled();
+
+        $form.trigger('click');
+        expect(listeners.form).toHaveBeenCalled();
+
+        $div.trigger('click');
+        expect(listeners.div).toHaveBeenCalled();
+
+        expect(listeners.button.callCount).toEqual(1);
+        expect(listeners.form.callCount).toEqual(1);
+        expect(listeners.div.callCount).toEqual(1);
       });
 
       it('should throw an error if the selector does not exist', function() {
-        var view = new ConcreteViewWithUI();
-
-        // Reset delegateEvents spy
-        view.delegateEvents = jasmine.createSpy('delegateEvents');
+        var view = new ConcreteView({ el: $el });
+        view.ui = {};
 
         expect(function() {
-          view.bindUIEvent('submit', 'someForm', stubbedFn);
+          view.bindUIEvent('submit', 'someForm', eventListener);
         }).toThrowType('InvalidArgumentError');
-
-        expect(view.delegateEvents).not.toHaveBeenCalled();
       });
 
       it('should not throw an error if the selector is empty', function() {
@@ -71,14 +118,11 @@ define([
         };
 
         // Show not throw an error
-        view.bindUIEvent('click', 'emptyUI', stubbedFn);
+        view.bindUIEvent('click', 'emptyUI', eventListener);
       });
 
       it('should not bind events to the top-level view, if the selector is empty', function() {
         var view = new ConcreteView();
-        var eventListener = jasmine.createSpy('eventListener');
-
-        view.delegateEvents.andCallThrough();
 
         view.ui = {
           emptyUI: ''
@@ -92,21 +136,39 @@ define([
         expect(eventListener).not.toHaveBeenCalled();
       });
 
+      it('should bind the event in a specified context', function() {
+        var view = new ConcreteView({ el: $el });
+        var ctx = { foo: 'bar' };
+
+        view.ui = {
+          someButton: 'button'
+        };
+
+        view.bindUIEvent('click', 'someButton', eventListener, ctx);
+
+        $button.trigger('click');
+
+        expect(eventListener).toHaveBeenCalledInTheContextOf(ctx);
+      });
+
+      it('should undelegate the event with undelegateEvents', function() {
+        var view = new ConcreteView({ el: $el });
+
+        view.ui = {
+          someButton: 'button'
+        };
+
+        view.bindUIEvent('click', 'someButton', eventListener);
+        view.undelegateEvents();
+
+        $button.trigger('click');
+
+        expect(eventListener).not.toHaveBeenCalled();
+      });
+
     });
     
     describe('declareUI', function() {
-      var $el, $button, $form, $div;
-
-      beforeEach(function() {
-        $button = $('<button></button>').addClass('btnSelector');
-        $form = $('<form></form>').addClass('formSelector');
-        $div = $('<div></div>').addClass('divSelector');
-
-        $el = $('<div></div>').
-          append($button).
-          append($form).
-          append($div);
-      });
 
       it('should define an array of UI elements as empty strings', function() {
         var view = new ConcreteView();
