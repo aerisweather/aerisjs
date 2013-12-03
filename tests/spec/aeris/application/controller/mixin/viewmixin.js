@@ -63,6 +63,35 @@ define([
         expect(view.delegateEvents).not.toHaveBeenCalled();
       });
 
+      it('should not throw an error if the selector is empty', function() {
+        var view = new ConcreteView();
+
+        view.ui = {
+          emptyUI: ''
+        };
+
+        // Show not throw an error
+        view.bindUIEvent('click', 'emptyUI', stubbedFn);
+      });
+
+      it('should not bind events to the top-level view, if the selector is empty', function() {
+        var view = new ConcreteView();
+        var eventListener = jasmine.createSpy('eventListener');
+
+        view.delegateEvents.andCallThrough();
+
+        view.ui = {
+          emptyUI: ''
+        };
+
+        view.bindUIEvent('click', 'emptyUI', eventListener);
+
+        view.render();
+        view.$el.trigger('click');
+
+        expect(eventListener).not.toHaveBeenCalled();
+      });
+
     });
     
     describe('declareUI', function() {
