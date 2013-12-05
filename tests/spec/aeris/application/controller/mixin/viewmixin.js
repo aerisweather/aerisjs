@@ -250,6 +250,141 @@ define([
       });
       
     });
+    
+    
+    describe('getTemplate', function() {
+      var templateFn, templateHelpers;
+
+      var MockRegistrar = function() {
+        var stubbedInstanceMethods = [
+          'setTemplate',
+          'setHelpers',
+          'getTemplateWithHelpers',
+          'getTemplateWithHelpersBoundTo'
+        ];
+        _.extend(this, jasmine.createSpyObj('registrar', stubbedInstanceMethods));
+      };
+
+      beforeEach(function() {
+        templateFn = jasmine.createSpy('templateFn');
+        templateHelpers = jasmine.createSpyObj('templateHelpers', [
+          'helperA',
+          'helperB'
+        ]);
+      });
+      
+      it('should set the registrars template and helpers', function() {
+        var registrar = new MockRegistrar();
+        var view = new ConcreteView({
+          templateHelperRegistrar: registrar
+        });
+
+        view.template = templateFn;
+        view.templateHelpers = templateHelpers;
+
+        view.getTemplate();
+
+        expect(registrar.setTemplate).toHaveBeenCalledWith(templateFn);
+        expect(registrar.setHelpers).toHaveBeenCalledWith(templateHelpers);
+      });
+
+      describe('if no helpers are defined', function() {
+        var registrar, view;
+
+        beforeEach(function() {
+          registrar = new MockRegistrar();
+          view = new ConcreteView({
+            templateHelperRegistrar: registrar
+          });
+
+          view.template = templateFn;
+        });
+
+        it('should not use the registrar', function() {
+          view.getTemplate();
+
+          expect(registrar.getTemplateWithHelpers).not.toHaveBeenCalled();
+          expect(registrar.getTemplateWithHelpersBoundTo).not.toHaveBeenCalled();
+        });
+
+        it('should return the template option', function() {
+          var registrar = new MockRegistrar();
+          var templateOption = jasmine.createSpy('templateOption');
+
+          var view = new ConcreteView({
+            templateHelperRegistrar: registrar,
+            template: templateOption
+          });
+
+          view.template = templateFn;
+
+          expect(view.getTemplate()).toEqual(templateOption);
+        });
+
+        it('should return the template property, if no option is defined', function() {
+          var registrar = new MockRegistrar();
+          var view = new ConcreteView({
+            templateHelperRegistrar: registrar
+          });
+
+          view.template = templateFn;
+
+          expect(view.getTemplate()).toEqual(templateFn);
+        });
+      });
+
+      describe('should return a bound template from the registrar', function() {
+        var registrar, registeredTemplateStub;
+
+        beforeEach(function() {
+          registrar = new MockRegistrar();
+          registeredTemplateStub = jasmine.createSpy('registeredTemplateStub');
+
+          registrar.getTemplateWithHelpersBoundTo.andReturn(registeredTemplateStub);
+        });
+
+        it('using the template option', function() {
+          var templateOption = jasmine.createSpy('templateOption');
+
+          var view = new ConcreteView({
+            templateHelperRegistrar: registrar,
+            template: templateOption
+          });
+
+          view.template = templateFn;
+          view.templateHelpers = templateHelpers;
+
+          // Bound template is returned
+          expect(view.getTemplate()).toEqual(registeredTemplateStub);
+
+          // Template option was used
+          expect(registrar.setTemplate).toHaveBeenCalledWith(templateOption);
+
+          // Helper context was set
+          expect(registrar.getTemplateWithHelpersBoundTo).toHaveBeenCalledWith(view);
+        });
+
+        it('using the template property, if no option is defined', function() {
+          var view = new ConcreteView({
+            templateHelperRegistrar: registrar
+          });
+
+          view.template = templateFn;
+          view.templateHelpers = templateHelpers;
+
+          // Bound template is returned
+          expect(view.getTemplate()).toEqual(registeredTemplateStub);
+
+          // Template option was used
+          expect(registrar.setTemplate).toHaveBeenCalledWith(view.template);
+
+          // Helper context was set
+          expect(registrar.getTemplateWithHelpersBoundTo).toHaveBeenCalledWith(view);
+        });
+
+      });
+      
+    });
 
 
   });
