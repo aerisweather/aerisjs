@@ -1,11 +1,11 @@
 define([
   'aeris/util',
-  'mapbuilder/mapcontrols/controller/controlscontroller',
+  'mapbuilder/mapcontrols/controller/mapcontrolscontroller',
   'aeris/events',
   'aeris/model',
   'application/controller/layoutcontroller',
   'vendor/marionette'
-], function(_, ControlsController, Events, Model, LayoutController, Marionette) {
+], function(_, MapControlsController, Events, Model, LayoutController, Marionette) {
 
   var MockBuilderOptions = function(opt_attrs) {
     var attrs = _.defaults(opt_attrs || {}, {
@@ -50,9 +50,9 @@ define([
           var waypointControls = new MockController();
           var trailsControls = new MockController();
 
-          spyOn(ControlsController.prototype, 'renderControlsView');
+          spyOn(MapControlsController.prototype, 'renderControlsView');
 
-          controller = new ControlsController({
+          controller = new MapControlsController({
             template: '<div></div>',
             builderOptions: new MockBuilderOptions({
               controls: {
@@ -66,13 +66,13 @@ define([
           controller.render();
 
           eventHub.trigger('mapControls:render', layerControls, 'layers');
-          expect(ControlsController.prototype.renderControlsView).toHaveBeenCalledWith(layerControls, 'layers');
+          expect(MapControlsController.prototype.renderControlsView).toHaveBeenCalledWith(layerControls, 'layers');
 
           eventHub.trigger('mapControls:render', waypointControls, 'waypoints');
-          expect(ControlsController.prototype.renderControlsView).toHaveBeenCalledWith(waypointControls, 'waypoints');
+          expect(MapControlsController.prototype.renderControlsView).toHaveBeenCalledWith(waypointControls, 'waypoints');
 
           eventHub.trigger('mapControls:render', trailsControls, 'trails');
-          expect(ControlsController.prototype.renderControlsView).not.toHaveBeenCalledWith(trailsControls, 'trails');
+          expect(MapControlsController.prototype.renderControlsView).not.toHaveBeenCalledWith(trailsControls, 'trails');
 
         });
 
@@ -84,7 +84,7 @@ define([
 
       it('should render the controls view in a region', function() {
         var mapOptionControls, geosearchControls;
-        var controlsController = new ControlsController({
+        var controlsController = new MapControlsController({
           eventHub: new Events(),
           builderOptions: new MockBuilderOptions(),
           regions: {
@@ -113,7 +113,7 @@ define([
       });
 
       it('should throw an error if the region doesn\'t exist', function() {
-        var controller = new ControlsController({
+        var controller = new MapControlsController({
           eventHub: new Events(),
           builderOptions: new MockBuilderOptions(),
           controlsRegions: {}
