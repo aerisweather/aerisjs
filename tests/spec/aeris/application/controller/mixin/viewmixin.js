@@ -6,6 +6,7 @@ define([
   'application/controller/itemcontroller'
 ], function(_, ViewMixin, Marionette, $, ItemController) {
   var ConcreteView = function() {
+    ViewMixin.apply(this, arguments);
     Marionette.View.apply(this, arguments);
   };
   _.inherits(ConcreteView, Marionette.View);
