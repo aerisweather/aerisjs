@@ -323,7 +323,7 @@ define([
 
         spyOn(route, 'getWaypoints').andReturn(waypoints);
 
-        route.recalculateDistance();
+        route.recalculateAndUpdateDistance();
         expect(route.distance).toEqual(count * waypointDistance);
       });
 
