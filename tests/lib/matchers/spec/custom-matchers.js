@@ -79,38 +79,6 @@ require([
       });
     });
 
-    describe('toHaveAllBeenCalled', function() {
-      beforeEach(function() {
-        var spies = [
-          jasmine.createSpy('first spy'),
-          jasmine.createSpy('second spy'),
-          jasmine.createSpy('third spy')
-        ];
-        testUtils.addSpies.apply(null, spies);
-      });
-
-      it('should pass when all spies are called', function() {
-        _.each(testUtils.getSpies(), function(spy) {
-          spy();
-        });
-
-        expect(testUtils.getSpies()).toHaveAllBeenCalled();
-      });
-
-      it('should fail when any spy is not called', function() {
-        _.each(testUtils.getSpies(), function(spy) {
-          spy();
-        });
-
-        testUtils.addSpies(
-          jasmine.createSpy('never called me'),
-          jasmine.createSpy('me either'),
-          jasmine.createSpy('or me')
-        );
-
-        expect(testUtils.getSpies()).not.toHaveAllBeenCalled();
-      });
-    });
 
     describe('toHaveBeenCalledWithSomeOf', function() {
       var spy;

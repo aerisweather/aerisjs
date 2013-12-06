@@ -125,34 +125,6 @@ require([
 
 
       /**
-       * Check that all spies have been called
-       *
-       * @param {Array.<jasmine.Spy>} spies
-       * @return {Boolean}
-       */
-      toHaveAllBeenCalled: function(spies) {
-        var neverCalled = [];
-        var called = [];
-
-        _.each(this.actual, function(spy) {
-          if (spy.callCount >= 1) {
-            called.push(spy.identity);
-          }
-          else {
-            neverCalled.push(spy.identity);
-          }
-        });
-
-        this.message = function() {
-          return 'Expected spies "' + called.join('", "') + '", "' + neverCalled.join('", "') +
-            '" to have all been called.  ' +
-            'But spies "' + neverCalled.join('", "') + '" were not called.';
-        };
-
-        return neverCalled.length < 1;
-      },
-
-      /**
        * Checks that the spy was called with
        * at least the arguments called.
        *
