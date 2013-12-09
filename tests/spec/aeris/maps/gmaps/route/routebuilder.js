@@ -276,6 +276,32 @@ require([
       });
     });
 
+    describe('appendReverseRoute', function() {
+      var appendReverseRouteCommand;
+      var AppendReverseRouteCommand;
+
+      beforeEach(function() {
+        appendReverseRouteCommand = new MockCommand();
+        AppendReverseRouteCommand = jasmine.createSpy('MoveWaypointCommand').
+          andReturn(appendReverseRouteCommand);
+
+        routeBuilder = new RouteBuilder({
+          commandManager: commandManager,
+          route: route,
+          Waypoint: MockWaypoint,
+          AppendReverseRouteCommand: AppendReverseRouteCommand
+        });
+      });
+
+
+      it('should execute an AppendReturnRoute command', function() {
+        routeBuilder.appendReverseRoute();
+
+        expect(AppendReverseRouteCommand).toHaveBeenCalledWith(route);
+        expect(commandManager.executeCommand).toHaveBeenCalledWith(appendReverseRouteCommand)
+      });
+    });
+
     describe('undo', function() {
 
       it('should undo a commandManager command', function() {
