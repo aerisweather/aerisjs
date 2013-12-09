@@ -1,8 +1,9 @@
 define([
   'aeris/util',
   'gmaps/route/commands/appendreverseroutecommand',
-  'gmaps/route/route'
-], function(_, AppendReverseRouteCommand, Route) {
+  'gmaps/route/route',
+  'gmaps/route/waypoint'
+], function(_, AppendReverseRouteCommand, Route, Waypoint) {
 
   var MockRoute = function() {
     var methods = [
@@ -26,6 +27,15 @@ define([
       return !!waypoints.indexOf(wp);
     });
   };
+
+
+  var MockWaypoint = function() {
+    var methods = [
+      'destroy'
+    ];
+    _.extend(this, jasmine.createSpyObj('MockWaypoint'), methods);
+  };
+  _.inherits(MockWaypoint, Waypoint)
 
 
   var MockRouteReverser = function() {
@@ -65,6 +75,15 @@ define([
         command.execute();
 
         expect(route.add).toHaveBeenCalledWith(['pointB', 'pointA']);
+      });
+
+      it('should destory the first reversed waypoint', function() {
+        var firstReversedWaypoint = new MockWaypoint();
+        var reverseWaypoints = [firstReversedWaypoint, 'pointB', 'pointA'];
+
+        command.execute();
+
+        expect(firstReversedWaypoint.destroy).toHaveBeenCalled();
       });
 
     });

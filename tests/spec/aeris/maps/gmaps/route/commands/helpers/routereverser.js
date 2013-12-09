@@ -30,7 +30,7 @@ define([
       'getNext',
       'getPrevious',
       'getWaypoints',
-      'has',
+      'contains',
       'add',
       'remove',
       'reset',
@@ -45,11 +45,13 @@ define([
   };
 
   MockRoute.prototype.setStubbedWaypoints = function(stubbedWaypoints) {
-    this.has.andCallFake(function(waypoint) {
+    this.contains.andCallFake(function(waypoint) {
       return _.contains(stubbedWaypoints, waypoint);
     });
 
     this.getWaypoints.andReturn(stubbedWaypoints);
+
+    this.models = stubbedWaypoints;
   };
 
 
@@ -90,7 +92,7 @@ define([
         var route = new MockRoute();
         var reverser = new RouteReverser(route, { Waypoint: MockWaypoint });
 
-        route.has.andReturn(false);
+        route.contains.andReturn(false);
 
         expect(function() {
           reverser.getWaypointInReverse(new MockWaypoint());
@@ -269,6 +271,12 @@ define([
 
             expect(middleWaypoint.get('position')).toEqual([45, -90]);
             expect(nextWaypoint.get('path')).toEqual(['some', 'path']);
+          });
+
+          it('should not be set to a map', function() {
+            var reverseWaypoint = reverser.getWaypointInReverse(middleWaypoint);
+
+            expect(reverseWaypoint.getMap()).toBeNull();
           });
 
         });
@@ -472,7 +480,8 @@ define([
           path: [],
           distance: 0,
           followDirections: 'youGotta',
-          travelMode: 'FASTER_THAN_YOU'
+          travelMode: 'FASTER_THAN_YOU',
+          map: null
         });
 
         // Reverse of middleWaypoint
@@ -487,7 +496,8 @@ define([
           ],
           distance: 300.3,
           followDirections: 'youGotta',
-          travelMode: 'FASTER_THAN_YOU'
+          travelMode: 'FASTER_THAN_YOU',
+          map: null
         });
 
         // Reverse of firstWaypoint
@@ -500,7 +510,8 @@ define([
           ],
           distance: 200.2,
           followDirections: 'nah',
-          travelMode: 'THE_WORM'
+          travelMode: 'THE_WORM',
+          map: null
         });
       });
 
