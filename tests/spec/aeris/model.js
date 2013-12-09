@@ -194,7 +194,109 @@ define([
         });
       });
       
-    })
+    });
+
+
+    describe('cloneUsingType', function() {
+
+      var MockModel;
+
+      beforeEach(function() {
+        MockModel = jasmine.createSpy('MockModel#ctor');
+        _.inherits(MockModel, Model);
+      });
+
+      it('should create an instance of the specified Type', function() {
+        var model = new Model();
+        expect(model.cloneUsingType(MockModel)).toBeInstanceOf(MockModel);
+      });
+
+      it('should reject non-constructors', function() {
+        var model = new Model();
+
+        expect(function() {
+          model.cloneUsingType('foo');
+        }).toThrowType('TypeError');
+
+        model.cloneUsingType(MockModel);
+      });
+
+      it('should reject constructors for non-models', function() {
+        var model = new Model();
+        var NotAModel = function() {};
+
+        expect(function() {
+          model.cloneUsingType(NotAModel);
+        }).toThrowType('InvalidArgumentError');
+
+        model.cloneUsingType(MockModel);
+      });
+
+      describe('the cloned model', function() {
+
+        it('should be constructed with the same attributes as the original', function() {
+          var model = new Model({
+            foo: 'bar',
+            hello: { you: 'all' }
+          });
+
+          MockModel.andCallFake(function(attrs) {
+            expect(attrs.foo).toEqual('bar');
+            expect(attrs.hello).toEqual({ you: 'all' });
+          });
+
+          model.cloneUsingType(MockModel);
+          expect(MockModel).toHaveBeenCalled();
+        });
+
+        it('should not contain a reference to the original\'s attributes object', function() {
+          var model = new Model({
+            foo: 'bar',
+            hello: { you: 'all' }
+          });
+
+          MockModel.andCallFake(function(attrs) {
+            attrs.foo = 'shazaam';
+
+            // Changes to clone should not effect original
+            expect(model.attributes.foo).toEqual('bar');
+          });
+
+          model.cloneUsingType(MockModel);
+          expect(MockModel).toHaveBeenCalled();
+        });
+
+        it('should be created with the same options as the original', function() {
+          var model = new Model(null, {
+            isPassingSpec: 'I sure hope so.'
+          });
+
+          MockModel.andCallFake(function(attrs, options) {
+            expect(options.isPassingSpec).toEqual('I sure hope so.');
+          });
+
+          model.cloneUsingType(MockModel);
+          expect(MockModel).toHaveBeenCalled();
+        });
+
+      });
+
+    });
+
+
+    describe('clone', function() {
+
+      it('should act as though it\'s not defined', function() {
+        // Because Backbone's Model#clone is broken by
+        // our inheritance pattern.
+        var model = new Model();
+
+        expect(function() {
+          model.clone();
+        }).toThrowType('TypeError');
+      });
+
+    });
 
   });
 });
