@@ -109,6 +109,7 @@ require([
       //'spec/aeris/maps/gmaps/route/routerenderer',
       //'spec/aeris/maps/gmaps/route/commands/abstractroutecommand',
       //'spec/aeris/maps/gmaps/route/commands/addwaypointcommand',
+      //'spec/aeris/maps/gmaps/route/commands/appendreverseroutecommand',
       //'spec/aeris/maps/gmaps/route/commands/removewaypointcommand',
       //'spec/aeris/maps/gmaps/route/commands/resetroutecommand',
       //'spec/aeris/maps/gmaps/route/commands/reverseroutecommand',
