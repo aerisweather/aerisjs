@@ -22,17 +22,17 @@ define([
   describe('A Model', function() {
     describe('constructor', function() {
       it('should not validate on instantiation, by default', function() {
-        var test = new TestFactory();
+        new TestFactory();
         expect(Model.prototype.isValid).not.toHaveBeenCalled();
       });
       it('should optionally validate on instantiation', function() {
-        var test = new TestFactory({
-          options: {
-            validate: true
-          }
-        });
+        spyOn(Model.prototype, 'isValid');
 
-        expect(Model.prototype.isValid).toHaveBeenCalledInTheContextOf(test.model);
+        new Model(null, {
+          validate: true
+        })
+
+        expect(Model.prototype.isValid).toHaveBeenCalled();
       });
     });
 
