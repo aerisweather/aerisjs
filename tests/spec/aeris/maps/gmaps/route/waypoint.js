@@ -1,101 +1,174 @@
 define([
-  'jasmine',
-  'testErrors/untestedspecerror',
-  'gmaps/route/waypoint',
-  'mocks/waypoint',
-  'mocks/directionsresults',
   'aeris/util',
-  'testUtils',
-  'gmaps/utils'
+  'gmaps/route/waypoint',
+  'mocks/waypoint'
 ], function(
-  jasmine,
-  UntestedSpecError,
-  Waypoint,
-  MockWaypoint,
-  MockDirectionsResults,
   _,
-  testUtils,
-  mapUtils
+  Waypoint,
+  MockWaypoint
 ) {
   describe('A Waypoint', function() {
 
-    it('should accept waypoint properties as options on construction, and set defaults', function() {
-      var wp = new Waypoint({
-        position: [-45, 90],
-        path: ['mock', 'path']
+
+    describe('constructor', function() {
+
+      it('should set default attributes', function() {
+        var wp = new Waypoint();
+
+        // Some defaults
+        expect(wp.get('path')).toEqual([]);
+        expect(wp.get('followDirections')).toEqual(true);
+        expect(wp.get('travelMode')).toBe('WALKING');
+        expect(wp.getDistance()).toEqual(0);
       });
 
-      // Defined properties
-      expect(wp.get('position')).toEqual([-45, 90]);
-      expect(wp.get('path')).toEqual(['mock', 'path']);
-
-      // Some defaults
-      expect(wp.get('followDirections')).toEqual(true);
-      expect(wp.get('travelMode')).toBe('WALKING');
-      expect(wp.getDistance()).toEqual(0);
     });
 
-    it('should reset the geocoded lat/lon when the position changes', function() {
-      var wp = new Waypoint();
 
-      wp.set({
-        position: [1, 2]
+    describe('validate', function() {
+      var waypoint;
+
+      beforeEach(function() {
+        waypoint = new Waypoint();
       });
 
-      expect(wp.get('position')).toEqual([1, 2]);
+      describe('distance', function() {
 
-      wp.set('position', [100, 200]);
-      expect(wp.get('position')).toEqual([100, 200]);
-    });
+        it('should require a positive number', function() {
+          expect(function() {
+            waypoint.set('distance', -83, { validate: true })
+          }).toThrowType('ValidationError');
 
-    it('should return the most accurate lat/lon', function() {
-      var wp = new Waypoint({
-        position: [-45, 90]
+          waypoint.set('distance', 38);
+        });
+
       });
 
-      expect(wp.getPosition()).toEqual([-45, 90]);
-    });
 
-    it('should select a waypoint, without triggering eventse', function() {
-      var waypoint = new Waypoint();
-      var eventListener = jasmine.createSpy('\'select\' event listener');
+      describe('followDirections', function() {
 
-      waypoint.on('select', eventListener);
+        it('should require a boolean', function() {
+          var invalidValues = [
+            'foo',
+            undefined,
+            null,
+            -1,
+            0
+          ];
 
-      waypoint.select({ silent: true });
-      expect(eventListener).not.toHaveBeenCalled();
-    });
+          _.each(invalidValues, function(value) {
+            expect(function() {
+              waypoint.set('followDirections', value, { validate: true });
+            }).toThrowType('ValidationError');
+          });
 
-    it('should toggle a waypoint\'s selected attribute', function() {
-      var waypoint = new Waypoint();
+          // Should not throw error
+          waypoint.set('followDirections', false, { validate: true });
+          waypoint.set('followDirections', true, { validate: true });
+        });
 
-      spyOn(waypoint, 'isSelected');
-      spyOn(waypoint, 'select');
-      spyOn(waypoint, 'deselect');
+      });
 
-      waypoint.isSelected.andReturn(false);
-      waypoint.toggleSelect();
-      expect(waypoint.select).toHaveBeenCalledInTheContextOf(waypoint);
-      expect(waypoint.deselect).not.toHaveBeenCalled();
 
-      waypoint.isSelected.andReturn(true);
-      waypoint.toggleSelect();
-      expect(waypoint.deselect).toHaveBeenCalledInTheContextOf(waypoint);
-      expect(waypoint.select.callCount).toEqual(1);   // wasn't called a second time
-    });
+      describe('travelMode', function() {
 
-    it('should tell you if the waypoint is selected', function() {
-      var waypoint = new Waypoint();
+        it('should require a string', function() {
+          expect(function() {
+            waypoint.set('travelMode', {}, { validate: true });
+          }).toThrowType('ValidationError');
+        });
 
-      waypoint.select();
-      expect(waypoint.isSelected()).toEqual(true);
+      });
 
-      waypoint.deselect();
-      expect(waypoint.isSelected()).toEqual(false);
     });
 
 
-    describe('JSON import/export', function() {
+    describe('getPosition', function() {
+      it('should return the most accurate lat/lon', function() {
+        var wp = new Waypoint({
+          position: [-45, 90]
+        });
+
+        expect(wp.getPosition()).toEqual([-45, 90]);
+      });
+    });
+
+
+    describe('select', function() {
+
+      it('should select a waypoint, without triggering eventse', function() {
+        var waypoint = new Waypoint();
+        var eventListener = jasmine.createSpy('\'select\' event listener');
+
+        waypoint.on('select', eventListener);
+
+        waypoint.select({ silent: true });
+        expect(eventListener).not.toHaveBeenCalled();
+      });
+
+    });
+
+
+    describe('toggleSelect', function() {
+
+      it('should select a deselected waypiont', function() {
+        var waypoint = new Waypoint({
+          selected: false
+        });
+
+        waypoint.toggleSelect();
+
+        expect(waypoint.get('selected')).toEqual(true);
+      });
+
+      it('should deselect a selected waypoint', function() {
+        var waypoint = new Waypoint({
+          selected: true
+        });
+
+        waypoint.toggleSelect();
+
+        expect(waypoint.get('selected')).toEqual(false);
+      });
+
+
+      it('should toggle repeatedly', function() {
+        var waypoint = new Waypoint({
+          selected: true
+        });
+
+        waypoint.toggleSelect();
+        expect(waypoint.get('selected')).toEqual(false);
+
+        waypoint.toggleSelect();
+        expect(waypoint.get('selected')).toEqual(true);
+
+        waypoint.toggleSelect();
+        expect(waypoint.get('selected')).toEqual(false);
+
+        waypoint.toggleSelect();
+        expect(waypoint.get('selected')).toEqual(true);
+      });
+
+    });
+
+
+    describe('isSelected', function() {
+
+      it('should tell you if the waypoint is selected', function() {
+        var waypoint = new Waypoint();
+
+        waypoint.set('selected', true);
+        expect(waypoint.isSelected()).toEqual(true);
+
+        waypoint.set('selected', false);
+        expect(waypoint.isSelected()).toEqual(false);
+      });
+
+    });
+
+
+    describe('export', function() {
       it('export as a JSON string', function() {
         var wp = new Waypoint({
           position: [-45, 90],
@@ -112,6 +185,10 @@ define([
           '"distance":0' +
         '}');
       });
+    });
+
+
+    describe('reset', function() {
 
       it('should reset waypoint data from a JSON object', function() {
         // Taken from example export
@@ -132,25 +209,6 @@ define([
         expect(wp.get('travelMode')).toEqual('WALKING');
         expect(wp.get('position')).toEqual([44.972752843480855, -93.27199459075928]);
         expect(wp.get('path')).toEqual([[44.978350000000006, -93.26335], [44.979310000000005, -93.26556000000001], [44.979350000000004, -93.26569], [44.97887, -93.26608], [44.979110000000006, -93.26667], [44.978060000000006, -93.26758000000001], [44.97672, -93.26873], [44.97574, -93.26950000000001], [44.97478, -93.27031000000001], [44.97415, -93.27086000000001], [44.97316000000001, -93.27170000000001], [44.97276, -93.272]]);
-      });
-
-      it('should import waypoint data from a JSON string', function() {
-        var jsonStr = '{' +
-          '"position":[44.97840714423616,-93.2635509967804],' +
-          '"followDirections":true,' +
-          '"travelMode":"WALKING",' +
-          '"path":[[44.97905,-93.26302000000001],[44.978410000000004,-93.26356000000001]],' +
-          '"distance":83' +
-        '}';
-
-        var wp = new Waypoint();
-        wp.import(jsonStr);
-
-        expect(wp.get('position')).toEqual([44.97840714423616, -93.2635509967804]);
-        expect(wp.get('followDirections')).toEqual(true);
-        expect(wp.get('travelMode')).toEqual('WALKING');
-        expect(wp.get('path')).toEqual([[44.97905, -93.26302000000001], [44.978410000000004, -93.26356000000001]]);
-        expect(wp.getDistance()).toEqual(83);
       });
 
       it('should reject poorly formed JSON object input', function() {
@@ -176,6 +234,29 @@ define([
         }
       });
 
+    });
+
+
+    describe('import', function() {
+      it('should import waypoint data from a JSON string', function() {
+        var jsonStr = '{' +
+          '"position":[44.97840714423616,-93.2635509967804],' +
+          '"followDirections":true,' +
+          '"travelMode":"WALKING",' +
+          '"path":[[44.97905,-93.26302000000001],[44.978410000000004,-93.26356000000001]],' +
+          '"distance":83' +
+        '}';
+
+        var wp = new Waypoint();
+        wp.import(jsonStr);
+
+        expect(wp.get('position')).toEqual([44.97840714423616, -93.2635509967804]);
+        expect(wp.get('followDirections')).toEqual(true);
+        expect(wp.get('travelMode')).toEqual('WALKING');
+        expect(wp.get('path')).toEqual([[44.97905, -93.26302000000001], [44.978410000000004, -93.26356000000001]]);
+        expect(wp.getDistance()).toEqual(83);
+      });
+
       it('should reject poorly formed JSON string input', function() {
         var wp = new Waypoint();
 
@@ -189,6 +270,10 @@ define([
           });
         }).toThrowType('JSONParseError');
       });
+    });
+
+
+    describe('Import / Export Integration', function() {
 
       it('should import what it exports, using JSON objects', function() {
         var waypointExporter = new MockWaypoint();
@@ -222,6 +307,9 @@ define([
         // Compare all object properties
         expect(waypointImporter).toMatchWaypoint(waypointExporter);
       });
+
     });
+
+
   });
 });
