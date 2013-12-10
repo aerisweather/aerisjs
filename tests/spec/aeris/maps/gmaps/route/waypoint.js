@@ -198,6 +198,27 @@ define([
     });
 
 
+    describe('hasPath', function() {
+
+      it('should return true if a path is defined', function() {
+        var waypoint = new Waypoint({
+          path: [[12, 34], [56, 78]]
+        });
+
+        expect(waypoint.hasPath()).toEqual(true);
+      });
+
+      it('should return false if not path is defined', function() {
+        var waypoint = new Waypoint({
+          path: []
+        });
+
+        expect(waypoint.hasPath()).toEqual(false);
+      });
+
+    });
+
+
     describe('export', function() {
       it('export as a JSON string', function() {
         var wp = new Waypoint({
