@@ -44,6 +44,36 @@ define([
 
       });
 
+      describe('path', function() {
+
+        it('should require an array', function() {
+          expect(function() {
+            waypoint.set('path', {}, { validate: true });
+          }).toThrowType('ValidationError');
+        });
+
+        it('should accept an empty array', function() {
+          // Should not throw error
+          waypoint.set('path', [], { validate: true });
+        });
+
+        it('should require an array of latLons', function() {
+          var invalidPathValues = [
+            ['foo', 'bar'],
+            [12, 34, 56],
+            [[12, 34, 56]],
+            [['foo', 'bar']]
+          ];
+
+          _.each(invalidPathValues, function(value) {
+            expect(function() {
+              waypoint.set('path', value, { validate: true });
+            }).toThrowType('ValidationError');
+          });
+        });
+
+      });
+
 
       describe('followDirections', function() {
 
@@ -252,7 +282,7 @@ define([
 
         expect(wp.get('position')).toEqual([44.97840714423616, -93.2635509967804]);
         expect(wp.get('followDirections')).toEqual(true);
-        expect(wp.get('travelMode')).toEqual('WALKING');
+        expect(wp.get('travelMode')).toEqual(Waypoint.travelMode.WALKING);
         expect(wp.get('path')).toEqual([[44.97905, -93.26302000000001], [44.978410000000004, -93.26356000000001]]);
         expect(wp.getDistance()).toEqual(83);
       });
