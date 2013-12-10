@@ -18,7 +18,7 @@ define([
         // Some defaults
         expect(wp.get('path')).toEqual([]);
         expect(wp.get('followDirections')).toEqual(true);
-        expect(wp.get('travelMode')).toBe('WALKING');
+        expect(wp.get('travelMode')).toBe(Waypoint.travelMode.WALKING);
         expect(wp.getDistance()).toEqual(0);
       });
 
@@ -173,7 +173,7 @@ define([
         var wp = new Waypoint({
           position: [-45, 90],
           followDirections: true,
-          travelMode: 'WALKING',
+          travelMode: Waypoint.travelMode.WALKING,
           path: ['mock', 'path']
         });
 
@@ -206,7 +206,7 @@ define([
 
         expect(wp.getDistance()).toEqual(1153);
         expect(wp.get('followDirections')).toEqual(true);
-        expect(wp.get('travelMode')).toEqual('WALKING');
+        expect(wp.get('travelMode')).toEqual(Waypoint.travelMode.WALKING);
         expect(wp.get('position')).toEqual([44.972752843480855, -93.27199459075928]);
         expect(wp.get('path')).toEqual([[44.978350000000006, -93.26335], [44.979310000000005, -93.26556000000001], [44.979350000000004, -93.26569], [44.97887, -93.26608], [44.979110000000006, -93.26667], [44.978060000000006, -93.26758000000001], [44.97672, -93.26873], [44.97574, -93.26950000000001], [44.97478, -93.27031000000001], [44.97415, -93.27086000000001], [44.97316000000001, -93.27170000000001], [44.97276, -93.272]]);
       });
