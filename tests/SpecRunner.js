@@ -86,6 +86,8 @@ require([
 
       //'spec/aeris/maps/base/markers/pointdatamarker',
 
+      //'spec/aeris/maps/base/polylines/polyline',
+
       //'spec/aeris/maps/base/markercollection',
       //'spec/aeris/maps/base/markercollections/apiendpoint',
       //'spec/aeris/maps/base/markercollections/pointdatamarkercollection',
