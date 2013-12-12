@@ -310,14 +310,14 @@ define([
           position: [-45, 90],
           followDirections: true,
           travelMode: Waypoint.travelMode.WALKING,
-          path: ['mock', 'path']
+          path: [[12, 34], [56, 78]]
         });
 
         expect(wp.export()).toEqual('{' +
           '"position":[-45,90],' +
           '"followDirections":true,' +
           '"travelMode":"WALKING",' +
-          '"path":["mock","path"],' +
+          '"path":[[12,34],[56,78]],' +
           '"distance":0' +
         '}');
       });
