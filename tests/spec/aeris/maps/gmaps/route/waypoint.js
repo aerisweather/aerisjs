@@ -1,10 +1,12 @@
 define([
   'aeris/util',
   'gmaps/route/waypoint',
+  'aeris/collection',
   'mocks/waypoint'
 ], function(
   _,
   Waypoint,
+  Collection,
   MockWaypoint
 ) {
   describe('A Waypoint', function() {
@@ -214,6 +216,20 @@ define([
         });
 
         expect(waypoint.hasPath()).toEqual(false);
+      });
+
+    });
+
+
+    describe('getRoute', function() {
+
+      it('should return the waypoint\'s route', function() {
+        var waypoint = new Waypoint();
+        var route = new Collection(null, { model: Waypoint });
+
+        route.add(waypoint);
+
+        expect(waypoint.getRoute()).toEqual(route);
       });
 
     });
