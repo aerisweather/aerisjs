@@ -1,15 +1,28 @@
 define([
   'aeris/util',
+  'aeris/promise',
   'gmaps/route/waypoint',
   'aeris/collection',
   'mocks/waypoint'
 ], function(
   _,
+  Promise,
   Waypoint,
   Collection,
   MockWaypoint
 ) {
   describe('A Waypoint', function() {
+
+    beforeEach(function() {
+      spyOn(Waypoint.prototype, 'setStrategy');
+      spyOn(Waypoint.prototype, 'loadStrategy').andReturn(new Promise());
+    });
+
+    afterEach(function() {
+      Waypoint.prototype.setStrategy.andCallThrough();
+      Waypoint.prototype.loadStrategy.andCallThrough();
+    });
+
 
 
     describe('constructor', function() {
