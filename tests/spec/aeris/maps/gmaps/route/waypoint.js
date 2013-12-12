@@ -3,14 +3,34 @@ define([
   'aeris/promise',
   'gmaps/route/waypoint',
   'aeris/collection',
+  'mocks/mapobject',
   'mocks/waypoint'
 ], function(
   _,
   Promise,
   Waypoint,
   Collection,
+  MockMapObject,
   MockWaypoint
 ) {
+
+  var MockPolyline = function() {
+    var stubbedMethods = [
+      'setStyles'
+    ];
+    MockMapObject.apply(this, arguments);
+
+    _.extend(this, jasmine.createSpyObj('mockPolyline', stubbedMethods));
+  };
+  _.inherits(MockPolyline, MockMapObject);
+
+
+  var MockPolylineValidationError = function(message) {
+    this.name = 'MockPolylineValidationError';
+    this.message = message;
+  };
+
+
   describe('A Waypoint', function() {
 
     beforeEach(function() {
@@ -27,8 +47,18 @@ define([
 
     describe('constructor', function() {
 
+      beforeEach(function() {
+        // Stub out validation
+        spyOn(Waypoint.prototype, 'validate');
+      });
+
+      afterEach(function() {
+        // Restore validation
+        Waypoint.prototype.validate.andCallThrough();
+      });
+
       it('should set default attributes', function() {
-        var wp = new Waypoint();
+        var wp = new Waypoint(null, { polyline: new MockPolyline() });
 
         // Some defaults
         expect(wp.get('path')).toEqual([]);
@@ -37,14 +67,107 @@ define([
         expect(wp.getDistance()).toEqual(0);
       });
 
+
+      describe('Its Polyline', function() {
+        var polyline;
+
+        beforeEach(function() {
+          polyline = new MockPolyline();
+        });
+
+
+        it('should set it\'s path on it\'s polyline', function() {
+          new Waypoint({
+            path: [[12, 34], [56, 78]]
+          }, {
+            polyline: polyline
+          });
+
+          expect(polyline.get('path')).toEqual([[12, 34], [56, 78]]);
+        });
+
+        it('should set the polyline\'s map to it\'s map', function() {
+          new Waypoint({
+            map: { some: 'map' }
+          }, {
+            polyline: polyline
+          });
+
+          expect(polyline.get('map')).toEqual({ some: 'map' });
+        });
+      });
+
+    });
+
+    describe('Polyline attribute bindings', function() {
+      var polyline, waypoint;
+
+      beforeEach(function() {
+        polyline = new MockPolyline();
+        waypoint = new Waypoint(null, {
+          polyline: polyline
+        });
+
+        // Stub out validation
+        spyOn(waypoint, 'validate').andReturn(void 0);
+      });
+
+      afterEach(function() {
+        // Restore validation
+        waypoint.validate.andCallThrough();
+      });
+
+
+
+      it('should update the polyline\'s map, when it\'s own map changes', function() {
+        waypoint.set('map', { some: 'map' });
+
+        expect(polyline.get('map')).toEqual({ some: 'map' });
+      });
+
+      it('should update the polyline\'s path, when it\'s own path changes', function() {
+        waypoint.set('path', [[12, 34], [56, 78]]);
+
+        expect(polyline.get('path')).toEqual([[12, 34], [56, 78]]);
+      });
+
+      it('should update the polyline\'s path when the waypoint is reset', function() {
+        waypoint.reset({
+          path: [[12, 34], [56, 78]]
+        });
+
+        expect(polyline.get('path')).toEqual([[12, 34], [56, 78]]);
+      });
+
+      it('should validate when setting polyline attributes', function() {
+        polyline.validate = function(attrs) {
+          if (attrs.map === 'uglyMap') {
+            throw new MockPolylineValidationError('Yo map so ugly, a MapObjectInterace would throw an error.');
+          }
+          if (attrs.path === null) {
+            throw MockPolylineValidationError('A journey of 1000 miles begins with a single LatLon coordinate.');
+          }
+        };
+
+        expect(function() {
+          waypoint.set('map', 'uglyMap');
+        }).toThrowType('MockPolylineValidationError');
+
+        expect(function() {
+          waypoint.set('path', null);
+        }).toThrowType('MockPolylineValidationError');
+      });
+
     });
 
     describe('Events', function() {
-      var waypoint;
+      var waypoint, polyline;
 
       beforeEach(function() {
-        waypoint = new Waypoint();
+        polyline = new MockPolyline();
+        waypoint = new Waypoint(null, { polyline: polyline });
       });
+
 
       describe('select', function() {
         var onSelect;
@@ -76,7 +199,7 @@ define([
 
       });
 
-      describe('deslect', function() {
+      describe('deselect', function() {
         var onDeselect;
 
 
@@ -106,6 +229,28 @@ define([
 
       });
 
+
+      describe('path:click', function() {
+        var onPathClick;
+
+        beforeEach(function() {
+          onPathClick = jasmine.createSpy('onPathClick');
+          waypoint.on('path:click', onPathClick);
+        });
+
+
+        it('should be triggered when its Polyline triggers a click event', function() {
+          polyline.trigger('click', [12, 34]);
+          expect(onPathClick).toHaveBeenCalled();
+        });
+
+        it('should provide the latLon and the waypoint as event parameters', function() {
+          polyline.trigger('click', [12, 34]);
+          expect(onPathClick).toHaveBeenCalledWith([12, 34], waypoint);
+        });
+
+      });
+
     });
 
 
@@ -113,7 +258,7 @@ define([
       var waypoint;
 
       beforeEach(function() {
-        waypoint = new Waypoint();
+        waypoint = new Waypoint(null, { polyline: new MockPolyline() });
       });
 
       describe('distance', function() {
@@ -201,7 +346,7 @@ define([
       it('should return the most accurate lat/lon', function() {
         var wp = new Waypoint({
           position: [-45, 90]
-        });
+        }, { polyline: new MockPolyline() });
 
         expect(wp.getPosition()).toEqual([-45, 90]);
       });
@@ -211,7 +356,7 @@ define([
     describe('select', function() {
 
       it('should not trigger events, if silent option is set', function() {
-        var waypoint = new Waypoint();
+        var waypoint = new Waypoint(null, { polyline: new MockPolyline() });
         var eventListener = jasmine.createSpy('\'select\' event listener');
 
         waypoint.on('select', eventListener);
@@ -228,7 +373,7 @@ define([
       it('should select a deselected waypiont', function() {
         var waypoint = new Waypoint({
           selected: false
-        });
+        }, { polyline: new MockPolyline() });
 
         waypoint.toggleSelect();
 
@@ -238,7 +383,7 @@ define([
       it('should deselect a selected waypoint', function() {
         var waypoint = new Waypoint({
           selected: true
-        });
+        }, { polyline: new MockPolyline() });
 
         waypoint.toggleSelect();
 
@@ -249,7 +394,7 @@ define([
       it('should toggle repeatedly', function() {
         var waypoint = new Waypoint({
           selected: true
-        });
+        }, { polyline: new MockPolyline() });
 
         waypoint.toggleSelect();
         expect(waypoint.get('selected')).toEqual(false);
@@ -270,7 +415,7 @@ define([
     describe('isSelected', function() {
 
       it('should tell you if the waypoint is selected', function() {
-        var waypoint = new Waypoint();
+        var waypoint = new Waypoint(null, { polyline: new MockPolyline() });
 
         waypoint.set('selected', true);
         expect(waypoint.isSelected()).toEqual(true);
@@ -287,7 +432,7 @@ define([
       it('should return true if a path is defined', function() {
         var waypoint = new Waypoint({
           path: [[12, 34], [56, 78]]
-        });
+        }, { polyline: new MockPolyline() });
 
         expect(waypoint.hasPath()).toEqual(true);
       });
@@ -295,7 +440,7 @@ define([
       it('should return false if not path is defined', function() {
         var waypoint = new Waypoint({
           path: []
-        });
+        }, { polyline: new MockPolyline() });
 
         expect(waypoint.hasPath()).toEqual(false);
       });
@@ -306,7 +451,7 @@ define([
     describe('getRoute', function() {
 
       it('should return the waypoint\'s route', function() {
-        var waypoint = new Waypoint();
+        var waypoint = new Waypoint(null, { polyline: new MockPolyline() });
         var route = new Collection(null, { model: Waypoint });
 
         route.add(waypoint);
@@ -324,7 +469,7 @@ define([
           followDirections: true,
           travelMode: Waypoint.travelMode.WALKING,
           path: [[12, 34], [56, 78]]
-        });
+        }, { polyline: new MockPolyline() });
 
         expect(wp.export()).toEqual('{' +
           '"position":[-45,90],' +
@@ -342,7 +487,7 @@ define([
       it('should reset waypoint data from a JSON object', function() {
         // Taken from example export
         var wp, json;
-        wp = new Waypoint();
+        wp = new Waypoint(null, { polyline: new MockPolyline() });
 
         // Set non-standard options,
         // so we can detect changed=s
@@ -361,7 +506,7 @@ define([
       });
 
       it('should reject poorly formed JSON object input', function() {
-        var wp = new Waypoint();
+        var wp = new Waypoint(null, { polyline: new MockPolyline() });
 
         var goodJSON = {"position": [44.972752843480855, -93.27199459075928], "followDirections": true, 'travelMode': 'WALKING', 'path': [[44.978350000000006, -93.26335], [44.979310000000005, -93.26556000000001], [44.979350000000004, -93.26569], [44.97887, -93.26608], [44.979110000000006, -93.26667], [44.978060000000006, -93.26758000000001], [44.97672, -93.26873], [44.97574, -93.26950000000001], [44.97478, -93.27031000000001], [44.97415, -93.27086000000001], [44.97316000000001, -93.27170000000001], [44.97276, -93.272]], 'distance': 1153};
         var badJSONs = [
@@ -396,7 +541,7 @@ define([
           '"distance":83' +
         '}';
 
-        var wp = new Waypoint();
+        var wp = new Waypoint(null, { polyline: new MockPolyline() });
         wp.import(jsonStr);
 
         expect(wp.get('position')).toEqual([44.97840714423616, -93.2635509967804]);
@@ -407,7 +552,7 @@ define([
       });
 
       it('should reject poorly formed JSON string input', function() {
-        var wp = new Waypoint();
+        var wp = new Waypoint(null, { polyline: new MockPolyline() });
 
         expect(function() {
           wp.import('foo');
@@ -438,7 +583,7 @@ define([
 
       it('should import what is exports, using JSON strings', function() {
         var waypointExporter = new MockWaypoint();
-        var waypointImporter = new Waypoint();
+        var waypointImporter = new Waypoint(null, { polyline: new MockPolyline() });
 
         waypointImporter.import(waypointExporter.export());
 
@@ -451,7 +596,7 @@ define([
       it('should accept an exported Waypoint as a constructor param', function() {
         var waypointExporter = new MockWaypoint();
         var mockJSON = waypointExporter.toJSON();
-        var waypointImporter = new Waypoint(mockJSON);
+        var waypointImporter = new Waypoint(mockJSON, { polyline: new MockPolyline() });
 
         // Compare all object properties
         expect(waypointImporter).toMatchWaypoint(waypointExporter);
@@ -459,6 +604,28 @@ define([
 
     });
 
+
+    describe('stylePath', function() {
+      var waypoint, polyline;
+
+      beforeEach(function() {
+        polyline = new MockPolyline();
+        waypoint = new Waypoint(null, {
+          polyline: polyline
+        });
+      });
+
+
+      it('should set styles on its polyline', function() {
+        waypoint.stylePath({
+          strokeColor: 'blue'
+        });
+        expect(polyline.setStyles).toHaveBeenCalledWith({
+          strokeColor: 'blue'
+        })
+      });
+
+    });
 
   });
 });
