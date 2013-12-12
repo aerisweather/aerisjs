@@ -231,8 +231,9 @@ define([
         expect(route.atOffset).toHaveBeenCalledWith(waypoint, 1);
       });
 
-      describe('selected waypoints', function() {
-        it('should return selected waypoints', function() {
+      describe('getSelectedWaypoints', function() {
+
+        it('should return a list of selected waypoints', function() {
           var waypoints = [
             new MockWaypoint({ selected: true }),   // 0
             new MockWaypoint({ selected: false }),  // 1
@@ -245,6 +246,58 @@ define([
           expect(route.getSelected()).toEqual([
             waypoints[0], waypoints[2], waypoints[4]
           ]);
+        });
+
+          it('should return an empty array if no waypoints are selected', function() {
+            var waypoints = [
+              new MockWaypoint({ selected: false }),
+              new MockWaypoint({ selected: false }),
+              new MockWaypoint({ selected: false }),
+              new MockWaypoint({ selected: false }),
+              new MockWaypoint({ selected: false })
+            ];
+            var route = new Route(waypoints);
+
+            expect(route.getSelected()).toEqual([]);
+        });
+
+      });
+
+
+      describe('getDeselectedWaypoints', function() {
+
+        it('should return a list of waypoints which are not selected', function() {
+          var waypoints = [
+            new MockWaypoint({ selected: true }),   // 0
+            new MockWaypoint({ selected: false }),  // 1
+            new MockWaypoint({ selected: true }),   // 2
+            new MockWaypoint({ selected: false }),  // 3
+            new MockWaypoint({ selected: false })    // 4
+          ];
+          var route = new Route(waypoints);
+
+          expect(route.getDeselected()).toEqual([
+            waypoints[1], waypoints[3], waypoints[4]
+          ]);
+        });
+
+        it('should return an empty array if all waypoints are selected', function() {
+          var waypoints = [
+            new MockWaypoint({ selected: true }),
+            new MockWaypoint({ selected: true }),
+            new MockWaypoint({ selected: true }),
+            new MockWaypoint({ selected: true }),
+            new MockWaypoint({ selected: true })
+          ];
+          var route = new Route(waypoints);
+
+          expect(route.getDeselected()).toEqual([]);
+        });
+
+      });
+
+      describe('selected waypoints', function() {
+        it('should return selected waypoints', function() {
         });
 
         it('should select all waypoints', function() {
