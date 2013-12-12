@@ -1,458 +1,681 @@
 define([
   'aeris/util',
-  'aeris/events',
-  'sinon',
   'gmaps/route/routerenderer',
-  'base/marker',
-  'base/map',
-  'gmaps/route/route',
-  'gmaps/route/waypoint',
-  'gmaps/utils'
-], function(_, Events, sinon, RouteRenderer, Marker, Map, Route, Waypoint, mapUtil) {
+  'mocks/mapobject',
+  'aeris/collection'
+], function(_, RouteRenderer, MockMapObject, Collection) {
 
-  var TestFactory = function() {
-    var polyline = new MockPolylineFactory();
+  var MockWaypoint = function() {
+    var stubbedMethods = [
+      'isSelected',
+      'stylePath',
+      'getRoute'
+    ];
 
-    this.Polyline = polyline.ctor;
-    this.polyline = polyline.instance;
+    MockMapObject.apply(this, arguments);
 
-    this.renderer = this.rR = new RouteRenderer({
-      Polyline: this.Polyline
-    });
+    _.extend(this, jasmine.createSpyObj('mockWaypoint', stubbedMethods));
   };
+  _.inherits(MockWaypoint, MockMapObject);
 
-  /**
-   * @return {Function} Mock Polyline constructor.
-   * @constructor
-   */
-  var MockPolylineFactory = function() {
-    var polyline = _.extend(
-      sinon.createStubInstance(google.maps.Polyline),
-      jasmine.createSpyObj('MockPolyline', [
-        'setMap'
-      ])
-    );
 
-    var MockPolyline = jasmine.createSpy('Polyline Ctor').andCallFake(function() {
-      return polyline;
-    });
-    _.inherits(MockPolyline, google.maps.Polyline);
+  MockWaypoint.prototype.triggerMockClickEvent = function(opt_atLatLon) {
+    var stubbedLatLon = opt_atLatLon || [42, 65];
 
-    return {
-      ctor: MockPolyline,
-      instance: polyline
-    };
+    this.trigger('click', stubbedLatLon, this);
   };
 
 
-  var MockRoute = function(opt_options) {
-    var options = _.defaults(opt_options || {}, {
-      waypoints: []
-    });
+  MockWaypoint.prototype.triggerMockDragendEvent = function(opt_atLatLon) {
+    var stubbedLatLon = opt_atLatLon || [42, 65];
 
-    _.extend(this, sinon.createStubInstance(Route),
-      jasmine.createSpyObj('MockRoute', [
-        'has',
-        'getWaypoints'
-      ]));
-
-    this.has.andCallFake(function(wp) {
-      return options.waypoints.indexOf(wp) !== -1;
-    });
-
-    this.getWaypoints.andReturn(options.waypoints);
-
-    this.cid = _.uniqueId('mockRoute_');
+    this.trigger('dragend', stubbedLatLon, this);
   };
-  _.inherits(MockRoute, Route);
 
 
-  var MockWaypoint = function(opt_options) {
-    var options = _.defaults(opt_options || {}, {
-    });
+  MockWaypoint.prototype.triggerMockPathClick = function(opt_atLatLon) {
+    var stubbedLatLon = opt_atLatLon || [42, 65];
 
-    _.extend(this, sinon.createStubInstance(Waypoint),
-      jasmine.createSpyObj('Waypoint', [
-        'get',
-        'getLatLon',
-        'isSelected',
-        'set',
-        'setMap'
-      ])
-    );
-
-    this.cid = _.uniqueId('mockwp_');
-
-    this.get.andCallFake(function(attr) {
-      if (attr === 'path') {
-        return options.path;
-      }
-    });
+    this.trigger('path:click', stubbedLatLon, this);
   };
-  _.inherits(MockWaypoint, Waypoint);
 
-
-  var MockMap = function(opt_options) {
-    var options = _.defaults(opt_options || {}, {
-      view: { foo: 'bar' }
-    });
-
-    this.getView.andReturn(options.view);
-
-    _.extend(this, sinon.createStubInstance(Map));
+  MockWaypoint.prototype.triggerMockSelect = function() {
+    this.trigger('select', this, {});
+    this.trigger('change:selected', this, true, {});
   };
-  _.inherits(MockMap, Map);
-  _.extend(MockMap.prototype, jasmine.createSpyObj('MockMap', [
-    'getView'
-  ]));
+
+  MockWaypoint.prototype.triggerMockDeselect = function() {
+    this.trigger('deselect', this, {});
+    this.trigger('change:selected', this, false, {});
+  };
+
+
+  var MockRoute = function() {
+    Collection.apply(this, arguments);
+  };
+  _.inherits(MockRoute, Collection);
 
 
   describe('A RouteRenderer', function() {
-    var gEvent_orig = google.maps.event;
-
-
-    beforeEach(function() {
-      google.maps.event = jasmine.createSpyObj('google events', [
-        'addListener',
-        'removeListener'
-      ]);
-
-      spyOn(mapUtil, 'pathToLatLng').andCallFake(function(path) {
-        return path;
-      });
-    });
-
-    afterEach(function() {
-      google.maps.event = gEvent_orig;
-    });
-
 
     describe('constructor', function() {
 
       it('should set a map', function() {
-        var mockMap = new MockMap();
-
         spyOn(RouteRenderer.prototype, 'setMap');
-        new RouteRenderer({ map: mockMap });
 
-        expect(RouteRenderer.prototype.setMap).toHaveBeenCalledWith(mockMap);
-      });
-
-    });
-
-    describe('renderWaypoint', function() {
-
-      beforeEach(function() {
-        // Stub out methods called by renderWaypoint
-        _.each(['redrawWaypoint', 'renderPath', 'renderMarker', 'proxyEvents'], function(method) {
-          spyOn(RouteRenderer.prototype, method);
-        }, this);
-      });
-
-      it('should require a waypoint', function() {
-        var rR = new TestFactory().renderer;
-        var route = new MockRoute();
-        route.has.andReturn(true);
-
-        expect(function() {
-          rR.renderWaypoint({ foo: 'bar' }, route);
-        }).toThrowType('InvalidArgumentError');
-      });
-
-      it('should require a route', function() {
-        var rR = new TestFactory().renderer;
-        var waypoint = new MockWaypoint();
-
-        expect(function() {
-          rR.renderWaypoint(waypoint, { foo: 'bar' });
-        }).toThrowType('InvalidArgumentError');
-      });
-
-      it('should require the waypoint to belong to the route', function() {
-        var rR = new TestFactory().renderer;
-        var waypoint = new MockWaypoint();
-        var route = new MockRoute();
-
-        route.has.andReturn(false);
-
-        expect(function() {
-          rR.renderWaypoint(waypoint, route);
-        }).toThrowType('InvalidArgumentError');
-
-
-        // Normal behavior
-        route.has.andCallFake(function(wp) {
-          return wp === waypoint;
-        });
-        rR.renderWaypoint(waypoint, route);
-      });
-
-      it('should render the waypoint\'s path', function() {
-        var rR = new TestFactory().renderer;
-        var waypoint = new MockWaypoint({ path: ['foo'] });
-        var route = new MockRoute({ waypoints: [waypoint] });
-
-        rR.renderWaypoint(waypoint, route);
-
-        expect(rR.renderPath).toHaveBeenCalledWithSomeOf(waypoint.get('path'));
-      });
-
-      it('should render the waypoint\'s marker', function() {
-        var rR = new TestFactory().renderer;
-        var waypoint = new MockWaypoint();
-        var route = new MockRoute({ waypoints: [waypoint] });
-
-        rR.renderWaypoint(waypoint, route);
-
-        expect(rR.renderMarker).toHaveBeenCalledWithSomeOf(waypoint);
-      });
-
-      it('should proxy events for the rendered marker', function() {
-        var rR = new TestFactory().renderer;
-        var waypoint = new MockWaypoint();
-        var route = new MockRoute({ waypoints: [waypoint] });
-        var marker = { foo: 'bar' };
-
-        rR.renderMarker.andReturn(marker);
-
-        rR.renderWaypoint(waypoint, route);
-
-        expect(rR.proxyEvents).toHaveBeenCalledWithSomeOf(marker);
-      });
-
-      it('should redraw existing waypoints', function() {
-        var rR = new TestFactory().renderer;
-        var waypoint = new MockWaypoint();
-        var route = new MockRoute({ waypoints: [waypoint]});
-
-        rR.renderWaypoint(waypoint, route);
-        rR.renderWaypoint(waypoint, route);
-
-        expect(rR.redrawWaypoint).toHaveBeenCalledWith(waypoint, route);
-        expect(rR.redrawWaypoint.callCount).toEqual(1);
-      });
-    });
-
-
-    describe('renderRoute', function() {
-
-      beforeEach(function() {
-        spyOn(RouteRenderer.prototype, 'renderWaypoint');
-      });
-
-      it('should render all waypoints in a route', function() {
-        var rR = new TestFactory().renderer;
-        var waypoints = [
-          new MockWaypoint(),
-          new MockWaypoint()
-        ];
-        var route = new MockRoute({ waypoints: waypoints });
-
-        rR.renderRoute(route);
-
-        expect(rR.renderWaypoint).toHaveBeenCalledWith(waypoints[0], route);
-        expect(rR.renderWaypoint).toHaveBeenCalledWith(waypoints[1], route);
-        expect(rR.renderWaypoint.callCount).toEqual(waypoints.length);
-      });
-
-    });
-
-
-    describe('renderPath', function() {
-
-      it('should create a polyline', function() {
-        var test = new TestFactory();
-        var path = ['a', 'b', 'c'];
-
-        test.rR.renderPath(path);
-
-        expect(test.Polyline.argsForCall[0][0].path).toEqual(path);
-      });
-
-      it('should set the polyline to the map, if one is available', function() {
-        var test = new TestFactory();
-        var path = ['a', 'b', 'c'];
-
-        spyOn(test.rR, 'hasMap').andReturn(true);
-        test.rR.setMap(new MockMap());
-
-        test.rR.renderPath(path);
-
-        expect(test.polyline.setMap).toHaveBeenCalled();
-      });
-
-      it('should return the polyline', function() {
-        var test = new TestFactory();
-        var path = ['a', 'b', 'c'];
-
-        expect(test.rR.renderPath(path)).toEqual(test.polyline);
-      });
-
-    });
-
-
-    describe('renderMarker', function() {
-
-      it('should set view properties on the waypoint', function() {
-        var test = new TestFactory();
-        var waypoint = new MockWaypoint();
-        var options = {
-          url: 'foo',
-          clickable: 'bar',
-          draggable: 'waamo'
-        };
-
-        waypoint.set.andCallFake(function(attrs) {
-          expect(attrs).toEqual(options);
+        new RouteRenderer({
+          map: { some: 'map' }
         });
 
-        test.rR.renderMarker(waypoint,  options);
-        expect(waypoint.set).toHaveBeenCalled();
+        expect(RouteRenderer.prototype.setMap).toHaveBeenCalledWith({ some: 'map' });
       });
 
-      it('should return the marker', function() {
-        var test = new TestFactory();
-        var waypoint = new MockWaypoint();
+      it('should set map as null', function() {
+        spyOn(RouteRenderer.prototype, 'setMap');
 
-        expect(test.rR.renderMarker(waypoint)).toEqual(waypoint);
-      });
+        new RouteRenderer({
+          map: null
+        });
 
-    });
-
-
-    describe('eraseAllRoutes', function() {
-
-      beforeEach(function() {
-        spyOn(RouteRenderer.prototype, 'eraseRoute');
-      });
-
-      it('should erase all rendered routes', function() {
-        var test = new TestFactory();
-        var waypoints = [new MockWaypoint(), new MockWaypoint()];
-        var routes = [
-          new MockRoute({ waypoints: [waypoints[0]] }),
-          new MockRoute({ waypoints: [waypoints[1]] })
-        ];
-
-        test.rR.renderWaypoint(waypoints[0], routes[0]);
-        test.rR.renderWaypoint(waypoints[1], routes[1]);
-
-        test.rR.eraseAllRoutes();
-
-        expect(test.rR.eraseRoute).toHaveBeenCalledWith(routes[0].cid);
-        expect(test.rR.eraseRoute).toHaveBeenCalledWith(routes[1].cid);
-        expect(test.rR.eraseRoute.callCount).toEqual(2);
+        expect(RouteRenderer.prototype.setMap).toHaveBeenCalledWith(null);
       });
 
     });
 
-    describe('eraseRoute', function() {
+    describe('Events', function() {
+      var waypoint, renderer;
 
       beforeEach(function() {
-        spyOn(RouteRenderer.prototype, 'eraseWaypoint');
+        waypoint = new MockWaypoint();
+        renderer = new RouteRenderer();
+
+        renderer.renderWaypoint(waypoint);
       });
 
-      it('should erase all waypoints in the route', function() {
-        var test = new TestFactory();
-        var waypoints = [new MockWaypoint(), new MockWaypoint()];
-        var route = new MockRoute({ waypoints: waypoints });
+      describe('marker:click', function() {
+        var onMarkerClick;
 
-        test.rR.renderRoute(route);
+        beforeEach(function() {
+          onMarkerClick = jasmine.createSpy('onMarkerClick');
+          renderer.on('marker:click', onMarkerClick);
+        });
 
-        test.rR.eraseRoute(route);
-        expect(test.rR.eraseWaypoint).toHaveBeenCalledWith(waypoints[0].cid, route.cid);
-        expect(test.rR.eraseWaypoint).toHaveBeenCalledWith(waypoints[1].cid, route.cid);
-        expect(test.rR.eraseWaypoint.callCount).toEqual(2);
+
+        it('should proxy the waypoint \'click\' event', function() {
+          waypoint.triggerMockClickEvent();
+          expect(onMarkerClick).toHaveBeenCalled();
+        });
+
+        it('should provide a latLon, and the clicked waypoint', function() {
+          var latLonStub = [12, 34];
+          waypoint.triggerMockClickEvent(latLonStub);
+          expect(onMarkerClick).toHaveBeenCalledWith(latLonStub, waypoint);
+        });
+
+        it('should not be triggered after a waypoint is erased', function() {
+          renderer.eraseWaypoint(waypoint);
+
+          waypoint.triggerMockClickEvent();
+          expect(onMarkerClick).not.toHaveBeenCalled();
+        });
+
       });
 
-    });
+      describe('marker:dragend', function() {
+        var onMarkerDragend;
 
-    describe('eraseWaypoint', function() {
-      var waypoint, route, test;
+        beforeEach(function() {
+          onMarkerDragend = jasmine.createSpy('onMarkerDragend');
+          renderer.on('marker:dragend', onMarkerDragend);
+        });
 
-      beforeEach(function() {
-        test = new TestFactory();
-        waypoint = new MockWaypoint({ path: [[1, -1], [2, -2]] });
-        route = new MockRoute({ waypoints: [waypoint] });
+        it('should proxy the waypoint\'s \'dragend\' event', function() {
+          waypoint.triggerMockDragendEvent();
+          expect(onMarkerDragend).toHaveBeenCalled();
+        });
 
-        test.rR.renderWaypoint(waypoint, route);
+        it('should provide a latLon, and the proxied waypoint', function() {
+          var stubbedLatLon = [73, 92];
+
+          waypoint.triggerMockDragendEvent(stubbedLatLon);
+          expect(onMarkerDragend).toHaveBeenCalledWith(stubbedLatLon, waypoint);
+        });
+
+        it('should not be triggered after a waypoint is erased', function() {
+          renderer.eraseWaypoint(waypoint);
+
+          waypoint.triggerMockDragendEvent();
+          expect(onMarkerDragend).not.toHaveBeenCalled();
+        });
+
       });
 
-      it('should remove the waypoint\'s marker from the map', function() {
-        test.rR.eraseWaypoint(waypoint, route);
+      describe('path:click', function() {
+        var onPathClick;
 
-        expect(waypoint.setMap).toHaveBeenCalledWith(null);
+        beforeEach(function() {
+          onPathClick = jasmine.createSpy('onPathClick');
+          renderer.on('path:click', onPathClick);
+        });
+
+        it('should proxy the waypoint \'path:click\' event', function() {
+          waypoint.triggerMockPathClick();
+          expect(onPathClick).toHaveBeenCalled();
+        });
+
+        it('should provide a latLon, and the proxied waypoint', function() {
+          var stubbedLatLon = [93, 77];
+
+          waypoint.triggerMockPathClick(stubbedLatLon);
+          expect(onPathClick).toHaveBeenCalledWith(stubbedLatLon, waypoint);
+        });
+
+        it('should not be triggered after a waypoint is erased', function() {
+          renderer.eraseWaypoint(waypoint);
+
+          waypoint.triggerMockPathClick();
+          expect(onPathClick).not.toHaveBeenCalled();
+        });
+
       });
 
-      it('should erase the waypoint\'s path (google polyline)', function() {
-        test.rR.eraseWaypoint(waypoint, route);
+      it('should not trigger redundant events if a waypoint is rendered multiple times', function() {
+        var onMarkerClick = jasmine.createSpy('onWaypointClick');
+        renderer.on('marker:click', onMarkerClick);
 
-        expect(test.polyline.setMap).toHaveBeenCalledWith(null);
+        renderer.renderWaypoint(waypoint);
+        renderer.renderWaypoint(waypoint);
+        renderer.renderWaypoint(waypoint);
+
+        waypoint.triggerMockClickEvent();
+        expect(onMarkerClick.callCount).toEqual(1);
       });
+
     });
 
 
     describe('setMap', function() {
-      var waypointSets, routes, test, path;
+      var mapStub, renderer;
 
       beforeEach(function() {
-        test = new TestFactory();
-        path = [[1, -1], [2, -2]];
-
-        waypointSets = [
-          [new MockWaypoint({ path: path }), new MockWaypoint({ path: path })],
-          [new MockWaypoint({ path: path }), new MockWaypoint({ path: path })]
-        ];
-
-        routes = [
-          new MockRoute({ waypoints: waypointSets[0] }),
-          new MockRoute({ waypoints: waypointSets[1] })
-        ];
-
-        test.rR.renderRoute(routes[0]);
-        test.rR.renderRoute(routes[1]);
+        renderer = new RouteRenderer();
+        mapStub = { some: 'map' };
       });
 
+      it('should set all rendered waypoints to a map', function() {
+        var waypoints = [
+          new MockWaypoint(), new MockWaypoint(), new MockWaypoint()
+        ];
 
-      it('should set rendered markers to the map', function() {
-        var map = new MockMap();
+        _.each(waypoints, function(wp) {
+          renderer.renderWaypoint(wp);
+        });
 
-        test.rR.setMap(map);
+        renderer.setMap(mapStub);
 
-        _.each(waypointSets, function(waypoints) {
-          _.each(waypoints, function(wp) {
-            expect(wp.setMap).toHaveBeenCalledWith(map);
-          });
+        _.each(waypoints, function(renderedWaypoint) {
+          expect(renderedWaypoint.setMap).toHaveBeenCalledWith(mapStub);
         });
       });
 
-      it('should set rendered polylines to the map', function() {
-        var map = new MockMap();
-        var baseCallCount = test.polyline.setMap.callCount;
+      it('should cause all newly rendered waypoint to be set to a map', function() {
+        var waypoint = new MockWaypoint();
 
-        test.rR.setMap(map);
+        renderer.setMap(mapStub);
 
-        expect(test.polyline.setMap).toHaveBeenCalledWith(map.getView());
-        expect(test.polyline.setMap.callCount).toEqual(baseCallCount + 4);
+        renderer.renderWaypoint(waypoint);
+
+        expect(waypoint.setMap).toHaveBeenCalledWith(mapStub);
       });
 
-      it('should remove markers from the map, if null', function() {
-        test.rR.setMap(null);
+    });
 
-        _.each(waypointSets, function(waypoints) {
-          _.each(waypoints, function(wp) {
-            expect(wp.setMap).toHaveBeenCalledWith(null);
-          });
+
+    describe('renderRoute', function() {
+      var route, renderer;
+
+      beforeEach(function() {
+        renderer = new RouteRenderer();
+        route = new MockRoute();
+
+        spyOn(renderer, 'renderWaypoint');
+      });
+
+
+      it('should render all waypoints in the route', function() {
+        var waypoints = [
+          new MockWaypoint(), new MockWaypoint(), new MockWaypoint()
+        ];
+        route.add(waypoints);
+
+        renderer.renderRoute(route);
+
+        _.each(waypoints, function(wp) {
+          expect(renderer.renderWaypoint).toHaveBeenCalledWith(wp);
         });
       });
 
-      it('should remove polylines from the map, if null', function() {
-        var baseCallCount = test.polyline.setMap.callCount;
+      it('should do nothing if the route has no waypoints', function() {
+        route.reset([]);
 
-        test.rR.setMap(null);
+        // Should not throw error
+        renderer.renderRoute(route);
 
-        expect(test.polyline.setMap).toHaveBeenCalledWith(null);
-        expect(test.polyline.setMap.callCount).toEqual(baseCallCount + 4);
+        expect(renderer.renderWaypoint).not.toHaveBeenCalled();
+      });
+
+    });
+
+
+    describe('renderWaypoint', function() {
+      var renderer, waypoint;
+
+      beforeEach(function() {
+        renderer = new RouteRenderer();
+        waypoint = new MockWaypoint();
+      });
+
+
+      it('should accept waypoints without defined routes', function() {
+        waypoint.getRoute.andReturn(undefined);
+
+        // Should not throw error
+        renderer.renderWaypoint(waypoint);
+      });
+
+      it('should set the waypoint to the renderer\'s map', function() {
+        var mapStub = { some: 'map' };
+
+        renderer.setMap(mapStub);
+        renderer.renderWaypoint(waypoint);
+
+        expect(waypoint.setMap).toHaveBeenCalledWith(mapStub);
+      });
+
+
+      describe('Waypoint styles', function() {
+
+        it('should set styles on a deselected waypoint', function() {
+          var renderer = new RouteRenderer({
+            waypoint: {
+              url: 'icon.png',
+              clickable: false,
+              draggable: true
+            }
+          });
+
+          waypoint.isSelected.andReturn(false);
+          renderer.renderWaypoint(waypoint);
+
+          expect(waypoint.get('url')).toEqual('icon.png');
+          expect(waypoint.get('clickable')).toEqual(false);
+          expect(waypoint.get('draggable')).toEqual(true);
+        });
+
+        it('should set styles on a selected waypoint', function() {
+          var renderer = new RouteRenderer({
+            selectedWaypoint: {
+              url: 'blueIcon.png',
+              clickable: true,
+              draggable: false
+            }
+          });
+
+          waypoint.isSelected.andReturn(true);
+          renderer.renderWaypoint(waypoint);
+
+          expect(waypoint.get('url')).toEqual('blueIcon.png');
+          expect(waypoint.get('clickable')).toEqual(true);
+          expect(waypoint.get('draggable')).toEqual(false);
+        });
+
+        it('should change a waypoint\'s style when it is selected / deselected', function() {
+          var renderer = new RouteRenderer({
+            waypoint: {
+              url: 'icon.png',
+              clickable: false,
+              draggable: true
+            },
+            selectedWaypoint: {
+              url: 'blueIcon.png',
+              clickable: true,
+              draggable: false
+            }
+          });
+
+          // Render in deselected state
+          waypoint.isSelected.andReturn(false);
+          renderer.renderWaypoint(waypoint);
+
+
+          // Change to selected state
+          waypoint.triggerMockSelect();
+          waypoint.isSelected.andReturn(true);
+
+          // Should change attrs to selectedWaypoint options
+          expect(waypoint.get('url')).toEqual('icon.png');
+          expect(waypoint.get('clickable')).toEqual(false);
+          expect(waypoint.get('draggable')).toEqual(true);
+
+
+          // Change to deselected state
+          waypoint.triggerMockDeselect();
+          waypoint.isSelected.andReturn();
+
+          // Should change attrs to waypoint options
+          expect(waypoint.get('url')).toEqual('blueIcon.png');
+          expect(waypoint.get('clickable')).toEqual(true);
+          expect(waypoint.get('draggable')).toEqual(false);
+        });
+
+
+        describe('Waypoint style ctor options', function() {
+          var WAYPOINT_STYLE_ATTRS = [
+            'url', 'clickable', 'draggable'
+          ];
+
+          it('should define defaults for all waypoint styles', function() {
+            var renderer = new RouteRenderer();
+
+            waypoint.isSelected.andReturn(false);
+            renderer.renderWaypoint(waypoint);
+
+            _.each(WAYPOINT_STYLE_ATTRS, function(attrName) {
+              expect(waypoint.get(attrName)).toBeDefined();
+            });
+          });
+
+          it('should define defaults for all selectedWaypoint styles', function() {
+            var renderer = new RouteRenderer();
+
+            waypoint.isSelected.andReturn(true);
+            renderer.renderWaypoint(waypoint);
+
+            _.each(WAYPOINT_STYLE_ATTRS, function(attrName) {
+              expect(waypoint.get(attrName)).toBeDefined();
+            });
+          });
+
+          it('should default selectedWaypoint styles to waypoint styles', function() {
+            var renderer = new RouteRenderer({
+              waypoint: {
+                url: 'icon.png',
+                clickable: false,
+                draggable: true
+              },
+              selectedWaypoint: {
+                draggable: false
+              }
+            });
+
+            waypoint.isSelected.andReturn(true);
+            renderer.renderWaypoint(waypoint);
+
+            expect(waypoint.get('url')).toEqual('icon.png');
+            expect(waypoint.get('clickable')).toEqual(false);
+            expect(waypoint.get('draggable')).toEqual(false);
+          });
+
+        });
+
+      });
+
+
+      describe('Path styles', function() {
+
+        it('should set styles on a path which follows directions', function() {
+          var renderer = new RouteRenderer({
+            path: {
+              strokeColor: 'green',
+              strokeWeight: 117,
+              strokeOpacity: 0.01
+            }
+          });
+          waypoint.set('followDirections', true);
+
+          renderer.renderWaypoint(waypoint);
+
+          expect(waypoint.stylePath).toHaveBeenCalledWith({
+            strokeColor: 'green',
+            strokeWeight: 117,
+            strokeOpacity: 0.01
+          });
+        });
+
+        it('should set styles on a path does not follow directions', function() {
+          var renderer = new RouteRenderer({
+            offPath: {
+              strokeColor: 'blue',
+              strokeWeight: 2,
+              strokeOpacity: 0.95
+            }
+          });
+          waypoint.set('followDirections', false);
+
+          renderer.renderWaypoint(waypoint);
+
+          expect(waypoint.stylePath).toHaveBeenCalledWith({
+            strokeColor: 'blue',
+            strokeWeight: 2,
+            strokeOpacity: 0.95
+          });
+        });
+
+        it('should change the path styles when the waypoint changes its followDirections attribute', function() {
+          var pathStyles = {
+            strokeColor: 'green',
+            strokeWeight: 100,
+            strokeOpacity: 0.01
+          };
+          var offPathStyles = {
+            strokeColor: 'red',
+            strokeWeight: 5,
+            strokeOpacity: 0.95
+          }
+          var renderer = new RouteRenderer({
+            path: pathStyles,
+            offPath: offPathStyles
+          });
+
+          waypoint.set('followDirections', true);
+          renderer.renderWaypoint(waypoint);
+          expect(waypoint.stylePath).toHaveBeenCalledWith(pathStyles);
+
+          waypoint.set('followDirections', false);
+          expect(waypoint.stylePath).toHaveBeenCalledWith(offPathStyles);
+
+          waypoint.set('followDirections', true);
+          expect(waypoint.stylePath).toHaveBeenCalledWith(pathStyles);
+        });
+
+
+        describe('Path style ctor options', function() {
+          var PATH_STYLE_ATTRS = [
+            'strokeColor', 'strokeOpacity', 'strokeWeight'
+          ];
+
+          it('should define defaults for all path and offPath styles', function() {
+            var renderer = new RouteRenderer();
+
+            // Path styles
+            waypoint.set('followDirections', true);
+            renderer.renderWaypoint(waypoint);
+
+            waypoint.stylePath.andCallFake(function(attrs) {
+              _.each(PATH_STYLE_ATTRS, function(attrName) {
+                expect(attrs[attrName]).toBeDefined();
+              });
+            });
+            expect(waypoint.stylePath).toHaveBeenCalled();
+            expect(waypoint.stylePath.callCount).toEqual(1);
+
+
+            // OffPath styles
+            waypoint.set('followDirections', false);
+            renderer.renderWaypoint(waypoint);
+
+            expect(waypoint.stylePath.callCount).toBeGreaterThan(1);
+          });
+
+          it('should default offPath styles to path styles', function() {
+            var renderer = new RouteRenderer({
+              path: {
+                strokeColor: 'blue',
+                strokeWeight: 100,
+                strokeOpacity: 0.95
+              },
+              offPath: {
+                strokeColor: 'red'
+              }
+            });
+
+            waypoint.set('followDirections', false);
+            renderer.renderWaypoint(waypoint);
+
+            expect(waypoint.stylePath).toHaveBeenCalledWith({
+              strokeColor: 'red',
+              strokeWeight: 100,
+              strokeOpacity: 0.95
+            });
+          });
+
+        });
+
+      });
+
+    });
+
+
+    describe('eraseRoute', function() {
+      var renderer, route;
+
+      beforeEach(function() {
+        renderer = new RouteRenderer();
+        route = new MockRoute();
+
+        spyOn(renderer, 'eraseWaypoint');
+      });
+
+
+
+      it('should erase all waypoints in the route', function() {
+        var waypoints = [
+          new MockWaypoint(), new MockWaypoint(), new MockWaypoint()
+        ];
+        route.add(waypoints);
+
+        renderer.eraseRoute(route);
+
+        _.each(waypoints, function(wp) {
+          expect(renderer.eraseWaypoint).toHaveBeenCalledWith(wp);
+        });
+      });
+
+      it('should do nothing if the route has no waypoints', function() {
+        route.reset([]);
+
+        // Should not throw error
+        renderer.eraseRoute(route);
+
+        expect(renderer.eraseWaypoint).not.toHaveBeenCalled();
+      });
+
+    });
+
+
+    describe('eraseWaypoint', function() {
+      var renderer, waypoint;
+
+      beforeEach(function() {
+        renderer = new RouteRenderer({
+          waypoint: {
+            url: 'deselected.png'
+          },
+          selectedWaypoint: {
+            url: 'selected.png'
+          }
+        });
+        waypoint = new MockWaypoint();
+
+        renderer.renderWaypoint(waypoint);
+      });
+
+
+      it('should remove the waypoint from the map', function() {
+        renderer.eraseWaypoint(waypoint);
+
+        expect(waypoint.setMap).toHaveBeenCalledWith(null);
+      });
+
+      it('should no longer bind the waypoint\'s map to the renderer\'s map', function() {
+        var newMap = { foo: 'bar' };
+
+        renderer.eraseWaypoint(waypoint);
+        renderer.setMap(newMap);
+
+        expect(waypoint.setMap).not.toHaveBeenCalledWith(newMap);
+      });
+
+      it('should no longer proxy waypoint events', function() {
+        var onMarkerClick = jasmine.createSpy('onClick');
+        renderer.on('marker:click', onMarkerClick);
+
+        renderer.eraseWaypoint(waypoint);
+
+        waypoint.triggerMockClickEvent();
+        expect(onMarkerClick).not.toHaveBeenCalled();
+      });
+
+      it('should no longer bind styles to the waypoint state', function() {
+        waypoint.isSelected.andReturn(false);
+
+        renderer.renderWaypoint(waypoint);
+        renderer.eraseWaypoint(waypoint);
+
+        waypoint.triggerMockSelect();
+        expect(waypoint.get('url')).toEqual('deselected.png');
+
+        waypoint.triggerMockDeselect();
+        expect(waypoint.get('url')).toEqual('deselected.png');
+
+        waypoint.triggerMockSelect();
+        expect(waypoint.get('url')).toEqual('deselected.png');
+      });
+
+    });
+
+
+    describe('destroy', function() {
+      var renderer;
+
+      beforeEach(function() {
+        renderer = new RouteRenderer();
+
+        spyOn(renderer, 'eraseWaypoint');
+      });
+
+
+      it('should erase all rendered waypoints', function() {
+        var waypoints = [
+          new MockWaypoint(), new MockWaypoint(), new MockWaypoint()
+        ];
+        _.each(waypoints, function(wp) {
+          renderer.renderWaypoint(wp);
+        });
+
+        renderer.destroy();
+
+        _.each(waypoints, function(wp) {
+          expect(renderer.eraseWaypoint).toHaveBeenCalledWith(wp);
+        });
+      });
+
+
+      it('should do nothing, if no waypoints were rendered', function() {
+        // Should not throw error
+        renderer.destroy();
+
+        expect(renderer.eraseWaypoint).not.toHaveBeenCalled();
       });
 
     });
