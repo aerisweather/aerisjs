@@ -72,19 +72,19 @@
               routeBuilder.addWaypoint(latLon);
             });
 
-            routeBuilder.getRenderer().on('waypoint:dragend', function(waypoint, latLon) {
+            routeBuilder.on('waypoint:dragend', function(waypoint, latLon) {
               routeBuilder.moveWaypoint(waypoint, latLon);
             });
 
-            routeBuilder.getRenderer().on('waypoint:click', function(waypoint) {
+            routeBuilder.on('waypoint:click', function(waypoint) {
               waypoint.toggleSelect();
             });
 
 
-            routeBuilder.getRenderer().on('path:dragstart', function(waypoint, latLon) {
+            routeBuilder.on('path:dragstart', function(waypoint, latLon) {
               map.off('click');
             });
-            routeBuilder.getRenderer().on('path:dragend', function(waypoint, latLon) {
+            routeBuilder.on('path:dragend', function(waypoint, latLon) {
               var index = route.indexOf(waypoint);
               routeBuilder.addWaypoint(latLon, { at: index });
 

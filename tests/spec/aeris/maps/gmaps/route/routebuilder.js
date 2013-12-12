@@ -30,12 +30,29 @@ require([
   };
   _.inherits(MockRoute, Route);
 
+  MockRoute.prototype.triggerLatLonEvent = function(topic, opt_latLon, opt_waypoint) {
+    var stubbedLatLon = opt_latLon || [83.7, 42.9];
+    var stubbedWaypoint = opt_waypoint || new MockWaypoint();
+
+    this.trigger(topic, stubbedLatLon, stubbedWaypoint);
+  };
+
 
   var MockWaypoint = function() {};
   _.inherits(MockWaypoint, Waypoint);
 
 
-  var MockRouteRenderer = function() {};
+  var MockRouteRenderer = function() {
+    var stubbedMethods = [
+      'setStyles',
+      'renderWaypoint',
+      'eraseWaypoint',
+      'renderRoute',
+      'eraseRoute'
+    ];
+
+    _.extend(this, jasmine.createSpyObj('routeRenderer', stubbedMethods));
+  };
   _.inherits(MockRouteRenderer, RouteRenderer);
 
 
@@ -62,20 +79,112 @@ require([
     var route;
     var commandManager;
     var routeBuilder;
+    var routeRenderer;
     var MockWaypoint;
 
     beforeEach(function() {
       MockWaypoint = jasmine.createSpy('MockWaypoint');
       waypoint = new MockWaypoint();
       route = new MockRoute();
+      routeRenderer = new MockRouteRenderer();
 
       commandManager = new MockCommandManager();
 
       routeBuilder = new RouteBuilder({
         commandManager: commandManager,
         route: route,
+        routeRenderer: routeRenderer,
         Waypoint: MockWaypoint
       });
+    });
+
+
+    describe('constructor', function() {
+
+      it('should set styles on the route renderer', function() {
+        new RouteBuilder({
+          styles: { some: 'styles' },
+          routeRenderer: routeRenderer
+        });
+
+        expect(routeRenderer.setStyles).toHaveBeenCalledWith({ some: 'styles' });
+      });
+
+    });
+
+
+    describe('Events', function() {
+      var eventListener;
+
+      beforeEach(function() {
+        eventListener = jasmine.createSpy('eventListener');
+      });
+
+
+      describe('waypoint:click', function() {
+
+        beforeEach(function() {
+          routeBuilder.on('waypoint:click', eventListener);
+        });
+
+
+        it('should proxy the route#click event', function() {
+          route.triggerLatLonEvent('click');
+
+          expect(eventListener).toHaveBeenCalled();
+        });
+
+        it('should provide a latLon and a waypoint', function() {
+          var waypoint = new MockWaypoint();
+          route.triggerLatLonEvent('click', [42, 73], waypoint);
+
+          expect(eventListener).toHaveBeenCalledWith([42, 73], waypoint);
+        });
+
+      });
+
+      describe('waypoint:dragend', function() {
+
+        beforeEach(function() {
+          routeBuilder.on('waypoint:dragend', eventListener);
+        });
+
+
+        it('should proxy the route#dragend event', function() {
+          route.triggerLatLonEvent('dragend');
+          expect(eventListener).toHaveBeenCalled();
+        });
+
+        it('should provide a latLon and waypoint', function() {
+          var waypoint = new MockWaypoint();
+          route.triggerLatLonEvent('dragend', [12, 34], waypoint);
+
+          expect(eventListener).toHaveBeenCalledWith([12, 34], waypoint);
+        });
+
+      });
+
+      describe('path:click', function() {
+
+        beforeEach(function() {
+          routeBuilder.on('path:click', eventListener);
+        });
+
+
+        it('should proxy the route#path:click event', function() {
+          route.triggerLatLonEvent('path:click');
+          expect(eventListener).toHaveBeenCalled();
+        });
+
+        it('should provide a latLon and a waypoint', function() {
+          var waypoint = new MockWaypoint();
+          route.triggerLatLonEvent('path:click', [12, 34], waypoint);
+
+          expect(eventListener).toHaveBeenCalledWith([12, 34], waypoint);
+        });
+
+      });
+
     });
 
 
@@ -125,7 +234,6 @@ require([
         routeBuilder = new RouteBuilder({
           commandManager: commandManager,
           route: route,
-          Waypoint: MockWaypoint,
           AddWaypointCommand: AddWaypointCommand
         });
       });
@@ -147,21 +255,6 @@ require([
         expect(AddWaypointCommand).toHaveBeenCalledWith(route, waypoint);
       });
 
-      it('should create an AddWaypointCommand with a Waypoint created from the provided latLon', function() {
-        var stubbedWaypointInstance = new MockWaypoint();
-
-        MockWaypoint.andCallFake(function(attrs) {
-          expect(attrs.position).toEqual([12, 34]);
-
-          return stubbedWaypointInstance;
-        });
-
-        routeBuilder.addWaypoint([12, 34]);
-
-        expect(AddWaypointCommand).toHaveBeenCalledWith(route, stubbedWaypointInstance);
-        expect(MockWaypoint).toHaveBeenCalled();
-      });
-
       it('should execute an AddWaypointCommand', function() {
         var stubbedCommand = new MockCommand();
 
@@ -180,21 +273,6 @@ require([
           expect(AddWaypointCommand).toHaveBeenCalledWith(route, waypoint, { at: 7 });
           expect(commandManager.executeCommand).toHaveBeenCalledWith(addWaypointCommand);
         });
-
-        it('should execute a command with a generated waypoint, if only a latLon is provided', function() {
-          var stubbedWaypointInstance = new MockWaypoint();
-
-          MockWaypoint.andCallFake(function(attrs) {
-            expect(attrs.position).toEqual([12, 34]);
-
-            return stubbedWaypointInstance;
-          });
-
-          routeBuilder.addWaypointAt([12, 34], 7);
-
-          expect(AddWaypointCommand).toHaveBeenCalledWith(route, stubbedWaypointInstance, { at: 7 });
-          expect(commandManager.executeCommand).toHaveBeenCalledWith(addWaypointCommand);
-        });
       });
     });
 
@@ -211,7 +289,6 @@ require([
         routeBuilder = new RouteBuilder({
           commandManager: commandManager,
           route: route,
-          Waypoint: MockWaypoint,
           MoveWaypointCommand: MoveWaypointCommand
         });
       });
@@ -237,7 +314,6 @@ require([
         routeBuilder = new RouteBuilder({
           commandManager: commandManager,
           route: route,
-          Waypoint: MockWaypoint,
           RemoveWaypointCommand: RemoveWaypointCommand
         });
       });
@@ -263,7 +339,6 @@ require([
         routeBuilder = new RouteBuilder({
           commandManager: commandManager,
           route: route,
-          Waypoint: MockWaypoint,
           ResetRouteCommand: ResetRouteCommand
         });
       });
@@ -288,7 +363,6 @@ require([
         routeBuilder = new RouteBuilder({
           commandManager: commandManager,
           route: route,
-          Waypoint: MockWaypoint,
           AppendReverseRouteCommand: AppendReverseRouteCommand
         });
       });
