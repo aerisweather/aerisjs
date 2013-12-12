@@ -194,6 +194,34 @@ define([
     });
 
 
+    describe('setStyles', function() {
+      var renderer;
+
+      beforeEach(function() {
+        renderer = new RouteRenderer();
+      });
+
+
+      it('should update the styles of rendered waypoints', function() {
+        var waypoints = [
+          new MockWaypoint(), new MockWaypoint(), new MockWaypoint()
+        ];
+        _.each(waypoints, renderer.renderWaypoint, renderer);
+
+        renderer.setStyles({
+          waypoint: {
+            url: 'newUrl.png'
+          }
+        });
+
+        _.each(waypoints, function(wp) {
+          expect(wp.get('url')).toEqual('newUrl.png');
+        })
+      });
+
+    });
+
+
     describe('setMap', function() {
       var mapStub, renderer;
 
@@ -293,10 +321,10 @@ define([
       });
 
 
-      describe('Waypoint styles', function() {
+      describe('setStyles integration (waypoint)', function() {
 
         it('should set styles on a deselected waypoint', function() {
-          var renderer = new RouteRenderer({
+          renderer.setStyles({
             waypoint: {
               url: 'icon.png',
               clickable: false,
@@ -313,7 +341,7 @@ define([
         });
 
         it('should set styles on a selected waypoint', function() {
-          var renderer = new RouteRenderer({
+          renderer.setStyles({
             selectedWaypoint: {
               url: 'blueIcon.png',
               clickable: true,
@@ -330,7 +358,7 @@ define([
         });
 
         it('should change a waypoint\'s style when it is selected / deselected', function() {
-          var renderer = new RouteRenderer({
+          renderer.setStyles({
             waypoint: {
               url: 'icon.png',
               clickable: false,
@@ -375,8 +403,6 @@ define([
           ];
 
           it('should define defaults for all waypoint styles', function() {
-            var renderer = new RouteRenderer();
-
             waypoint.isSelected.andReturn(false);
             renderer.renderWaypoint(waypoint);
 
@@ -386,8 +412,6 @@ define([
           });
 
           it('should define defaults for all selectedWaypoint styles', function() {
-            var renderer = new RouteRenderer();
-
             waypoint.isSelected.andReturn(true);
             renderer.renderWaypoint(waypoint);
 
@@ -397,7 +421,7 @@ define([
           });
 
           it('should default selectedWaypoint styles to waypoint styles', function() {
-            var renderer = new RouteRenderer({
+            renderer.setStyles({
               waypoint: {
                 url: 'icon.png',
                 clickable: false,
@@ -421,10 +445,10 @@ define([
       });
 
 
-      describe('Path styles', function() {
+      describe('setStylesIntegration (path)', function() {
 
         it('should set styles on a path which follows directions', function() {
-          var renderer = new RouteRenderer({
+          renderer.setStyles({
             path: {
               strokeColor: 'green',
               strokeWeight: 117,
@@ -443,7 +467,7 @@ define([
         });
 
         it('should set styles on a path does not follow directions', function() {
-          var renderer = new RouteRenderer({
+          renderer.setStyles({
             offPath: {
               strokeColor: 'blue',
               strokeWeight: 2,
@@ -472,7 +496,7 @@ define([
             strokeWeight: 5,
             strokeOpacity: 0.95
           }
-          var renderer = new RouteRenderer({
+          renderer.setStyles({
             path: pathStyles,
             offPath: offPathStyles
           });
@@ -495,8 +519,6 @@ define([
           ];
 
           it('should define defaults for all path and offPath styles', function() {
-            var renderer = new RouteRenderer();
-
             // Path styles
             waypoint.set('followDirections', true);
             renderer.renderWaypoint(waypoint);
@@ -518,7 +540,7 @@ define([
           });
 
           it('should default offPath styles to path styles', function() {
-            var renderer = new RouteRenderer({
+            renderer.setStyles({
               path: {
                 strokeColor: 'blue',
                 strokeWeight: 100,
