@@ -26,6 +26,75 @@ define([
 
     });
 
+    describe('Events', function() {
+      var waypoint;
+
+      beforeEach(function() {
+        waypoint = new Waypoint();
+      });
+
+      describe('select', function() {
+        var onSelect;
+
+
+        beforeEach(function() {
+          // Start with deselected waypoint
+          waypoint.set('selected', false);
+
+          onSelect = jasmine.createSpy('onSelect');
+          waypoint.on('select', onSelect);
+        });
+
+
+        it('should be triggered when the \'selected\' attribute is true', function() {
+          waypoint.set('selected', true);
+          expect(onSelect).toHaveBeenCalled();
+        });
+
+        it('should receive the waypoint as a parameter', function() {
+          waypoint.set('selected', true);
+          expect(onSelect).toHaveBeenCalledWithSomeOf(waypoint);
+        });
+
+        it('should not be called if the silent option is used', function() {
+          waypoint.set('selected', true, { silent: true });
+          expect(onSelect).not.toHaveBeenCalled();
+        });
+
+      });
+
+      describe('deslect', function() {
+        var onDeselect;
+
+
+        beforeEach(function() {
+          // Start with selected waypoint
+          waypoint.set('selected', true);
+
+          onDeselect = jasmine.createSpy('onDeselect');
+          waypoint.on('deselect', onDeselect);
+        });
+
+
+        it('should be triggered when the \'selected\' attribute is false', function() {
+          waypoint.set('selected', false);
+          expect(onDeselect).toHaveBeenCalled();
+        });
+
+        it('should receive the waypoint as a parameter', function() {
+          waypoint.set('selected', false);
+          expect(onDeselect).toHaveBeenCalledWithSomeOf(waypoint);
+        });
+
+        it('should not be called if the silent option is used', function() {
+          waypoint.set('selected', false, { silent: true });
+          expect(onDeselect).not.toHaveBeenCalled();
+        });
+
+      });
+
+    });
+
 
     describe('validate', function() {
       var waypoint;
@@ -128,7 +197,7 @@ define([
 
     describe('select', function() {
 
-      it('should select a waypoint, without triggering eventse', function() {
+      it('should not trigger events, if silent option is set', function() {
         var waypoint = new Waypoint();
         var eventListener = jasmine.createSpy('\'select\' event listener');
 
