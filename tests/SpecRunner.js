@@ -66,6 +66,8 @@ require([
       //'spec/aeris/commands/abstractcommand',
       //'spec/aeris/commands/commandmanager',
 
+      //'spec/aeris/helpers/validator/pathvalidator',
+
       //'spec/aeris/api/endpoint/model/pointdata',
       //'spec/aeris/api/params/model/params',
       //'spec/aeris/api/params/model/query',
