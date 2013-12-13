@@ -1,4 +1,6 @@
-define(function() {
+define([
+  'aeris/util'
+], function() {
   var TravelMode = {};
 
   var modes = {
