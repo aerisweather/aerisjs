@@ -2,6 +2,7 @@ define([
   'aeris/util',
   'aeris/promise',
   'gmaps/route/waypoint',
+  'aeris/errors/validationerror',
   'aeris/collection',
   'mocks/mapobject',
   'mocks/waypoint'
@@ -9,6 +10,7 @@ define([
   _,
   Promise,
   Waypoint,
+  ValidationError,
   Collection,
   MockMapObject,
   MockWaypoint
@@ -255,10 +257,22 @@ define([
 
 
     describe('validate', function() {
-      var waypoint;
+      var waypoint, pathValidator = {};
 
       beforeEach(function() {
-        waypoint = new Waypoint(null, { polyline: new MockPolyline() });
+
+        pathValidator.setPath = jasmine.createSpy('setPath');
+
+        pathValidator.isValid = jasmine.createSpy('isValid').
+          andReturn(true);
+
+        pathValidator.getLastError = jasmine.createSpy('getLastError').
+          andReturn(new Error('MockPathValidatorError'));
+
+        waypoint = new Waypoint(null, {
+          polyline: new MockPolyline(),
+          pathValidator: pathValidator
+        });
       });
 
       describe('distance', function() {
@@ -266,7 +280,7 @@ define([
         it('should require a positive number', function() {
           expect(function() {
             waypoint.set('distance', -83, { validate: true })
-          }).toThrowType('ValidationError');
+          }).toThrowType(ValidationError);
 
           waypoint.set('distance', 38);
         });
@@ -274,31 +288,25 @@ define([
       });
 
       describe('path', function() {
+        var PATH_STUB = 'mock path';
 
-        it('should require an array', function() {
-          expect(function() {
-            waypoint.set('path', {}, { validate: true });
-          }).toThrowType('ValidationError');
-        });
 
-        it('should accept an empty array', function() {
+        it('should validate a valid path', function() {
+          pathValidator.isValid.andReturn(true);
+
           // Should not throw error
-          waypoint.set('path', [], { validate: true });
+          waypoint.set('path', PATH_STUB, { validate: true });
+          expect(pathValidator.setPath).toHaveBeenCalledWith(PATH_STUB);
         });
 
-        it('should require an array of latLons', function() {
-          var invalidPathValues = [
-            ['foo', 'bar'],
-            [12, 34, 56],
-            [[12, 34, 56]],
-            [['foo', 'bar']]
-          ];
+        it('should invalidate an invalid path', function() {
+          pathValidator.isValid.andReturn(false);
 
-          _.each(invalidPathValues, function(value) {
-            expect(function() {
-              waypoint.set('path', value, { validate: true });
-            }).toThrowType('ValidationError');
-          });
+          expect(function() {
+            waypoint.set('path', PATH_STUB, { validate: true });
+          }).toThrow('MockPathValidatorError');
+
+          expect(pathValidator.setPath).toHaveBeenCalledWith(PATH_STUB);
         });
 
       });
@@ -318,7 +326,7 @@ define([
           _.each(invalidValues, function(value) {
             expect(function() {
               waypoint.set('followDirections', value, { validate: true });
-            }).toThrowType('ValidationError');
+            }).toThrowType(ValidationError);
           });
 
           // Should not throw error
@@ -334,7 +342,7 @@ define([
         it('should require a string', function() {
           expect(function() {
             waypoint.set('travelMode', {}, { validate: true });
-          }).toThrowType('ValidationError');
+          }).toThrowType(ValidationError);
         });
 
       });
@@ -524,7 +532,7 @@ define([
             }
           })(i);
 
-          expect(fn).toThrowType('ValidationError');
+          expect(fn).toThrowType(ValidationError);
         }
       });
 
