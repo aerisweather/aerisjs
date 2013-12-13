@@ -16,7 +16,7 @@
     <script type="text/javascript"
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false&libraries=geometry">
     </script>
-    <script data-main="../../initialize" src="../../externals/require.js"></script>
+    <script data-main="../initialize" src="../../externals/require.js"></script>
     <script type="text/javascript">
       function randomFloatBetween(minValue, maxValue, precision) {
         precision = precision == undefined ? 2 : precision;
@@ -40,195 +40,91 @@
         require.setStrategy('gmaps');
         require([
           'base/map',
-          'gmaps/route/waypoint',
-          'gmaps/route/route',
+          'aeris/util',
+          'aeris/config',
           'gmaps/route/routebuilder',
-          'gmaps/route/routerenderer',
-          'gmaps/utils'
-        ], function(AerisMap, Waypoint, Route, RouteBuilder, RouteRenderer, mapUtils) {
-          var map = new AerisMap("map-canvas", {
-            center: [44.98, -93.2636],
-            zoom: 12
-          });
+          'gmaps/route/waypoint'
+        ], function(Map, _, config, RouteBuilder, Waypoint) {
+          var map = new Map('map-canvas');
           var routeBuilder = new RouteBuilder({
-            route: new Route(),
-            routeRenderer: new RouteRenderer(map)
+            styles: {
+              waypoint: {
+                url: config.get('path') + 'assets/marker_green.png'
+              },
+              selectedWaypoint: {
+                url: config.get('path') + 'assets/poi.png'
+              },
+              path: {
+                strokeColor: 'blue',
+                strokeWeight: 3,
+                strokeOpacity: 0.85
+              },
+              offPath: {
+                strokeColor: 'red',
+                strokeWeight: 5,
+                strokeOpacity: 0.95
+              }
+            }
           });
           var route = routeBuilder.getRoute();
 
-          bindMapEvents();
-          bindUIEvents();
+          routeBuilder.setMap(map);
 
-          route.on('change', updateUI);
-          route.on('add', updateUI);
-
-          // To make my life really easy...
-          $('body').click(updateUI);
-
-
-          // Bind map events
-          function bindMapEvents() {
-            map.on('click', function(latLon) {
-              routeBuilder.addWaypoint(latLon);
-            });
-
-            routeBuilder.on('waypoint:dragend', function(waypoint, latLon) {
-              routeBuilder.moveWaypoint(waypoint, latLon);
-            });
-
-            routeBuilder.on('waypoint:click', function(waypoint) {
-              waypoint.toggleSelect();
-            });
-
-
-            routeBuilder.on('path:dragstart', function(waypoint, latLon) {
-              map.off('click');
-            });
-            routeBuilder.on('path:dragend', function(waypoint, latLon) {
-              var index = route.indexOf(waypoint);
-              routeBuilder.addWaypoint(latLon, { at: index });
-
-              // Hack to handle
-              // click event firing both on the map
-              // and on the path
-              window.setTimeout(function() {
-                map.on('click', routeBuilder.addWaypoint, routeBuilder);
-              }, 100);
-            });
-
-
-          }
-
-          function updateUI() {
-            updateDistance();
-
-            // Enable/Disable undo/redo
-            if(routeBuilder.canUndo()) {
-              $('#undo').removeAttr('disabled');
-            }
-            else {
-              $('#undo').attr('disabled', 'disabled');
-            }
-            if(routeBuilder.canRedo()) {
-              $('#redo').removeAttr('disabled');
-            }
-            else {
-              $('#redo').attr('disabled', 'disabled');
-            }
-          }
-
-          function updateDistance() {
-            var distance = route.distance;
-            var miles = distance * 0.00062137;
-            var $totalDistance = $('#total-distance')
-            miles = Math.round(miles * 100) / 100;
-            $totalDistance.text(miles);
-          }
-
-          function bindUIEvents() {
-            var $followDirections = $('#follow-directions');
-            var $travelModeSelect = $('#travel-mode');
-            var $exportBtn = $('#route-export');
-            var $importBtn = $('#route-import');
-            var $routeJSON = $('#route-json');
-
-            // Follow paths
-            $followDirections.change(function() {
-              routeBuilder.followDirections = $followDirections.is(':checked');
-            });
-
-            // Travel mode
-            $travelModeSelect.change(function() {
-              routeBuilder.travelMode = $travelModeSelect.val();
-            });
-
-            // Import/Export
-            $exportBtn.click(function() {
-              $routeJSON.val(route.export());
-            });
-            $importBtn.click(function() {
-              route.import($routeJSON.val());
-            });
-
-            // Route Commands
-            $('#removeFirstWaypoint').click(function() {
-              var wp;
-
-              if (route.getWaypoints().length) {
-                wp = route.at(0);
-                routeBuilder.removeWaypoint(wp);
-              }
-            });
-            $('#removeMiddleWaypoint').click(function() {
-              var wp;
-              var count = route.getWaypoints().length;
-              if (count > 2) {
-                wp = route.at(Math.floor(count / 2));
-                routeBuilder.removeWaypoint(wp);
-              }
-            });
-            $('#removeLastWaypoint').click(function() {
-              var wp = route.getLastWaypoint();
-
-              if(wp) {
-                routeBuilder.removeWaypoint(wp);
-              }
-            });
-            $('#clearRoute').click(function() {
-              routeBuilder.resetRoute();
-            });
-            $('#clearSelected').click(function() {
-              route.remove(route.getSelected());
-            });
-
-            // Undo/Redo
-            $('#undo').click(function() {
-              try {
-                routeBuilder.undo();
-              }
-              catch (e) {
-                if (e.name === 'UnimplementedMethodError') {
-                  $('#map-canvas').slideUp(800, function() {
-                    $(this).empty().html('<h2>Ya should\'na done that.</h2>' +
-                            '<p>Undo has not yet been implemented for this command.</p>' +
-                            '<p>This would be a good time to reload the page...</p>');
-                  });
-                  $('#map-canvas').delay(200).slideDown(800);
-                }
-                else {
-                  throw e;
-                }
-              }
-            });
-            $('#redo').click(function() {
-              routeBuilder.redo();
-            });
-          }
-
-
-          // Insert waypoints
-          $('#addFirstWaypoint').click(function() {
-            var waypoint = new Waypoint({
-              latLon: getRandomLatLon()
-            });
-            routeBuilder.addWaypoint(waypoint, { at: 0 });
-          });
-          $('#addMiddleWaypoint').click(function() {
-            var waypoint = new Waypoint({
-              latLon: getRandomLatLon()
-            });
-            var index = randomFloatBetween(1, route.getWaypoints().length - 1, 0) || 1;
-            routeBuilder.addWaypoint(waypoint, { at: index });
-          });
-          $('#addLastWaypoint').click(function() {
-            var waypoint = new Waypoint({
-              latLon: getRandomLatLon()
-            });
-
+          map.on('click', function(latLon) {
+            var waypoint = waypointFromLatLon(latLon);
             routeBuilder.addWaypoint(waypoint);
           });
 
+
+          routeBuilder.on('waypoint:click', function(latLon, waypoint) {
+            waypoint.toggleSelect();
+          });
+
+
+          routeBuilder.on('command', updateCommandBtnState);
+
+
+          $('#clearSelected').on('click', function() {
+            var selected = route.getSelected();
+
+            _.each(selected, function(waypoint) {
+              routeBuilder.removeWaypoint(waypoint);
+            });
+          });
+
+
+          $('#clearAll').on('click', function() {
+            routeBuilder.resetRoute();
+          });
+
+          $('#travelMode').on('change', function() {
+            var mode = $(this).val();
+            route.set('travelMode', mode, { validate: true });
+          });
+
+          $('#exportRoute').on('click', function() {
+            $('#routeDisplay').val(route.export());
+          });
+
+          $('#importRoute').on('click', function() {
+            var dataString = $('#routeDisplay').val();
+            route.import(dataString);
+          });
+
+
+          function waypointFromLatLon(latLon) {
+            return new Waypoint({
+              position: latLon
+            });
+          }
+
+          function updateCommandBtnState() {
+            $('#undo').prop('disabled', routeBuilder.canUndo());
+            $('#redo').prop('disabled', routeBuilder.canRedo());
+          }
         });
+
+
       }
     </script>
   </head>
@@ -247,33 +143,19 @@
       </div>
 
       <div>
+        <button id="clearSelected">Clear selected</button>
+        <button id="clearAll">Clear All</button>
+      </div>
+
+      <div>
         <input type="checkbox" checked="checked" id="follow-directions">
         <label for="follow-directions">Follow Directions?</label>
       </div>
 
 
       <div>
-        <button id="addFirstWaypoint">Add first waypoint</button>
-        <button id="addMiddleWaypoint">Add middle waypoint</button>
-        <button id="addLastWaypoint">Add last waypoint</button>
-      </div>
-
-      <div>
-        <button id="removeFirstWaypoint">Remove first waypoint</button>
-        <button id="removeMiddleWaypoint">Remove middle waypoint</button>
-        <button id="removeLastWaypoint">Remove last waypoint</button>
-      </div>
-
-      <div>
-        <button id="clearRoute">Clear All</button>
-        <button id="clearSelected">Clear Selected</button>
-      </div>
-
-
-
-      <div>
-        <label for="travel-mode">Travel Mode</label>
-        <select id="travel-mode">
+        <label for="travelMode">Travel Mode</label>
+        <select id="travelMode">
           <option value="WALKING" selected="selected">Walking</option>
           <option value="BICYCLING">Bicycling</option>
           <option value="DRIVING">Driving</select>
@@ -284,10 +166,10 @@
 
       <div>
         <strong>JSON Route Mapper</strong>
-        <button id="route-export">Export</button>
-        <button id="route-import">Import</button>
+        <button id="exportRoute">Export</button>
+        <button id="importRoute">Import</button>
         <br />
-        <textarea id="route-json" cols="80" rows="12"></textarea>
+        <textarea id="routeDisplay" cols="80" rows="12"></textarea>
       </div>
     </div>
     </div>
