@@ -5,7 +5,8 @@ define([
   'aeris/errors/validationerror',
   'aeris/collection',
   'mocks/mapobject',
-  'mocks/waypoint'
+  'mocks/waypoint',
+  'mocks/aeris/directions/directionsservice'
 ], function(
   _,
   Promise,
@@ -13,7 +14,8 @@ define([
   ValidationError,
   Collection,
   MockMapObject,
-  MockWaypoint
+  MockWaypoint,
+  MockDirectionsService
 ) {
 
   var MockPolyline = function() {
@@ -635,5 +637,137 @@ define([
 
     });
 
+
+    describe('setPathStartsAt', function() {
+      var mockDirectionsService, mockNonstopDirectionsService;
+      var waypoint;
+      var STUB_WAYPOINT_POSITION, STUB_START_AT, STUB_TRAVEL_MODE;
+      var STUB_RESULTS, STUB_RESULTS_PATH, STUB_RESULTS_DISTANCE, STUB_RESULTS_STATUS;
+
+      function populateStubs() {
+        STUB_WAYPOINT_POSITION = [56, 78];
+        STUB_START_AT = [12, 34];
+        STUB_TRAVEL_MODE = 'STUB_TRAVEL_MODE';
+
+        populateDirectionsResultsStub();
+      }
+
+      function populateDirectionsResultsStub() {
+        STUB_RESULTS_PATH = [
+          [12, 34],
+          [56, 78],
+          [90, 12]
+        ];
+        STUB_RESULTS_DISTANCE = 1234.5678;
+        STUB_RESULTS_STATUS = { foo: 'bar' };
+        STUB_RESULTS = {
+          path: STUB_RESULTS_PATH,
+          distance: STUB_RESULTS_DISTANCE,
+          status: STUB_RESULTS_STATUS
+        };
+      }
+
+      beforeEach(function() {
+        populateStubs();
+
+        mockDirectionsService = new MockDirectionsService();
+        mockNonstopDirectionsService = new MockDirectionsService();
+
+        waypoint = new Waypoint({
+          position: STUB_WAYPOINT_POSITION,
+          followDirections: true,
+          travelMode: STUB_TRAVEL_MODE
+        }, {
+          directionsService: mockDirectionsService,
+          nonstopDirectionsService: mockNonstopDirectionsService
+        });
+      });
+
+      it('should use the directionsService if followDirections is true', function() {
+        waypoint.set('followDirections', true);
+
+        waypoint.setPathStartsAt(STUB_START_AT);
+
+        expect(mockDirectionsService.fetchPath).toHaveBeenCalled();
+      });
+
+      it('should use the nonstopDirectionsService if followDirections is false', function() {
+        waypoint.set('followDirections', false);
+
+        waypoint.setPathStartsAt(STUB_START_AT);
+
+        expect(mockNonstopDirectionsService.fetchPath).toHaveBeenCalled();
+      });
+
+      it('should get directions from the specified \'startsAt\' latLon', function() {
+        waypoint.setPathStartsAt(STUB_START_AT);
+
+        mockDirectionsService.shouldHaveFetchedPathFrom(STUB_START_AT);
+      });
+
+      it('should get directions to the waypoint\'s position', function() {
+        waypoint.setPathStartsAt(STUB_START_AT);
+
+        mockDirectionsService.shouldHaveFetchedPathTo(STUB_WAYPOINT_POSITION);
+      });
+
+      it('should get directions using the waypoint\'s travel mode', function() {
+        waypoint.setPathStartsAt(STUB_START_AT);
+
+        mockDirectionsService.shouldHaveFetchedPathWithTravelMode(STUB_TRAVEL_MODE);
+      });
+
+
+      describe('if the directions service succeeds', function() {
+
+        beforeEach(function() {
+          waypoint.setPathStartsAt(STUB_START_AT);
+          mockDirectionsService.resolveFetchPathWith(STUB_RESULTS);
+        });
+
+
+        it('should update the waypoint\'s path to the directions results path', function() {
+          expect(waypoint.get('path')).toEqual(STUB_RESULTS_PATH);
+        });
+
+        it('should update the waypoint\'s position to the last latLon in the results path', function() {
+          var lastLatLonInPath = STUB_RESULTS_PATH[STUB_RESULTS_PATH.length - 1];
+
+          expect(waypoint.get('position')).toEqual(lastLatLonInPath);
+        });
+
+        it('should update the waypoint\'s distance to the directions results distance', function() {
+          expect(waypoint.get('distance')).toEqual(STUB_RESULTS_DISTANCE);
+        });
+      });
+
+
+      describe('if the directions service fails', function() {
+        var onDirectionsError;
+
+        beforeEach(function() {
+          onDirectionsError = jasmine.createSpy('onDirectionsError');
+          waypoint.on('directions:error', onDirectionsError);
+
+          waypoint.setPathStartsAt(STUB_START_AT);
+          mockDirectionsService.rejectFetchPathWith(STUB_RESULTS);
+        });
+
+
+        it('should trigger a \'directions:error\' event', function() {
+          expect(onDirectionsError).toHaveBeenCalled();
+        });
+
+        it('should trigger only one \'directions:error\' event', function() {
+          expect(onDirectionsError.callCount).toEqual(1);
+        });
+
+        it('should include the directions results with the \'directions:error\' event', function() {
+          expect(onDirectionsError).toHaveBeenCalledWith(STUB_RESULTS);
+        });
+
+      });
+
+    });
   });
 });
