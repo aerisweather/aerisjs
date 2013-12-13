@@ -7,7 +7,7 @@ define([
   'testUtils',
   'testErrors/untestedspecerror',
   'gmaps/route/waypoint',
-  'gmaps/route/directions/abstractdirectionsservice',
+  'directions/abstractdirectionsservice',
   'mocks/promise',
   'aeris/promise',
   'gmaps/route/route'

@@ -1,7 +1,7 @@
 define([
   'jasmine',
   'sinon',
-  'gmaps/route/directions/abstractdirectionsservice',
+  'directions/abstractdirectionsservice',
   'aeris/util',
   'gmaps/route/waypoint'
 ], function(jasmine, sinon, AbstractDirectionsService, _, Waypoint) {

@@ -66,6 +66,12 @@ require([
       //'spec/aeris/commands/abstractcommand',
       //'spec/aeris/commands/commandmanager',
 
+      //'spec/aeris/directions/googledirectionsservice',
+      //'spec/aeris/directions/nonstopdirectionsservice',
+      //'spec/aeris/directions/helpers/googledistancecalculator',
+      //'spec/aeris/directions/promise/promisetofetchdirections',
+      //'spec/aeris/directions/promise/promisetofetchgoogledirections',
+
       //'spec/aeris/helpers/validator/pathvalidator',
 
       //'spec/aeris/api/endpoint/model/pointdata',
@@ -107,7 +113,7 @@ require([
       //'spec/aeris/maps/gmaps/markerstrategies/markerclusterstrategy'
 
 
-      //'spec/aeris/maps/gmaps/route/waypoint',
+      'spec/aeris/maps/gmaps/route/waypoint',
       //'spec/aeris/maps/gmaps/route/route',
       //'spec/aeris/maps/gmaps/route/routebuilder',
       //'spec/aeris/maps/gmaps/route/routerenderer',
@@ -119,12 +125,11 @@ require([
       //'spec/aeris/maps/gmaps/route/commands/reverseroutecommand',
       //'spec/aeris/maps/gmaps/route/commands/movewaypointcommand',
       //'spec/aeris/maps/gmaps/route/commands/helpers/routereverser',
-      //'spec/aeris/maps/gmaps/route/directions/abstractdirectionsservice',
-      //'spec/aeris/maps/gmaps/route/directions/googledirectionsservice'
 
 
       //'spec/polaris/maps/base/markercollections/poimarkercollection'
     ], function() {
+
       // Yes, it's a hack,
       // but it's solving some aweful async
       // loading issues...
