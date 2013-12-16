@@ -42,6 +42,8 @@ require([
 
   var MockWaypoint = function() {
     Model.apply(this, arguments);
+
+    spyOn(this, 'validate');
   };
   _.inherits(MockWaypoint, Waypoint);
 
@@ -213,6 +215,34 @@ require([
         });
 
         expect(routeRenderer.renderRoute).toHaveBeenCalledWith(route);
+      });
+
+      it('should render an added waypoint', function() {
+        var addedWaypoint = new MockWaypoint();
+
+        route.add(addedWaypoint);
+
+        expect(routeRenderer.renderWaypoint).toHaveBeenCalledWith(addedWaypoint);
+      });
+
+      it('should set the travelMode on an added waypoint', function() {
+        var addedWaypoint = new MockWaypoint();
+        var TRAVEL_MODE = 'FLYING';
+        routeBuilder.travelMode = TRAVEL_MODE;
+
+        route.add(addedWaypoint);
+
+        expect(addedWaypoint.get('travelMode')).toEqual(TRAVEL_MODE);
+      });
+
+      it('should set the followDirections attribute of an added waypoint', function() {
+        var addedWaypoint = new MockWaypoint();
+        var FOLLOW_DIRECTIONS = 'maybe';
+        routeBuilder.followDirections = FOLLOW_DIRECTIONS;
+
+        route.add(addedWaypoint);
+
+        expect(addedWaypoint.get('followDirections')).toEqual(FOLLOW_DIRECTIONS);
       });
 
     });
