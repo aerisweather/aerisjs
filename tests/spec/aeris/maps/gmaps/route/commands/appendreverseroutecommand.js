@@ -33,7 +33,7 @@ define([
     var methods = [
       'destroy'
     ];
-    _.extend(this, jasmine.createSpyObj('MockWaypoint'), methods);
+    _.extend(this, jasmine.createSpyObj('MockWaypoint', methods));
   };
   _.inherits(MockWaypoint, Waypoint)
 
@@ -69,17 +69,19 @@ define([
 
 
       it('should add reversed waypoints onto the route, omitting the first reversed waypoint', function() {
-        var reverseWaypoints = ['pointC', 'pointB', 'pointA'];
+        var pointC = new MockWaypoint(), pointB = new MockWaypoint(), pointA = new MockWaypoint();
+        var reverseWaypoints = [pointC, pointB, pointA];
         reverser.getRouteWaypointsInReverse.andReturn(reverseWaypoints);
 
         command.execute();
 
-        expect(route.add).toHaveBeenCalledWith(['pointB', 'pointA']);
+        expect(route.add).toHaveBeenCalledWith([pointB, pointA]);
       });
 
-      it('should destory the first reversed waypoint', function() {
+      it('should destroy the first reversed waypoint', function() {
         var firstReversedWaypoint = new MockWaypoint();
         var reverseWaypoints = [firstReversedWaypoint, 'pointB', 'pointA'];
+        reverser.getRouteWaypointsInReverse.andReturn(reverseWaypoints);
 
         command.execute();
 
@@ -104,18 +106,21 @@ define([
       });
 
       it('should remove the appended waypoints', function() {
-        var waypointsOrig = ['pointA', 'pointB', 'pointC'];
+        var wpA = new MockWaypoint(), wpB = new MockWaypoint(), wpC = new MockWaypoint();
+        var wpA_reverse = new MockWaypoint(), wpB_reverse = new MockWaypoint(), wpC_reverse = new MockWaypoint();
+        var waypointsOrig = [wpA, wpB, wpC];
 
         route.setStubbedWaypoints(waypointsOrig);
+        reverser.getRouteWaypointsInReverse.andReturn([wpC_reverse, wpB_reverse, wpA_reverse]);
 
         command.execute();
         route.setStubbedWaypoints([
-          'pointA', 'pointB', 'pointC', 'pointB_reverse', 'pointA_reverse'
+          wpA, wpB, wpC, wpA_reverse, wpB_reverse
         ]);
 
         command.undo();
         expect(route.set).toHaveBeenCalledWith([
-          'pointA', 'pointB', 'pointC'
+          wpA, wpB, wpC
         ])
       });
 
