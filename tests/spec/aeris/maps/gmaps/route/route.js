@@ -1,84 +1,50 @@
 define([
-  'aeris/events',
-  'jasmine',
-  'sinon',
   'aeris/util',
   'aeris/model',
-  'testUtils',
-  'testErrors/untestedspecerror',
-  'gmaps/route/waypoint',
-  'directions/abstractdirectionsservice',
-  'mocks/promise',
-  'aeris/promise',
   'gmaps/route/route'
 ], function(
-  Events,
-  jasmine,
-  sinon,
   _,
   Model,
-  testUtils,
-  UntestedSpecError,
-  Waypoint,
-  DirectionsService,
-  StubbedPromise,
-  Promise,
   Route
 ) {
 
   var MockWaypoint = function(opt_attrs, opt_options) {
+    var attrs = _.defaults(opt_attrs || {}, {
+      position: [12, 34]
+    });
+    var stubbedMethods = [
+      'setPathStartsAt',
+      'getDistance',
+      'getPosition',
+      'setPosition'
+    ];
+
     // Use Model ctor
-    Model.apply(this, arguments);
+    Model.call(this, attrs, opt_options);
+
+    _.extend(this, jasmine.createSpyObj('mockWaypoint', stubbedMethods));
+
+    this.getDistance.andCallFake(function() {
+      return this.get('distance') || 0;
+    });
+    this.getPosition.andCallFake(function() {
+      return this.get('position');
+    });
+    this.setPosition.andCallFake(function(position) {
+      this.set('position', position);
+    });
   };
-  _.inherits(MockWaypoint, Waypoint);
+  _.inherits(MockWaypoint, Model);
 
 
-  var MockDirectionsService = function() {
-    this.fetchPath = jasmine.createSpy('DirectionsService#fetchPath');
-  };
-
-
-
-  function getStubbedWaypoint(opt_options) {
-    var options = _.extend({}, opt_options);
-    var waypoint = sinon.createStubInstance(Waypoint);
-
-    if (!_.isUndefined(options.distance)) {
-      spyOn(waypoint, 'getDistance').andReturn(options.distance);
-    }
-
-    if (!_.isUndefined(options.selected)) {
-      spyOn(waypoint, 'isSelected').andReturn(options.selected);
-    }
-
-    return waypoint;
-  }
-
-  function getStubbedWaypointCollection(count, opt_options) {
-    var options = _.extend({}, opt_options);
+  function getStubbedWaypointCollection(count, opt_attrs, opt_options) {
     var waypoints = [];
 
     count || (count = 3);
 
     _.times(count, function() {
-      waypoints.push(getStubbedWaypoint(options));
+      waypoints.push(new MockWaypoint(opt_attrs, opt_options));
     });
-
-    return waypoints;
-  }
-
-  function getStubbedWaypointsForRoute(route, count, opt_options) {
-    var waypoints = getStubbedWaypointCollection(count, opt_options);
-
-    spyOn(route, 'getWaypoints').andReturn(waypoints);
-    spyOn(route, 'has').andCallFake(function(wp) {
-      return _.indexOf(waypoints, wp) >= 0;
-    });
-
-    spyOn(route, 'at').andCallFake(function(index) {
-      return waypoints[index];
-    });
-
 
     return waypoints;
   }
@@ -86,119 +52,10 @@ define([
 
   describe('A Route', function() {
 
-    it('should have a unique cid, with prefix \'route_\'', function() {
-      var route;
-
-      spyOn(_, 'uniqueId').andCallThrough();
-      route = new Route();
-
-      expect(_.uniqueId).toHaveBeenCalled();
-      expect(route.cid).toBeDefined();
-      expect(route.cid).toMatch(/^route_[0-9]*/);
-    });
-
-    describe('should manage waypoints', function() {
-
-      beforeEach(function() {
-        // Stub out waypoint path updating
-        // stub out path updating
-        spyOn(Route.prototype, 'updatePaths').andReturn(new Promise());
-        spyOn(Route.prototype, 'updatePathBetween').andReturn(new Promise());
-      })
-
-
-      it('should construct with no waypoints or distance', function() {
-        var route = new Route();
-        expect(route.distance).toEqual(0);
-        expect(route.getWaypoints()).toEqual([]);
-      });
-
-      describe('add method', function() {
-        var route, waypoint;
-
-        beforeEach(function() {
-          route = new Route();
-          waypoint = new MockWaypoint();
-        });
-
-        it('should add a waypoint', function() {
-          route.add(waypoint);
-
-          expect(route.getWaypoints().length).toEqual(1);
-        });
-
-        it('should trigger an \'add\' event', function() {
-          var addListener = jasmine.createSpy('addListener');
-
-          route.on('add', addListener);
-
-          route.add(waypoint);
-          expect(addListener).toHaveBeenCalled();
-        });
-
-        it('should not a add waypoint that already exists in the route', function() {
-          route.add(waypoint);
-          route.add(waypoint);
-          expect(route.length).toEqual(1);
-        });
-
-        it('should add a waypoint at an index', function() {
-          var newWaypoint, waypoints = [];
-
-          // Create mock waypoints
-          // and add them to the route
-          _.times(3, function(i) {
-            var wp = getStubbedWaypoint();
-            wp.testId = 'oldWaypoint_' + i;
-            waypoints.push(wp);
-            route.add(wp);
-          });
-          newWaypoint = getStubbedWaypoint();
-          newWaypoint.testId = 'newWaypoint';
-
-          // Insert a new waypoint
-          route.add(newWaypoint, { at: 1 });
-
-          // Test: waypoint was inserted
-          expect(route.at(0)).toEqual(waypoints[0]);
-          expect(route.at(1)).toEqual(newWaypoint);
-          expect(route.at(2)).toEqual(waypoints[1]);
-          expect(route.at(3)).toEqual(waypoints[2]);
-        });
-
-        it('should add multiple waypoints', function() {
-          var route = new Route();
-          var waypoints = getStubbedWaypointCollection();
-
-          spyOn(route, 'trigger');
-          spyOn(route, 'contains').andReturn(false);
-
-          route.add(waypoints);
-          expect(route.getWaypoints()).toEqual(waypoints);
-        });
-      });
-
-      it('should return a waypoint by cid', function() {
-        var route = new Route();
-
-        // Stub out as no-op
-        // To limit test scope
-        spyOn(route, 'trigger');
-
-        // Create mock waypoints
-        _.times(3, function() {
-          var wp = sinon.createStubInstance(Waypoint);
-          wp.cid = _.uniqueId();
-
-          route.add(wp);
-          expect(route.get(wp.cid)).toEqual(wp);
-        });
-      });
+    describe('atOffset', function() {
 
       it('should return a waypoint at an offset from another', function() {
-        var route = new Route(undefined, {
-          directionsService: new MockDirectionsService()
-        });
+        var route = new Route();
         var waypoints = [new MockWaypoint(), new MockWaypoint(), new MockWaypoint()];
 
         route.add(waypoints);
@@ -211,9 +68,14 @@ define([
         expect(route.atOffset(waypoints[2], -2)).toEqual(waypoints[0]);
       });
 
+    });
+
+
+    describe('getPrevious', function() {
+
       it('should return the previous waypoint', function() {
         var route = new Route();
-        var waypoint = getStubbedWaypoint();
+        var waypoint = new MockWaypoint();
 
         spyOn(route, 'atOffset');
 
@@ -221,9 +83,14 @@ define([
         expect(route.atOffset).toHaveBeenCalledWith(waypoint, -1);
       });
 
-      it('should return the next waypoint', function() {
+    });
+
+
+    describe('getNext', function() {
+
+        it('should return the next waypoint', function() {
         var route = new Route();
-        var waypoint = getStubbedWaypoint();
+        var waypoint = new MockWaypoint();
 
         spyOn(route, 'atOffset');
 
@@ -231,156 +98,151 @@ define([
         expect(route.atOffset).toHaveBeenCalledWith(waypoint, 1);
       });
 
-      describe('getSelectedWaypoints', function() {
+    });
 
-        it('should return a list of selected waypoints', function() {
+
+    describe('getSelectedWaypoints', function() {
+
+      it('should return a list of selected waypoints', function() {
+        var waypoints = [
+          new MockWaypoint({ selected: true }),   // 0
+          new MockWaypoint({ selected: false }),  // 1
+          new MockWaypoint({ selected: true }),   // 2
+          new MockWaypoint({ selected: false }),  // 3
+          new MockWaypoint({ selected: true })    // 4
+        ];
+        var route = new Route(waypoints);
+
+        expect(route.getSelected()).toEqual([
+          waypoints[0], waypoints[2], waypoints[4]
+        ]);
+      });
+
+        it('should return an empty array if no waypoints are selected', function() {
           var waypoints = [
-            new MockWaypoint({ selected: true }),   // 0
-            new MockWaypoint({ selected: false }),  // 1
-            new MockWaypoint({ selected: true }),   // 2
-            new MockWaypoint({ selected: false }),  // 3
-            new MockWaypoint({ selected: true })    // 4
+            new MockWaypoint({ selected: false }),
+            new MockWaypoint({ selected: false }),
+            new MockWaypoint({ selected: false }),
+            new MockWaypoint({ selected: false }),
+            new MockWaypoint({ selected: false })
           ];
           var route = new Route(waypoints);
 
-          expect(route.getSelected()).toEqual([
-            waypoints[0], waypoints[2], waypoints[4]
-          ]);
-        });
-
-          it('should return an empty array if no waypoints are selected', function() {
-            var waypoints = [
-              new MockWaypoint({ selected: false }),
-              new MockWaypoint({ selected: false }),
-              new MockWaypoint({ selected: false }),
-              new MockWaypoint({ selected: false }),
-              new MockWaypoint({ selected: false })
-            ];
-            var route = new Route(waypoints);
-
-            expect(route.getSelected()).toEqual([]);
-        });
-
-      });
-
-
-      describe('getDeselectedWaypoints', function() {
-
-        it('should return a list of waypoints which are not selected', function() {
-          var waypoints = [
-            new MockWaypoint({ selected: true }),   // 0
-            new MockWaypoint({ selected: false }),  // 1
-            new MockWaypoint({ selected: true }),   // 2
-            new MockWaypoint({ selected: false }),  // 3
-            new MockWaypoint({ selected: false })    // 4
-          ];
-          var route = new Route(waypoints);
-
-          expect(route.getDeselected()).toEqual([
-            waypoints[1], waypoints[3], waypoints[4]
-          ]);
-        });
-
-        it('should return an empty array if all waypoints are selected', function() {
-          var waypoints = [
-            new MockWaypoint({ selected: true }),
-            new MockWaypoint({ selected: true }),
-            new MockWaypoint({ selected: true }),
-            new MockWaypoint({ selected: true }),
-            new MockWaypoint({ selected: true })
-          ];
-          var route = new Route(waypoints);
-
-          expect(route.getDeselected()).toEqual([]);
-        });
-
-      });
-
-      describe('selected waypoints', function() {
-        it('should return selected waypoints', function() {
-        });
-
-        it('should select all waypoints', function() {
-          var waypoints = [
-            new MockWaypoint(),
-            new MockWaypoint(),
-            new MockWaypoint()
-          ];
-          var route = new Route(waypoints);
-
-          // Spy on 'select' method
-          _.each(waypoints, function(wp, i) {
-            wp.select = jasmine.createSpy('select_' + i);
-          });
-
-          route.selectAll();
-
-          _.each(waypoints, function(wp) {
-            expect(wp.select).toHaveBeenCalled();
-          });
-        });
-
-        it('should deselect all waypoints', function() {
-          var waypoints = [
-            new MockWaypoint(),
-            new MockWaypoint(),
-            new MockWaypoint()
-          ];
-          var route = new Route(waypoints);
-
-          // Spy on 'select' method
-          _.each(waypoints, function(wp, i) {
-            wp.deselect = jasmine.createSpy('select_' + i);
-          });
-
-          route.deselectAll();
-
-          _.each(waypoints, function(wp) {
-            expect(wp.deselect).toHaveBeenCalled();
-          });
-        });
-      });
-
-      it('should check if a waypoint exists in a route', function() {
-        var waypoint = getStubbedWaypoint();
-        var someOtherWaypoint = getStubbedWaypoint();
-        var route = new Route();
-
-        // Stub with no-op to  limit test scope
-        spyOn(route, 'trigger');
-
-        route.add(waypoint);
-        expect(route.contains(waypoint)).toEqual(true);
-        expect(route.contains(someOtherWaypoint)).toEqual(false);
-      });
-
-
-      it('should return the last waypoint in the route', function() {
-        var route = new Route();
-        var count = 3;
-        var waypoints = getStubbedWaypointCollection(count);
-
-        spyOn(route, 'getWaypoints').andReturn(waypoints);
-        spyOn(route, 'at');
-
-        route.getLastWaypoint();
-
-        expect(route.at).toHaveBeenCalledWith(count - 1);
-      });
-
-      it('should recalculate total route distance', function() {
-        var route = new Route();
-        var count = 7;
-        var waypointDistance = 8213;
-        var waypoints = getStubbedWaypointCollection(count, { distance: waypointDistance });
-
-        spyOn(route, 'getWaypoints').andReturn(waypoints);
-
-        route.recalculateAndUpdateDistance();
-        expect(route.distance).toEqual(count * waypointDistance);
+          expect(route.getSelected()).toEqual([]);
       });
 
     });
+
+
+    describe('getDeselectedWaypoints', function() {
+
+      it('should return a list of waypoints which are not selected', function() {
+        var waypoints = [
+          new MockWaypoint({ selected: true }),   // 0
+          new MockWaypoint({ selected: false }),  // 1
+          new MockWaypoint({ selected: true }),   // 2
+          new MockWaypoint({ selected: false }),  // 3
+          new MockWaypoint({ selected: false })    // 4
+        ];
+        var route = new Route(waypoints);
+
+        expect(route.getDeselected()).toEqual([
+          waypoints[1], waypoints[3], waypoints[4]
+        ]);
+      });
+
+      it('should return an empty array if all waypoints are selected', function() {
+        var waypoints = [
+          new MockWaypoint({ selected: true }),
+          new MockWaypoint({ selected: true }),
+          new MockWaypoint({ selected: true }),
+          new MockWaypoint({ selected: true }),
+          new MockWaypoint({ selected: true })
+        ];
+        var route = new Route(waypoints);
+
+        expect(route.getDeselected()).toEqual([]);
+      });
+
+    });
+
+
+    describe('selected waypoints', function() {
+      it('should return selected waypoints', function() {
+      });
+
+      it('should select all waypoints', function() {
+        var waypoints = [
+          new MockWaypoint(),
+          new MockWaypoint(),
+          new MockWaypoint()
+        ];
+        var route = new Route(waypoints);
+
+        // Spy on 'select' method
+        _.each(waypoints, function(wp, i) {
+          wp.select = jasmine.createSpy('select_' + i);
+        });
+
+        route.selectAll();
+
+        _.each(waypoints, function(wp) {
+          expect(wp.select).toHaveBeenCalled();
+        });
+      });
+
+      it('should deselect all waypoints', function() {
+        var waypoints = [
+          new MockWaypoint(),
+          new MockWaypoint(),
+          new MockWaypoint()
+        ];
+        var route = new Route(waypoints);
+
+        // Spy on 'select' method
+        _.each(waypoints, function(wp, i) {
+          wp.deselect = jasmine.createSpy('select_' + i);
+        });
+
+        route.deselectAll();
+
+        _.each(waypoints, function(wp) {
+          expect(wp.deselect).toHaveBeenCalled();
+        });
+      });
+    });
+
+
+    describe('getLastWaypoint', function() {
+
+      it('should return the last waypoint in the route', function() {
+        var route = new Route();
+        var COUNT = 3;
+        var waypoints = getStubbedWaypointCollection(3, COUNT);
+        var LAST_STUBBED_WAYPOINT = waypoints[COUNT - 1];
+        route.add(waypoints);
+
+        expect(route.getLastWaypoint()).toEqual(LAST_STUBBED_WAYPOINT);
+      });
+
+    });
+
+
+    describe('recalculateAndUpdateDistance', function() {
+
+      it('should recalculate total route distance', function() {
+        var WAYPOINT_COUNT = 7, WAYPOINT_DISTANCE = 12345.67;
+        var WAYPOINT_TOTAL_DISTANCE = WAYPOINT_COUNT * WAYPOINT_DISTANCE;
+
+        var waypoints = getStubbedWaypointCollection(WAYPOINT_COUNT, { distance: WAYPOINT_DISTANCE });
+        var route = new Route(waypoints);
+
+        route.recalculateAndUpdateDistance();
+        expect(route.distance).toEqual(WAYPOINT_TOTAL_DISTANCE);
+      });
+
+    });
+
 
     describe('distanceTo', function() {
       it('should return the distance to a given waypoint', function() {
@@ -409,135 +271,282 @@ define([
 
         expect(function() {
           route.distanceTo(new MockWaypoint({ distance: 999 }));
-        }).toThrowType('InvalidArgumentError');
+        }).toThrowType('WaypointNotInRouteError');
       });
     });
 
-    describe('should update a waypoint\'s path', function() {
-      var route, waypoint, next, prev;
+
+    describe('updating paths (event bindings)', function() {
+      var route;
+      var firstWaypoint, middleWaypoint, lastWaypoint;
+      var STUB_MOVED_POSITION = [12.34, 56.78];
+      var STUB_PATH = [
+        [12, 34], [56, 78], [90, 12]
+      ];
 
       beforeEach(function() {
+        firstWaypoint = new MockWaypoint();
+        middleWaypoint = new MockWaypoint();
+        lastWaypoint = new MockWaypoint();
+
         route = new Route();
-        waypoint = getStubbedWaypoint();
-        next = getStubbedWaypoint();
-        prev = getStubbedWaypoint();
+
+        route.prepareWithWaypoints = function(waypoints) {
+          route.add(waypoints, { silent: true });
+        };
+
 
         spyOn(route, 'updatePathBetween');
-        spyOn(aeris.Promise, 'when');
       });
 
-      it('when it is added to a route, or moved', function() {
-        spyOn(route, 'contains').andReturn(true);
-        spyOn(route, 'getNext').andReturn(next);
-        spyOn(route, 'getPrevious').andReturn(prev);
 
-        route.updatePaths(waypoint);
+      describe('when a waypoint at the start of the route', function() {
 
-        expect(route.updatePathBetween).toHaveBeenCalledWith(waypoint, next);
-      });
+        describe('is added', function() {
 
-      describe('when it is removed from a route', function() {
-        function stubAt(at) {
-          spyOn(route, 'at').andCallFake(function(index) {
-            if (index === at - 1) { return undefined; }
-            if (index === at) { return next }
-
-            throw Error('Unexpected spy arguments');
+          beforeEach(function() {
+            route.prepareWithWaypoints([middleWaypoint, lastWaypoint]);
+            route.add(firstWaypoint, { at: 0 });
           });
-        }
+
+
+          it('should update the path between the added waypoint and the second waypoint in the route', function() {
+            expect(route.updatePathBetween).toHaveBeenCalledWith(firstWaypoint, middleWaypoint);
+          });
+          
+        });
+        
+        describe('is moved', function() {
+
+          beforeEach(function() {
+            route.prepareWithWaypoints([firstWaypoint, middleWaypoint, lastWaypoint]);
+            firstWaypoint.set('position', STUB_MOVED_POSITION);
+          });
+
+
+          it('should update the path between the added waypoint and the second waypoint in the route', function() {
+            expect(route.updatePathBetween).toHaveBeenCalledWith(firstWaypoint, middleWaypoint);
+          });
+          
+        });
+        
+        describe('is removed', function() {
+          var newFirstWaypoint;
+
+          beforeEach(function() {
+            route.prepareWithWaypoints([firstWaypoint, middleWaypoint, lastWaypoint]);
+            route.remove(firstWaypoint);
+
+            newFirstWaypoint = route.first();
+          });
+          
+          it('should set an empty path on the (new) first waypoint', function() {
+            expect(newFirstWaypoint.get('path')).toEqual([]);
+          });
+          
+          it('should set a distance of zero on the (new) first waypoint', function() {
+            expect(newFirstWaypoint.get('distance')).toEqual(0);
+          });
+          
+        });
+      });
+        
+
+      describe('when a waypoint at the middle of the route', function() {
+        
+        describe('is added', function() {
+
+          beforeEach(function() {
+            route.prepareWithWaypoints([firstWaypoint, lastWaypoint]);
+            route.add(middleWaypoint, { at: 1 });
+          });
+
+          it('should update the path to the previous waypoint', function() {
+            expect(route.updatePathBetween).toHaveBeenCalledWith(firstWaypoint, middleWaypoint);
+          });
+          
+          it('should update the path to the next waypoint', function() {
+            expect(route.updatePathBetween).toHaveBeenCalledWith(middleWaypoint, lastWaypoint);
+          });
+          
+        });
+        
+        describe('is moved', function() {
+
+          beforeEach(function() {
+            route.prepareWithWaypoints([firstWaypoint, middleWaypoint, lastWaypoint]);
+            middleWaypoint.set('position', STUB_MOVED_POSITION);
+          });
+
+          it('should update the path to the previous waypoint', function() {
+            expect(route.updatePathBetween).toHaveBeenCalledWith(firstWaypoint, middleWaypoint);
+          });
+
+          it('should update the path to the next waypoint', function() {
+            expect(route.updatePathBetween).toHaveBeenCalledWith(middleWaypoint, lastWaypoint)
+          });
+
+          
+        });
+        
+        describe('is removed', function() {
+
+          beforeEach(function() {
+            route.prepareWithWaypoints([firstWaypoint, middleWaypoint, lastWaypoint]);
+            route.remove(middleWaypoint);
+          });
+
+          
+          it('should update the path between the surrounding waypoints', function() {
+            expect(route.updatePathBetween).toHaveBeenCalledWith(firstWaypoint, lastWaypoint);
+          });
+          
+        });
+      });
+        
+
+      describe('when a waypoint at the end of the route', function() {
+        
+        describe('is added', function() {
+
+          beforeEach(function() {
+            route.prepareWithWaypoints([firstWaypoint, middleWaypoint]);
+            route.add(lastWaypoint);
+          });
+          
+          it('should update the path to the previous waypoint', function() {
+            expect(route.updatePathBetween).toHaveBeenCalledWith(middleWaypoint, lastWaypoint);
+          });
+          
+        });
+        
+        describe('is moved', function() {
+
+          beforeEach(function() {
+            route.prepareWithWaypoints([firstWaypoint, middleWaypoint, lastWaypoint]);
+            lastWaypoint.set('position', STUB_MOVED_POSITION);
+          });
+
+          it('should update the path to the previous waypoint', function() {
+            expect(route.updatePathBetween).toHaveBeenCalledWith(middleWaypoint, lastWaypoint);
+          });
+          
+        });
+        
+        describe('is removed', function() {
+          var newLastWaypont;
+
+          beforeEach(function() {
+            route.prepareWithWaypoints([firstWaypoint, middleWaypoint, lastWaypoint]);
+            route.remove(lastWaypoint);
+
+            newLastWaypont = route.last();
+          });
+          
+          it('should not update any paths', function() {
+            expect(route.updatePathBetween).not.toHaveBeenCalled();
+          });
+          
+        });
+        
+      });
+        
+
+      describe('when the only waypoint in a route', function() {
+        var onlyWaypoint;
 
         beforeEach(function() {
-          spyOn(route, 'contains').andReturn(false);
-          spyOn(next, 'set');
-          spyOn(prev, 'set');
+          onlyWaypoint = new MockWaypoint();
         });
+        
+        describe('is added', function() {
 
-        it('from the beginning of a route', function() {
-          spyOn(route, 'at').andCallFake(function(index) {
-            if (index === -1) { return undefined; }
-            if (index === 0) { return next }
-
-            throw Error('Unexpected spy arguments');
+          beforeEach(function() {
+            route.add(onlyWaypoint);
           });
 
-          route.updatePaths(waypoint, 0);
-
-          expect(next.set).toHaveBeenCalledWith({
-            path: [],
-            distance: 0
+          it('should not update any paths', function() {
+            expect(route.updatePathBetween).not.toHaveBeenCalled();
           });
+          
         });
+        
+        describe('is moved', function() {
 
-        it('from the middle of a route', function() {
-          spyOn(route, 'at').andCallFake(function(index) {
-            if (index === 0) { return prev; }
-            if (index === 1) { return next }
-
-            throw Error('Unexpected spy arguments');
+          beforeEach(function() {
+            route.prepareWithWaypoints([onlyWaypoint]);
+            onlyWaypoint.set('position', STUB_MOVED_POSITION);
           });
 
-          route.updatePaths(waypoint, 1);
+          it('should not update any paths', function() {
+            expect(route.updatePathBetween).not.toHaveBeenCalled();
+          });
+          
+        });
+        
+        describe('is removed', function() {
 
-          expect(route.updatePathBetween).toHaveBeenCalledWith(prev, next);
+          beforeEach(function() {
+            route.prepareWithWaypoints([onlyWaypoint]);
+            route.remove(onlyWaypoint);
+          });
+
+          it('should not update any paths', function() {
+            expect(route.updatePathBetween).not.toHaveBeenCalled();
+          });
+          
+        });
+        
+      });
+
+
+      describe('when a waypoint\'s path changes', function() {
+
+        it('should set the previous waypoint\'s position to the first point in the changed waypoint\'s path', function() {
+          route.prepareWithWaypoints([firstWaypoint, lastWaypoint]);
+
+          lastWaypoint.set('path', STUB_PATH);
+
+          expect(firstWaypoint.get('position')).toEqual(STUB_PATH[0]);
         });
 
-        it('from the end of a route', function() {
-          spyOn(route, 'at').andReturn(undefined);
+        it('should do nothing if there is no previous waypoint', function() {
+          route.prepareWithWaypoints([firstWaypoint, lastWaypoint]);
 
-          route.updatePaths(waypoint, 2);
-
-          expect(route.updatePathBetween).not.toHaveBeenCalled();
-          expect(next.set).not.toHaveBeenCalled();
-          expect(prev.set).not.toHaveBeenCalled();
+          // Just don't throw any errors, please
+          firstWaypoint.set('path', STUB_PATH);
         });
+
       });
     });
 
 
-    it('should update a path between two waypoints', function() {
-      var directionsService = new MockDirectionsService();
-      var route = new Route(undefined, {
-        directionsService: directionsService
+    describe('updatePathBetween', function() {
+      var route, originWaypoint, destinationWaypoint;
+      var ORIGIN_LATLON, DESTINATION_LATLON;
+
+      beforeEach(function() {
+        ORIGIN_LATLON = [12, 34];
+        DESTINATION_LATLON = [98, 76];
+        originWaypoint = new MockWaypoint({ position: ORIGIN_LATLON });
+        destinationWaypoint = new MockWaypoint({ position: DESTINATION_LATLON });
+
+        route = new Route();
       });
-      var origin = getStubbedWaypoint();
-      var destination = new MockWaypoint({
-        followDirections: true,
-        travelMode: 'DRIVING'
+
+
+      it('should set the destination to start it\'s path at the origin\'s position', function() {
+        route.updatePathBetween(originWaypoint, destinationWaypoint);
+
+        expect(destinationWaypoint.setPathStartsAt).toHaveBeenCalledWith(ORIGIN_LATLON);
       });
-      var res = {
-        path: testUtils.getRandomPath(),
-        distance: 12345
-      };
 
-      // Mock Directions service
-      directionsService.fetchPath.andCallFake(function(wpOrig, wpDest, opts) {
-          var promise = new Promise();
+      it('should not modify the origin waypoint', function() {
+        route.updatePathBetween(originWaypoint, destinationWaypoint);
 
-          expect(wpOrig).toEqual(origin);
-          expect(wpDest).toEqual(destination);
-          expect(opts).toEqual({
-            followDirections: true,
-            travelMode: 'DRIVING'
-          });
-
-          promise.resolve(res);
-          return promise;
-        });
-
-      spyOn(destination, 'set');
-      spyOn(origin, 'set');
-
-      route.updatePathBetween(origin, destination);
-
-      // Test: Service was called
-      expect(directionsService.fetchPath).toHaveBeenCalled();
-
-      // Test: destination path was updated
-      expect(destination.set).toHaveBeenCalledWith({
-        path: res.path,
-        position: res.path[res.path.length - 1],
-        distance: res.distance
+        expect(originWaypoint.setPathStartsAt).not.toHaveBeenCalled();
       });
+
     });
 
 
@@ -585,5 +594,6 @@ define([
         });
       });
     });
+
   });
 });
