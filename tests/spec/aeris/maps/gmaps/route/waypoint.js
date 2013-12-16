@@ -717,12 +717,26 @@ define([
         mockDirectionsService.shouldHaveFetchedPathWithTravelMode(STUB_TRAVEL_MODE);
       });
 
+      it('should trigger a \'directions:request\' event', function() {
+        var onDirectionsRequest = jasmine.createSpy('onDirectionsRequest');
+        waypoint.on('directions:request', onDirectionsRequest);
+
+        waypoint.setPathStartsAt();
+
+        expect(onDirectionsRequest).toHaveBeenCalledWith(waypoint);
+      });
+
 
       describe('if the directions service succeeds', function() {
+        var onDirectionsComplete;
 
         beforeEach(function() {
+          onDirectionsComplete = jasmine.createSpy('onDirectionsComplete');
+          waypoint.on('directions:complete', onDirectionsComplete);
+
           waypoint.setPathStartsAt(STUB_START_AT);
           mockDirectionsService.resolveFetchPathWith(STUB_RESULTS);
+
         });
 
 
@@ -738,6 +752,10 @@ define([
 
         it('should update the waypoint\'s distance to the directions results distance', function() {
           expect(waypoint.get('distance')).toEqual(STUB_RESULTS_DISTANCE);
+        });
+
+        it('should trigger a \'directions:complete\' event', function() {
+          expect(onDirectionsComplete).toHaveBeenCalledWith(waypoint);
         });
       });
 
@@ -763,7 +781,7 @@ define([
         });
 
         it('should include the directions results with the \'directions:error\' event', function() {
-          expect(onDirectionsError).toHaveBeenCalledWith(STUB_RESULTS);
+          expect(onDirectionsError).toHaveBeenCalledWith(waypoint, STUB_RESULTS);
         });
 
       });
