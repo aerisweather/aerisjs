@@ -16,7 +16,8 @@ define([
       'setPathStartsAt',
       'getDistance',
       'getPosition',
-      'setPosition'
+      'setPosition',
+      'setMap'
     ];
 
     // Use Model ctor
@@ -32,6 +33,9 @@ define([
     });
     this.setPosition.andCallFake(function(position) {
       this.set('position', position);
+    });
+    this.setMap.andCallFake(function(map) {
+      this.set('map', map);
     });
   };
   _.inherits(MockWaypoint, Model);
