@@ -84,6 +84,8 @@
 
         routeBuilder.on('command', updateCommandBtnState);
 
+        route.on('directions:request', showLoading);
+        route.on('directions:complete', hideLoading);
         route.on('directions:error', handleDirectionsError);
 
 
@@ -102,7 +104,12 @@
 
         $('#travelMode').on('change', function() {
           var mode = $(this).val();
-          route.set('travelMode', mode, { validate: true });
+          routeBuilder.travelMode = mode;
+        });
+
+        $('#followDirections').on('change', function() {
+          var followDirections = $(this).prop('checked');
+          routeBuilder.followDirections = followDirections;
         });
 
         $('#exportRoute').on('click', function() {
@@ -126,7 +133,14 @@
           $('#redo').prop('disabled', routeBuilder.canRedo());
         }
 
-        function handleDirectionsError(errorResponse) {
+        function showLoading() {
+          $('#loading').show();
+        }
+        function hideLoading() {
+          $('#loading').hide();
+        }
+
+        function handleDirectionsError(waypoint, errorResponse) {
           console.warn(errorResponse);
         }
       });
@@ -155,21 +169,9 @@
     </div>
 
     <div>
-      <input type="checkbox" checked="checked" id="follow-directions">
-      <label for="follow-directions">Follow Directions?</label>
+      <input type="checkbox" checked="checked" id="followDirections">
+      <label for="followDirections">Follow Directions?</label>
     </div>
-
-
-    <div>
-      <label for="travelMode">Travel Mode</label>
-      <select id="travelMode">
-        <option value="WALKING" selected="selected">Walking</option>
-        <option value="BICYCLING">Bicycling</option>
-        <option value="DRIVING">Driving
-      </select>
-      </select>
-    </div>
-
 
     <div>
       <strong>JSON Route Mapper</strong>
@@ -179,6 +181,8 @@
       <textarea id="routeDisplay" cols="80" rows="12"></textarea>
     </div>
   </div>
+
+  <h3 id="loading" style="display:none">Loading...</h3>
 </div>
 </body>
 </html>
