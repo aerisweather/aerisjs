@@ -3,6 +3,7 @@ require([
   'sinon',
   'testUtils',
   'aeris/util',
+  'aeris/model',
   'aeris/collection',
   'gmaps/route/waypoint',
   'gmaps/route/route',
@@ -15,6 +16,7 @@ require([
     sinon,
     testUtils,
     _,
+    Model,
     Collection,
     Waypoint,
     Route,
@@ -38,7 +40,9 @@ require([
   };
 
 
-  var MockWaypoint = function() {};
+  var MockWaypoint = function() {
+    Model.apply(this, arguments);
+  };
   _.inherits(MockWaypoint, Waypoint);
 
 
@@ -80,10 +84,8 @@ require([
     var commandManager;
     var routeBuilder;
     var routeRenderer;
-    var MockWaypoint;
 
     beforeEach(function() {
-      MockWaypoint = jasmine.createSpy('MockWaypoint');
       waypoint = new MockWaypoint();
       route = new MockRoute();
       routeRenderer = new MockRouteRenderer();
@@ -183,6 +185,34 @@ require([
           expect(eventListener).toHaveBeenCalledWith([12, 34], waypoint);
         });
 
+      });
+
+    });
+
+
+    describe('Route bindings', function() {
+
+      it('should erase a waypoint removed from a route', function() {
+        var removedWaypoint = new MockWaypoint();
+        route.add(removedWaypoint);
+
+        route.remove(removedWaypoint);
+
+        expect(routeRenderer.eraseWaypoint).toHaveBeenCalledWith(removedWaypoint);
+      });
+
+      it('should erase all old waypoints when a route is reset', function() {
+        var oldWaypoints = [new MockWaypoint(), new MockWaypoint()];
+        var newWaypoints = [new MockWaypoint(), new MockWaypoint()];
+        route.add(oldWaypoints);
+
+        route.reset(newWaypoints);
+
+        _.each(oldWaypoints, function(waypoint) {
+          expect(routeRenderer.eraseWaypoint).toHaveBeenCalledWith(waypoint);
+        });
+
+        expect(routeRenderer.renderRoute).toHaveBeenCalledWith(route);
       });
 
     });
