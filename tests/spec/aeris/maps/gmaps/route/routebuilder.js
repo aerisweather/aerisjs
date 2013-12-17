@@ -41,9 +41,14 @@ require([
 
 
   var MockWaypoint = function() {
+    var stubbedMethods = [
+      'validate',
+      'stylePath'
+    ];
+
     Model.apply(this, arguments);
 
-    spyOn(this, 'validate');
+    _.extend(this, jasmine.createSpyObj('MockWaypoint', stubbedMethods));
   };
   _.inherits(MockWaypoint, Waypoint);
 
@@ -417,22 +422,39 @@ require([
 
       beforeEach(function() {
         appendReverseRouteCommand = new MockCommand();
-        AppendReverseRouteCommand = jasmine.createSpy('MoveWaypointCommand').
+        AppendReverseRouteCommand = jasmine.createSpy('AppendReverseRouteCommand').
           andReturn(appendReverseRouteCommand);
 
         routeBuilder = new RouteBuilder({
           commandManager: commandManager,
           route: route,
+          routeRenderer: new MockRouteRenderer(),
           AppendReverseRouteCommand: AppendReverseRouteCommand
         });
       });
 
 
       it('should execute an AppendReturnRoute command', function() {
+        route.add([new MockWaypoint(), new MockWaypoint()]);
         routeBuilder.appendReverseRoute();
 
         expect(AppendReverseRouteCommand).toHaveBeenCalledWith(route);
         expect(commandManager.executeCommand).toHaveBeenCalledWith(appendReverseRouteCommand)
+      });
+
+      it('should not execute the command if the route has no waypoints', function() {
+        routeBuilder.appendReverseRoute();
+
+        expect(AppendReverseRouteCommand).not.toHaveBeenCalled();
+        expect(commandManager.executeCommand).not.toHaveBeenCalled();
+      });
+
+      it('should not execute the command if the route has a single waypoints', function() {
+        route.add([ new MockWaypoint() ]);
+        routeBuilder.appendReverseRoute();
+
+        expect(AppendReverseRouteCommand).not.toHaveBeenCalled();
+        expect(commandManager.executeCommand).not.toHaveBeenCalled();
       });
     });
 
