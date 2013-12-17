@@ -26,9 +26,6 @@
     'vendor/libs.js',
     'vendor/config.js',
 
-    'base/abstractstrategy',
-    'base/layerstrategies/abstractlayerstrategy',
-
     // Also include all of our lib loaders.
     'aeris/maps/loader'
   ]
