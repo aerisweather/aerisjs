@@ -15,7 +15,7 @@ fi
 
 # Compile compass projects
 echo "Compiling compass projects..."
-./compileCompassProjects.sh themes.conf  >> $LOG_FILE  || { echo "Something went wrong! Check build.log" ; exit 1 ; }
+./compileCompassProjects.sh config/themes.conf  >> $LOG_FILE  || { echo "Something went wrong! Check build.log" ; exit 1 ; }
 
 
 
