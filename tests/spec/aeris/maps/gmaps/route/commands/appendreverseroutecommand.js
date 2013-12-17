@@ -49,9 +49,25 @@ define([
     this.getRouteWaypointsInReverse.andReturn([]);
   };
 
+  MockRouteReverser.prototype.stubReverseRoute = function(waypoints) {
+    this.getRouteWaypointsInReverse.andReturn(waypoints);
+  };
+
 
 
   describe('An AppendReverseRouteCommand', function() {
+
+
+    function shouldNotHaveChangedWaypointsIn(route) {
+      var addedWaypoints = route.add.callCount ? route.add.mostRecentCall.args[0] : undefined;
+      var setWaypoints = route.set.callCount ? route.set.mostRecentCall.args[0] : undefined;
+
+      var isAddedTo = addedWaypoints && addedWaypoints.length;
+      var isSetTo = setWaypoints && setWaypoints.length;
+
+      expect(isAddedTo && isSetTo).toBeFalsy();
+    }
+
 
     describe('execute', function() {
       var command;
@@ -71,7 +87,7 @@ define([
       it('should add reversed waypoints onto the route, omitting the first reversed waypoint', function() {
         var pointC = new MockWaypoint(), pointB = new MockWaypoint(), pointA = new MockWaypoint();
         var reverseWaypoints = [pointC, pointB, pointA];
-        reverser.getRouteWaypointsInReverse.andReturn(reverseWaypoints);
+        reverser.stubReverseRoute(reverseWaypoints);
 
         command.execute();
 
@@ -81,11 +97,19 @@ define([
       it('should destroy the first reversed waypoint', function() {
         var firstReversedWaypoint = new MockWaypoint();
         var reverseWaypoints = [firstReversedWaypoint, 'pointB', 'pointA'];
-        reverser.getRouteWaypointsInReverse.andReturn(reverseWaypoints);
+        reverser.stubReverseRoute(reverseWaypoints);
 
         command.execute();
 
         expect(firstReversedWaypoint.destroy).toHaveBeenCalled();
+      });
+
+      it('should do nothing if the route has no waypoints', function() {
+        route.setStubbedWaypoints([]);
+        reverser.stubReverseRoute([]);
+
+        command.execute();
+        shouldNotHaveChangedWaypointsIn(route);
       });
 
     });
@@ -111,7 +135,7 @@ define([
         var waypointsOrig = [wpA, wpB, wpC];
 
         route.setStubbedWaypoints(waypointsOrig);
-        reverser.getRouteWaypointsInReverse.andReturn([wpC_reverse, wpB_reverse, wpA_reverse]);
+        reverser.stubReverseRoute([wpC_reverse, wpB_reverse, wpA_reverse]);
 
         command.execute();
         route.setStubbedWaypoints([
@@ -122,6 +146,17 @@ define([
         expect(route.set).toHaveBeenCalledWith([
           wpA, wpB, wpC
         ])
+      });
+
+      it('should do nothing if the route had no waypoints before execution', function() {
+        route.setStubbedWaypoints([]);
+        reverser.stubReverseRoute([]);
+
+        command.execute();
+        route.setStubbedWaypoints([]);
+
+        command.undo();
+        shouldNotHaveChangedWaypointsIn(route);
       });
 
     });
