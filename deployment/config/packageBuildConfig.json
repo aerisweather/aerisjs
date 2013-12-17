@@ -1,0 +1,22 @@
+{
+  "mainConfigFile": "../lib/config.js",
+  "paths": {
+    "strategy": "empty:",
+    "vendor/underscore": "empty:",
+    "vendor/backbone": "empty:",
+    "vendor/marionette": "empty:",
+    "vendor/jquery": "empty:",
+    "vendor/handlebars": "empty:",
+    "underscore": "empty:",
+    "backbone": "empty:",
+    "wire/build/amd/builder": "vendor/wire/rjs/builder"
+  },
+  "optimize": "none",
+  "exclude": ["vendor/text"],
+  "include": [
+    "config",
+    "vendor/libs.js",
+    "vendor/config.js",
+    "aeris/maps/loader"
+  ]
+}

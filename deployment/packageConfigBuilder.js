@@ -1,50 +1,65 @@
-
 var fs = require('fs'),
   path = require('path'),
   _ = require('underscore'),
   requirejs = require('requirejs'),
-  sys = require('sys'),
-  exec = require('child_process').exec;
+  exec = require('child_process').exec,
+  basePackageConfig = require('./config/packageBuildConfig.json'),
+  packageDirs = require('./config/packages.json').packageDirs;
 
-var baseConfig = {
-  mainConfigFile: '../lib/config.js',
-  paths: {
-    strategy: 'empty:',
-    //vendor: 'empty:',
-    'vendor/underscore': 'empty:',
-    'vendor/backbone': 'empty:',
-    'vendor/marionette': 'empty:',
-    'vendor/jquery': 'empty:',
-    'vendor/handlebars': 'empty:',
-    'underscore': 'empty:',
-    'backbone': 'empty:',
-
-    // For an example of using
-    // wire with r.js, see:
-    // https://github.com/pieter-vanderwerff/backbone-require-wire
-    //'wire/build/amd/builder': 'vendor/wire/rjs/builder'
-  },
-  optimize: 'none',
-  exclude: ['vendor/text']
-};
-
-var dir = '../lib/aeris/maps/packages';
-var files = fs.readdirSync(dir);
-
-_.each(files, function(fileName) {
-  var pkgConfig = _.extend({}, baseConfig, {
-    name: 'packages/' + path.basename(fileName, '.js'),
-    out: '../build/aeris/maps/packages/' + fileName
-  });
+main();
 
 
-  // Execute r.js
+function main() {
+  var configsForEachPackage = getPackageConfigsForDirs(packageDirs);
+
+  if (!configsForEachPackage || !configsForEachPackage.length) {
+    throw new Error('Failed to generate package configurations ' +
+      'for packages in directories: ' + packageDirs.join(', '));
+  }
+
+  _.each(configsForEachPackage, optimizePackageConfig);
+}
+
+
+function getPackageConfigsForDirs(packageDirs) {
+  var packageConfigs = [];
+
+  _.each(packageDirs, function(packageDir) {
+    var packageDefinitionFiles = fs.readdirSync(packageDir);
+
+    _.each(packageDefinitionFiles, function(file) {
+      var fullPath = packageDir + '/' + file;
+      var pacakgeConfigForFile = {
+        name: fullPath,
+        out: '../build/lib/' + fullPath
+      };
+      var config = _.extend({}, basePackageConfig, pacakgeConfigForFile);
+
+      packageConfigs.push(config);
+    });
+  })
+
+  return packageConfigs;
+}
+
+
+function optimizePackageConfig(pkgConfig) {
+
+
   requirejs.optimize(pkgConfig, function(res) {
-    console.log('Building package: ' + fileName);
-    console.log(JSON.stringify(pkgConfig, null, 4));
+    logJSON(pkgConfig, 'Building package... ');
     console.log(res);
+    console.log('...complete');
   }, function(err) {
-    console.log(err);
-    console.log(JSON.stringify(pkgConfig, null, 4));
+    logJSON(pkgConfig, 'Failed optimizing package configuration: ' + err.message);
   });
-});
+}
+
+
+function logJSON(json, opt_message) {
+  if (opt_message) {
+    console.log(opt_message + '\n\n');
+  }
+  console.log(JSON.stringify(json, null, 4));
+}
+
