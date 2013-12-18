@@ -70,6 +70,31 @@ define([
       });
       
     });
+
+    describe('destroy', function() {
+
+      it('should no longer bind dataModel attributes to viewModel attributes', function() {
+        var KM_PER_MILE = 1.60934;
+        var dataModel = new Model({
+          miles: 50
+        });
+        var viewModel = new ViewModel(null, {
+          data: dataModel,
+          attributeTransforms: {
+            km: function() {
+              return this.getDataAttribute('miles') * KM_PER_MILE;
+            }
+          }
+        });
+
+        viewModel.destroy();
+
+        dataModel.set('miles', 100);
+        expect(viewModel.get('km')).not.toEqual(100 * KM_PER_MILE);
+        expect(viewModel.get('km')).toEqual(50 * KM_PER_MILE);
+      });
+
+    });
     
   });
   
