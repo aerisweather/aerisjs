@@ -17,7 +17,9 @@ define([
       'getDistance',
       'getPosition',
       'setPosition',
-      'setMap'
+      'setMap',
+      'select',
+      'deselect'
     ];
 
     // Use Model ctor
@@ -36,6 +38,14 @@ define([
     });
     this.setMap.andCallFake(function(map) {
       this.set('map', map);
+    });
+    this.deselect.andCallFake(function(opts) {
+      this.set({ selected: false }, opts);
+      this.trigger('deselect', this);
+    });
+    this.select.andCallFake(function(opts) {
+      this.set({ selected: true }, opts);
+      this.trigger('select', this);
     });
   };
   _.inherits(MockWaypoint, Model);
@@ -214,6 +224,72 @@ define([
           expect(wp.deselect).toHaveBeenCalled();
         });
       });
+    });
+
+
+    describe('deselectAllExcept', function() {
+
+      var SelectedWaypoint = function() {
+        MockWaypoint.call(this, { selected: true });
+      };
+      _.inherits(SelectedWaypoint, MockWaypoint);
+
+      var DeselectedWaypoint = function() {
+        MockWaypoint.call(this, { selected: false });
+      };
+      _.inherits(DeselectedWaypoint, MockWaypoint);
+
+      it('should select all waypoints except the specified waypoint', function() {
+        var waypoints = [new SelectedWaypoint(), new SelectedWaypoint(), new SelectedWaypoint()];
+        var route = new Route(waypoints);
+
+        route.deselectAllExcept(waypoints[1]);
+
+        expect(waypoints[0].get('selected')).toEqual(false);
+        expect(waypoints[1].get('selected')).toEqual(true);
+        expect(waypoints[2].get('selected')).toEqual(false);
+      });
+
+      it('should not select or deselect the specified waypoint', function() {
+        var waypoints = [new DeselectedWaypoint(), new DeselectedWaypoint(), new DeselectedWaypoint()];
+        var route = new Route(waypoints);
+
+        route.deselectAllExcept(waypoints[1]);
+
+        expect(waypoints[1].get('selected')).toEqual(false);
+        expect(waypoints[1].select).not.toHaveBeenCalled();
+        expect(waypoints[1].deselect).not.toHaveBeenCalled();
+      });
+
+      it('should do nothing if it is the only waypoint in the route', function() {
+        var waypoint = new MockWaypoint();
+        var route = new Route([waypoint]);
+
+        route.deselectAllExcept(waypoint);
+
+        expect(waypoint.select).not.toHaveBeenCalled();
+        expect(waypoint.deselect).not.toHaveBeenCalled();
+      });
+
+      it('should not trigger a deselect method on the specified waypoint', function() {
+        var waypoints = [new SelectedWaypoint(), new SelectedWaypoint(), new SelectedWaypoint()];
+        var route = new Route(waypoints);
+        var onDeselect = jasmine.createSpy('onDeselect');
+        waypoints[1].on('deselect', onDeselect);
+
+        route.deselectAllExcept(waypoints[1]);
+
+        expect(onDeselect).not.toHaveBeenCalled();
+      });
+
+      it('should throw an error if the specified waypoint isn\'t in the route', function() {
+        var route = new Route();
+
+        expect(function() {
+          route.deselectAllExcept(new MockWaypoint());
+        }).toThrowType('WaypointNotInRouteError');
+      });
+
     });
 
 
