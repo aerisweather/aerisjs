@@ -95,6 +95,30 @@ define([
       });
 
     });
+
+
+    describe('syncToModel', function() {
+
+      it('should manually update the view model, using attribute transforms', function() {
+        var KM_PER_MILE = 1.60934;
+        var dataModel = new Model({ miles: 50 });
+        var viewModel = new ViewModel(null, {
+          data: dataModel,
+          attributeTransforms: {
+            km: function() {
+              return this.getDataAttribute('miles') * KM_PER_MILE;
+            }
+          }
+        });
+
+        viewModel.set('km', 100);
+        expect(viewModel.get('km', 100));
+
+        viewModel.syncToModel();
+        expect(viewModel.get('km')).toEqual(50 * KM_PER_MILE);
+      });
+
+    });
     
   });
   
