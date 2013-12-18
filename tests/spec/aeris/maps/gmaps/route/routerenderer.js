@@ -196,18 +196,18 @@ define([
 
     describe('setStyles', function() {
       var renderer;
+      var waypoints;
 
       beforeEach(function() {
         renderer = new RouteRenderer();
+        waypoints = [
+          new MockWaypoint(), new MockWaypoint(), new MockWaypoint()
+        ];
+        _.each(waypoints, renderer.renderWaypoint, renderer);
       });
 
 
       it('should update the styles of rendered waypoints', function() {
-        var waypoints = [
-          new MockWaypoint(), new MockWaypoint(), new MockWaypoint()
-        ];
-        _.each(waypoints, renderer.renderWaypoint, renderer);
-
         renderer.setStyles({
           waypoint: {
             url: 'newUrl.png'
@@ -217,6 +217,24 @@ define([
         _.each(waypoints, function(wp) {
           expect(wp.get('url')).toEqual('newUrl.png');
         })
+      });
+
+      it('should not affect previously set styles', function() {
+        renderer.setStyles({
+          waypoint: {
+            url: 'newUrl.png'
+          }
+        });
+
+        renderer.setStyles({
+          path: {
+            strokeColor: 'blue'
+          }
+        });
+
+        _.each(waypoints, function(wp) {
+          expect(wp.get('url')).toEqual('newUrl.png');
+        });
       });
 
     });
@@ -420,26 +438,6 @@ define([
             });
           });
 
-          it('should default selectedWaypoint styles to waypoint styles', function() {
-            renderer.setStyles({
-              waypoint: {
-                url: 'icon.png',
-                clickable: false,
-                draggable: true
-              },
-              selectedWaypoint: {
-                draggable: false
-              }
-            });
-
-            waypoint.isSelected.andReturn(true);
-            renderer.renderWaypoint(waypoint);
-
-            expect(waypoint.get('url')).toEqual('icon.png');
-            expect(waypoint.get('clickable')).toEqual(false);
-            expect(waypoint.get('draggable')).toEqual(false);
-          });
-
         });
 
       });
@@ -537,28 +535,6 @@ define([
             renderer.renderWaypoint(waypoint);
 
             expect(waypoint.stylePath.callCount).toBeGreaterThan(1);
-          });
-
-          it('should default offPath styles to path styles', function() {
-            renderer.setStyles({
-              path: {
-                strokeColor: 'blue',
-                strokeWeight: 100,
-                strokeOpacity: 0.95
-              },
-              offPath: {
-                strokeColor: 'red'
-              }
-            });
-
-            waypoint.set('followDirections', false);
-            renderer.renderWaypoint(waypoint);
-
-            expect(waypoint.stylePath).toHaveBeenCalledWith({
-              strokeColor: 'red',
-              strokeWeight: 100,
-              strokeOpacity: 0.95
-            });
           });
 
         });
