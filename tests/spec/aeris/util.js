@@ -251,8 +251,13 @@ define([
     describe('boundsToPolygon', function() {
 
       it('should convert a bounds object to a polygon object', function() {
-        var bounds = [[52.37, -135.52], [22.43, -55.016]];
-        expect(_.boundsToPolygon(bounds)).toEqual([52.37, -135.52, 22.43, -55.016]);
+        var SOUTH = 100;
+        var WEST = 200;
+        var NORTH = 300;
+        var EAST = 400;
+        var bounds = [[SOUTH, WEST], [NORTH, EAST]];
+
+        expect(_.boundsToPolygon(bounds)).toEqual([NORTH, WEST, SOUTH, EAST]);
       });
 
       it('should not modify the original object', function() {
