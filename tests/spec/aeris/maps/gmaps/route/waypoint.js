@@ -35,6 +35,20 @@ define([
   };
 
 
+  var MockRoute = function() {
+    var stubbedMethods = [
+      'getNext',
+      'getPrevious'
+    ];
+
+    Collection.apply(this, arguments);
+
+    _.extend(this, jasmine.createSpyObj('mockRoute', stubbedMethods));
+  };
+  _.inherits(MockRoute, Collection);
+
+
+
   describe('A Waypoint', function() {
 
     beforeEach(function() {
@@ -467,6 +481,76 @@ define([
         route.add(waypoint);
 
         expect(waypoint.getRoute()).toEqual(route);
+      });
+
+    });
+
+
+    describe('getNextInRoute', function() {
+      var route;
+      var waypoint;
+
+      beforeEach(function() {
+        route = new MockRoute();
+        waypoint = new Waypoint;
+      });
+
+
+      it('should return the next waypoint in the route', function() {
+        var nextWaypoint = new Waypoint();
+        route.add([waypoint, nextWaypoint]);
+        route.getNext.andReturn(nextWaypoint);
+
+        expect(waypoint.getNextInRoute()).toEqual(nextWaypoint);
+      });
+
+      it('should return undefined if the waypoint is the last in the route', function() {
+        var prevWaypoint = new Waypoint();
+        route.add([prevWaypoint, waypoint]);
+        route.getNext.andReturn(undefined);
+
+        expect(waypoint.getNextInRoute()).toEqual(undefined);
+      });
+
+      it('should throw an error if the waypoint is not in a route', function() {
+        expect(function() {
+          waypoint.getNextInRoute();
+        }).toThrowType('WaypointNotInRouteError');
+      });
+
+    });
+
+
+    describe('getPreviousInRoute', function() {
+      var route;
+      var waypoint;
+
+      beforeEach(function() {
+        route = new MockRoute();
+        waypoint = new Waypoint;
+      });
+
+
+      it('should return the previous waypoint in the route', function() {
+        var prevWaypoint = new Waypoint();
+        route.add([prevWaypoint, waypoint]);
+        route.getPrevious.andReturn(prevWaypoint);
+
+        expect(waypoint.getPreviousInRoute()).toEqual(prevWaypoint);
+      });
+
+      it('should return undefined if the waypoint is the first in the route', function() {
+        var nextWaypoint = new Waypoint();
+        route.add([waypoint, nextWaypoint]);
+        route.getPrevious.andReturn(undefined);
+
+        expect(waypoint.getPreviousInRoute()).toEqual(undefined);
+      });
+
+      it('should throw an error if the waypoint is not in a route', function() {
+        expect(function() {
+          waypoint.getPreviousInRoute();
+        }).toThrowType('WaypointNotInRouteError');
       });
 
     });
