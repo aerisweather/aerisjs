@@ -476,11 +476,41 @@ define([
 
       it('should return the waypoint\'s route', function() {
         var waypoint = new Waypoint(null, { polyline: new MockPolyline() });
-        var route = new Collection(null, { model: Waypoint });
-
-        route.add(waypoint);
+        var route = new Collection([waypoint]);
 
         expect(waypoint.getRoute()).toEqual(route);
+      });
+
+      it('should return undefined if the waypoint does not belong to a route', function() {
+        var waypoint = new Waypoint(null, { polyline: new MockPolyline() });
+
+        expect(waypoint.getRoute()).toEqual(undefined);
+      });
+
+      it('should return undefined after a waypoint is removed from a route', function() {
+        var waypoint = new Waypoint(null, { polyline: new MockPolyline() });
+        var route = new Collection([waypoint]);
+
+        route.remove(waypoint);
+
+        expect(waypoint.getRoute()).toEqual(undefined);
+      });
+
+      // See https://github.com/jashkenas/backbone/issues/2929
+      it('should return undefined in a `remove` event handler', function() {
+        var waypoint = new Waypoint(null, { polyline: new MockPolyline() });
+        var route = new Collection([waypoint]);
+        var onRemove = jasmine.createSpy('onRemove');
+
+        onRemove.andCallFake(function() {
+          expect(waypoint.getRoute()).toEqual(undefined);
+        });
+
+        waypoint.on('remove', onRemove);
+
+        route.remove(waypoint);
+
+        expect(onRemove).toHaveBeenCalled();
       });
 
     });
