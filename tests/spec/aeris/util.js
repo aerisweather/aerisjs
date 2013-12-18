@@ -117,20 +117,14 @@ define([
         });
       });
 
-      it('should not overwrite existing objects', function() {
+      it('should overwrite existing objects', function() {
         var foo = 'bar';
 
         window.aeris.foo = 'notBar';
 
-        _.expose(foo, 'aeris.foo', false);
+        _.expose(foo, 'aeris.foo');
 
-        expect(window.aeris.foo).toEqual('notBar');
-      });
-
-      it('should not expose globals outside of the aeris namespace', function() {
-        expect(function() {
-          _.expose('not a jQuery plugin', '$.fn.superAwesomePluginIPromise');
-        }).toThrow();
+        expect(window.aeris.foo).toEqual('bar');
       });
     });
 
