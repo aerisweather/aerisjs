@@ -1,0 +1,23 @@
+<div class="infoPanel">
+  <h1>Route Point</h1>
+
+  <header>
+    <h2>{{ lat }} {{ latDirection }}, {{ lon }} {{ lonDirection }}</h2>
+  </header>
+
+  {{#if distanceFromPrev }}
+    <section>
+      Distance from previous {{ distanceFromPrev }}
+    </section>
+  {{/if}}
+
+  {{#if distanceToNext }}
+    <section>
+      Distance to next {{ distanceToNext }}
+    </section>
+  {{/if}}
+
+  <section>
+    <a class="secondaryBtn deleteBtn" href="#">Delete this point</a>
+  </section>
+</div>
