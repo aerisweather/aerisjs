@@ -29,6 +29,8 @@ require([
 
   var MockRoute = function() {
     Collection.apply(this, arguments);
+
+    spyOn(this, 'toJSON');
   };
   _.inherits(MockRoute, Route);
 
@@ -457,6 +459,19 @@ require([
         expect(commandManager.executeCommand).not.toHaveBeenCalled();
       });
     });
+
+
+    describe('routeToJSON', function() {
+
+      it('should return the route as a JSON object', function() {
+        var ROUTE_JSON_STUB = { json: 'STUB' };
+        route.toJSON.andReturn(ROUTE_JSON_STUB);
+
+        expect(routeBuilder.routeToJSON()).toEqual(ROUTE_JSON_STUB);
+      });
+
+    });
+
 
     describe('undo', function() {
 
