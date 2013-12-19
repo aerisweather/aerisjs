@@ -55,7 +55,8 @@ require([
       //'spec/aeris/builder/maps/core/model/toggle'
       //'spec/aeris/builder/maps/core/model/state'
       //'spec/aeris/builder/maps/mapcontrols/controller/mapcontrolscontroller',
-      //'spec/aeris/builder/route/controller/controlscontroller',
+
+      //'spec/aeris/builder/routes/routebuilder/controller/controlscontroller',
 
       //'spec/aeris/geocode/mapquestgeocodeservice',
       //'spec/aeris/geocode/googlegeocodeservice',
