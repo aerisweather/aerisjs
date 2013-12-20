@@ -146,6 +146,8 @@ define([
           p: 'Minneapolis, MN'
         };
 
+        spyOn(jsonp, 'get');
+
         api = new AerisAPI();
       });
 
@@ -163,7 +165,7 @@ define([
         var flag = false;
 
         // Mock jsonp.get to return successData
-        spyOn(jsonp, 'get').andCallFake(function(a, b, callback) {
+        jsonp.get.andCallFake(function(a, b, callback) {
           callback(apiSuccessData);
         });
 
@@ -186,7 +188,7 @@ define([
         var flag = false;
 
         // Mock jsonp.get to return error data
-        spyOn(jsonp, 'get').andCallFake(function(a, b, callback) {
+        jsonp.get.andCallFake(function(a, b, callback) {
           callback(apiErrorData);
         });
 
@@ -198,7 +200,7 @@ define([
       });
 
       it('should reject promise if a sub request of a batch request returns an error', function() {
-        spyOn(jsonp, 'get').andCallFake(function(url, params, callback) {
+        jsonp.get.andCallFake(function(url, params, callback) {
           callback(apiSubErrorData);
         });
 
@@ -215,7 +217,7 @@ define([
       it('should provide `fetch` method with a simpler signature for single-endpoint requests', function() {
         var flag = false;
 
-        spyOn(jsonp, 'get').andCallFake(function(a, b, callback) {
+        jsonp.get.andCallFake(function(a, b, callback) {
           callback(apiSuccessData);
         });
 
