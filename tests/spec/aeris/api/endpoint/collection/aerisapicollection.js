@@ -1,33 +1,59 @@
 define([
   'aeris/util',
-  'sinon',
   'api/endpoint/collection/aerisapicollection',
-  'aeris/aerisapi'
-], function(_, sinon, AerisApiCollection, AerisApi) {
+  'aeris/model'
+], function(_, AerisApiCollection, Model) {
+
+  var MockParams = function() {
+    Model.apply(this, arguments);
+  }
+
+  _.inherits(MockParams, Model);
+
+
+  var MockJSONP = function() {
+    this.get = jasmine.createSpy('get');
+  }
+
+  MockJSONP.prototype.getRequestedUrl = function() {
+    return this.get.mostRecentCall.args[0];
+  };
+
+  MockJSONP.prototype.getRequestedData = function() {
+    return this.get.mostRecentCall.args[1];
+  };
+
+  MockJSONP.prototype.getRequestedCallback = function() {
+    return this.get.mostRecentCall.args[2];
+  };
+
+
+  var MockSuccessResponse = function() {
+    return {
+      success: true
+    };
+  };
+
+  var MockFailResponse = function() {
+    return {
+      success: false
+    }
+  };
+
 
   function TestFactory(opt_options) {
     var options = _.extend({
-      endpoints: [{ name: 'someendpoint' }],
-      params: undefined,
-      models: undefined,
-      api: new MockApi()
+      server: 'SERVER_STUB',
+      action: 'ACTION_STUB',
+      endpoint: 'ENDPOINT_STUB',
+      params: new MockParams(),
+      jsonp: new MockJSONP()
     }, opt_options);
 
-    this.collection = new AerisApiCollection(options.models, {
-      endpoints: options.endpoints,
-      params: options.params,
-      api: options.api
-    });
+    this.collection = new AerisApiCollection(options.models, options);
 
     this.options = options;
   }
-
-
-  function MockApi() {
-    spyOn(this, 'fetchBatch');
-  }
-  _.inherits(MockApi, AerisApi);
-  MockApi.prototype = sinon.createStubInstance(AerisApi);
 
 
   describe('An AerisApiCollection', function() {
@@ -53,6 +79,110 @@ define([
         test.collection.sync('read');
       });
 
+    });
+
+
+    describe('fetch', function() {
+      var test, apiCollection, jsonp, params;
+      var server, action, endpoint;
+
+      beforeEach(function() {
+        test = new TestFactory();
+        params = test.options.params;
+        apiCollection = test.collection;
+        jsonp = test.options.jsonp;
+
+        server = test.options.server;
+        action = test.options.action;
+        endpoint = test.options.endpoint;
+      });
+
+      it('should target SERVERENDPOINT/ACTION/', function() {
+        apiCollection.fetch();
+
+        expect(jsonp.getRequestedUrl()).toEqual(server + endpoint + '/' + action + '/');
+      });
+
+      it('should trigger a request event', function() {
+        var onRequest = jasmine.createSpy('onRequest');
+        apiCollection.on('request', onRequest);
+
+        apiCollection.fetch();
+
+        expect(onRequest).toHaveBeenCalledWith(apiCollection);
+      });
+
+      it('should send parameters as request data', function() {
+        var PARAMS_JSON = {
+          foo: 'bar',
+          waz: 'baz'
+        };
+        params.set(PARAMS_JSON);
+
+        apiCollection.fetch();
+
+        expect(jsonp.getRequestedData()).toEqual(PARAMS_JSON);
+      });
+
+
+      describe('On complete', function() {
+        var jsonpCallback, SUCCESS_RESPONSE, FAIL_RESPONSE;
+        var fetchPromise, onSuccess, onError, onComplete;
+
+        beforeEach(function() {
+          onSuccess = jasmine.createSpy('onSuccess');
+          onError = jasmine.createSpy('onError');
+          onComplete = jasmine.createSpy('onComplete');
+
+          fetchPromise = apiCollection.fetch({
+            success: onSuccess,
+            error: onError,
+            complete: onComplete
+          });
+          jsonpCallback = jsonp.getRequestedCallback();
+
+          SUCCESS_RESPONSE = new MockSuccessResponse();
+          FAIL_RESPONSE = new MockFailResponse();
+        });
+
+
+        it('should trigger a \'sync\' event on success', function() {
+          var onSync = jasmine.createSpy('onSync');
+          apiCollection.on('sync', onSync);
+
+          jsonpCallback(SUCCESS_RESPONSE);
+
+          expect(onSync).toHaveBeenCalledWith(apiCollection, SUCCESS_RESPONSE);
+        });
+
+        it('should resolve it\'s promise with the jsonp data', function() {
+          var onResolve = jasmine.createSpy('onResolve');
+          fetchPromise.done(onResolve);
+
+          jsonpCallback(SUCCESS_RESPONSE);
+
+          expect(onResolve).toHaveBeenCalledWith(SUCCESS_RESPONSE);
+        });
+
+        it('should call the \'success\' option on success', function() {
+          jsonpCallback(SUCCESS_RESPONSE);
+
+          expect(onSuccess).toHaveBeenCalledWithSomeOf(SUCCESS_RESPONSE);
+        });
+
+        it('should call the \'complete\' option on success', function() {
+          jsonpCallback(SUCCESS_RESPONSE);
+
+          expect(onComplete).toHaveBeenCalledWithSomeOf(SUCCESS_RESPONSE);
+        });
+
+        it('should throw an ApiResponseError on failure', function() {
+          expect(function() {
+            jsonpCallback(FAIL_RESPONSE);
+          }).toThrowType('APIResponseError');
+        });
+
+      })
     });
 
   });
