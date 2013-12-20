@@ -1,0 +1,27 @@
+<div>
+  <section>
+    <dl>
+      <dt>Total Distance</dt>
+      <dd><span class="aeris-distance">{{ route.distance }}</span> MI</dd>
+
+      <dt>Total Points</dt>
+      <dd class="aeris-length">{{ route.length }}</dd>
+    </dl
+  </section>
+
+  <label class="aeris-error" style="display:none"></label>
+
+  <label>
+    Route Name
+    <input type="text" class="aeris-routeNameInput"/>
+  </label>
+
+  <label>
+    Description
+    <textarea class="aeris-routeDescrInput"></textarea>
+  </label>
+
+  <div class="aeris-loading" style="display:none">Saving route...</div>
+  <a href="#" class="secondaryBtn aeris-close">Cancel</a>
+  <a href="#" class="actionBtn aeris-save">Save</a>
+</div>

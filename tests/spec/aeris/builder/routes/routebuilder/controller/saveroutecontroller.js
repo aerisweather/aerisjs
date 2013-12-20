@@ -2,9 +2,10 @@ define([
   'aeris/util',
   'aeris/events',
   'aeris/model',
+  'aeris/collection',
   'vendor/jquery',
   'routeappbuilder/routebuilder/controller/saveroutecontroller'
-], function(_, Events, Model, $, SaveRouteController) {
+], function(_, Events, Model, Collection, $, SaveRouteController) {
 
   function stubMethodsFor(obj, methods, opt_name) {
     var name = opt_name || _.uniqueId('stub_');
@@ -12,9 +13,16 @@ define([
     _.extend(obj, jasmine.createSpyObj(name, methods));
   }
 
+  var MockRoute = function() {
+    Collection.apply(this, arguments);
+  };
+  _.inherits(MockRoute, Collection);
+
+
   var MockRouteBuilder = function() {
     var stubbedMethods = [
-      'routeToJSON'
+      'routeToJSON',
+      'getRoute'
     ];
 
     stubMethodsFor(this, stubbedMethods, 'routeBuilder');
@@ -79,6 +87,8 @@ define([
           closeBtn: '#closeBtn'
         }
       })
+
+      routeBuilder.getRoute.andReturn(new MockRoute());
     });
 
 
@@ -113,7 +123,7 @@ define([
 
         it('should publish the exported route data', function() {
           var onRouteSave = jasmine.createSpy('onRouteSave');
-          eventHub.on('route:save', onRouteSave);
+          eventHub.on('route:export', onRouteSave);
 
           $saveBtn.click();
 
