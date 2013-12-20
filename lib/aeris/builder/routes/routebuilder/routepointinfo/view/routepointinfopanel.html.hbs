@@ -2,20 +2,34 @@
   <h1>Route Point</h1>
 
   <header>
-    <h2>{{ lat }} {{ latDirection }}, {{ lon }} {{ lonDirection }}</h2>
+    <h2>{{ lat }}&deg; {{ latDirection }}, {{ lon }}&deg; {{ lonDirection }}</h2>
   </header>
 
-  {{#if distanceFromPrev }}
-    <section>
-      Distance from previous {{ distanceFromPrev.miles }} MI ({{ distanceFromPrev.km}} KM)
-    </section>
-  {{/if}}
+  <section class="aeris-routePointInfo">
+    <ul>
+      {{#if distanceFromPrev }}
+        <li>
+          <div class="aeris-key">
+            Distance from previous
+          </div>
+          <div class="aeris-value">
+            {{ distanceFromPrev.miles }} mi <small>{{ distanceFromPrev.km }} km</small>
+          </div>
+        </li>
+      {{/if }}
 
-  {{#if distanceToNext }}
-    <section>
-      Distance to next {{ distanceToNext.miles }} MI  ({{ distanceToNext.km }})
-    </section>
-  {{/if}}
+      {{#if distanceToNext }}
+        <li>
+          <div class="aeris-key">
+            Distance to next
+          </div>
+          <div class="aeris-value">
+            {{ distanceToNext.miles }} mi  <small>{{ distanceToNext.km }} km</small>
+          </div>
+        </li>
+      {{/if }}
+    </ul>
+  </section>
 
   <section>
     <a class="secondaryBtn deleteBtn" href="#">Delete this point</a>
