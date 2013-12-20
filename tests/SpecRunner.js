@@ -58,6 +58,7 @@ require([
       //'spec/aeris/builder/maps/mapcontrols/controller/mapcontrolscontroller',
 
       //'spec/aeris/builder/routes/routebuilder/controller/controlscontroller',
+      //'spec/aeris/builder/routes/routebuilder/controller/saveroutecontroller',
 
       //'spec/aeris/geocode/mapquestgeocodeservice',
       //'spec/aeris/geocode/googlegeocodeservice',
