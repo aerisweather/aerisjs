@@ -7,13 +7,13 @@
 
   {{#if distanceFromPrev }}
     <section>
-      Distance from previous {{ distanceFromPrev }} MI
+      Distance from previous {{ distanceFromPrev.miles }} MI ({{ distanceFromPrev.km}} KM)
     </section>
   {{/if}}
 
   {{#if distanceToNext }}
     <section>
-      Distance to next {{ distanceToNext }} MI
+      Distance to next {{ distanceToNext.miles }} MI  ({{ distanceToNext.km }})
     </section>
   {{/if}}
 
