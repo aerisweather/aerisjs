@@ -20,6 +20,7 @@ require.config({
   paths: {
     async: '/tests/lib/async',
     jasmine: '/tests/lib/jasmine',
+    'jasmine-slow': '/tests/lib/jasmine-slow',
     'jasmine-html': '/tests/lib/jasmine-html',
     spec: '/tests/spec',
     mocks: '/tests/mocks',
@@ -34,6 +35,10 @@ require.config({
       exports: 'jasmine'
     },
     'jasmine-html': {
+      deps: ['jasmine'],
+      exports: 'jasmine'
+    },
+    'jasmine-slow': {
       deps: ['jasmine'],
       exports: 'jasmine'
     },

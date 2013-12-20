@@ -4,6 +4,7 @@ require([
   '../lib/vendor/config'
 ], function() {
   require([
+    'jasmine-slow',
     'jasmine-html',
     'matchers/matchers.package',
     'googlemaps'
@@ -18,6 +19,8 @@ require([
     jasmineEnv.specFilter = function(spec) {
       return reporter.specFilter(spec);
     };
+
+    jasmine.slow.enable(50);
 
     require([
       '/tests/lib/domReady.js!',
