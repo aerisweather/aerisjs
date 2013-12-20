@@ -311,8 +311,8 @@ define([
 
       it('should return times', function() {
         var test = testFactory({
-          timesCount: 100,
-          limit: 100
+          timesCount: 10,
+          limit: 10
         });
 
         expect(test.animation.getTimes()).toEqual(test.times);
@@ -321,10 +321,10 @@ define([
       it('should return an empty array if no times are loaded', function() {
         var timesPromise = new Promise();
         var test = testFactory({
-          limit: 100,
+          limit: 10,
           timesPromise: timesPromise
         });
-        var times = getCannedTimes({ count: 100 });
+        var times = getCannedTimes({ count: 10 });
 
         expect(test.animation.getTimes()).toEqual([]);
 
