@@ -1,27 +1,38 @@
-<div>
-  <section>
-    <dl>
-      <dt>Total Distance</dt>
-      <dd><span class="aeris-distance">{{ route.distance }}</span> MI</dd>
+<div class="aeris-modalContainer">
+  <div class="aeris-modal">
+    <h1>Save New Route</h1>
+    <section class="aeris-routeInfo">
+      <ul>
+        <li>
+          <div class="aeris-key">Total Distance</div>
+          <div class="aeris-value"><span class="aeris-distance">{{ route.distance }}</span> mi</div>
+        </li>
+        <li>
+          <div class="aeris-key">Total Points</div>
+          <div class="aeris-value aeris-length">{{ route.length }}</div>
+        </li>
+      </ul>
+    </section>
 
-      <dt>Total Points</dt>
-      <dd class="aeris-length">{{ route.length }}</dd>
-    </dl
-  </section>
 
-  <label class="aeris-error" style="display:none"></label>
+    <section class="aeris-form">
+      <label class="aeris-formError"></label>
 
-  <label>
-    Route Name
-    <input type="text" class="aeris-routeNameInput"/>
-  </label>
+      <label>
+        Route Name
+        <input type="text" class="aeris-routeNameInput"/>
+      </label>
 
-  <label>
-    Description
-    <textarea class="aeris-routeDescrInput"></textarea>
-  </label>
+      <label>
+        Description
+        <textarea class="aeris-routeDescrInput"></textarea>
+      </label>
+    </section>
 
-  <div class="aeris-loading" style="display:none">Saving route...</div>
-  <a href="#" class="secondaryBtn aeris-close">Cancel</a>
-  <a href="#" class="actionBtn aeris-save">Save</a>
+    <section class="aeris-buttons">
+      <div class="aeris-loading">Loading...</div>
+      <a href="#" class="secondaryBtn aeris-close">Cancel</a>
+      <a href="#" class="actionBtn aeris-save">Save</a>
+    </section>
+  </div>
 </div>
