@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style type="text/css">
+    html, body, #mapCanvas {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+
+  <title>Build</title>
+  <script type="text/javascript"
+          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false">
+  </script>
+  <script type="text/javascript" src="http://uat.hamweather.net/eschwartz/build/packages/gmaps-min.js"></script>
+</head>
+<body>
+
+<div id="mapCanvas"></div>
+
+<script type="text/javascript">
+  require.config({
+    // This needs to be the absolute path of the deployed library.
+    baseUrl: '/build/lib'
+  });
+
+  aeris.Loader.load({
+    maps: {
+      mapType: 'gmaps',
+      apiId: 'wgE96YE3scTQLKjnqiMsv',
+      apiSecret: 'DGCTq4z2xxttTBwTiimwlWyxmx5IDwK0VZ7T2WMS',
+      packages: ['layers', 'markers']
+    },
+    onload: function() {
+      initialize();
+    },
+    onerror: function(e) {
+      throw new Error(e.code + ': ' + e.message);
+    }
+  })
+
+
+  function initialize() {
+    window.map = new aeris.maps.Map('mapCanvas');
+    window.marker = new aeris.maps.Marker({
+      position: [45, -90]
+    });
+    marker.setMap(map);
+  }
+</script>
+
+</body>
+</html>
