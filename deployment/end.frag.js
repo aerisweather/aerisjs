@@ -11,15 +11,11 @@
   aeris.Loader = function() {};
   aeris.Loader.load = function(config) {
     var loaderConfig = config;
-
-    // Generate vendor library modules
-    require(['vendor/config'], function() {
-      // Load the 'real' Loader
-      // And make it run.
-      require(['aeris/loader/loader'], function(Loader) {
-        var loader = new Loader();
-        loader.load(loaderConfig);
-      });
+    // Load the 'real' Loader
+    // And make it run.
+    require(['aeris/loader/loader'], function(Loader) {
+      var loader = new Loader();
+      loader.load(loaderConfig);
     });
   };
 })(window.aeris);
