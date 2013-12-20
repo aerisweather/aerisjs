@@ -346,7 +346,9 @@ define([
             waypoint: {
               url: 'icon.png',
               clickable: false,
-              draggable: true
+              draggable: true,
+              offsetX: 15,
+              offsetY: 20
             }
           });
 
@@ -356,6 +358,8 @@ define([
           expect(waypoint.get('url')).toEqual('icon.png');
           expect(waypoint.get('clickable')).toEqual(false);
           expect(waypoint.get('draggable')).toEqual(true);
+          expect(waypoint.get('offsetX')).toEqual(15);
+          expect(waypoint.get('offsetY')).toEqual(20);
         });
 
         it('should set styles on a selected waypoint', function() {
@@ -363,7 +367,9 @@ define([
             selectedWaypoint: {
               url: 'blueIcon.png',
               clickable: true,
-              draggable: false
+              draggable: false,
+              offsetX: 15,
+              offsetY: 20
             }
           });
 
@@ -373,6 +379,8 @@ define([
           expect(waypoint.get('url')).toEqual('blueIcon.png');
           expect(waypoint.get('clickable')).toEqual(true);
           expect(waypoint.get('draggable')).toEqual(false);
+          expect(waypoint.get('offsetX')).toEqual(15);
+          expect(waypoint.get('offsetY')).toEqual(20);
         });
 
         it('should change a waypoint\'s style when it is selected / deselected', function() {
