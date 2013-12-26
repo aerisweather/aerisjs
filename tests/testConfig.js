@@ -18,6 +18,7 @@ require.config({
   baseUrl: '/lib',
   //urlArgs: 'cb=' + Math.random(),                   // Cache buster
   paths: {
+    tests: '../tests',
     async: '/tests/lib/async',
     jasmine: '/tests/lib/jasmine',
     'jasmine-slow': '/tests/lib/jasmine-slow',
