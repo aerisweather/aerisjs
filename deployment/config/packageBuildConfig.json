@@ -12,7 +12,7 @@
     "wire/build/amd/builder": "vendor/wire/rjs/builder"
   },
   "optimize": "none",
-  "exclude": ["vendor/text"],
+  "exclude": ["text"],
   "include": [
     "config",
     "vendor/libs.js",

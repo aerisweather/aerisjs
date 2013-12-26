@@ -1,6 +1,6 @@
 define([
   'vendor/jquery',
-  'vendor/text!examples/animation/view/controls.html'
+  'text!examples/animation/view/controls.html'
 ], function($, template) {
   return function(div, anim) {
     div.html(template);

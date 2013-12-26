@@ -19,5 +19,5 @@
     'wire/build/amd/builder': 'vendor/wire/rjs/builder'
   },
   optimize: 'none',
-  exclude: ['vendor/text']
+  exclude: ['text']
 })
