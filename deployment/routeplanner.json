@@ -6,7 +6,9 @@
     "vendor/backbone": "empty:",
     "vendor/marionette": "empty:",
     "vendor/jquery": "empty:",
-    "vendor/handlebars": "empty:"
+    "vendor/handlebars": "empty:",
+
+    "strategy": "aeris/maps/gmaps"
   },
   "optimize": "none",
   "inlineText": true,
@@ -22,11 +24,5 @@
     "startFile": ["../externals/require.js"]
   },
   "name": "../lib/polaris/packages/routeplanner.js",
-  "out": "../build/lib/polaris/packages/routeplanner.js",
-
-  "map": {
-    "*": {
-      "strategy": "gmaps"
-    }
-  }
+  "out": "../build/lib/polaris/packages/routeplanner.js"
 }
