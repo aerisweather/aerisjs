@@ -134,6 +134,8 @@ require([
 
 
       //'spec/polaris/maps/base/markercollections/poimarkercollection'
+
+      'tests/integration/spec/wire/wire'
     ], function() {
 
       // Yes, it's a hack,
