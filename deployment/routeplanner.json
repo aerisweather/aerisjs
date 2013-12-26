@@ -1,40 +1,32 @@
 {
   "mainConfigFile": "../lib/config.js",
   "paths": {
-    "strategy": "empty:",
-    "wire/build/amd/builder": "vendor/wire/builder/rjs"
+    "wire/build/amd/builder": "vendor/wire/builder/rjs",
+    "vendor/underscore": "empty:",
+    "vendor/backbone": "empty:",
+    "vendor/marionette": "empty:",
+    "vendor/jquery": "empty:",
+    "vendor/handlebars": "empty:"
   },
   "optimize": "none",
-  "exclude": ["text"],
+  "inlineText": true,
+  "stubModule": ["text", "hbars"],
   "include": [
     "config",
     "vendor/libs.js",
     "vendor/config.js",
-    "aeris/maps/loader"
+    "aeris/maps/loader",
+    "packages/gmaps"
   ],
   "wrap": {
     "startFile": ["../externals/require.js"]
   },
   "name": "../lib/polaris/packages/routeplanner.js",
   "out": "../build/lib/polaris/packages/routeplanner.js",
-  "shim": {
-    "vendor/underscore": {
-      "exports": "_"
-    },
-    "vendor/backbone": {
-      "deps": ["vendor/underscore"],
-      "exports": "Backbone"
-    },
-    "vendor/marionette": {
-      "deps": ["vendor/backbone"],
-      "exports": "Marionette"
-    },
-    "vendor/jquery": {
-      "exports": "jQuery"
-    },
-    "vendor/handlebars": {
-      "exports": "Handlebars"
-    }
-  },
 
+  "map": {
+    "*": {
+      "strategy": "gmaps"
+    }
+  }
 }
