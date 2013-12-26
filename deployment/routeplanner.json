@@ -13,10 +13,12 @@
   "optimize": "none",
   "inlineText": true,
   "stubModule": ["text", "hbars"],
+  "preserveLicenseComments": false,
   "include": [
     "config",
-    "vendor/libs.js",
-    "vendor/config.js",
+    "vendor/config",
+    "vendor/wire/wire",
+    "application/packages/plugins",
     "aeris/maps/loader",
     "packages/gmaps"
   ],
