@@ -52,6 +52,7 @@ require([
       'spec/aeris/application/form/controller/togglebuttoncontroller',
       'spec/aeris/application/plugin/events',
       'spec/aeris/application/plugin/extend',
+      'spec/aeris/application/plugin/factory',
       //'spec/aeris/application/plugin/attrresolver',
 
       'spec/aeris/builder/maps/loader',
