@@ -20,7 +20,8 @@ require.config({
   paths: {
     tests: '../tests',
     async: '/tests/lib/async',
-    jasmine: '/tests/lib/jasmine',
+    jasmineBase: '/tests/lib/jasmine',
+    jasmine: '/tests/lib/jasmine-modified',
     'jasmine-slow': '/tests/lib/jasmine-slow',
     'jasmine-html': '/tests/lib/jasmine-html',
     spec: '/tests/spec',
@@ -32,7 +33,7 @@ require.config({
     strategy: 'aeris/maps/gmaps'
   },
   shim: {
-    jasmine: {
+    jasmineBase: {
       exports: 'jasmine'
     },
     'jasmine-html': {
