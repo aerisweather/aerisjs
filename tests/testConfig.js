@@ -39,5 +39,5 @@ require.config({
       strategy: 'gmaps'
     }
   },
-  waitSeconds: 3000
+  waitSeconds: 3
 });
