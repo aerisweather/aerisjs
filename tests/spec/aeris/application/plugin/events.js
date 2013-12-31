@@ -5,6 +5,7 @@ define([
   'vendor/backbone'
 ], function(_, testUtil, wire, Backbone) {
   var plugins = ['application/plugin/events'];
+  var modId;
 
   var Listener = function() {
     this.listen = jasmine.createSpy('Listener#listen');
@@ -12,18 +13,10 @@ define([
   };
   _.extend(Listener.prototype, Backbone.Events);
 
-  define('listener', function() {
-    return Listener;
-  });
-
 
   var Talker = function() {
   };
   _.extend(Talker.prototype, Backbone.Events);
-
-  define('talker', function() {
-    return Talker;
-  });
 
 
   var throwUncatchable = function(e) {
@@ -37,17 +30,15 @@ define([
     andCallFake(function(talker, words) {
       return words.toUpperCase();
     });
-  define('loudspeaker', function() {
-    return loudspeaker;
-  });
 
 
-  define('transformers', {
-    loudspeaker: loudspeaker,
-    muffler: function(talk, words) {
-      return words.toLowerCase()
-    }
-  });
+  function defineTestModule(name, cb) {
+    define(modId + name, cb);
+  }
+
+  function getModId(name) {
+    return modId + name;
+  }
 
 
 
@@ -55,19 +46,44 @@ define([
 
   describe('The wire Event plugin', function() {
 
+    beforeEach(function() {
+      modId = _.uniqueId('TestModule_') + '_';
+
+      defineTestModule('listener', function() {
+        return Listener;
+      });
+
+      defineTestModule('talker', function() {
+        return Talker;
+      });
+
+
+      defineTestModule('loudspeaker', function() {
+        return loudspeaker;
+      });
+
+
+      defineTestModule('transformers', {
+        loudspeaker: loudspeaker,
+        muffler: function(talk, words) {
+          return words.toLowerCase()
+        }
+      });
+    });
+
     describe('listenTo facet', function () {
       it('should listen to multiple events from multiple emitters', function () {
         wire({
           talkerA: {
-            create: 'talker'
+            create: getModId('talker')
           },
 
           talkerB: {
-            create: 'talker'
+            create: getModId('talker')
           },
 
           listener: {
-            create: 'listener',
+            create: getModId('listener'),
             listenTo: {
               talkerA: {
                 talk: 'listen',
@@ -97,13 +113,13 @@ define([
       it('should transform event data', function () {
         wire({
           talker: {
-            create: 'talker'
+            create: getModId('talker')
           },
 
-          loudspeaker: { module: 'loudspeaker' },
+          loudspeaker: { module: getModId('loudspeaker') },
 
           listener: {
-            create: 'listener',
+            create: getModId('listener'),
             listenTo: {
               talker: {
                 whisper: 'loudspeaker | listen'
@@ -126,13 +142,13 @@ define([
       it('should find a transformer within a namespace', function () {
         wire({
           talker: {
-            create: 'talker'
+            create: getModId('talker')
           },
 
-          transformers: { module: 'transformers' },
+          transformers: { module: getModId('transformers') },
 
           listener: {
-            create: 'listener',
+            create: getModId('listener'),
             listenTo: {
               talker: {
                 whisper: 'transformers.loudspeaker | listen',
@@ -160,15 +176,15 @@ define([
 
         wire({
           talkerA: {
-            create: 'talker'
+            create: getModId('talker')
           },
 
           talkerB: {
-            create: 'talker'
+            create: getModId('talker')
           },
 
           listener: {
-            create: 'listener',
+            create: getModId('listener'),
             listenTo: {
               talkerA: {
                 talk: 'listen',
