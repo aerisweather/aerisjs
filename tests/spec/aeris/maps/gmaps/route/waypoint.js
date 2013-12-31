@@ -1,7 +1,7 @@
 define([
   'aeris/util',
   'aeris/promise',
-  'gmaps/route/waypoint',
+  'strategy/route/waypoint',
   'aeris/errors/validationerror',
   'aeris/collection',
   'mocks/mapobject',

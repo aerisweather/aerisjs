@@ -1,6 +1,6 @@
 define([
   'aeris/util',
-  'gmaps/events'
+  'strategy/events'
 ], function(_, GoogleEvents) {
   var gEvent_orig;
 

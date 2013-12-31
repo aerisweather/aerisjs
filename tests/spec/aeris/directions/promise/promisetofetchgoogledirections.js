@@ -1,7 +1,7 @@
 define([
   'aeris/util',
   'directions/promise/promisetofetchgoogledirections',
-  'gmaps/utils'
+  'strategy/utils'
 ], function(_, PromiseToFetchGoogleDirections, mapUtil) {
 
   var MockLatLng = function(opt_lat, opt_lon) {

@@ -3,7 +3,7 @@
 */
 define([
   'testUtils',
-  'gmaps/utils',
+  'strategy/utils',
   'aeris/util',
   'googlemaps'
 ], function(testUtils, mapUtils, _) {

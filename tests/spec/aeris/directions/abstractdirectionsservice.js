@@ -3,7 +3,7 @@ define([
   'sinon',
   'directions/abstractdirectionsservice',
   'aeris/util',
-  'gmaps/route/waypoint'
+  'strategy/route/waypoint'
 ], function(jasmine, sinon, AbstractDirectionsService, _, Waypoint) {
 
   var StubbedWaypoint = function() {

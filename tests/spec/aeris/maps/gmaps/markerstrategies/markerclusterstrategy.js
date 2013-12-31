@@ -1,7 +1,7 @@
 define([
   'aeris/util',
   'sinon',
-  'gmaps/markerstrategies/markerclusterstrategy',
+  'strategy/markerstrategies/markerclusterstrategy',
   'aeris/collection',
   'aeris/model',
   'aeris/promise'

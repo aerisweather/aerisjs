@@ -1,5 +1,5 @@
 define([
-  'gmaps/utils'
+  'strategy/utils'
 ], function(mapUtil) {
   var MockDirectionsService = function() {
     var stubbedMethods = [

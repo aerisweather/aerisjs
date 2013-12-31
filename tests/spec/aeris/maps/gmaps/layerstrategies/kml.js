@@ -3,7 +3,7 @@ define([
   'aeris/util',
   'sinon',
   'mocks/layer',
-  'gmaps/layerstrategies/kml',
+  'strategy/layerstrategies/kml',
   'mocks/gmap'
 ], function(_, sinon, MockLayer, KMLStrategy, MockMap) {
 

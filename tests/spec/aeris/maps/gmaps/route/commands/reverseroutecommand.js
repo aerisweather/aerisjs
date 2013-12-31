@@ -1,7 +1,7 @@
 define([
   'aeris/util',
-  'gmaps/route/commands/reverseroutecommand',
-  'gmaps/route/route'
+  'strategy/route/commands/reverseroutecommand',
+  'strategy/route/route'
 ], function(_, ReverseRouteCommand, Route) {
 
   var MockRoute = function() {

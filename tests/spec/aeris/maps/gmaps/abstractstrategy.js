@@ -1,6 +1,6 @@
 define([
   'aeris/util',
-  'gmaps/abstractstrategy',
+  'strategy/abstractstrategy',
   'aeris/model'
 ], function(_, AbstractStrategy, Model) {
 

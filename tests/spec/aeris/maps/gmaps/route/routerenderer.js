@@ -1,6 +1,6 @@
 define([
   'aeris/util',
-  'gmaps/route/routerenderer',
+  'strategy/route/routerenderer',
   'mocks/mapobject',
   'aeris/collection'
 ], function(_, RouteRenderer, MockMapObject, Collection) {

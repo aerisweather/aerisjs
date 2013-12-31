@@ -1,7 +1,7 @@
 define([
   'aeris/util',
-  'gmaps/route/commands/removewaypointcommand',
-  'gmaps/route/route',
+  'strategy/route/commands/removewaypointcommand',
+  'strategy/route/route',
   'aeris/model',
   'aeris/collection',
   'aeris/promise'

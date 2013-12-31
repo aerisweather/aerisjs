@@ -1,9 +1,9 @@
 require([
   'jasmine',
   'aeris/util',
-  'gmaps/route/waypoint',
+  'strategy/route/waypoint',
   'mocks/waypoint',
-  'gmaps/route/route',
+  'strategy/route/route',
   'matchers/route-matchers'
 ], function(jasmine, _, Waypoint, MockWaypoint, Route) {
   describe('Jasmine Route Matchers', function() {

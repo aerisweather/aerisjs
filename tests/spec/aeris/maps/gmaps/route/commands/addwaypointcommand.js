@@ -1,7 +1,7 @@
 define([
-  'gmaps/route/commands/addwaypointcommand',
-  'gmaps/route/waypoint',
-  'gmaps/route/route',
+  'strategy/route/commands/addwaypointcommand',
+  'strategy/route/waypoint',
+  'strategy/route/route',
   'aeris/util',
   'testErrors/untestedspecerror',
   'sinon'

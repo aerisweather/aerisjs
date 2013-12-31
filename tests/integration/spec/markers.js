@@ -1,5 +1,5 @@
 define([
-  'gmaps/map',
+  'strategy/map',
   'vendor/jquery',
   'testUtils',
   'testErrors/untestedspecerror',

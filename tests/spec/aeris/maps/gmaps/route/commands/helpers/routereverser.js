@@ -1,10 +1,10 @@
 define([
   'aeris/util',
-  'gmaps/route/commands/helpers/routereverser',
+  'strategy/route/commands/helpers/routereverser',
   'aeris/model',
   'aeris/collection',
-  'gmaps/route/waypoint',
-  'gmaps/route/route'
+  'strategy/route/waypoint',
+  'strategy/route/route'
 ], function(_, RouteReverser, Model, Collection, Waypoint, Route) {
   var MockWaypoint = function(opt_attrs, opt_options) {
     var attrs = _.defaults(opt_attrs || {}, {
