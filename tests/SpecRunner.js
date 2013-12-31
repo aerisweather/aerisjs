@@ -50,9 +50,9 @@ require([
       'spec/aeris/application/form/model/combotoggle',
       'spec/aeris/application/form/collection/radiocollection',
       'spec/aeris/application/form/controller/togglebuttoncontroller',
-      'spec/aeris/application/plugin/events',
-      'spec/aeris/application/plugin/extend',
-      'spec/aeris/application/plugin/factory',
+      //'spec/aeris/application/plugin/events',
+      //'spec/aeris/application/plugin/extend',
+      //'spec/aeris/application/plugin/factory',
       //'spec/aeris/application/plugin/attrresolver',
 
       'spec/aeris/builder/maps/loader',
@@ -137,7 +137,7 @@ require([
 
       //'spec/polaris/maps/base/markercollections/poimarkercollection'
 
-      'tests/integration/spec/wire/wire'
+      //'tests/integration/spec/wire/wire'
     ], function() {
 
       // Yes, it's a hack,
