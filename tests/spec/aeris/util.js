@@ -3,24 +3,6 @@ define([
   'aeris/util'
 ], function(sinon, _) {
   describe('The Aeris Utility Library', function() {
-    it('should provide unique ids', function() {
-      var uuids = [];
-
-      for (var i = 0; i < 50; i++) {
-        var id = _.uniqueId();
-        expect(uuids.indexOf(id)).toEqual(-1);
-
-        uuids.push(id);
-      }
-
-      for (var i = 0; i < 50; i++) {
-        var id = _.uniqueId('somePrefix');
-        expect(uuids.indexOf(id)).toEqual(-1);
-
-        uuids.push(id);
-      }
-    });
-
     describe('should convert latLon to degrees', function() {
 
       it('standard use case', function() {
