@@ -5,7 +5,7 @@ define([
 ], function(wire, testUtil, Model) {
   describe('The WireJS factory plugin', function() {
     var modId;
-    var plugins = [ 'application/plugin/factory' ];
+    var plugins = [ 'application/plugin/classfactory' ];
 
     beforeEach(function() {
       modId = _.unique('MockModule_');
@@ -16,7 +16,7 @@ define([
       it('should create a Model with default attributes and options', function() {
         wire({
           ModelFactory: {
-            factory: {
+            ClassFactory: {
               module: 'aeris/model',
               args: [
                 {
