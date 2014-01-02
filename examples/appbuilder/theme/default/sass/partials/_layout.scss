@@ -12,10 +12,16 @@
 }
 $section-padding: 8px;
 
-.aeris-maps-app {
-  position: relative;
+.aeris-mapContainer, .mapCanvasRegion, .mapCanvas {
   width: 100%;
   height: 100%;
+}
+
+.aeris-maps-app {
+  position: relative;
+  width: 800px;
+  height: 600px;
+
 
 
   .aeris-map-canvas {
