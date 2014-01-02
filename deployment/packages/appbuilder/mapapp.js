@@ -32,13 +32,11 @@
   include: [
     'vendor/config',
 
-    'packages/infobox',
-    'packages/layers',
-    'packages/markers',
+    'packages/maps',
     'packages/gmaps',
 
     'aeris/loader/loader',
-    'aeris/maps/loader'
+    'mapbuilder/loader'
   ],
   wrap: {
     startFile: ['../../../externals/require.js', '../../start.frag.js'],
