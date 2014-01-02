@@ -1,3 +1,21 @@
+### 2.7.0
+
+* Internal changes to reduce overall memory usage, along with minor performance improvements.
+
+### 2.7.0
+
+* Added [`promise.catch`](docs/api.md#catch) and [`promise.finally`](docs/api.md#finally) as synonyms for `promise.otherwise` and `promise.ensure`. (#212)
+* New [browserify build](../README.md#legacy-environments-via-browserify) for those using globals. (#209)
+* Added [ender](http://ender.jit.su) support to `package.json`. (#223)
+* Fix compatibility with [PhantomJS](http://phantomjs.org)'s CommonJS module support. (#226)
+* Fix [Sauce Labs](https://saucelabs.com) tests for pull requests. (#216)
+* Added `bower.json` `ignore` to trim files installed via bower. (#193)
+
+### 2.6.0
+
+* New [`promise.done`](docs/api.md#done) allows consuming the ultimate value at the end of a promise chain while ensuring that any errors are thrown to the host environment so you get loud stack traces.
+* `when/node/function` [`bindCallback`](docs/api.md#nodefn-bindcallback) and [`liftCallback`](docs/api.md#nodefn-liftcallback) now behave more like standard node-style APIs in that they allow exceptions to propagate to the host environment for loud stack traces.
+
 ### 2.5.1
 
 * `ensure` now ignores non-functions, [like `then` does](http://promisesaplus.com/#point-25), for consistency. (#207)
