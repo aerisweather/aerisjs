@@ -7,7 +7,9 @@ define([
 ], function(_, Params, Model, Collection, ChainedQuery) {
 
   function TestFactory() {
-    this.params = new Params();
+    this.params = new Params({
+
+    }, { validate: false });
   }
 
 
@@ -120,6 +122,53 @@ define([
 
 
     describe('validation', function() {
+
+      describe('bounds', function() {
+        var params;
+
+        beforeEach(function() {
+          params = new Params(null, { validate: false });
+        });
+
+
+        function shouldFailBoundsValidation(bounds) {
+          expect(function() {
+            params.set({
+              bounds: bounds
+            }, { validate: true });
+          }).toThrowType('ValidationError');
+        }
+
+        function shouldPassBoundsValidation(bounds) {
+          params.set({
+            bounds: bounds
+          }, { validate: true });
+        }
+
+
+        it('should require bounds to contain two latLon arrays', function() {
+          shouldFailBoundsValidation([1, 2]);
+          shouldFailBoundsValidation('foo');
+        });
+
+        it('should require that bounds area is more than 0', function() {
+          shouldFailBoundsValidation([[0, 0], [0, 0]]);
+          shouldFailBoundsValidation([[45, -90], [45, -80]]);
+        });
+
+        it('should accept bounds which define an area', function() {
+          shouldPassBoundsValidation([
+            [45, -90],
+            [50, -85]
+          ])
+        });
+
+        it('should accept null bounds', function() {
+          shouldPassBoundsValidation(null);
+        });
+
+      });
+
       it('should require \'to\' to be a date', function() {
         var test = new TestFactory();
 
