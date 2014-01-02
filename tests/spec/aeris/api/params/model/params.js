@@ -123,7 +123,7 @@ define([
 
     describe('validation', function() {
 
-      describe('bounds', function() {
+      describe('p', function() {
         var params;
 
         beforeEach(function() {
@@ -134,21 +134,20 @@ define([
         function shouldFailBoundsValidation(bounds) {
           expect(function() {
             params.set({
-              bounds: bounds
+              p: bounds
             }, { validate: true });
           }).toThrowType('ValidationError');
         }
 
         function shouldPassBoundsValidation(bounds) {
           params.set({
-            bounds: bounds
+            p: bounds
           }, { validate: true });
         }
 
 
         it('should require bounds to contain two latLon arrays', function() {
-          shouldFailBoundsValidation([1, 2]);
-          shouldFailBoundsValidation('foo');
+          shouldFailBoundsValidation(['foo', 'bar']);
         });
 
         it('should require that bounds area is more than 0', function() {
@@ -167,6 +166,17 @@ define([
           shouldPassBoundsValidation(null);
         });
 
+        it('should accept a place name', function() {
+          shouldPassBoundsValidation('Minneapolis, MN');
+        });
+
+        it('should accept :auto', function() {
+          shouldPassBoundsValidation(':auto');
+        });
+
+        it('should accept a zip code', function() {
+          shouldPassBoundsValidation(55417);
+        });
       });
 
       it('should require \'to\' to be a date', function() {
@@ -303,6 +313,27 @@ define([
 
         // Should not throw error
         params.toJSON();
+      });
+
+    });
+
+
+    describe('setBounds', function() {
+      var params;
+
+      beforeEach(function() {
+        params = new Params(null, { validate: false });
+
+        // Stub validation
+        spyOn(params, 'validate');
+      });
+
+
+      it('should unset bounds, if null is passed', function() {
+        params.setBounds([[12, 34], [56, 78]]);
+        params.setBounds(null);
+
+        expect(params.has('bounds')).toEqual(false);
       });
 
     });
