@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>MapAppBuilder</title>
+
+  <link rel="shortcut icon" type="image/x-icon" href="../weather.ico"/>
+
+  <link rel="stylesheet" href="theme/default/css/style.css"/>
+
+  <script type="text/javascript"
+          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false&libraries=geometry">
+  </script>
+
+  <script type="text/javascript" src="../../build/packages/mapapp.js"></script>
+
+  <script type="text/javascript">
+    function logArgs(args) {
+      console.log('logArgs: ', args);
+    }
+
+    require.config({
+      baseUrl: 'http://aeris-maps/lib',
+      config: {
+        'aeris/config': {
+          path: '/',
+          apiId: 'wgE96YE3scTQLKjnqiMsv',
+          apiSecret: 'DGCTq4z2xxttTBwTiimwlWyxmx5IDwK0VZ7T2WMS'
+        }
+      }
+    });
+
+    aeris.Loader.load({
+      mapbuilder: {
+        mapType: 'gmaps',
+        el: '#app',
+        mapOptions: {
+          zoom: 4
+        },
+        onload: function(maps) {
+          window.maps = maps;
+          console.log('Mapbuild complete:', arguments);
+        }
+      },
+      onload: function() {
+        console.log('aeris Loader complete', arguments);
+      },
+      onerror: function(err) {
+        console.error('Error loading', err);
+      }
+    });
+  </script>
+</head>
+<body>
+<div id="app"></div>
+
+</body>
+</html>
