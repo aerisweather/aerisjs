@@ -166,7 +166,41 @@ define(['aeris/promise'], function(Promise) {
       });
     });
 
-    describe('A master promise', function() {
+
+    describe('done', function() {
+
+      it('should throw an error if no callback is provided', function() {
+        expect(function() {
+          promise.done();
+        }).toThrowType('InvalidArgumentError');
+      });
+
+    });
+
+
+    describe('fail', function() {
+
+      it('should throw an error if no callback is provided', function() {
+        expect(function() {
+          promise.fail();
+        }).toThrowType('InvalidArgumentError');
+      });
+
+    });
+
+
+    describe('always', function() {
+
+      it('should throw an error if no callback is provided', function() {
+        expect(function() {
+          promise.always();
+        }).toThrowType('InvalidArgumentError');
+      });
+
+    });
+
+
+    describe('when', function() {
       var p1, p2, p3;
 
       beforeEach(function() {
