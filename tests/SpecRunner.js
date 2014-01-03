@@ -62,6 +62,7 @@ require([
       'spec/aeris/builder/maps/core/model/state',
       //'spec/aeris/builder/maps/mapcontrols/controller/mapcontrolscontroller',
 
+      'spec/aeris/builder/routes/plugin/travelmode',
       //'spec/aeris/builder/routes/routebuilder/controller/controlscontroller',
       'spec/aeris/builder/routes/routebuilder/controller/saveroutecontroller',
 
