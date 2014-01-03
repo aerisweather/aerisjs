@@ -54,6 +54,7 @@ require([
       //'spec/aeris/application/plugin/extend',
       //'spec/aeris/application/plugin/classfactory',
       //'spec/aeris/application/plugin/attrresolver',
+      'spec/aeris/application/plugin/aerisconfig',
 
       'spec/aeris/builder/maps/loader',
       //'spec/aeris/builder/maps/options/mapappbuilderoptions',
