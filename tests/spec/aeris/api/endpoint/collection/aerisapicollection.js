@@ -1,8 +1,9 @@
 define([
   'aeris/util',
   'api/endpoint/collection/aerisapicollection',
-  'aeris/model'
-], function(_, AerisApiCollection, Model) {
+  'aeris/model',
+  'api/params/model/params'
+], function(_, AerisApiCollection, Model, Params) {
 
   var MockParams = function() {
     Model.apply(this, arguments);
@@ -57,6 +58,38 @@ define([
 
 
   describe('An AerisApiCollection', function() {
+
+    describe('constructor', function() {
+
+      it('should create a new Params model', function() {
+        var apiCollection = new AerisApiCollection();
+
+        expect(apiCollection.getParams()).toBeInstanceOf(Params);
+      });
+
+      it('should set a params model', function() {
+        var myParams = new Model();
+        var apiCollection = new AerisApiCollection(null, {
+          params: myParams
+        });
+
+        expect(apiCollection.getParams()).toEqual(myParams);
+      });
+
+      it('should set a params object to a model', function() {
+        var paramsObj = {
+          to: 'here',
+          from: 'there'
+        };
+        var apiCollection = new AerisApiCollection(null, {
+          params: paramsObj
+        });
+
+        expect(apiCollection.getParams().get('to')).toEqual('here');
+        expect(apiCollection.getParams().get('from')).toEqual('there');
+      });
+
+    });
 
     describe('sync', function() {
 
