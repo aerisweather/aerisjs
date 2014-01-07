@@ -92,7 +92,8 @@ require([
       'spec/aeris/api/params/collection/filtercollection',
       'spec/aeris/api/params/collection/chainedquery',
 
-      'spec/aeris/loader/loader',
+      //'spec/aeris/loader/loader',
+      'spec/aeris/loader/promise/promisetorequire',
 
       //'spec/aeris/maps/loader',
 
