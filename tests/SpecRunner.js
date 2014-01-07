@@ -56,7 +56,7 @@ require([
       //'spec/aeris/application/plugin/attrresolver',
       'spec/aeris/application/plugin/aerisconfig',
 
-      'spec/aeris/builder/maps/loader',
+      //'spec/aeris/builder/maps/loader',
       //'spec/aeris/builder/maps/options/mapappbuilderoptions',
       'spec/aeris/builder/maps/core/helper/renderer',
       //'spec/aeris/builder/maps/core/model/toggle',
@@ -92,7 +92,7 @@ require([
       'spec/aeris/api/params/collection/filtercollection',
       'spec/aeris/api/params/collection/chainedquery',
 
-      //'spec/aeris/loader/loader',
+      'spec/aeris/loader/libraryloader',
       'spec/aeris/loader/promise/promisetorequire',
 
       //'spec/aeris/maps/loader',
@@ -139,6 +139,8 @@ require([
 
 
       //'spec/polaris/maps/base/markercollections/poimarkercollection'
+
+      'spec/mocks/require',
 
       //'tests/integration/spec/wire/wire'
     ], function() {

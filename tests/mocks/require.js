@@ -176,14 +176,6 @@ define([
   };
 
 
-  /**
-   * Restore the original require object.
-   */
-  MockRequire.prototype.restore = function() {
-    global.require =  this.requireOrig_;
-  };
-
-
   function NOOP() {}
 
 

@@ -35,7 +35,7 @@
     'packages/maps',
     'packages/gmaps',
 
-    'loader/loader',
+    'loader/libraryloader',
     'mapbuilder/loader'
   ],
   wrap: {

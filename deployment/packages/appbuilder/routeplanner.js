@@ -37,7 +37,7 @@
     'packages/gmaps',
     'polaris/packages/routeplanner',
 
-    'loader/loader',
+    'loader/libraryloader',
     'polaris/routeplanner/loader'
   ],
   wrap: {

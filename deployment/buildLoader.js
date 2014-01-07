@@ -1,6 +1,6 @@
 ({
   baseUrl: '../lib',
-  name: 'loader/loader',
+  name: 'loader/libraryloader',
   out: '../build/loader/loader.js',
   wrap: {
     startFile: ['../externals/require.js', 'start.frag.js'],
