@@ -1,6 +1,7 @@
 define([
-  'aeris/util'
-], function(_) {
+  'aeris/util',
+  'aeris/errors/invalidargumenterror'
+], function(_, InvalidArgumentError) {
   var global = this;
 
   /**
@@ -51,6 +52,15 @@ define([
    */
   MockRequire.prototype.define = function(moduleId, moduleFactory) {
     this.definedModules_[moduleId] = moduleFactory;
+  };
+
+
+  MockRequire.prototype.unssetModule = function(moduleId) {
+    if (!this.definedModules_[moduleId]) {
+      throw new InvalidArgumentError(moduleId + 'cannot be unsset: it was never defined.');
+    }
+
+    delete this.definedModules_[moduleId];
   };
 
 
@@ -144,12 +154,15 @@ define([
   };
 
 
-  MockRequire.prototype.shouldHaveBeenCalledWith = function(var_moduleIds) {
-    var expectRequire = expect(this.require);
-    var moduleIds = _.argsToArray(arguments);
+  MockRequire.prototype.shouldHaveRequired = function(var_expectedIds) {
+    var expectedIds = _.argsToArray(arguments);
+    var actualRequiredIds = this.require.argsForCall.reduce(function(runningValue, callArgs) {
+      Array.prototype.push.apply(runningValue, callArgs[0]);
+      return runningValue;
+    }, []);
+    var notRequiredIds = _.difference(expectedIds, actualRequiredIds);
 
-    expectRequire.toHaveBeenCalled();
-    expectRequire.toHaveBeenCalledWith.apply(expectRequire, moduleIds);
+    expect(notRequiredIds).toEqual([]);
   };
 
 

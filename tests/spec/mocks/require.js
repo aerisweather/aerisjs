@@ -203,7 +203,42 @@ define([
 
       });
 
-    })
+    });
+
+
+    describe('shouldHaveRequired', function() {
+
+      it('should pass the if the moduleIds were required', function() {
+        mockRequire.require(['foo', 'bar']);
+        mockRequire.require(['shnaz', 'lorsch']);
+
+        mockRequire.shouldHaveRequired('foo', 'lorsch');
+      });
+
+    });
+
+
+    describe('unssetModule', function() {
+
+      it('should errback when trying to require an unsset module', function() {
+        var errback = jasmine.createSpy('errback');
+        var MODULE_ID = 'someModuleToBeUnsset';
+        mockRequire.define(MODULE_ID, function() {
+          return 'STUB_MODULE';
+        });
+        mockRequire.unssetModule(MODULE_ID);
+
+        mockRequire.require([MODULE_ID], null, errback);
+        expect(errback).toHaveBeenCalled();
+      });
+
+      it('should throw an error if the module was never set', function() {
+        expect(function() {
+          mockRequire.unssetModule('someModuleWeNeverDefined');
+        }).toThrowType('InvalidArgumentError');
+      });
+
+    });
 
   });
 
