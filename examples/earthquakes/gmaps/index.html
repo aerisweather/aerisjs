@@ -9,84 +9,38 @@
     <script data-main="../../initialize" src="../../../externals/require.js"></script>
     <script type="text/javascript">
 
+      function throwError(err) {
+        console.warn(err);
 
+        err = (err instanceof Error) ? err : new Error(JSON.stringify(err, null, 2));
+        throw err;
+      }
 
       function initialize() {
+        require.setStrategy('gmaps');
         require([
-          'aeris/maps/gmaps/map',
-          'base/layers/googleroadmap',
-          'base/infobox',
-          'base/markercollections/earthquakemarkers',
-          'jquery',
-          'handlebars',
-          'examples/lib/helpers.handlebars'
-        ], function(GoogleMap, GoogleRoadMap, InfoBox, EarthquakeMarkers, $, Handlebars) {
-          var $loading = $('.loading');
-          $loading.show();
-
-          var map = new aeris.maps.gmaps.Map('map-canvas', {
-            baseLayer: new aeris.maps.layers.GoogleRoadMap(),
-            center: [44.98, -93.2636],
-            zoom: 4
-          });
-
-          var earthquakeData = new EarthquakeMarkers();
-
-          var templatePromise = $.ajax({
-            url: '../earthquake-details.handlebars',
-            cache: true,
-            success: function(data) {
-              source = data;
-              template = Handlebars.compile(source);
+          'base/map',
+          'api/endpoint/collection/earthquakecollection',
+          'base/markercollections/earthquakemarkercollection',
+          'aeris/util',
+          'vendor/jquery'
+        ], function(Map, EarthquakeCollection, EarthquakeMarkerCollection) {
+          window.map = new Map('map-canvas');
+          window.earthquakeData = new EarthquakeCollection(null, {
+            params: {
+              radius: "5000miles"
             }
           });
+          window.earthquakeMarkers = new EarthquakeMarkerCollection(null, {
+            data: earthquakeData
+          });
 
-          // Prevent choppy 'loading' UI
-          var loadingTimeout = (function() {
-            var promise = $.Deferred();
-            window.setTimeout(function() {
-              promise.resolve();
-            }, 1000)
-            return promise;
-          })();
-
-          var handleMarkerClick = function(marker, data) {
-            var html = template(data);
-            var infoBox = new aeris.maps.InfoBox(marker.position, html, {
-              hideMarker: true
-            });
-            infoBox.setMap(map);
-          };
-
-          // Add the earthquake marker collection to the map
-          earthquakeData.setMap(map);
-
-          // Wait for everything to be ready to bind click event
-          $.when(earthquakeData.initialized, map.initialized, templatePromise, loadingTimeout).
-            done(function() {
-              $loading.fadeOut(400);
-              earthquakeData.on('marker:click', handleMarkerClick);
+          earthquakeMarkers.setMap(map);
+          earthquakeData.fetch().
+            done(function(res) {
+              console.log('Fetched API data: ', res)
             }).
-            fail(function() {
-              console.log('Something went horribly wrong.', arguments)
-            });
-
-          var $earthquakeHours = $('#earthquake-hours');
-          $earthquakeHours.change(function() {
-            earthquakeData.setHours($earthquakeHours.val());
-          });
-
-          var $earthquakeTypes = $('[name="earthquake-type[]"]');
-          $earthquakeTypes.change(function() {
-            var types = [];
-            $earthquakeTypes.each(function() {
-              var $earthquakeType = $(this);
-              if ($earthquakeType.is(':checked'))
-                types.push($earthquakeType.val());
-            });
-            earthquakeData.setTypes(types);
-          });
-
+            fail(throwError);
         });
       }
     </script>
