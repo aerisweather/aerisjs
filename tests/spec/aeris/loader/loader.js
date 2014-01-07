@@ -1,6 +1,6 @@
 define([
   'aeris/util',
-  'aeris/loader/loader',
+  'loader/loader',
   'aeris/promise',
   'mocks/require',
   'sinon'

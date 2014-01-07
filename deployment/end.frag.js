@@ -13,7 +13,7 @@
     var loaderConfig = config;
     // Load the 'real' Loader
     // And make it run.
-    require(['aeris/loader/loader'], function(Loader) {
+    require(['loader/loader'], function(Loader) {
       var loader = new Loader();
       loader.load(loaderConfig);
     });

@@ -35,7 +35,7 @@
     'packages/maps',
     'packages/gmaps',
 
-    'aeris/loader/loader',
+    'loader/loader',
     'mapbuilder/loader'
   ],
   wrap: {

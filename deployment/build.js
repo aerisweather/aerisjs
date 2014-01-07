@@ -3,7 +3,7 @@
   mainConfigFile: '../lib/config.js',
   baseUrl: '.',
   dir: '../build',
-  fileExclusionRegExp: 'aeris/loader/loader.js',
+  fileExclusionRegExp: 'loader/loader.js',
   paths: {
     strategy: 'empty:',
     //vendor: 'empty:',
