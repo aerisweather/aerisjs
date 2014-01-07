@@ -1,9 +1,3 @@
-  require.config({
-    // This needs to be the absolute path of the deployed library.
-    baseUrl: '{{DEPLOYED_BASE_DIR}}'
-  });
-
-
   // An exposed wrapper around the Loader
   // Which provides immediate access to the client.
   // Saves client-provided config object, and passes
