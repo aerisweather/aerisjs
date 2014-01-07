@@ -3,10 +3,18 @@
   <head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     <link href="../../css/example.css" type="text/css" rel="stylesheet" />
+    <link rel="shortcut icon" type="image/x-icon" href="../../map_icon.png"/>
+
+    <link rel="stylesheet" href="../../lib/nprogress/nprogress.css"/>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script type="text/javascript" src="../../lib/nprogress/nprogress.js"></script>
+
     <script type="text/javascript"
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false">
     </script>
     <script data-main="../../initialize" src="../../../externals/require.js"></script>
+
+
     <script type="text/javascript">
 
       function throwError(err) {
@@ -16,15 +24,22 @@
         throw err;
       }
 
+      function exposeUtils() {
+        window._ = require('aeris/util');
+        window.DateHelper = require('aeris/datehelper');
+      }
+
       function initialize() {
         require.setStrategy('gmaps');
         require([
           'base/map',
           'api/endpoint/collection/earthquakecollection',
           'base/markercollections/earthquakemarkercollection',
-          'aeris/util',
-          'vendor/jquery'
+          'aeris/datehelper',
+          'aeris/util'
         ], function(Map, EarthquakeCollection, EarthquakeMarkerCollection) {
+          exposeUtils();
+
           window.map = new Map('map-canvas');
           window.earthquakeData = new EarthquakeCollection(null, {
             params: {
@@ -35,24 +50,90 @@
             data: earthquakeData
           });
 
+
+          window.$typeSelect = $('input[name=\'earthquake-type[]\']');
+          window.$dateSelect = $('#earthquake-hours');
+          window.$loading = $('.loading');
+
+          bindLoadingEvents();
+
           earthquakeMarkers.setMap(map);
-          earthquakeData.fetch().
-            done(function(res) {
-              console.log('Fetched API data: ', res)
-            }).
-            fail(throwError);
+          updateFilters();
+          updateDateParams();
+          earthquakeData.fetch();
+
+          bindUIControls();
+        });
+      }
+
+      function bindLoadingEvents() {
+        earthquakeData.on('request', showLoading);
+        earthquakeData.on('sync', hideLoading);
+      }
+
+      function showLoading() {
+        NProgress.start();
+      }
+
+      function hideLoading() {
+        NProgress.done();
+      }
+
+      function bindUIControls() {
+        bindMagnitudeControls();
+        bindDateControls();
+      }
+
+      function bindMagnitudeControls() {
+        $typeSelect.change(function() {
+          updateFilters();
+          earthquakeData.fetch();
+        });
+      }
+
+      function updateFilters() {
+        var filters = getActiveFilters();
+
+        if (!filters.length) {
+          earthquakeMarkers.setMap(null);
+          return;
+        }
+
+        earthquakeData.getParams().resetFilter(filters, { operator: 'OR' });
+      }
+
+
+      function getActiveFilters() {
+        return _.map($typeSelect.filter(':checked'), function(selectEl) {
+          return $(selectEl).val();
+        });
+      }
+
+      function bindDateControls() {
+        $dateSelect.change(function() {
+          updateDateParams();
+          earthquakeData.fetch();
+        });
+      }
+
+      function updateDateParams() {
+        var hoursAgo = parseFloat($dateSelect.val());
+
+        earthquakeData.setParams({
+          from: new DateHelper().addHours(hoursAgo * -1),
+          to: new Date()
         });
       }
     </script>
   </head>
   <body>
     <div class="loading">
-      <div class="loading-content"><h3>Loading...</h3></div>
+      <div class="loading-content"><h3>Fetching data...</h3></div>
     </div>
     <div id="map-canvas" class="float-left"></div>
     <div class="float-left">
       <div>
-        <label for="earthquake-type">Earthquake type:</label><br />
+        <label>Earthquake type:</label><br />
 
         <input name="earthquake-type[]" value="mini" type="checkbox" id="earthquake-type-mini" checked="checked" />
         <label for="earthquake-type-mini">Mini</label>
@@ -84,13 +165,14 @@
       <div>
         <label for="earthquake-hours">Max earthquake age:</label>
         <select id="earthquake-hours">
-          <option value="4" selected="selected">4 hours</option>
+          <option value="4">4 hours</option>
           <option value="12">12 hours</option>
           <option value="24">24 hours</option>
           <option value="48">2 days</option>
           <option value="72">3 days</option>
           <option value="168">1 week</option>
           <option value="336">2 weeks</option>
+          <option value="1344" selected="selected">8 weeks</option>
       </div>
     </div>
   </body>
