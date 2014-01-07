@@ -26,13 +26,18 @@ define([
         expect(Model.prototype.isValid).not.toHaveBeenCalled();
       });
       it('should optionally validate on instantiation', function() {
-        spyOn(Model.prototype, 'isValid');
+        var AlwaysInvalidModel = function() {
+          Model.apply(this, arguments);
+        };
+        _.inherits(AlwaysInvalidModel, Model);
 
-        new Model(null, {
-          validate: true
-        })
+        AlwaysInvalidModel.prototype.validate = function(attr) {
+          return Error('Invalid attr.');
+        };
 
-        expect(Model.prototype.isValid).toHaveBeenCalled();
+        expect(function() {
+          new AlwaysInvalidModel(null, { validate: true });
+        }).toThrow('Invalid attr.');
       });
     });
 
