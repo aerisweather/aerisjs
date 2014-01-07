@@ -1,104 +1,191 @@
 define([
   'aeris/util'
 ], function(_) {
-  var require_orig = window.require;
+  var global = this;
 
   /**
-   * @class aeris.mocks.MockRequire
-   *
-   * @param {Object=} opt_options
-   * @param {Boolean=} opt_options.success Default true.
-   * @param {Object=} opt_options.objects Loaded modules to mock-inject.
-   * @param {Object=} opt_options.error Error object.
-   * @param {number=} opt_options.delay Milliseconds before calling require callbacks.
-   *
+   * @class MockRequire
    * @constructor
    */
-  var MockRequire = function(opt_options) {
-    var stub = jasmine.createSpy('require');
+  var MockRequire = function() {
+    /**
+     * @type {Function}
+     * @private
+     */
+    this.requireOrig_ = global.require;
 
-    var options = _.extend({
-      // Whether to mimic a successful require call
-      success: true,
+    /**
+     * @type {Function}
+     * @private
+     */
+    this.defineOrig_ = global.define;
 
-      // Objects to inject
-      objects: [{ foo: 'bar' }],
+    /**
+     * Module id --> Module factory hash.
+     *
+     * @type {Object.<string,Function>}
+     * @private
+     */
+    this.definedModules_ = {};
 
-      // Error object
-      error: {
-        requireType: 'timeout',
-        requireModules: ['modA', 'modB']
-      },
+    /**
+     * Milleseconds to wait before resolving
+     * calls to require. Useful for mocking
+     * asynchronous behavior.
+     *
+     * @type {?number}
+     * @private
+     */
+    this.requireDelay_ = null;
 
-      delay: 100
-    }, opt_options);
-
-    stub.andCallFake(function(reqs, onload, onfail) {
-      var stubMethod = function() {
-        if (options.success) {
-          onload.apply(null, options.objects);
-        }
-        else {
-          onfail(options.error);
-        }
-      };
-
-      if (options.delay) {
-        return _.delay(stubMethod, options.delay);
-      }
-      else {
-        return stubMethod();
-      }
-    });
-
-    stub.config = jasmine.createSpy('require#config');
-
-    return stub;
+    spyOn(this, 'require').andCallThrough();
   };
 
-  beforeEach(function() {
-    this.addMatchers({
-      /**
-       * Check that mock require object
-       * was called with a set of requirements.
-       * @param {Array.<string>} reqs
-       * @param {Object=} opt_options
-       * @param {Boolean=} opt_options.mostRecent
-       *        If true, will only check the most recent call.
-       * @return {boolean}
-       */
-      toHaveBeenCalledWithReqs: function(reqs, opt_options) {
-        var reqSpy = this.actual;
-        var actualReqs = [];
-        var isPassing = false;
-        var options = _.extend({
-          mostRecent: false
-        }, opt_options);
-        var argsForCall = options.mostRecent ? [reqSpy.mostRecentCall.args] : reqSpy.argsForCall;
 
-        _.each(argsForCall, function(args) {
-          actualReqs.push(args[0]);
-          if ((_.intersection(args[0], reqs)).length === reqs.length) {
-            isPassing = true;
-          }
-        });
+  /**
+   * Note that the expected parameters are more
+   * rigid than for RequireJs.
+   *
+   * @param {string} moduleId
+   * @param {Function} moduleFactory
+   */
+  MockRequire.prototype.define = function(moduleId, moduleFactory) {
+    this.definedModules_[moduleId] = moduleFactory;
+  };
 
-        this.message = _.bind(function() {
-          var modifier = this.isNot ? 'not' : '';
-          return 'Expected require to ' + modifier +
-            ' have been called with ' + jasmine.pp(reqs) +
-            ' Actual calls: ' + jasmine.pp(actualReqs);
-        }, this);
 
-        return isPassing;
-      }
+  /**
+   * Note that the expected parameters are more
+   * rigid than for RequireJs. (eg. CommonJS format not accepted).
+   *
+   * @param {Array.<string>} requestedModuleIds
+   * @param {Function=} opt_callback
+   * @param {Function=} opt_errback
+   * @private
+   */
+  MockRequire.prototype.require = function(requestedModuleIds, opt_callback, opt_errback) {
+    var callback = opt_callback || NOOP;
+    var errback = opt_errback || NOOP;
+
+    var foundModules = this.resolveModulesById_(requestedModuleIds);
+    var notFoundModules = this.getUndefinedModuleIds_(requestedModuleIds);
+
+    if (notFoundModules.length) {
+      this.invokeErrback_(errback, notFoundModules);
+      return;
+    }
+
+    this.invokeCallback_(callback, foundModules);
+  };
+
+
+  /**
+   * @returns {Array.<string>}
+   * @private
+   */
+  MockRequire.prototype.getDefinedModuleIds_ = function() {
+    return _.keys(this.definedModules_);
+  };
+
+
+  MockRequire.prototype.getUndefinedModuleIds_ = function(requestedModuleIds) {
+    return _.difference(requestedModuleIds, this.getDefinedModuleIds_());
+  };
+
+
+  /**
+   * @param {Array.<string>} idList
+   * @return {*} Resolved modules.
+   * @private
+   */
+  MockRequire.prototype.resolveModulesById_ = function(idList) {
+    var pickValues = _.compose(_.values, _.pick);
+    var moduleFactories = pickValues(this.definedModules_, idList);
+    var resolvedModules = _.map(moduleFactories, function(factory) {
+      return factory();
     });
-  });
 
-  afterEach(function() {
-    // Restore require
-    window.require = require_orig;
-  });
+    return resolvedModules;
+  };
+
+
+  MockRequire.prototype.invokeCallback_ = function(callback, resolvedModules) {
+    var boundCallback = function() {
+      callback.apply(global, resolvedModules);
+    };
+
+    this.invokeAfterDelay_(boundCallback);
+  };
+
+
+  MockRequire.prototype.invokeErrback_ = function(errback, missingModuleIds) {
+    var errorObj = {
+      requireType: 'No mock modules defined',
+      requireModules: missingModuleIds
+    };
+    errback = _.bind(errback, global, errorObj);
+
+    this.invokeAfterDelay_(errback);
+  };
+
+
+  MockRequire.prototype.invokeAfterDelay_ = function(fn) {
+    if (_.isNull(this.requireDelay_)) {
+      fn();
+    }
+    else {
+      window.setTimeout(fn, this.requireDelay_);
+    }
+  };
+
+
+  MockRequire.prototype.setRequireDelay = function(delayMilleseconds) {
+    this.requireDelay_ = delayMilleseconds;
+  };
+
+
+  MockRequire.prototype.shouldHaveBeenCalledWith = function(var_moduleIds) {
+    var expectRequire = expect(this.require);
+    var moduleIds = _.argsToArray(arguments);
+
+    expectRequire.toHaveBeenCalled();
+    expectRequire.toHaveBeenCalledWith.apply(expectRequire, moduleIds);
+  };
+
+
+  /**
+   * Use MockRequire in place of the global
+   * `require` method.
+   */
+  MockRequire.prototype.useMockRequire = function() {
+    global.require = _.bind(this.require, this);
+  };
+
+
+  MockRequire.prototype.useMockDefine = function() {
+    global.define = _.bind(this.define, this);
+  };
+
+
+  /**
+   * Restore the original require object.
+   */
+  MockRequire.prototype.restore = function() {
+    global.require =  this.requireOrig_;
+    global.define = this.defineOrig_;
+  };
+
+
+  /**
+   * Restore the original require object.
+   */
+  MockRequire.prototype.restore = function() {
+    global.require =  this.requireOrig_;
+  };
+
+
+  function NOOP() {}
+
 
   return MockRequire;
 });
