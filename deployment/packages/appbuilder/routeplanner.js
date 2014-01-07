@@ -38,7 +38,7 @@
     'polaris/packages/routeplanner',
 
     'loader/libraryloader',
-    'polaris/routeplanner/loader'
+    'RiderX/loader'
   ],
   wrap: {
     startFile: ['../../../externals/require.js', '../../start.frag.js'],
