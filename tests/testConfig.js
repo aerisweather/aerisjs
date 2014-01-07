@@ -13,6 +13,7 @@ require.config({
     matchers: '/tests/lib/matchers',
     testErrors: '/tests/errors',
     testUtils: '/tests/testUtils',
+    flag: '/tests/flag',
     sinon: '/tests/lib/sinon',
     strategy: 'aeris/maps/gmaps'
   },
