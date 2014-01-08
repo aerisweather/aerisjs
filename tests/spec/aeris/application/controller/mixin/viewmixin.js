@@ -253,7 +253,7 @@ define([
     
     
     describe('getTemplate', function() {
-      var templateFn, templateHelpers;
+      var templateFn, handlebarsHelpers;
 
       var MockRegistrar = function() {
         var stubbedInstanceMethods = [
@@ -267,7 +267,7 @@ define([
 
       beforeEach(function() {
         templateFn = jasmine.createSpy('templateFn');
-        templateHelpers = jasmine.createSpyObj('templateHelpers', [
+        handlebarsHelpers = jasmine.createSpyObj('handlebarsHelpers', [
           'helperA',
           'helperB'
         ]);
@@ -280,12 +280,12 @@ define([
         });
 
         view.template = templateFn;
-        view.templateHelpers = templateHelpers;
+        view.handlebarsHelpers = handlebarsHelpers;
 
         view.getTemplate();
 
         expect(registrar.setTemplate).toHaveBeenCalledWith(templateFn);
-        expect(registrar.setHelpers).toHaveBeenCalledWith(templateHelpers);
+        expect(registrar.setHelpers).toHaveBeenCalledWith(handlebarsHelpers);
       });
 
       describe('if no helpers are defined', function() {
@@ -352,7 +352,7 @@ define([
           });
 
           view.template = templateFn;
-          view.templateHelpers = templateHelpers;
+          view.handlebarsHelpers = handlebarsHelpers;
 
           // Bound template is returned
           expect(view.getTemplate()).toEqual(registeredTemplateStub);
@@ -370,7 +370,7 @@ define([
           });
 
           view.template = templateFn;
-          view.templateHelpers = templateHelpers;
+          view.handlebarsHelpers = handlebarsHelpers;
 
           // Bound template is returned
           expect(view.getTemplate()).toEqual(registeredTemplateStub);
