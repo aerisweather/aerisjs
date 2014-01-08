@@ -40,7 +40,7 @@
     'aeris/maps/loader'
   ],
   wrap: {
-    startFile: ['../../../externals/require.js', '../../start.frag.js'],
-    endFile: ['../../end.frag.js']
+    startFile: ['../../../externals/require.js', '../../frag/start.frag.js'],
+    endFile: ['../../frag/end.frag.js']
   }
 })
