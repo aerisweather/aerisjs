@@ -3,13 +3,18 @@ define([
   'application/controller/mixin/viewmixin',
   'vendor/marionette',
   'vendor/jquery',
-  'application/controller/itemcontroller'
-], function(_, ViewMixin, Marionette, $, ItemController) {
+  'application/controller/itemcontroller',
+  'aeris/model'
+], function(_, ViewMixin, Marionette, $, ItemController, Model) {
   var ConcreteView = function() {
+    this.template = this.template || function() {
+      return 'STUB_TEMPLATE';
+    };
+
     ViewMixin.apply(this, arguments);
-    Marionette.View.apply(this, arguments);
+    Marionette.ItemView.apply(this, arguments);
   };
-  _.inherits(ConcreteView, Marionette.View);
+  _.inherits(ConcreteView, Marionette.ItemView);
   _.extend(ConcreteView.prototype, ViewMixin);
 
 
@@ -350,6 +355,9 @@ define([
             templateHelperRegistrar: registrar,
             template: templateOption
           });
+          var STUB_DATA_CTX = { foo: 'bar' };
+
+          spyOn(view, 'serializeData').andReturn(STUB_DATA_CTX);
 
           view.template = templateFn;
           view.handlebarsHelpers = handlebarsHelpers;
@@ -361,13 +369,16 @@ define([
           expect(registrar.setTemplate).toHaveBeenCalledWith(templateOption);
 
           // Helper context was set
-          expect(registrar.getTemplateWithHelpersBoundTo).toHaveBeenCalledWith(view);
+          expect(registrar.getTemplateWithHelpersBoundTo).toHaveBeenCalledWith(STUB_DATA_CTX);
         });
 
         it('using the template property, if no option is defined', function() {
           var view = new ConcreteView({
             templateHelperRegistrar: registrar
           });
+          var STUB_DATA_CTX = { foo: 'bar' };
+
+          spyOn(view, 'serializeData').andReturn(STUB_DATA_CTX);
 
           view.template = templateFn;
           view.handlebarsHelpers = handlebarsHelpers;
@@ -379,7 +390,7 @@ define([
           expect(registrar.setTemplate).toHaveBeenCalledWith(view.template);
 
           // Helper context was set
-          expect(registrar.getTemplateWithHelpersBoundTo).toHaveBeenCalledWith(view);
+          expect(registrar.getTemplateWithHelpersBoundTo).toHaveBeenCalledWith(STUB_DATA_CTX);
         });
 
       });
