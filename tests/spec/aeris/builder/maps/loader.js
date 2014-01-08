@@ -1,165 +1,224 @@
 define([
   'aeris/util',
-  'aeris/promise',
   'mapbuilder/loader',
-  'mocks/require',
-  'sinon'
-], function(_, Promise, Loader, MockRequire, sinon) {
-  var clock;
-  var require_orig = window.require;
+  'aeris/config',
+  'aeris/promise',
+  'mocks/require'
+], function(_, MapAppLoader, aerisConfig, Promise, MockRequire) {
+  var builderInstance = null;
 
-  function TestFactory(opt_options) {
-    var options = _.extend({
-      builder: new MockBuilderFactory(opt_options)
-    }, opt_options);
+  var MockBuilder = function() {
+    this.build = jasmine.createSpy('build').andCallFake(this.build);
 
-    this.loader = new Loader({
-      builder: options.builder
-    });
+    this.buildPromise_ = new Promise();
 
-    this.Builder = options.builder;
+    this.exposeInstance_();
   }
 
+  MockBuilder.prototype.exposeInstance_ = function() {
+    builderInstance = this;
+  };
 
-  function MockBuilder(opt_options) {
-    var promise = new Promise();
-    var options = _.extend({
-      resolve: true,
-      delay: 100,
-      args: []
-    }, opt_options);
 
-    // Return the promise
-    this.build.andReturn(promise);
+  MockBuilder.prototype.build = function() {
+    return this.buildPromise_;
+  };
 
-    // Resolve promise;
-    _.delay(function() {
-      var method = options.resolve ? 'resolve' : 'reject';
-      promise[method].apply(promise, options.args);
-    });
+
+  MockBuilder.prototype.resolve = function() {
+    this.buildPromise_.resolve.apply(this.buildPromise_, arguments);
+  };
+
+  MockBuilder.prototype.reject = function() {
+    this.buildPromise_.reject.apply(this.buildPromise_, arguments);
   }
-  MockBuilder.prototype.build = jasmine.createSpy('build');
 
-  /**
-   * Creates a mock builder class,
-   * bound to the specified options.
-   * Yaaaaaay.... closure!
-   *
-   * @param {Object=} opt_options MockBuilder options.
-   * @return {Function} Mock builder constructor.
-   * @constructor
-   */
-  function MockBuilderFactory(opt_options) {
-    var BuilderClass = jasmine.createSpy('MockBuilder')
-      .andCallFake(function() {
-        MockBuilder.call(this, opt_options);
-      });
-    _.inherits(BuilderClass, MockBuilder);
-
-    return BuilderClass;
-  }
 
   describe('A MapAppLoader', function() {
+    var loader;
+    var mockRequire, clock;
+    var STUB_API_ID = 'STUB_API_KEY', STUB_API_SECRET = 'STUB_API_SECRET';
+
 
     beforeEach(function() {
+      MockBuilderCtor = jasmine.createSpy('MockBuilder').andCallFake(function() {
+        return new MockBuilder();
+      });
+      loader = new MapAppLoader({
+        Builder: MockBuilderCtor
+      });
+
+      mockRequire = new MockRequire();
+      mockRequire.useMockRequire();
+      mockRequire.useMockDefine();
+
+      aerisConfig.set({
+        apiId: STUB_API_ID,
+        apiSecret: STUB_API_SECRET
+      });
+
       clock = sinon.useFakeTimers();
-      window.require = new MockRequire();
     });
+
     afterEach(function() {
+      mockRequire.restore();
       clock.restore();
-      window.require = require_orig;
+      builderInstance = null;
     });
 
 
     describe('load', function() {
 
-      it('should load the mapType package', function() {
-        var loader = new TestFactory().loader;
+      beforeEach(function() {
+        mockRequire.define('packages/maps', function() {
+          return 'PACKAGE_MAPS';
+        });
+        mockRequire.define('packages/gmaps', function() {
+          return 'PACKAGE_GMAPS';
+        });
+      });
 
-        _.each(['gmaps', 'openlayers'], function(mapType) {
+      
+      describe('should require apiKeys are set, either by...', function() {
+
+        beforeEach(function() {
+          aerisConfig.unset('apiId');
+          aerisConfig.unset('apiSecret');
+        });
+
+        
+        it('existing aerisConfig attrs', function() {
+          expect(function() {
+            loader.load()
+          }).toThrowType('LoaderConfigError');
+
+          aerisConfig.set({
+            apiId: STUB_API_ID,
+            apiSecret: STUB_API_SECRET
+          });
+          loader.load();
+        });
+        
+        it('load config', function() {
+          expect(function() {
+            loader.load();
+          }).toThrowType('LoaderConfigError');
+
           loader.load({
-            mapType: mapType
+            apiId: STUB_API_ID,
+            apiSecret: STUB_API_SECRET
+          })
+        });
+        
+      });
+
+      it('should set the apiKey and apiSecret on aeris/config', function() {
+        loader.load({
+          apiId: STUB_API_ID,
+          apiSecret: STUB_API_SECRET
+        });
+
+        expect(aerisConfig.get('apiId')).toEqual(STUB_API_ID);
+        expect(aerisConfig.get('apiSecret')).toEqual(STUB_API_SECRET);
+      });
+
+      it('should require the map strategy package', function() {
+        mockRequire.define('packages/openlayers', function() { return 'OPENLAYERS'; });
+
+        loader.load({
+          mapType: 'openlayers'
+        });
+
+        mockRequire.shouldHaveRequired('packages/openlayers');
+      });
+
+      it('should require the gmaps package by default', function() {
+        loader.load();
+
+        mockRequire.shouldHaveRequired('packages/gmaps');
+      });
+
+      it('should require the generic maps package', function() {
+        loader.load();
+
+        mockRequire.shouldHaveRequired('packages/maps');
+      });
+
+      it('should build the app with the load config, excluding apiKeys', function() {
+        var BUILD_CONFIG = {
+          foo: 'bar',
+          faz: 'baz'
+        };
+        loader.load(_.extend({
+          apiId: STUB_API_ID,
+          apiSecret: STUB_API_SECRET
+        }, BUILD_CONFIG));
+
+        expect(MockBuilderCtor).toHaveBeenCalledWith(BUILD_CONFIG);
+        expect(builderInstance.build).toHaveBeenCalled();
+      });
+
+      it('should wait to build the app util packages are required', function() {
+        var REQUIRE_DELAY = 100;
+        mockRequire.setRequireDelay(REQUIRE_DELAY);
+
+        loader.load();
+
+        expect(builderInstance).toBeNull();
+
+        clock.tick(100);
+        expect(builderInstance.build).toHaveBeenCalled();
+      });
+
+      describe('load event callbacks', function() {
+        var onload, onerror;
+
+        beforeEach(function() {
+          onload = jasmine.createSpy('onload');
+          onerror = jasmine.createSpy('onerror');
+        });
+
+
+        it('should call onload after the the Builder has resolved', function() {
+          loader.load({
+            onload: onload
           });
 
-          expect(require).toHaveBeenCalledWithReqs(['packages/' + mapType]);
+          builderInstance.resolve();
+
+          expect(onload).toHaveBeenCalled();
+        });
+
+        it('should call onload with resolved argument from the Builder', function() {
+          loader.load({
+            onload: onload
+          });
+          builderInstance.resolve('foo', 'bar');
+
+          expect(onload).toHaveBeenCalledWith('foo', 'bar');
+        });
+
+        it('should call onerror if app packages fail to be required', function() {
+          mockRequire.unssetModule('packages/maps');
+          loader.load({
+            onerror: onerror
+          });
+
+          expect(onerror).toHaveBeenCalled();
+        });
+
+        it('should call onerror if the Builder is rejected', function() {
+          loader.load({
+            onerror: onerror
+          });
+          builderInstance.reject('foo', 'bar');
+
+          expect(onerror).toHaveBeenCalledWith('foo', 'bar');
         });
 
       });
-
-      it('should build the app', function() {
-        var test = new TestFactory();
-        var options = {
-          mapType: 'gmaps',
-          foo: 'bar'
-        };
-
-        test.loader.load(options);
-
-        clock.tick(200);
-
-        expect(test.Builder.prototype.build).toHaveBeenCalled();
-      });
-
-      it('should build the app using configuration options', function() {
-        var test = new TestFactory();
-        var options = {
-          mapType: 'gmaps',
-          foo: 'bar'
-        };
-
-        // Spy on Builder constructor
-        // And check that it was called with config
-        // options
-        test.Builder.andCallFake(function(builderOptions) {
-          expect(builderOptions.foo).toEqual('bar');
-        });
-
-        test.loader.load(options);
-
-        clock.tick(200);
-
-        expect(test.Builder).toHaveBeenCalled();
-      });
-
-
-      it('should call onload with exposed builder objects', function() {
-        var test = new TestFactory({
-          builder: new MockBuilderFactory({
-            args: ['a map', 'some layer', 'some controller']
-          })
-        });
-        var options = {
-          mapType: 'gmaps',
-          onload: jasmine.createSpy('onload')
-        };
-
-        test.loader.load(options);
-
-        clock.tick(200);
-
-        expect(options.onload).toHaveBeenCalledWith('a map', 'some layer', 'some controller');
-      });
-
-      it('should call onerror with builder error arguments', function() {
-        var test = new TestFactory({
-          builder: new MockBuilderFactory({
-            resolve: false,
-            args: ['fail', 'fml']
-          })
-        });
-        var options = {
-          mapType: 'gmaps',
-          onerror: jasmine.createSpy('onerror')
-        };
-
-        test.loader.load(options);
-
-        clock.tick(200);
-
-        expect(options.onerror).toHaveBeenCalledWith('fail', 'fml');
-      });
-
     });
-
+    
   });
+
 });

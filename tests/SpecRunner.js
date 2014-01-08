@@ -56,7 +56,7 @@ require([
       //'spec/aeris/application/plugin/attrresolver',
       'spec/aeris/application/plugin/aerisconfig',
 
-      //'spec/aeris/builder/maps/loader',
+      'spec/aeris/builder/maps/loader',
       //'spec/aeris/builder/maps/options/mapappbuilderoptions',
       'spec/aeris/builder/maps/core/helper/renderer',
       //'spec/aeris/builder/maps/core/model/toggle',
