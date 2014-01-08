@@ -2,31 +2,15 @@ define([
   'aeris/util',
   'api/endpoint/collection/aerisapicollection',
   'aeris/model',
-  'api/params/model/params'
-], function(_, AerisApiCollection, Model, Params) {
+  'api/params/model/params',
+  'mocks/aeris/jsonp'
+], function(_, AerisApiCollection, Model, Params, MockJSONP) {
 
   var MockParams = function() {
     Model.apply(this, arguments);
   }
 
   _.inherits(MockParams, Model);
-
-
-  var MockJSONP = function() {
-    this.get = jasmine.createSpy('get');
-  }
-
-  MockJSONP.prototype.getRequestedUrl = function() {
-    return this.get.mostRecentCall.args[0];
-  };
-
-  MockJSONP.prototype.getRequestedData = function() {
-    return this.get.mostRecentCall.args[1];
-  };
-
-  MockJSONP.prototype.getRequestedCallback = function() {
-    return this.get.mostRecentCall.args[2];
-  };
 
 
   var MockSuccessResponse = function() {
@@ -38,6 +22,17 @@ define([
   var MockFailResponse = function() {
     return {
       success: false
+    }
+  };
+
+
+  var MockNoResultsResponse = function() {
+    return {
+      success: true,
+      error: {
+        code: "warn_no_data",
+        description: "No data was returned for the request."
+      }
     }
   };
 
@@ -209,7 +204,7 @@ define([
           expect(onComplete).toHaveBeenCalledWithSomeOf(SUCCESS_RESPONSE);
         });
 
-        it('should throw an ApiResponseError on failure', function() {
+        it('should throw an ApiResponseError on an error response', function() {
           expect(function() {
             jsonpCallback(FAIL_RESPONSE);
           }).toThrowType('APIResponseError');
