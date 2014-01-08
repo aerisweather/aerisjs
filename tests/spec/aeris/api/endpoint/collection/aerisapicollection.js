@@ -78,15 +78,15 @@ define([
 
       it('should set a params object to a model', function() {
         var paramsObj = {
-          to: 'here',
-          from: 'there'
+          foo: 'bar',
+          faz: 'baz'
         };
         var apiCollection = new AerisApiCollection(null, {
           params: paramsObj
         });
 
-        expect(apiCollection.getParams().get('to')).toEqual('here');
-        expect(apiCollection.getParams().get('from')).toEqual('there');
+        expect(apiCollection.getParams().get('foo')).toEqual('bar');
+        expect(apiCollection.getParams().get('faz')).toEqual('baz');
       });
 
     });
