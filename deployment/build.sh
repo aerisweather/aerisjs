@@ -1,60 +1,61 @@
 #!/bin/sh
 
-CURR=date
 LOG_FILE=build.log
-echo "\n\n\n-------------" >> $LOG_FILE
-echo "\n\n\nAeris Interactive build on `date`\n\n" >> $LOG_FILE
-echo "-------------\n\n\n" >> $LOG_FILE
+BUILD_CONFIG=$1
+COMPASS_THEMES_CONF="config/themes.conf"
 
-# Remove existing build directory
-if [ -d "$DIRECTORY" ]; then
-  echo "Removing ../build directory..."
-  rm -r ../build
-fi
+. scripts/logger.sh
+. scripts/command.sh
 
 
-# Compile compass projects
-echo "Compiling compass projects..."
-./compileCompassProjects.sh config/themes.conf  >> $LOG_FILE  || { echo "Something went wrong! Check build.log" ; exit 1 ; }
+main() {
+  logHeader
+  compileCompassProjects "$COMPASS_THEMES_CONF"
+  optimizeReqJSPackage "$BUILD_CONFIG"
+  logBuildComplete
+}
 
+logHeader() {
+  logSeparator
+  log "Aeris Interactive build on `date`"
+  log "using build config: $BUILD_CONFIG"
+  logSeparator
+}
 
+logBuildComplete() {
+  logSeparator
+  logAndOutput "Aeris Interactive build successfully completed."
+  logSeparator
+}
 
+compileCompassProjects() {
+  CONFIG_FILE=$1
 
-# Grab first argument as the deployed base directory
-DEPLOYED_BASE_DIR="$1"
-if [ -z $DEPLOYED_BASE_DIR ]
-  then
-    echo "Error: Must provide a deployment directory."
-    exit 2
-fi
+  logAndOutput "Compiling compass projects..."
 
-# Create a backup of the original end.frag.js
-mv end.frag.js end.frag.js.bak
+  while read -r p; do
+    if [[ "$p" != *#* ]]; then
+      COMPILE_TARGET="../lib/${p/$'\n'/}"
+      COMPILE_CMD="compass compile $COMPILE_TARGET"
+      COMPILE_ERROR="Failed to compile $COMPILE_TARGET"
 
-# Generate new end.frag.js with the deployment directory filled
-echo "Setting deployment directory to $DEPLOYED_BASE_DIR..."
-sed "s,{{DEPLOYED_BASE_DIR}},$DEPLOYED_BASE_DIR,g" end.frag.js.bak > end.frag.js
+      log "compiling $COMPILE_TARGET..."
+      executeBuildCommand "$COMPILE_CMD" "$COMPILE_ERROR"
+    fi
+  done < "$CONFIG_FILE"
 
+  logAndOutput "done."
+}
 
+optimizeReqJSPackage() {
+  CONF_FILE=$1
+  RJS_CMD="r.js -o $CONF_FILE"
+  ERROR_MSG="Failed to run r.js optimizer, using the $CONF_FILE build configuration"
 
+  logAndOutput "Building application library..."
+  executeBuildCommand "$RJS_CMD" "$ERROR_MSG"
+  logAndOutput "done."
+}
 
-# Run the r.js optimizer
-echo "Building application library..."
-r.js -o build.js >> $LOG_FILE
-
-echo "Building aeris.Loader..."
-r.js -o buildLoader.js >> $LOG_FILE
-
-echo "Building aeris maps packages"
-node packageConfigBuilder.js >> $LOG_FILE
-
-
-
-# Remove generated files
-echo "Removing temporary build files..."
-rm end.frag.js
-
-# Restore backup copy of end.frag.js
-mv end.frag.js.bak end.frag.js
-
-echo "done."
+main
+exit 0

@@ -1,3 +1,8 @@
+// TODO replace fn in bash.sh with this,
+// and move to bash.sh
+compileCompassProjects() {
+
+}
 # Grab first argument as a list of compass project locations
 if [ -z $1 ] ; then
   echo "Must provide a configuration file with a list of compass project directories"

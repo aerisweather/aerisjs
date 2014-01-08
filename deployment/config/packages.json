@@ -1,6 +1,0 @@
-{
-  "packageDirs": [
-    "../lib/aeris/maps/packages",
-    "../lib/polaris/packages"
-  ]
-}
