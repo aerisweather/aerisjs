@@ -92,6 +92,7 @@ require([
       //'spec/aeris/api/endpoint/model/pointdata',
       'spec/aeris/api/params/model/params',
       'spec/aeris/api/params/model/query',
+      'spec/aeris/api/endpoint/model/aerisapimodel',
       'spec/aeris/api/endpoint/collection/aerisapicollection',
       'spec/aeris/api/params/model/filter',
       'spec/aeris/api/params/collection/filtercollection',
