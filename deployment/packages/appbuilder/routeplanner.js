@@ -6,11 +6,6 @@
   baseUrl: '../../../lib',
 
   paths: {
-    'vendor/underscore': 'empty:',
-    'vendor/backbone': 'empty:',
-    'vendor/marionette': 'empty:',
-    'vendor/jquery': 'empty:',
-
     strategy: 'aeris/maps/gmaps'
   },
 
@@ -20,6 +15,7 @@
   // Handlebars config
   inlineText: true,
   stubModules: ['text', 'hbars'],
+  // Use handlebars runtime script
   onBuildWrite : function(moduleName, path, content){
     // replace handlebars with the runtime version
     if (moduleName === 'Handlebars') {
@@ -31,17 +27,13 @@
   },
 
   include: [
-    'vendor/config',
-
+    'config',
     'packages/maps',
     'packages/gmaps',
-    'polaris/packages/routeplanner',
-
-    'loader/libraryloader',
-    'RiderX/loader'
+    'polaris/packages/routeplanner'
   ],
   wrap: {
-    startFile: ['../../../externals/require.js', '../../frag/start.frag.js'],
-    endFile: ['../../frag/end.frag.js']
+    startFile: ['../../frag/builder/start.frag.js', '../../../externals/require.js'],
+    endFile: ['../../frag/builder/end.frag.js']
   }
 })
