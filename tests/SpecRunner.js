@@ -56,7 +56,6 @@ require([
       //'spec/aeris/application/plugin/attrresolver',
       'spec/aeris/application/plugin/aerisconfig',
 
-      'spec/aeris/builder/maps/loader',
       //'spec/aeris/builder/maps/options/mapappbuilderoptions',
       'spec/aeris/builder/maps/core/helper/renderer',
       //'spec/aeris/builder/maps/core/model/toggle',
@@ -91,11 +90,6 @@ require([
       'spec/aeris/api/params/model/filter',
       'spec/aeris/api/params/collection/filtercollection',
       'spec/aeris/api/params/collection/chainedquery',
-
-      'spec/aeris/loader/libraryloader',
-      'spec/aeris/loader/promise/promisetorequire',
-
-      //'spec/aeris/maps/loader',
 
       //'spec/aeris/maps/base/extension/strategyobject',
       'spec/aeris/maps/base/extension/mapobjectcollection',
