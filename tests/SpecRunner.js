@@ -36,7 +36,10 @@ require([
       'spec/aeris/promise',
       'spec/aeris/emptypromise',
       //'spec/aeris/promisequeue',
-      'spec/aeris/errors',
+
+      'spec/aeris/errors/abstracterror',
+      'spec/aeris/errors/errortypefactory',
+
       'spec/aeris/datehelper',
       'spec/aeris/classfactory',
 
@@ -55,6 +58,9 @@ require([
       //'spec/aeris/application/plugin/classfactory',
       //'spec/aeris/application/plugin/attrresolver',
       'spec/aeris/application/plugin/aerisconfig',
+
+      'spec/aeris/builder/appbuilder',
+      'spec/aeris/builder/options/appbuilderoptions',
 
       //'spec/aeris/builder/maps/options/mapappbuilderoptions',
       'spec/aeris/builder/maps/core/helper/renderer',
