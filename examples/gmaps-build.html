@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Build test for gmaps package</title>
+
+  <link rel="stylesheet" href="css/example.css"/>
+  <link rel="shortcut icon" type="image/x-icon" href="map_icon.png"/>
+
+  <script type="text/javascript"
+          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU&sensor=false&libraries=geometry">
+  </script>
+  <script type="text/javascript" src="../build/packages/gmaps.js"></script>
+</head>
+<body>
+<div id="map-canvas"></div>
+
+<script type="text/javascript">
+  console.log(aeris);
+  var map = new aeris.maps.Map('map-canvas');
+  var marker = new aeris.maps.Marker({
+    position: [45, -90]
+  });
+  marker.setMap(map);
+
+  marker.on('click', function(latLon, marker) {
+    var infoBox = new aeris.maps.InfoBox({
+      latLon: latLon,
+      content: '<h1>' + marker.getPosition() + '</h1>'
+    });
+    infoBox.setMap(map);
+  })
+</script>
+</body>
+</html>
