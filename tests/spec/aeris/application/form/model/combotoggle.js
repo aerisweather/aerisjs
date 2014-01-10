@@ -11,14 +11,52 @@ define([
     Model.call(this, opt_attrs, {
       idAttribute: 'name'
     });
-
-    this.select = jasmine.createSpy('MockToggle#select');
-    this.deselect = jasmine.createSpy('MockToggle#deselect');
-    this.toggle = jasmine.createSpy('MockToggle#toggle');
   };
   _.inherits(MockToggle, Toggle);
 
-  function getToggleSet (opt_count, opt_attrs) {
+  MockToggle.prototype.setSelected = function(isSelected) {
+    this.set('selected', isSelected);
+  };
+
+  MockToggle.prototype.select = function() {
+    this.setSelected(true);
+    this.trigger('select');
+  };
+
+  MockToggle.prototype.deselect = function() {
+    this.setSelected(false);
+    this.trigger('deselect');
+  };
+
+  MockToggle.prototype.toggle = function() {
+    var event;
+    this.setSelected(!this.isSelected());
+
+    event = this.isSelected() ? 'select' : 'deselect';
+    this.trigger(event);
+  };
+
+  MockToggle.prototype.isSelected = function() {
+    return this.get('selected');
+  };
+
+
+  var MockSelectedToggle = function() {
+    var toggle = new MockToggle();
+    toggle.setSelected(true);
+
+    return toggle;
+  };
+
+  var MockDeselectedToggle = function() {
+    var toggle = new MockToggle();
+    toggle.setSelected(false);
+
+    return toggle;
+  };
+
+
+  function getToggleSet(opt_count, opt_attrs) {
     var toggles = [];
     var count = opt_count || 3;
 
@@ -29,7 +67,45 @@ define([
     return toggles
   }
 
+  function getMixedToggleSet() {
+    var toggles = getToggleSet(5);
+    toggles[0].setSelected(true);
+    toggles[1].setSelected(false);
+    toggles[2].setSelected(true);
+    toggles[3].setSelected(false);
+    toggles[4].setSelected(true);
+
+    return toggles;
+  }
+
+
+
+  function isAllSelected(toggles) {
+    var allSelected = true;
+    toggles.forEach(function(toggle) {
+      if (!toggle.isSelected()) { allSelected = false; }
+    });
+
+    return allSelected;
+  }
+
+  function isAllDeselected(toggles) {
+    var allDeselected = true;
+    toggles.forEach(function(toggle) {
+      if (toggle.isSelected()) { allDeselected = false; }
+    });
+
+    return allDeselected;
+  }
+
+
   describe('A ComboToggle', function() {
+    var combo;
+
+    beforeEach(function() {
+      combo = new ComboToggle();
+    });
+
 
     describe('validate', function() {
 
@@ -55,79 +131,27 @@ define([
 
     });
 
-    describe('Event bindings', function() {
+    describe('select', function() {
 
       it('should select all toggles on select', function() {
-        var combo;
-        spyOn(ComboToggle.prototype, 'selectAll');
+        var toggles = new getMixedToggleSet();
+        combo.deselect();
+        combo.addToggles(toggles);
 
-        combo = new ComboToggle();
-
-        combo.trigger('select');
-
-        expect(ComboToggle.prototype.selectAll).toHaveBeenCalled();
+        combo.select();
+        expect(isAllSelected(toggles)).toEqual(true);
       });
+    });
+
+    describe('deselect', function() {
 
       it('should deselect all child toggles on deselect', function() {
-        var combo;
-        spyOn(ComboToggle.prototype, 'deselectAll');
+        var toggles = new getMixedToggleSet();
+        combo.select();
+        combo.addToggles(toggles);
 
-        combo = new ComboToggle();
-
-        combo.trigger('deselect');
-
-        expect(ComboToggle.prototype.deselectAll).toHaveBeenCalled();
-      });
-
-    });
-
-    describe('selectAll', function() {
-
-      it('should select all toggles', function() {
-        var toggles = getToggleSet();
-        var combo = new ComboToggle({
-          childToggles: toggles
-        });
-
-        combo.selectAll();
-
-        _.each(toggles, function(t) {
-          expect(t.select).toHaveBeenCalled();
-        });
-      });
-
-    });
-
-    describe('deselectAll', function() {
-
-      it('should deselect all toggles', function() {
-        var toggles = getToggleSet();
-        var combo = new ComboToggle({
-          childToggles: toggles
-        });
-
-        combo.deselectAll();
-
-        _.each(toggles, function(t) {
-          expect(t.deselect).toHaveBeenCalled();
-        });
-      });
-
-    });
-
-    describe('toggleAll', function() {
-
-      it('should toggle all toggles', function() {
-        var toggles = getToggleSet();
-        var combo = new ComboToggle({
-          childToggles: toggles
-        });
-
-        combo.toggleAll();
-
-        _.each(toggles, function(t) {
-          expect(t.toggle).toHaveBeenCalled();
-        });
+        combo.deselect();
+        expect(isAllDeselected(toggles)).toEqual(true);
       });
 
     });
@@ -179,6 +203,61 @@ define([
         expect(combo.get('childToggles')).toEqual(toggles);
       });
 
+      it('should not change the combo Toggle state', function() {
+        var toggles = getToggleSet(3);
+        var combo = new ComboToggle();
+        combo.addToggles(toggles);
+
+        // Maintains selected state
+        combo.select();
+        combo.addToggles([new MockDeselectedToggle()]);
+        expect(combo.isSelected()).toEqual(true);
+
+        // Maintains deselected state
+        combo.deselect();
+        combo.addToggles([new MockSelectedToggle()]);
+        expect(combo.isSelected()).toEqual(false);
+
+        // Maintains original state
+        combo = new ComboToggle();
+        combo.select();
+        combo.addToggles([new MockDeselectedToggle()]);
+        expect(combo.isSelected()).toEqual(true);
+      });
+
+      it('should set the added toggles to the parent state', function() {
+        var combo, toggles;
+
+        function getMixedToggleSet() {
+          var toggles = getToggleSet(3);
+          toggles[0].setSelected(true);
+          toggles[1].setSelected(false);
+          toggles[2].setSelected(true);
+
+          return toggles;
+        }
+
+        combo = new ComboToggle();
+        toggles = getMixedToggleSet();
+        combo.select();
+        combo.addToggles(toggles);
+        expect(isAllSelected(toggles)).toEqual(true);
+
+        combo.deselect();
+        toggles = getMixedToggleSet();
+        combo.addToggles(toggles);
+        expect(isAllSelected(toggles)).toEqual(false);
+      });
+
+    });
+
+
+    describe('clearToggles', function() {
+      var combo = new ComboToggle();
+      combo.addToggles(getToggleSet(3));
+
+      combo.clearToggles();
+      expect(combo.getChildToggles().length).toEqual(0);
     });
 
   });
