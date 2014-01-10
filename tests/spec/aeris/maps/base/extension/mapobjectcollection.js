@@ -10,11 +10,20 @@ define([
   var MockMapObject = function() {
     Model.apply(this, arguments);
 
-    this.setMap = jasmine.createSpy('setMap').andCallFake(function(map) {
-      this.set('map', map);
-    });
+    spyOn(this, 'setMap').andCallThrough();
   };
   _.inherits(MockMapObject, Model);
+
+  MockMapObject.prototype.setMap = function(map, opt_options) {
+    var event = _.isNull(map) ? 'map:remove': 'map:set';
+    var options = opt_options || {};
+
+    this.set('map', map);
+
+    if (!options.silent) {
+     this.trigger(event, this, map);
+    }
+  };
 
 
   function resetSetMapSpiesFor(children) {
@@ -31,7 +40,8 @@ define([
 
       function shouldHaveSetMapOnChildren(map, children) {
         _.each(children, function(child) {
-          expect(child.setMap).toHaveBeenCalledWith(map);
+          var mapArg = child.setMap.mostRecentCall.args[0];
+          expect(mapArg).toEqual(map);
         });
       }
 
@@ -79,6 +89,7 @@ define([
           collection.setMap(map);
 
           expect(listener).toHaveBeenCalledWith(collection, map);
+          expect(listener.callCount).toEqual(1);
         });
 
         it('should not trigger a \'map:set\' event twice for the same map', function() {
@@ -106,6 +117,24 @@ define([
           collection.setMap(null);
 
           expect(listener).not.toHaveBeenCalled();
+        });
+
+        it('should trigger a only one \'map:set\' event', function() {
+          collection.add([new MockMapObject(), new MockMapObject(), new MockMapObject()]);
+          collection.on('map:set', listener);
+
+          collection.setMap(new MockMap());
+
+          expect(listener.callCount).toEqual(1);
+        });
+
+        it('should trigger only one \'map:remove\' event', function() {
+          collection.add([new MockMapObject(), new MockMapObject(), new MockMapObject()]);
+          collection.on('map:remove', listener);
+
+          collection.setMap(null);
+
+          expect(listener.callCount).toEqual(1);
         });
 
       });
@@ -168,6 +197,42 @@ define([
         collection.add(addedChild);
 
         expect(addedChild.setMap).toHaveBeenCalledWith(map);
+      });
+
+      it('should not bubble a map:set events from added children', function() {
+        var mapSetListener = jasmine.createSpy('mapSetListener');
+        collection.on('map:set', mapSetListener);
+
+        collection.add(new MockMapObject());
+        expect(mapSetListener).not.toHaveBeenCalled();
+      });
+
+      it('should not bubble a map:remove events from added children', function() {
+        var mapRemoveListener = jasmine.createSpy('mapRemoveListener');
+        collection.setMap(null);
+        collection.on('map:remove', mapRemoveListener);
+
+        collection.add(new MockMapObject());
+        expect(mapRemoveListener).not.toHaveBeenCalled();
+      });
+
+      it('should allow children to trigger \'map:*\' events', function() {
+        var child = new MockMapObject();
+        var map = new MockMap();
+        var onChildMapSet = jasmine.createSpy('onChildMapSet');
+        var onChildMapRemove = jasmine.createSpy('onChildMapRemove');
+
+        collection.setMap(map);
+        child.on({
+          'map:set': onChildMapSet,
+          'map:remove': onChildMapRemove
+        });
+
+        collection.add(child);
+        expect(onChildMapSet).toHaveBeenCalledWith(child, map);
+
+        collection.setMap(null);
+        expect(onChildMapRemove).toHaveBeenCalledWith(child, null);
       });
 
     });
