@@ -4,34 +4,44 @@ define([
   'aeris/collection',
   'aeris/model'
 ], function(_, sinon, Collection, Model) {
-  function TestFactory(opt_options) {
-    var options = _.extend({
-      models: undefined,
-      options: undefined,
-      isValid: true
-    }, opt_options);
 
-    this.collection = new Collection(options.models, options.options);
-  }
 
-  var MockModel;
+  var MockModel = function() {
+    var model = new Model();
 
-  beforeEach(function() {
-    MockModel = jasmine.createSpy('MockModel ctor')
-      .andCallFake(function MockModel(opt_options) {
-        var options = _.extend({
-          isValid: true
-        }, opt_options);
+    spyOn(model, 'isValid').andReturn(true);
 
-        spyOn(this, 'isValid').andReturn(options.isValid);
-      });
+    return model;
+  };
 
-    _.inherits(MockModel, Model);
-    MockModel.prototype = sinon.createStubInstance(Model);
-  });
+
+  var ValidModel = function() {
+    var model = new MockModel();
+
+    model.isValid.andReturn(true);
+
+    return model;
+  };
+
+
+  var InvalidModel = function() {
+    var model = new MockModel();
+
+    model.isValid.andReturn(false);
+
+    return model;
+  };
+
 
 
   describe('A Collection', function() {
+    var MockModel_orig = MockModel;
+
+      beforeEach(function() {
+      MockModel = jasmine.createSpy('MockModel#ctor').andCallFake(MockModel_orig);
+    });
+
+
 
     describe('constructor', function() {
 
@@ -40,16 +50,16 @@ define([
       });
 
       it('should optionally validate', function() {
-        new TestFactory({
-          options: {
-            validate: true
-          }
+        new Collection(null, {
+          validate: true
         });
+
         expect(Collection.prototype.isValid).toHaveBeenCalled();
       });
 
       it('should not validate, by default', function() {
-        new TestFactory();
+        new Collection();
+
         expect(Collection.prototype.isValid).not.toHaveBeenCalled();
       });
     });
@@ -67,6 +77,8 @@ define([
         MockModel.andCallFake(function(attrs, opts) {
           expect(attrs).toEqual({ some: 'attr' });
           expect(opts.foo).toEqual('bar');
+
+          return new Model();
         });
 
         collection.add({ some: 'attr' });
@@ -83,11 +95,9 @@ define([
           new MockModel(),
           new MockModel()
         ];
-        var test = new TestFactory({
-          models: models
-        });
+        var collection = new Collection(models);
 
-        test.collection.isValid();
+        collection.isValid();
 
         _.each(models, function(model) {
           expect(model.isValid).toHaveBeenCalled();
@@ -95,38 +105,31 @@ define([
       });
 
       it('should return true if collection has no models', function() {
-        var test = new TestFactory({
-          models: []
-        });
+        var collection = new Collection();
 
-        expect(test.collection.isValid()).toEqual(true);
+        expect(collection.isValid()).toEqual(true);
       });
 
       it('should return true if all models validate', function() {
-        var modelOptions = { isValid: true };
         var models = [
-          new MockModel(modelOptions),
-          new MockModel(modelOptions),
-          new MockModel(modelOptions)
+          new ValidModel(),
+          new ValidModel(),
+          new ValidModel()
         ];
-        var test = new TestFactory({
-          models: models
-        });
+        var collection = new Collection(models);
 
-        expect(test.collection.isValid()).toEqual(true);
+        expect(collection.isValid()).toEqual(true);
       });
 
       it('should return false if any model fails validation', function() {
         var models = [
-          new MockModel({ isValid: true }),
-          new MockModel({ isValid: false }),
-          new MockModel({ isValid: true })
+          new ValidModel(),
+          new InvalidModel(),
+          new ValidModel()
         ];
-        var test = new TestFactory({
-          models: models
-        });
+        var collection = new Collection(models);
 
-        expect(test.collection.isValid()).toEqual(false);
+        expect(collection.isValid()).toEqual(false);
       });
 
     });
