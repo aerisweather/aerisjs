@@ -2,7 +2,7 @@ require([
   'jasmine',
   'vendor/underscore',
   'strategy/route/waypoint',
-  'aeris/errors/invalidargumenterror'
+  'errors/invalidargumenterror'
 ], function(jasmine, _, Waypoint, InvalidArgumentError) {
 
   function isSameWaypoint(wp1, wp2) {

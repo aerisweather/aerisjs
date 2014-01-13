@@ -1,7 +1,7 @@
 define([
   'aeris/util',
   'api/params/model/query',
-  'aeris/errors/validationerror'
+  'errors/validationerror'
 ], function(_, Query, ValidationError) {
 
   describe('A Query', function() {

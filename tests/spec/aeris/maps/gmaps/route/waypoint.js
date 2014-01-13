@@ -2,7 +2,7 @@ define([
   'aeris/util',
   'aeris/promise',
   'strategy/route/waypoint',
-  'aeris/errors/validationerror',
+  'errors/validationerror',
   'aeris/collection',
   'mocks/mapobject',
   'mocks/waypoint',
