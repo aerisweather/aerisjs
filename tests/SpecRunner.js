@@ -1,7 +1,6 @@
 require([
   '../lib/config',
-  'testconfig',
-  '../lib/vendor/config'
+  'testconfig'
 ], function() {
   require([
     'jasmine-slow',
