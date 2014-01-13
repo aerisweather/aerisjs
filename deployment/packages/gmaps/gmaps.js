@@ -1,6 +1,6 @@
 ({
   name: 'vendor/almond',
-  out: '../../../build/packages/gmaps.js',
+  out: '../../../build/packages/gmaps-min.js',
 
   mainConfigFile: '../../../lib/config.js',
   baseUrl: '../../../lib',
@@ -9,7 +9,7 @@
     strategy: 'aeris/maps/gmaps'
   },
 
-  optimize: 'none',
+  optimize: 'uglify2',
   preserveLicenseComments: false,
 
   // Handlebars config

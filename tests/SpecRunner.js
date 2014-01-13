@@ -125,18 +125,18 @@ require([
       'spec/aeris/maps/gmaps/markerstrategies/markerclusterstrategy',
 
 
-      'spec/aeris/maps/gmaps/route/waypoint',
-      'spec/aeris/maps/gmaps/route/route',
-      'spec/aeris/maps/gmaps/route/routebuilder',
-      'spec/aeris/maps/gmaps/route/routerenderer',
-      'spec/aeris/maps/gmaps/route/commands/abstractroutecommand',
-      'spec/aeris/maps/gmaps/route/commands/addwaypointcommand',
-      'spec/aeris/maps/gmaps/route/commands/appendreverseroutecommand',
-      'spec/aeris/maps/gmaps/route/commands/removewaypointcommand',
-      'spec/aeris/maps/gmaps/route/commands/resetroutecommand',
-      'spec/aeris/maps/gmaps/route/commands/reverseroutecommand',
-      'spec/aeris/maps/gmaps/route/commands/movewaypointcommand',
-      'spec/aeris/maps/gmaps/route/commands/helpers/routereverser',
+      'spec/aeris/maps/base/routes/waypoint',
+      'spec/aeris/maps/base/routes/route',
+      'spec/aeris/maps/base/routes/routebuilder',
+      'spec/aeris/maps/base/routes/routerenderer',
+      'spec/aeris/maps/base/routes/commands/abstractroutecommand',
+      'spec/aeris/maps/base/routes/commands/addwaypointcommand',
+      'spec/aeris/maps/base/routes/commands/appendreverseroutecommand',
+      'spec/aeris/maps/base/routes/commands/removewaypointcommand',
+      'spec/aeris/maps/base/routes/commands/resetroutecommand',
+      'spec/aeris/maps/base/routes/commands/reverseroutecommand',
+      'spec/aeris/maps/base/routes/commands/movewaypointcommand',
+      'spec/aeris/maps/base/routes/commands/helpers/routereverser',
 
 
       //'spec/polaris/maps/base/markercollections/poimarkercollection'

@@ -1,7 +1,7 @@
 require([
   'jasmine',
   'vendor/underscore',
-  'strategy/route/waypoint',
+  'routes/waypoint',
   'errors/invalidargumenterror'
 ], function(jasmine, _, Waypoint, InvalidArgumentError) {
 

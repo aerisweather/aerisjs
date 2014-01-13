@@ -1,8 +1,8 @@
 define([
   'aeris/builder/route/controller/controlscontroller',
-  'strategy/route/routebuilder',
-  'strategy/route/route',
-  'strategy/route/waypoint',
+  'routes/routebuilder',
+  'routes/route',
+  'routes/waypoint',
   'sinon',
   'aeris/util',
   'testUtils'

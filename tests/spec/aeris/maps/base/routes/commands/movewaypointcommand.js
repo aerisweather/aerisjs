@@ -1,9 +1,9 @@
 define([
   'testUtils',
   'aeris/model',
-  'strategy/route/commands/movewaypointcommand',
-  'strategy/route/waypoint',
-  'strategy/route/route'
+  'routes/commands/movewaypointcommand',
+  'routes/waypoint',
+  'routes/route'
 ], function(
   testUtil,
   Model,

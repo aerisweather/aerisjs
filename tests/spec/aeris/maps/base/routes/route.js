@@ -1,7 +1,7 @@
 define([
   'aeris/util',
   'aeris/model',
-  'strategy/route/route'
+  'routes/route'
 ], function(
   _,
   Model,

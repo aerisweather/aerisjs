@@ -1,9 +1,9 @@
 define([
   'aeris/util',
   'aeris/promise',
-  'strategy/route/commands/abstractroutecommand',
+  'routes/commands/abstractroutecommand',
   'mocks/waypoint',
-  'strategy/route/route'
+  'routes/route'
 ], function(_, Promise, AbstractRouteCommand, MockWaypoint, Route) {
 
   /**
