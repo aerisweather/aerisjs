@@ -26,6 +26,7 @@ require([
 
       'spec/aeris/model',
       'spec/aeris/collection',
+      'spec/aeris/limitedcollection',
       'spec/aeris/viewmodel',
       'spec/aeris/viewcollection',
       //'spec/aeris/simplecollection',
