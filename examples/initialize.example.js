@@ -36,7 +36,7 @@ require.config({
   },
   waitSeconds: 2
 });
-require(['config', 'vendor/config'], function() {
+require(['config'], function() {
   require(['examples/lib/domReady!'], function() {
     initialize();
   });
