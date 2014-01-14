@@ -19,7 +19,8 @@
     "hbars": "https://github.com/jfparadis/requirejs-handlebars.git",
     "jquery": "~2.0.3",
     "gmaps-markerclusterer-plus": "*",
-    "wire": "~0.10.5"
+    "wire": "~0.10.5",
+    "almond": "~0.2.9"
   },
   "devDependencies": {
     "jasmine": "1.3.1",
