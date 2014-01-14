@@ -3,22 +3,21 @@ require.config({
   //urlArgs: 'cb=' + Math.random(),                   // Cache buster
   paths: {
     tests: '../tests',
-    async: '/tests/lib/async',
-    jasmineBase: '/tests/lib/jasmine',
-    jasmine: '/tests/lib/jasmine-modified',
-    'jasmine-slow': '/tests/lib/jasmine-slow',
+    jasmine: 'vendor/bower_components/jasmine/lib/jasmine-core/jasmine',
+    'jasmine-slow': 'vendor/bower_components/jasmine-slow/lib/jasmine-slow',
     'jasmine-html': '/tests/lib/jasmine-html',
+    async: '/tests/lib/async',
+    sinon: 'vendor/bower_components/sinon/index',
     spec: '/tests/spec',
     mocks: '/tests/mocks',
     matchers: '/tests/lib/matchers',
     testErrors: '/tests/errors',
     testUtils: '/tests/testUtils',
     flag: '/tests/flag',
-    sinon: '/tests/lib/sinon',
     strategy: 'aeris/maps/gmaps'
   },
   shim: {
-    jasmineBase: {
+    jasmine: {
       exports: 'jasmine'
     },
     'jasmine-html': {
@@ -31,6 +30,14 @@ require.config({
     },
     'sinon': {
       exports: 'sinon'
+    }
+  },
+  map: {
+    'tests/lib/jasmine-modified': {
+      jasmine: 'jasmine'
+    },
+    '*': {
+      jasmine: 'tests/lib/jasmine-modified'
     }
   },
   config: {

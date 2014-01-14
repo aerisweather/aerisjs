@@ -1,5 +1,5 @@
 define([
-  'jasmineBase'
+  'jasmine'
 ], function(jasmine) {
   jasmine.Env.prototype.describe = function(description, specDefinitions) {
     var suite = new jasmine.Suite(this, description, specDefinitions, this.currentSuite);
