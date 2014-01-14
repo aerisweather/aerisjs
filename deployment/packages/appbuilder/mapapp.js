@@ -1,5 +1,5 @@
 ({
-  name: 'polaris/routeplanner/routeplannerbuilder',
+  name: 'mapbuilder/mapappbuilder',
   out: '../../../build/packages/routeplanner.js',
 
   mainConfigFile: '../../../lib/config.js',
@@ -30,7 +30,6 @@
     'config',
     'packages/maps',
     'packages/gmaps',
-    'polaris/packages/routeplanner'
   ],
   wrap: {
     startFile: ['../../frag/builder/start.frag.js', '../../../externals/require.js'],

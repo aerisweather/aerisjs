@@ -138,9 +138,6 @@ require([
       'spec/aeris/maps/base/routes/commands/movewaypointcommand',
       'spec/aeris/maps/base/routes/commands/helpers/routereverser',
 
-
-      //'spec/polaris/maps/base/markercollections/poimarkercollection'
-
       'spec/mocks/require',
 
       //'tests/integration/spec/wire/wire'

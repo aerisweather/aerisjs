@@ -9,7 +9,6 @@ examples/initialize.js
 
 # SASS
 .sass-cache
-lib/polaris/builder/**/icon-*.png
 **/theme/**/*.css
 
 build/

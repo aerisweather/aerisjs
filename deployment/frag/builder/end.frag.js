@@ -8,11 +8,11 @@
   // we'll probably want a build script that
   // writes this out with a dynamically-name
   // builder.
-  aeris.RiderX = function(buildConfig) {
+  aeris.MapApp = function(buildConfig) {
     require([
-      'polaris/routeplanner/routeplannerbuilder'
-    ], function(RiderXBuilder) {
-      var builder = new RiderXBuilder(buildConfig);
+      'mapbuilder/mapappbuilder'
+    ], function(MapAppBuilder) {
+      var builder = new MapAppBuilder(buildConfig);
       builder.build();
     })
   };
