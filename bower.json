@@ -1,0 +1,29 @@
+{
+  "name": "Aeris Interactive",
+  "keywords": ["maps", "weather", "weathernation", "backbone"],
+  "version": "0.1.0",
+  "homepage": "https://github.com/hamweather/aeris-interactive",
+  "main": "lib/config",
+  "ignore": [
+    "deployment/",
+    "assets/",
+    "tests/",
+    ".gitignore"
+  ],
+  "dependencies": {
+    "underscore": "~1.5.2",
+    "backbone": "~1.1.0",
+    "marionette": "~1.4.0",
+    "handlebars": "~1.1.2",
+    "requirejs-text": "~2.0.10",
+    "hbars": "https://github.com/jfparadis/requirejs-handlebars.git",
+    "jquery": "~2.0.3",
+    "gmaps-markerclusterer-plus": "*",
+    "wire": "~0.10.5"
+  },
+  "devDependencies": {
+    "jasmine": "1.3.1",
+    "sinon": "http://sinonjs.org/releases/sinon-1.7.1.js",
+    "jasmine-slow": "https://github.com/joneath/jasmine-slow.git"
+  }
+}
