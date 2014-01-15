@@ -20,6 +20,7 @@
     "jquery": "~2.0.3",
     "gmaps-markerclusterer-plus": "*",
     "wire": "~0.10.5",
+    "wire-rjs-builder": "https://github.com/pieter-vanderwerff/wire-rjs-builder.git",
     "almond": "~0.2.9"
   },
   "devDependencies": {

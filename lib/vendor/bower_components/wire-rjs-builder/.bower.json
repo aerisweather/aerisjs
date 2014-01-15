@@ -1,0 +1,14 @@
+{
+  "name": "wire-rjs-builder",
+  "homepage": "https://github.com/pieter-vanderwerff/wire-rjs-builder",
+  "version": "0.1.0",
+  "_release": "0.1.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.1.0",
+    "commit": "16720138670fd3534b23ca5a87bfdef98a4b2534"
+  },
+  "_source": "https://github.com/pieter-vanderwerff/wire-rjs-builder.git",
+  "_target": "*",
+  "_originalSource": "https://github.com/pieter-vanderwerff/wire-rjs-builder.git"
+}
