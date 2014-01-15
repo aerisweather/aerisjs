@@ -4,6 +4,8 @@
 .DS_STORE
 *.log
 
+bower_components/
+
 # environment specific files
 examples/initialize.js
 
