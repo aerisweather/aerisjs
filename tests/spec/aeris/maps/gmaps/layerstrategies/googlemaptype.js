@@ -1,6 +1,6 @@
 define([
   'ai/util',
-  'strategy/layerstrategies/googlemaptype'
+  'ai/maps/strategy/layerstrategies/googlemaptype'
 ], function(_, GoogleMapTypeStrategy) {
   var google_orig = window.google;
 

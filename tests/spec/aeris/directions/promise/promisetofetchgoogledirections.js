@@ -1,7 +1,7 @@
 define([
   'ai/util',
   'ai/directions/promise/promisetofetchgoogledirections',
-  'strategy/utils'
+  'ai/maps/strategy/utils'
 ], function(_, PromiseToFetchGoogleDirections, mapUtil) {
 
   var MockLatLng = function(opt_lat, opt_lon) {

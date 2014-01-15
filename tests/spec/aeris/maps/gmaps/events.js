@@ -1,6 +1,6 @@
 define([
   'ai/util',
-  'strategy/events'
+  'ai/maps/strategy/events'
 ], function(_, GoogleEvents) {
   var gEvent_orig;
 

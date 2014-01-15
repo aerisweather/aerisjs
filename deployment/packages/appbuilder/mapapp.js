@@ -6,7 +6,7 @@
   baseUrl: '../../../lib',
 
   paths: {
-    strategy: 'aeris/maps/gmaps'
+    'ai/maps/strategy': 'aeris/maps/gmaps'
   },
 
   optimize: 'none',

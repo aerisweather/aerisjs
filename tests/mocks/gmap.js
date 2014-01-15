@@ -2,7 +2,7 @@ require.setStrategy('gmaps');
 define([
   'ai/util',
   'sinon',
-  'strategy/map'
+  'ai/maps/strategy/map'
 ], function(_, sinon, GMap) {
   function getStubbedMapView() {
     var map = sinon.createStubInstance(google.maps.Map);

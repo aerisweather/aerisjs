@@ -2,7 +2,7 @@ require.setStrategy('gmaps');
 define([
   'ai/util',
   'mocks/layer',
-  'strategy/layerstrategies/tile'
+  'ai/maps/strategy/layerstrategies/tile'
 ], function(_, MockLayer, TileStrategy) {
   var google_orig = window.google;
 

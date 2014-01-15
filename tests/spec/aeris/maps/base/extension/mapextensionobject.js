@@ -172,7 +172,7 @@ define([
         });
 
       require.setStrategy('gmaps');
-      define('strategy/mockStrategy', function() {
+      define('ai/maps/strategy/mockStrategy', function() {
         return MockStrategy;
       });
 

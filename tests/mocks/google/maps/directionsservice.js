@@ -1,5 +1,5 @@
 define([
-  'strategy/utils'
+  'ai/maps/strategy/utils'
 ], function(mapUtil) {
   var MockDirectionsService = function() {
     var stubbedMethods = [

@@ -1,7 +1,7 @@
 define([
   'ai/util',
   'sinon',
-  'strategy/markerstrategies/markerclusterstrategy',
+  'ai/maps/strategy/markerstrategies/markerclusterstrategy',
   'ai/collection',
   'ai/model',
   'ai/promise'

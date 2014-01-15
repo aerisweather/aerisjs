@@ -15,7 +15,7 @@ require.config({
     testErrors: '/tests/errors',
     testUtils: '/tests/testUtils',
     flag: '/tests/flag',
-    strategy: 'aeris/maps/gmaps'
+    'ai/maps/strategy': 'aeris/maps/gmaps'
   },
   shim: {
     jasmine: {

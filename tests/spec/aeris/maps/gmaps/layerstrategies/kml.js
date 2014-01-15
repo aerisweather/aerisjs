@@ -3,7 +3,7 @@ define([
   'ai/util',
   'sinon',
   'mocks/layer',
-  'strategy/layerstrategies/kml',
+  'ai/maps/strategy/layerstrategies/kml',
   'mocks/gmap'
 ], function(_, sinon, MockLayer, KMLStrategy, MockMap) {
 

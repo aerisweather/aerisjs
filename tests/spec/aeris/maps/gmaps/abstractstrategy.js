@@ -1,6 +1,6 @@
 define([
   'ai/util',
-  'strategy/abstractstrategy',
+  'ai/maps/strategy/abstractstrategy',
   'ai/model'
 ], function(_, AbstractStrategy, Model) {
 

@@ -2,7 +2,7 @@ define([
   'ai/util',
   'sinon',
   'mocks/layer',
-  'strategy/layerstrategies/abstractmaptype'
+  'ai/maps/strategy/layerstrategies/abstractmaptype'
 ], function(_, sinon, MockLayer, AbstractStrategy) {
 
   var google_orig = window.google;

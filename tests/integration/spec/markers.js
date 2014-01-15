@@ -1,5 +1,5 @@
 define([
-  'strategy/map',
+  'ai/maps/strategy/map',
   'jquery',
   'testUtils',
   'testErrors/untestedspecerror',

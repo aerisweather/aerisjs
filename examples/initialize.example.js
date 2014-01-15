@@ -15,7 +15,7 @@ require.setStrategy = function(strategy) {
   require.config({
     map: {
       '*': {
-        'strategy': 'ai/maps/' + strategy
+        'ai/maps/strategy': 'ai/maps/' + strategy
       }
     }
   });
