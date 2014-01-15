@@ -18,7 +18,7 @@
     "requirejs-text": "~2.0.10",
     "hbars": "https://github.com/jfparadis/requirejs-handlebars.git",
     "jquery": "~2.0.3",
-    "gmaps-markerclusterer-plus": "*",
+    "gmaps-markerclusterer-plus": "http://google-maps-utility-library-v3.googlecode.com/svn/tags/markerclustererplus/2.1.1/src/markerclusterer.js",
     "wire": "~0.10.5",
     "wire-rjs-builder": "https://github.com/pieter-vanderwerff/wire-rjs-builder.git",
     "almond": "~0.2.9"
