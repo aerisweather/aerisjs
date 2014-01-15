@@ -1,8 +1,8 @@
 define([
   'aeris/util',
   'ai/application/controller/mixin/viewmixin',
-  'vendor/marionette',
-  'vendor/jquery',
+  'marionette',
+  'jquery',
   'ai/application/controller/itemcontroller',
   'aeris/model'
 ], function(_, ViewMixin, Marionette, $, ItemController, Model) {

@@ -14,14 +14,14 @@
       function initialize() {
         require.setStrategy('gmaps');
         require([
-          'vendor/jquery',
-          'vendor/underscore',
+          'jquery',
+          'underscore',
           'aeris/maps/map',
           'aeris/maps/layers/googleroadmap',
           'ai/maps/layers/aerisadvisorieskml'
         ], function() {
-          window.$ = require('vendor/jquery');
-          window._ = require('vendor/underscore');
+          window.$ = require('jquery');
+          window._ = require('underscore');
 
           var map = new aeris.maps.Map("map-canvas", {
             baseLayer: new aeris.maps.layers.GoogleRoadMap(),

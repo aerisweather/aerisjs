@@ -1,5 +1,5 @@
 define([
-  'vendor/jquery',
+  'jquery',
   'text!ai/examples/animation/view/controls.html'
 ], function($, template) {
   return function(div, anim) {

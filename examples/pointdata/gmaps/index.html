@@ -18,14 +18,14 @@
       require.setStrategy('gmaps');
       require([
         'ai/maps/map',
-        'vendor/jquery',
+        'jquery',
         'aeris/util',
         'ai/maps/markercollections/earthquakemarkercollection',
         'ai/maps/markercollections/firemarkercollection',
         'ai/maps/markercollections/lightningmarkercollection',
         'ai/maps/markercollections/stormreportmarkercollection'
       ], function() {
-        window.$ = require('vendor/jquery');
+        window.$ = require('jquery');
         window._ = require('aeris/util');
 
         window.map = new aeris.maps.Map('map-canvas');

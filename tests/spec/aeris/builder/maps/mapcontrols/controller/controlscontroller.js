@@ -4,7 +4,7 @@ define([
   'aeris/events',
   'aeris/model',
   'ai/application/controller/layoutcontroller',
-  'vendor/marionette'
+  'marionette'
 ], function(_, MapControlsController, Events, Model, LayoutController, Marionette) {
 
   var MockBuilderOptions = function(opt_attrs) {

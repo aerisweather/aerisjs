@@ -10,7 +10,7 @@ require([
   require([
     'jasmine-html',
     'matchers/matchers.package',
-    'vendor/underscore',
+    'underscore',
     'googlemaps'
   ], function(jasmine, underscore) {
     var jasmineEnv = jasmine.getEnv();

@@ -63,7 +63,7 @@ function initialize() {
     'ai/maps/map',
     'ai/maps/layers/googleroadmap',
     'ai/maps/infobox',
-    'vendor/jquery',
+    'jquery',
     'gls' // Mapped to a specific gls implementation in example file
   ], function(AerisMap, GoogleRoadMap, InfoBox, $, GLS) {
     window.map = new AerisMap('map-canvas', {

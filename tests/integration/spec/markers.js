@@ -1,6 +1,6 @@
 define([
   'strategy/map',
-  'vendor/jquery',
+  'jquery',
   'testUtils',
   'testErrors/untestedspecerror',
   'googlemaps',

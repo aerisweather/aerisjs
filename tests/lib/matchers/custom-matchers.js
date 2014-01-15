@@ -1,5 +1,5 @@
 require([
-  'vendor/underscore',
+  'underscore',
   'jasmine'
 ], function(_, jasmine) {
 

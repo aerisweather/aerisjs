@@ -1,8 +1,8 @@
 define([
-  'vendor/underscore',
+  'underscore',
   'testUtils',
   'wire',
-  'vendor/backbone'
+  'backbone'
 ], function(_, testUtil, wire, Backbone) {
   var plugins = ['ai/application/plugin/events'];
   var modId;

@@ -3,7 +3,7 @@ function initialize() {
   require([
     'ai/maps/map',
     'ai/maps/infobox',
-    'vendor/jquery',
+    'jquery',
     'ai/maps/layers/osm'
   ], function(AerisMap, InfoWindow, $, OSM) {
     window.map = new AerisMap('map-canvas', {

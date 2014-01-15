@@ -4,7 +4,7 @@
 define([
   'sinon',
   'aeris/builder/route/routeappbuilder',
-  'vendor/jquery',
+  'jquery',
   'googlemaps'
 ], function(sinon, RouteAppBuilder, $, googlemaps) {
   describe('A RouteAppBuilder', function() {

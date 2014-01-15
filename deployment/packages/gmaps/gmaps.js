@@ -1,5 +1,5 @@
 ({
-  name: 'vendor/almond',
+  name: 'almond',
   out: '../../../build/packages/gmaps-min.js',
 
   mainConfigFile: '../../../lib/config.js',
