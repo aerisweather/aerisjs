@@ -28,7 +28,7 @@ require.config({
     tests: '../tests'
   },
   config: {
-    'aeris/config': {
+    'ai/config': {
       path: '/',
       apiId: '[YOUR AERIS API ID]',
       apiSecret: '[YOUR AERIS API SECRET]'
