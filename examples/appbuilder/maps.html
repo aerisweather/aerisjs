@@ -33,6 +33,9 @@
           onload: function(maps) {
             window.maps = maps;
             console.log('onload called, with:', arguments);
+          },
+          onerror: function(err) {
+            throw err;
           }
         });
 
