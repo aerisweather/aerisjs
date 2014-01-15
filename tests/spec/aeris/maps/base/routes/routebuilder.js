@@ -5,10 +5,10 @@ require([
   'aeris/util',
   'aeris/model',
   'aeris/collection',
-  'routes/waypoint',
-  'routes/route',
-  'routes/routerenderer',
-  'routes/routebuilder',
+  'ai/maps/routes/waypoint',
+  'ai/maps/routes/route',
+  'ai/maps/routes/routerenderer',
+  'ai/maps/routes/routebuilder',
   'aeris/commands/abstractcommand',
   'aeris/commands/commandmanager'
 ], function(

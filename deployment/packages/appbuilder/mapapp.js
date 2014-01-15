@@ -1,5 +1,5 @@
 ({
-  name: 'mapbuilder/mapappbuilder',
+  name: 'ai/builder/maps/mapappbuilder',
   out: '../../../build/packages/routeplanner.js',
 
   mainConfigFile: '../../../lib/config.js',
@@ -28,8 +28,8 @@
 
   include: [
     'config',
-    'packages/maps',
-    'packages/gmaps',
+    'ai/packages/maps',
+    'ai/packages/gmaps'
   ],
   wrap: {
     startFile: ['../../frag/builder/start.frag.js', '../../../externals/require.js'],

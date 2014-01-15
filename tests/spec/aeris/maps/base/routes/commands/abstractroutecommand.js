@@ -4,8 +4,8 @@
  */
 define([
   'aeris/util',
-  'routes/commands/abstractroutecommand',
-  'routes/route'
+  'ai/maps/routes/commands/abstractroutecommand',
+  'ai/maps/routes/route'
 ], function(_, AbstractRouteCommand, Route) {
   describe('An AbstractRouteCommand', function() {
     var ConcreteRouteCommand = function(route, opt_isResolving, opt_timeout) {

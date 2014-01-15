@@ -11,8 +11,8 @@
     <script type="text/javascript">
       function initialize() {
         require([
-          'base/map',
-          'base/layers/aerisconvectivehazards'
+          'ai/maps/map',
+          'ai/maps/layers/aerisconvectivehazards'
         ], function() {
           var map = new aeris.maps.Map("map-canvas", {
             baseLayer: new aeris.maps.layers.GoogleRoadMap(),

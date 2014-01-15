@@ -5,7 +5,7 @@ define([
 ], function(wire, testUtil, Model) {
   describe('The WireJS factory plugin', function() {
     var modId;
-    var plugins = [ 'application/plugin/classfactory' ];
+    var plugins = [ 'ai/application/plugin/classfactory' ];
 
     beforeEach(function() {
       modId = _.unique('MockModule_');

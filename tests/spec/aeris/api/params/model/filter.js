@@ -1,6 +1,6 @@
 define([
   'aeris/util',
-  'api/params/model/filter',
+  'ai/api/params/model/filter',
   'aeris/collection'
 ], function(_, Filter, Collection) {
 

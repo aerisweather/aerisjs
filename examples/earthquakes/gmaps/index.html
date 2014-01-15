@@ -32,9 +32,9 @@
       function initialize() {
         require.setStrategy('gmaps');
         require([
-          'base/map',
-          'api/endpoint/collection/earthquakecollection',
-          'base/markercollections/earthquakemarkercollection',
+          'ai/maps/map',
+          'ai/api/endpoint/collection/earthquakecollection',
+          'ai/maps/markercollections/earthquakemarkercollection',
           'aeris/datehelper',
           'aeris/util'
         ], function(Map, EarthquakeCollection, EarthquakeMarkerCollection) {

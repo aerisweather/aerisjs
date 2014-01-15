@@ -1,8 +1,8 @@
 define([
   'aeris/util',
   'testErrors/untestedspecerror',
-  'geocode/googlegeocodeservice',
-  'geocode/geocodeservicestatus'
+  'ai/geocode/googlegeocodeservice',
+  'ai/geocode/geocodeservicestatus'
 ], function(_, UntestedSpecError, GoogleGeocodeService, GeocodeServiceStatus) {
 
   /**

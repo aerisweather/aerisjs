@@ -1,6 +1,6 @@
 define([
   'aeris/util',
-  'base/polylines/polyline'
+  'ai/maps/polylines/polyline'
 ], function(_, Polyline) {
 
   describe('A Polyline', function() {

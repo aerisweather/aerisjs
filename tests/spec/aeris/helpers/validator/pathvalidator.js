@@ -1,7 +1,7 @@
 define([
   'aeris/util',
-  'helpers/validator/pathvalidator',
-  'helpers/validator/errors/pathvalidationerror'
+  'ai/helpers/validator/pathvalidator',
+  'ai/helpers/validator/errors/pathvalidationerror'
 ], function(_, PathValidator, PathValidationError) {
 
 

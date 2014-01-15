@@ -1,6 +1,6 @@
 define([
   'aeris/util',
-  'errors/invalidargumenterror'
+  'ai/errors/invalidargumenterror'
 ], function(_, InvalidArgumentError) {
   var global = this;
 

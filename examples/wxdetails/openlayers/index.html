@@ -25,7 +25,7 @@
         }
       });
       function initialize() {
-        require(['aeris/maps/openlayers', 'aeris/aerisapi'], function(aeris, AerisAPI) {
+        require(['ai/maps/openlayers', 'aeris/aerisapi'], function(aeris, AerisAPI) {
           var map = new aeris.maps.openlayers.Map("map-canvas", {
             baseLayer: new aeris.maps.layers.GoogleRoadMap(),
             center: [44.98, -93.2636],

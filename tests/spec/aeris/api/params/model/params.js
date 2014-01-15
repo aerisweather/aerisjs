@@ -1,9 +1,9 @@
 define([
   'aeris/util',
-  'api/params/model/params',
+  'ai/api/params/model/params',
   'aeris/model',
   'aeris/collection',
-  'api/params/collection/chainedquery'
+  'ai/api/params/collection/chainedquery'
 ], function(_, Params, Model, Collection, ChainedQuery) {
 
   function TestFactory() {

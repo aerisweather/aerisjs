@@ -1,7 +1,7 @@
 define([
   'aeris/util',
   'aeris/model',
-  'mapbuilder/map/controller/mapcontroller'
+  'ai/builder/maps/map/controller/mapcontroller'
 ], function(_, Model, MapController) {
   function TestFactory(opt_options) {
     this.options = _.extend({

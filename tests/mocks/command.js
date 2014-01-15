@@ -1,6 +1,6 @@
 define([
   'aeris/util',
-  'errors/invalidargumenterror',
+  'ai/errors/invalidargumenterror',
   'aeris/commands/abstractcommand',
   'aeris/promise'
 ], function(_, InvalidArgumentError, AbstractCommand, Promise) {

@@ -1,9 +1,9 @@
 define([
   'aeris/util',
   'testUtils',
-  'geolocate/html5geolocateservice',
-  'geolocate/geolocateposition',
-  'geolocate/geolocateerror'
+  'ai/geolocate/html5geolocateservice',
+  'ai/geolocate/geolocateposition',
+  'ai/geolocate/geolocateerror'
 ], function(_, testUtils, HTML5GeolocateService, GeolocatePosition, GeolocateError) {
 
   

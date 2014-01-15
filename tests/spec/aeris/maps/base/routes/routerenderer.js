@@ -1,6 +1,6 @@
 define([
   'aeris/util',
-  'routes/routerenderer',
+  'ai/maps/routes/routerenderer',
   'mocks/mapobject',
   'aeris/collection'
 ], function(_, RouteRenderer, MockMapObject, Collection) {

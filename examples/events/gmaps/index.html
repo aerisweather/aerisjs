@@ -11,8 +11,8 @@
   <script type="text/javascript">
     function initialize() {
       require([
-        'gmaps/map',
-        'base/layers/googleroadmap'
+        'ai/maps/gmaps/map',
+        'ai/maps/layers/googleroadmap'
       ], function() {
         var map = new aeris.maps.gmaps.Map('map-canvas', {
           baseLayer: new aeris.maps.layers.GoogleRoadMap(),

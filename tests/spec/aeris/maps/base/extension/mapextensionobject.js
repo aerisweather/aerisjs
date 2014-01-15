@@ -1,8 +1,8 @@
 define([
   'aeris/util',
   'testUtils',
-  'base/extension/mapextensionobject',
-  'base/abstractstrategy',
+  'ai/maps/extension/mapextensionobject',
+  'ai/maps/abstractstrategy',
   'testErrors/untestedspecerror',
   'mocks/map'
 ], function(_, testUtil, MapExtensionObject, AbstractStrategy, UntestedSpecError,  MockMap) {

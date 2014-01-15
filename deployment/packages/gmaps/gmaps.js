@@ -26,8 +26,8 @@
   },
 
   include: [
-    'packages/maps',
-    'packages/gmaps'
+    'ai/packages/maps',
+    'ai/packages/gmaps'
   ],
   wrap: {
     startFile: ['../../frag/almond/start.frag.js'],

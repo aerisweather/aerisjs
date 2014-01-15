@@ -29,7 +29,7 @@ jasmine_css_files:
 src_files:
 stylesheets:
 helpers:
-  - 'helpers/**/*.js'
+  - 'ai/helpers/**/*.js'
 spec_files:
   - '**/*[Ss]pec.js'
 src_dir:

@@ -1,6 +1,6 @@
 define([
   'aeris/util',
-  'directions/googledirectionsservice',
+  'ai/directions/googledirectionsservice',
   'mocks/google/maps/directionsservice',
   'mocks/google/maps/latlng',
   'mocks/google/maps/travelmode',

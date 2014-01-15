@@ -1,8 +1,8 @@
 define([
   'aeris/util',
-  'directions/promise/promisetofetchdirections',
-  'directions/results/directionsresults',
-  'directions/results/directionsresultsstatus'
+  'ai/directions/promise/promisetofetchdirections',
+  'ai/directions/results/directionsresults',
+  'ai/directions/results/directionsresultsstatus'
 ], function(_, PromiseToFetchDirections, DirectionsResults, DirectionsResultsStatus) {
 
   describe('A PromiseToFetchDirections', function() {

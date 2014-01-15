@@ -4,7 +4,7 @@ define([
   'wire',
   'vendor/backbone'
 ], function(_, testUtil, wire, Backbone) {
-  var plugins = ['application/plugin/events'];
+  var plugins = ['ai/application/plugin/events'];
   var modId;
 
   var Listener = function() {

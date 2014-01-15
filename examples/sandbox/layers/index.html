@@ -16,14 +16,14 @@
     function initialize() {
       require.setStrategy('openlayers')
       require([
-        'base/map',
-        'openlayers/utils',
-        //'base/layers/googleterrain'
-        //'base/layers/googleroadmap'
-        //'base/layers/googlehybrid'
-        //'base/layers/googlesatellite'
-        'base/layers/osm',
-        'base/layers/aerisradar'
+        'ai/maps/map',
+        'ai/openlayers/utils',
+        //'ai/maps/layers/googleterrain'
+        //'ai/maps/layers/googleroadmap'
+        //'ai/maps/layers/googlehybrid'
+        //'ai/maps/layers/googlesatellite'
+        'ai/maps/layers/osm',
+        'ai/maps/layers/aerisradar'
       ], function (Map, mapUtil, Layer, Overlay) {
         window.mapUtil = mapUtil;
 

@@ -14,8 +14,8 @@
   <script type="text/javascript">
     function initialize() {
       require([
-        'openlayers/map',
-        'base/layers/osm'
+        'ai/openlayers/map',
+        'ai/maps/layers/osm'
       ], function() {
         var map = new aeris.maps.openlayers.Map('map-canvas', {
           baseLayer: new aeris.maps.layers.OSM(),

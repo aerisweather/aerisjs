@@ -40,11 +40,11 @@
     function initialize() {
       require.setStrategy('gmaps');
       require([
-        'base/map',
+        'ai/maps/map',
         'aeris/util',
         'aeris/config',
-        'routes/routebuilder',
-        'routes/waypoint'
+        'ai/maps/routes/routebuilder',
+        'ai/maps/routes/waypoint'
       ], function(Map, _, config, RouteBuilder, Waypoint) {
         var map = new Map('map-canvas');
         var routeBuilder = new RouteBuilder({

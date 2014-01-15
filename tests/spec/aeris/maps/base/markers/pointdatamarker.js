@@ -3,8 +3,8 @@ define([
   'aeris/events',
   'aeris/model',
   'sinon',
-  'base/markers/pointdatamarker',
-  'api/endpoint/model/pointdata'
+  'ai/maps/markers/pointdatamarker',
+  'ai/api/endpoint/model/pointdata'
 ], function(_, Events, Model, sinon, PointDataMarker, PointData) {
 
   function TestFactory(opt_options) {

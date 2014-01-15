@@ -1,8 +1,8 @@
 define([
   'aeris/util',
   'sinon',
-  'base/map',
-  'base/abstractlayer',
+  'ai/maps/map',
+  'ai/maps/abstractlayer',
   'aeris/promise'
 ], function(_, sinon, AerisMap, AbstractLayer, Promise) {
 

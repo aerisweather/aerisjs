@@ -654,7 +654,7 @@ define([
       /** @constant */
       var SPEC_ORIG = {
         create: {
-          module: 'base/module',
+          module: 'ai/maps/module',
           args: [
             'a',
             {
@@ -671,7 +671,7 @@ define([
       function getSpec() {
         return {
           create: {
-            module: 'base/module',
+            module: 'ai/maps/module',
             args: [
               'a',
               {
@@ -693,7 +693,7 @@ define([
             args: ['a', 'b', 'c']
           }
         };
-        expect(_.extendFactorySpec(getSpec(), ext).create.module).toEqual('base/module');
+        expect(_.extendFactorySpec(getSpec(), ext).create.module).toEqual('ai/maps/module');
       });
 
       it('should override the factory module', function() {
@@ -784,7 +784,7 @@ define([
       it('should wrap a factory spec in a ClassFactory spec', function() {
         var spec = _.classFactorySpec({
           create: {
-            module: 'mapbuilder/core/model/mapobjecttoggle',
+            module: 'ai/builder/maps/core/model/mapobjecttoggle',
             args: [
               undefined,
               {
@@ -802,7 +802,7 @@ define([
           create: {
             module: 'aeris/classfactory',
             args: [
-              { module: 'mapbuilder/core/model/mapobjecttoggle' },
+              { module: 'ai/builder/maps/core/model/mapobjecttoggle' },
               [
                 undefined,
                 {

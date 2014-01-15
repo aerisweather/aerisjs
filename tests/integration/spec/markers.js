@@ -4,7 +4,7 @@ define([
   'testUtils',
   'testErrors/untestedspecerror',
   'googlemaps',
-  'packages/gmaps/markers'
+  'ai/packages/gmaps/markers'
 ], function(AerisMap, $, testUtils, UntestedSpecError) {
   describe('The Markers Package for Google Maps', function() {
     var aerisMap;

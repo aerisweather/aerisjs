@@ -1,6 +1,6 @@
 define([
-  'base/markercollections/apiendpoint',
-  'base/marker',
+  'ai/maps/markercollections/apiendpoint',
+  'ai/maps/marker',
   'mocks/map',
   'aeris/promise'
 ], function(APIEndpoint, Marker, MockMap, Promise) {

@@ -1,6 +1,6 @@
 define([
   'aeris/util',
-  'mapbuilder/core/model/toggle'
+  'ai/builder/maps/core/model/toggle'
 ], function(_, Toggle) {
 
   describe('A Toggle', function() {

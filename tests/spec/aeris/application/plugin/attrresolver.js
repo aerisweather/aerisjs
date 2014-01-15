@@ -3,7 +3,7 @@ define([
   'wire',
   'testUtils'
 ], function(_, wire, testUtil) {
-  var plugins = ['application/plugin/attrresolver'];
+  var plugins = ['ai/application/plugin/attrresolver'];
 
   var throwUncatchable = function(e) {
     _.defer(function() {

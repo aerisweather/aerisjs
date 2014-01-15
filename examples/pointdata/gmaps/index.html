@@ -17,13 +17,13 @@
     function initialize() {
       require.setStrategy('gmaps');
       require([
-        'base/map',
+        'ai/maps/map',
         'vendor/jquery',
         'aeris/util',
-        'base/markercollections/earthquakemarkercollection',
-        'base/markercollections/firemarkercollection',
-        'base/markercollections/lightningmarkercollection',
-        'base/markercollections/stormreportmarkercollection'
+        'ai/maps/markercollections/earthquakemarkercollection',
+        'ai/maps/markercollections/firemarkercollection',
+        'ai/maps/markercollections/lightningmarkercollection',
+        'ai/maps/markercollections/stormreportmarkercollection'
       ], function() {
         window.$ = require('vendor/jquery');
         window._ = require('aeris/util');

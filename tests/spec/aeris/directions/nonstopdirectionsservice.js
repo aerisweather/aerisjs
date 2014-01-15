@@ -1,6 +1,6 @@
 define([
   'aeris/util',
-  'directions/nonstopdirectionsservice',
+  'ai/directions/nonstopdirectionsservice',
   'mocks/aeris/directions/promise/promisetofetchdirections'
 ], function(_, NonstopDirectionsService, MockPromiseToFetchDirections) {
   var MockDistanceCalculator = function() {};

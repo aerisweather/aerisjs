@@ -21,9 +21,9 @@
     function initialize() {
       require.setStrategy('gmaps');
       require([
-        'mapbuilder/mapappbuilder',
-        'packages/layers',
-        'packages/markers'
+        'ai/builder/maps/mapappbuilder',
+        'ai/packages/layers',
+        'ai/packages/markers'
       ], function(Builder) {
         var builder = new Builder({
           el: '#app',

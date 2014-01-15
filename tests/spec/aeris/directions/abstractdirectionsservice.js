@@ -1,9 +1,9 @@
 define([
   'jasmine',
   'sinon',
-  'directions/abstractdirectionsservice',
+  'ai/directions/abstractdirectionsservice',
   'aeris/util',
-  'routes/waypoint'
+  'ai/maps/routes/waypoint'
 ], function(jasmine, sinon, AbstractDirectionsService, _, Waypoint) {
 
   var StubbedWaypoint = function() {

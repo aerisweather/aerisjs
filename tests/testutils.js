@@ -1,7 +1,7 @@
 define([
   'aeris/util',
   'mocks/waypoint',
-  'routes/route',
+  'ai/maps/routes/route',
   'jasmine'
 ], function(_, MockWaypoint, Route) {
   var flag_ = false;

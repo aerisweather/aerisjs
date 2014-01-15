@@ -1,9 +1,9 @@
 define([
   'jasmine',
   'testUtils',
-  'routes/commands/resetroutecommand',
-  'routes/route',
-  'routes/waypoint'
+  'ai/maps/routes/commands/resetroutecommand',
+  'ai/maps/routes/route',
+  'ai/maps/routes/waypoint'
 ], function(
   jasmine,
   testUtils,

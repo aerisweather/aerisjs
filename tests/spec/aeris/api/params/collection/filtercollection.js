@@ -2,7 +2,7 @@ define([
   'aeris/util',
   'aeris/model',
   'aeris/collection',
-  'api/params/collection/filtercollection'
+  'ai/api/params/collection/filtercollection'
 ], function(_, Model, BaseCollection, BaseFilterCollection) {
 
   // Create a test version of a FilterCollection,

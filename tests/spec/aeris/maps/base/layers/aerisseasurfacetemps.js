@@ -1,4 +1,4 @@
-define(['base/layers/aerisseasurfacetemps'], function(AerisSeaSurfaceTemps) {
+define(['ai/maps/layers/aerisseasurfacetemps'], function(AerisSeaSurfaceTemps) {
   describe('An AerisSeaSurfaceTemps Layer', function() {
 
     it('should accept a modis period as a constructor parameter', function() {

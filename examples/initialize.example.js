@@ -15,7 +15,7 @@ require.setStrategy = function(strategy) {
   require.config({
     map: {
       '*': {
-        'strategy': 'aeris/maps/' + strategy
+        'strategy': 'ai/maps/' + strategy
       }
     }
   });

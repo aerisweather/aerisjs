@@ -4,7 +4,7 @@ define([
   'wire'
 ], function(_, testUtil, wire) {
   var plugins = [{
-    module: 'application/plugin/extend',
+    module: 'ai/application/plugin/extend',
     trace: true
   }];
 

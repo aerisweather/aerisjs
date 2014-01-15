@@ -1,6 +1,6 @@
 define([
   'aeris/util',
-  'base/layers/abstracttile'
+  'ai/maps/layers/abstracttile'
 ], function(_, AbstractTile) {
 
 

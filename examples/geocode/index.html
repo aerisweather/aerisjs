@@ -15,7 +15,7 @@
 
     require.config({
       config: {
-        'geocode/config': {
+        'ai/geocode/config': {
           // PLEASE DO NOT USE THIS KEY
           // It is Edan's personal key for MapQuest
           // Please get a new MLG account key.
@@ -84,12 +84,12 @@
     function initialize() {
       require.setStrategy('gmaps');
       require([
-        'base/map',
-        'base/layers/googleroadmap',
+        'ai/maps/map',
+        'ai/maps/layers/googleroadmap',
         'vendor/jquery',
-        'geocode/mapquestgeocodeservice',
-        'geocode/googlegeocodeservice',
-        'base/infobox'
+        'ai/geocode/mapquestgeocodeservice',
+        'ai/geocode/googlegeocodeservice',
+        'ai/maps/infobox'
       ], function(
         AerisMap,
         GoogleRoadMap,

@@ -29,9 +29,9 @@
     function initialize() {
       require.setStrategy('gmaps');
       require([
-        'routeappbuilder/routeappbuilder',
-        'packages/layers',
-        'packages/markers'
+        'ai/builder/routes/routeappbuilder',
+        'ai/packages/layers',
+        'ai/packages/markers'
       ], function(RouteAppBuilder) {
         var builder = new RouteAppBuilder({
           el: document.getElementById('app'),

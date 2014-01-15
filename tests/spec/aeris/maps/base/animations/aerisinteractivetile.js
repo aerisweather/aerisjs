@@ -7,8 +7,8 @@ define([
   'aeris/promise',
   'mocks/promise',
   'aeris/aerisapi',
-  'base/animations/aerisinteractivetile',
-  'base/layers/aerisinteractivetile',
+  'ai/maps/animations/aerisinteractivetile',
+  'ai/maps/layers/aerisinteractivetile',
   'mocks/times'
 ], function(_, Events, sinon, testUtils, UntestedSpecError, Promise, MockPromise, AerisAPI, TileAnimation, TileLayer) {
   var clock;

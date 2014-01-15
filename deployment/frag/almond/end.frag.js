@@ -5,8 +5,8 @@
   // To make this sustainable, we will need a build script
   // with writes these require statements from a package
   // config file.
-  require('base/map');
-  require('base/marker');
-  require('base/infobox');
+  require('ai/maps/map');
+  require('ai/maps/marker');
+  require('ai/maps/infobox');
   return aeris;
 }));

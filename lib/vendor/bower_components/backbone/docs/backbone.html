@@ -2758,7 +2758,7 @@ it difficult to read the body of <code>PUT</code> requests.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>    <span class="keyword">if</span> (options.data == <span class="literal">null</span> &amp;&amp; model &amp;&amp; (method === <span class="string">'create'</span> || method === <span class="string">'update'</span> || method === <span class="string">'patch'</span>)) {
-      params.contentType = <span class="string">'application/json'</span>;
+      params.contentType = <span class="string">'ai/application/json'</span>;
       params.data = JSON.stringify(options.attrs || model.toJSON(options));
     }</pre></div></div>
             
@@ -2776,7 +2776,7 @@ it difficult to read the body of <code>PUT</code> requests.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>    <span class="keyword">if</span> (options.emulateJSON) {
-      params.contentType = <span class="string">'application/x-www-form-urlencoded'</span>;
+      params.contentType = <span class="string">'ai/application/x-www-form-urlencoded'</span>;
       params.data = params.data ? {model: params.data} : {};
     }</pre></div></div>
             

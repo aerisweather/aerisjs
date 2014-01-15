@@ -2,8 +2,8 @@ define([
   'aeris/util',
   'sinon',
   'aeris/events',
-  'base/animations/animationsync',
-  'base/animations/animationinterface',
+  'ai/maps/animations/animationsync',
+  'ai/maps/animations/animationinterface',
   'mocks/times'
 ], function(_, sinon, Events, AnimationSync, Animation) {
   var CannedTimes = require('mocks/times');

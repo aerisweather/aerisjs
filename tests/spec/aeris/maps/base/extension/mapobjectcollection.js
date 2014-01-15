@@ -1,6 +1,6 @@
 define([
   'aeris/util',
-  'base/extension/mapobjectcollection',
+  'ai/maps/extension/mapobjectcollection',
   'aeris/model'
 ], function(_, MapObjectCollection, Model) {
 

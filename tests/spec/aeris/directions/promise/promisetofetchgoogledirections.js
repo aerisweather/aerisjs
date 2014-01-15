@@ -1,6 +1,6 @@
 define([
   'aeris/util',
-  'directions/promise/promisetofetchgoogledirections',
+  'ai/directions/promise/promisetofetchgoogledirections',
   'strategy/utils'
 ], function(_, PromiseToFetchGoogleDirections, mapUtil) {
 

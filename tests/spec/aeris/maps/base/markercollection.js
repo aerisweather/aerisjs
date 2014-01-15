@@ -1,6 +1,6 @@
 define([
-  'base/markercollection',
-  'base/marker',
+  'ai/maps/markercollection',
+  'ai/maps/marker',
   'mocks/map',
   'aeris/util'
 ], function(MarkerCollection, Marker, MockMap, _) {

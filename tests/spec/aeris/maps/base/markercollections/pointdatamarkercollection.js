@@ -1,8 +1,8 @@
 define([
   'aeris/util',
-  'base/markercollections/pointdatamarkercollection',
+  'ai/maps/markercollections/pointdatamarkercollection',
   'aeris/collection',
-  'api/endpoint/collection/pointdatacollection'
+  'ai/api/endpoint/collection/pointdatacollection'
 ], function(_, PointDataMarkerCollection, Collection, PointDataCollection) {
 
   var MockDataCollection = function() {

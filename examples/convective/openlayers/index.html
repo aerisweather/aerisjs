@@ -17,8 +17,8 @@
       function initialize() {
         require.setStrategy('openlayers');
         require([
-        'base/map',
-        'base/layers/aerisconvectivehazards'
+        'ai/maps/map',
+        'ai/maps/layers/aerisconvectivehazards'
         ], function() {
           window.map = new aeris.maps.Map("map-canvas", {
             baseLayer: new aeris.maps.layers.GoogleRoadMap(),

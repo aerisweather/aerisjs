@@ -1,8 +1,8 @@
 define([
   'aeris/util',
-  'application/form/model/combotoggle',
+  'ai/application/form/model/combotoggle',
   'sinon',
-  'application/form/model/toggle',
+  'ai/application/form/model/toggle',
   'aeris/collection',
   'aeris/model'
 ], function(_, ComboToggle, sinon, Toggle, Collection, Model) {

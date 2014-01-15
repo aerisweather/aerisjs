@@ -1,10 +1,10 @@
 
 function initialize() {
   require([
-    'base/map',
-    'base/infobox',
+    'ai/maps/map',
+    'ai/maps/infobox',
     'vendor/jquery',
-    'base/layers/osm'
+    'ai/maps/layers/osm'
   ], function(AerisMap, InfoWindow, $, OSM) {
     window.map = new AerisMap('map-canvas', {
       center: [45, -90],

@@ -1,6 +1,6 @@
 define([
   'aeris/util',
-  'errors/errortypefactory'
+  'ai/errors/errortypefactory'
 ], function(_, ErrorTypeFactory) {
 
   describe('An ErrorTypeFactory', function() {

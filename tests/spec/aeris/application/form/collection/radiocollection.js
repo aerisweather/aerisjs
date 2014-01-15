@@ -1,7 +1,7 @@
 define([
   'aeris/util',
-  'application/form/model/toggle',
-  'application/form/collection/radiocollection'
+  'ai/application/form/model/toggle',
+  'ai/application/form/collection/radiocollection'
 ], function(_, Toggle, RadioCollection) {
 
   var MockModel = function(opt_attrs, opt_options) {

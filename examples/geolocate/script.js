@@ -60,9 +60,9 @@ function setMarkerAt(position) {
 function initialize() {
   require.setStrategy('gmaps')
   require([
-    'base/map',
-    'base/layers/googleroadmap',
-    'base/infobox',
+    'ai/maps/map',
+    'ai/maps/layers/googleroadmap',
+    'ai/maps/infobox',
     'vendor/jquery',
     'gls' // Mapped to a specific gls implementation in example file
   ], function(AerisMap, GoogleRoadMap, InfoBox, $, GLS) {

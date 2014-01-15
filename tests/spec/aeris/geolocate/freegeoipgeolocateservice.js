@@ -2,8 +2,8 @@ define([
   'aeris/util',
   'testUtils',
   'aeris/jsonp',
-  'geolocate/freegeoipgeolocateservice',
-  'geolocate/geolocateerror'
+  'ai/geolocate/freegeoipgeolocateservice',
+  'ai/geolocate/geolocateerror'
 ], function(_, testUtils, JSONP, FreeGeoIpGeolocateService, GeolocateError) {
 
   function testFactory(opt_options) {

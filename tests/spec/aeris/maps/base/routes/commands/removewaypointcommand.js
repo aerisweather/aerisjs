@@ -1,7 +1,7 @@
 define([
   'aeris/util',
-  'routes/commands/removewaypointcommand',
-  'routes/route',
+  'ai/maps/routes/commands/removewaypointcommand',
+  'ai/maps/routes/route',
   'aeris/model',
   'aeris/collection',
   'aeris/promise'

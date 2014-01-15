@@ -10,7 +10,7 @@
   // builder.
   aeris.MapApp = function(buildConfig) {
     require([
-      'mapbuilder/mapappbuilder'
+      'ai/builder/maps/mapappbuilder'
     ], function(MapAppBuilder) {
       var builder = new MapAppBuilder(buildConfig);
       builder.build();

@@ -1,8 +1,8 @@
 define([
   'aeris/util',
   'sinon',
-  'base/layers/aerisinteractivetile',
-  'base/abstractstrategy'
+  'ai/maps/layers/aerisinteractivetile',
+  'ai/maps/abstractstrategy'
 ], function(_, sinon, AITile, Strategy) {
 
   function TestFactory(opt_options) {
