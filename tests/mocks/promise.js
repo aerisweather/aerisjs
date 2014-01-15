@@ -1,7 +1,7 @@
 define([
-  'aeris/promise',
+  'ai/promise',
   'sinon',
-  'aeris/util'
+  'ai/util'
 ], function(Promise, sinon, _) {
   /**
    * A factory for creating stubbed promise instances,

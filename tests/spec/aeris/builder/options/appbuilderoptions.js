@@ -1,7 +1,7 @@
 define([
-  'aeris/util',
-  'aeris/builder/options/appbuilderoptions',
-  'aeris/config'
+  'ai/util',
+  'ai/builder/options/appbuilderoptions',
+  'ai/config'
 ], function(_, AppBuilderOptions, aerisConfig) {
 
   describe('A AppBuilderOptions', function() {

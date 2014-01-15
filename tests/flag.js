@@ -1,4 +1,4 @@
-define(['aeris/util'], function(_) {
+define(['ai/util'], function(_) {
   var flagSingleton;
 
   var Flag = function() {

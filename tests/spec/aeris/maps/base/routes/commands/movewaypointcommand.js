@@ -1,6 +1,6 @@
 define([
   'testUtils',
-  'aeris/model',
+  'ai/model',
   'ai/maps/routes/commands/movewaypointcommand',
   'ai/maps/routes/waypoint',
   'ai/maps/routes/route'

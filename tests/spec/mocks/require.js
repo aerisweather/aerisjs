@@ -1,5 +1,5 @@
 define([
-  'aeris/util',
+  'ai/util',
   'mocks/require',
   'sinon'
 ], function(_, MockRequire, sinon) {

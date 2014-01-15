@@ -1,5 +1,5 @@
 define([
-  'aeris/util',
+  'ai/util',
   'ai/builder/maps/core/model/toggle'
 ], function(_, Toggle) {
 

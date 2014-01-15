@@ -1,5 +1,5 @@
 define([
-  'aeris/util',
+  'ai/util',
   'ai/application/menu/controller/menucontroller',
   'ai/application/form/collection/togglecollection',
   'ai/application/form/model/recursivetoggle'

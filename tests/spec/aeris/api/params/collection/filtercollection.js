@@ -1,7 +1,7 @@
 define([
-  'aeris/util',
-  'aeris/model',
-  'aeris/collection',
+  'ai/util',
+  'ai/model',
+  'ai/collection',
   'ai/api/params/collection/filtercollection'
 ], function(_, Model, BaseCollection, BaseFilterCollection) {
 

@@ -1,4 +1,4 @@
-define(['aeris/utils'], function(utils) {
+define(['ai/utils'], function(utils) {
   describe('The Aeris Utility Library', function() {
     it('should provide unique ids', function() {
       var uuids = [];

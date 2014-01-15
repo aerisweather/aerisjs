@@ -2,7 +2,7 @@ define([
   'ai/maps/routes/commands/addwaypointcommand',
   'ai/maps/routes/waypoint',
   'ai/maps/routes/route',
-  'aeris/util',
+  'ai/util',
   'testErrors/untestedspecerror',
   'sinon'
 ], function(

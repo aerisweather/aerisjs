@@ -1,5 +1,5 @@
 define([
-  'aeris/util',
+  'ai/util',
   'ai/maps/animations/abstractanimation',
   'sinon'
 ], function(_, Animation) {

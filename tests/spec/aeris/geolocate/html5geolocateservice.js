@@ -1,5 +1,5 @@
 define([
-  'aeris/util',
+  'ai/util',
   'testUtils',
   'ai/geolocate/html5geolocateservice',
   'ai/geolocate/geolocateposition',

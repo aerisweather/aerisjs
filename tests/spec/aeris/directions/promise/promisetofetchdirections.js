@@ -1,5 +1,5 @@
 define([
-  'aeris/util',
+  'ai/util',
   'ai/directions/promise/promisetofetchdirections',
   'ai/directions/results/directionsresults',
   'ai/directions/results/directionsresultsstatus'

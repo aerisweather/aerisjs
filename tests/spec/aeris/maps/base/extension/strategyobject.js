@@ -1,7 +1,7 @@
 define([
-  'aeris/util',
+  'ai/util',
   'ai/maps/extension/strategyobject',
-  'aeris/promise',
+  'ai/promise',
   'testUtils'
 ], function(_, StrategyObject, Promise, testUtil) {
 

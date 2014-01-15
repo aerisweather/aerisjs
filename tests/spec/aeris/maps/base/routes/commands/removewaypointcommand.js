@@ -1,10 +1,10 @@
 define([
-  'aeris/util',
+  'ai/util',
   'ai/maps/routes/commands/removewaypointcommand',
   'ai/maps/routes/route',
-  'aeris/model',
-  'aeris/collection',
-  'aeris/promise'
+  'ai/model',
+  'ai/collection',
+  'ai/promise'
 ], function(_, RemoveWaypointCommand, Route, Model, Collection, Promise) {
   var MockWaypoint = function() {
     Model.apply(this, arguments);

@@ -1,8 +1,8 @@
 define([
-  'aeris/util',
+  'ai/util',
   'ai/maps/routes/routerenderer',
   'mocks/mapobject',
-  'aeris/collection'
+  'ai/collection'
 ], function(_, RouteRenderer, MockMapObject, Collection) {
 
   var MockWaypoint = function() {

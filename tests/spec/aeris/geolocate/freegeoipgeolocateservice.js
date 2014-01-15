@@ -1,7 +1,7 @@
 define([
-  'aeris/util',
+  'ai/util',
   'testUtils',
-  'aeris/jsonp',
+  'ai/jsonp',
   'ai/geolocate/freegeoipgeolocateservice',
   'ai/geolocate/geolocateerror'
 ], function(_, testUtils, JSONP, FreeGeoIpGeolocateService, GeolocateError) {

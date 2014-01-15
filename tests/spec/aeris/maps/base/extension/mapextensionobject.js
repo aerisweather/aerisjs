@@ -1,5 +1,5 @@
 define([
-  'aeris/util',
+  'ai/util',
   'testUtils',
   'ai/maps/extension/mapextensionobject',
   'ai/maps/abstractstrategy',

@@ -1,5 +1,5 @@
 define([
-  'aeris/util',
+  'ai/util',
   'strategy/events'
 ], function(_, GoogleEvents) {
   var gEvent_orig;

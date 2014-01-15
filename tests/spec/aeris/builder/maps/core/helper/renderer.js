@@ -1,5 +1,5 @@
 define([
-  'aeris/util',
+  'ai/util',
   'ai/builder/maps/core/helper/renderer',
   'mocks/aeris/application/controller/controllerinterface'
 ], function(_, Renderer, MockController) {

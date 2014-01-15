@@ -1,5 +1,5 @@
 define([
-  'aeris/util',
+  'ai/util',
   'wire',
   'testUtils'
 ], function(_, wire, testUtil) {
@@ -17,7 +17,7 @@ define([
       wire({
         someModel: {
           create: {
-            module: 'aeris/model',
+            module: 'ai/model',
             args: [{
               deep: {
                 nested: {

@@ -1,5 +1,5 @@
 define([
-  'aeris/util',
+  'ai/util',
   'sinon',
   'mocks/layer',
   'strategy/layerstrategies/abstractmaptype'

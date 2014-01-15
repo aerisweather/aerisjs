@@ -1,16 +1,16 @@
 require([
-  'aeris/promise',
+  'ai/promise',
   'sinon',
   'testUtils',
-  'aeris/util',
-  'aeris/model',
-  'aeris/collection',
+  'ai/util',
+  'ai/model',
+  'ai/collection',
   'ai/maps/routes/waypoint',
   'ai/maps/routes/route',
   'ai/maps/routes/routerenderer',
   'ai/maps/routes/routebuilder',
-  'aeris/commands/abstractcommand',
-  'aeris/commands/commandmanager'
+  'ai/commands/abstractcommand',
+  'ai/commands/commandmanager'
 ], function(
     Promise,
     sinon,

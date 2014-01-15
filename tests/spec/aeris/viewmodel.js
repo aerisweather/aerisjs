@@ -1,7 +1,7 @@
 define([
-  'aeris/util',
-  'aeris/viewmodel',
-  'aeris/model'
+  'ai/util',
+  'ai/viewmodel',
+  'ai/model'
 ], function(_, ViewModel, Model) {
   
   describe('A ViewModel', function() {

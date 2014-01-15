@@ -1,10 +1,10 @@
 define([
-  'aeris/util',
+  'ai/util',
   'ai/application/form/model/combotoggle',
   'sinon',
   'ai/application/form/model/toggle',
-  'aeris/collection',
-  'aeris/model'
+  'ai/collection',
+  'ai/model'
 ], function(_, ComboToggle, sinon, Toggle, Collection, Model) {
 
   var MockToggle = function(opt_attrs) {

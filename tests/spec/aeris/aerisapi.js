@@ -1,7 +1,7 @@
 define([
-  'aeris/aerisapi',
-  'aeris/promise',
-  'aeris/jsonp',
+  'ai/aerisapi',
+  'ai/promise',
+  'ai/jsonp',
   'testUtils',
   'testErrors/untestedspecerror'
 ], function(AerisAPI, Promise, jsonp, testUtils, UntestedSpecError) {

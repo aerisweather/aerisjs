@@ -1,7 +1,7 @@
 define([
-  'aeris/util',
+  'ai/util',
   'sinon',
-  'aeris/events',
+  'ai/events',
   'ai/maps/animations/animationsync',
   'ai/maps/animations/animationinterface',
   'mocks/times'

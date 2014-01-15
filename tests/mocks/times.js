@@ -1,5 +1,5 @@
 define([
-  'aeris/util'
+  'ai/util'
 ], function(_) {
   /**
    * Simulates times returned by

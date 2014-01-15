@@ -1,4 +1,4 @@
-define(['aeris/emptypromise'], function(EmptyPromise) {
+define(['ai/emptypromise'], function(EmptyPromise) {
   describe('An EmptyPromise', function() {
     it('should already be resolved', function() {
       var promise = new EmptyPromise();

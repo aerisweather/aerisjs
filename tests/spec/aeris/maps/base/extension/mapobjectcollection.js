@@ -1,7 +1,7 @@
 define([
-  'aeris/util',
+  'ai/util',
   'ai/maps/extension/mapobjectcollection',
-  'aeris/model'
+  'ai/model'
 ], function(_, MapObjectCollection, Model) {
 
   var MockMap = function() {

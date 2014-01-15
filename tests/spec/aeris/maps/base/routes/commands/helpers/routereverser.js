@@ -1,8 +1,8 @@
 define([
-  'aeris/util',
+  'ai/util',
   'ai/maps/routes/commands/helpers/routereverser',
-  'aeris/model',
-  'aeris/collection',
+  'ai/model',
+  'ai/collection',
   'ai/maps/routes/waypoint',
   'ai/maps/routes/route'
 ], function(_, RouteReverser, Model, Collection, Waypoint, Route) {

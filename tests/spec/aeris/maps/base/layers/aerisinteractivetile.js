@@ -1,5 +1,5 @@
 define([
-  'aeris/util',
+  'ai/util',
   'sinon',
   'ai/maps/layers/aerisinteractivetile',
   'ai/maps/abstractstrategy'

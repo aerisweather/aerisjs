@@ -1,5 +1,5 @@
 define([
-  'aeris/util'
+  'ai/util'
 ], function(_) {
   /**
    * Mock the DirectionsService constructor

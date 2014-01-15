@@ -1,7 +1,7 @@
 define([
-  'aeris/util',
+  'ai/util',
   'ai/application/model/eventparambag',
-  'aeris/events'
+  'ai/events'
 ], function(_, EventParamBag, Events) {
   var eventHub;
   var transformer;

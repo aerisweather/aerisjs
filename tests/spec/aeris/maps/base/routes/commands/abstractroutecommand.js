@@ -3,7 +3,7 @@
  * as a proxy.
  */
 define([
-  'aeris/util',
+  'ai/util',
   'ai/maps/routes/commands/abstractroutecommand',
   'ai/maps/routes/route'
 ], function(_, AbstractRouteCommand, Route) {

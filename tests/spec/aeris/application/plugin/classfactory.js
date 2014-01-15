@@ -1,7 +1,7 @@
 define([
   'wire',
   'testUtils',
-  'aeris/model'
+  'ai/model'
 ], function(wire, testUtil, Model) {
   describe('The WireJS factory plugin', function() {
     var modId;
@@ -17,7 +17,7 @@ define([
         wire({
           ModelFactory: {
             ClassFactory: {
-              module: 'aeris/model',
+              module: 'ai/model',
               args: [
                 {
                   color: 'blue',

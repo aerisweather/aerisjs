@@ -1,9 +1,9 @@
 define([
-  'aeris/util',
+  'ai/util',
   'sinon',
   'ai/maps/map',
   'ai/maps/abstractlayer',
-  'aeris/promise'
+  'ai/promise'
 ], function(_, sinon, AerisMap, AbstractLayer, Promise) {
 
   function getStubbedMap() {

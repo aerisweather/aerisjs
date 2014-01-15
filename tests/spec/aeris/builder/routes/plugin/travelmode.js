@@ -1,5 +1,5 @@
 define([
-  'aeris/util',
+  'ai/util',
   'ai/builder/routes/plugin/travelmode',
   'ai/maps/routes/waypoint',
   'mocks/aeris/application/plugin/pluginresolver'

@@ -1,12 +1,12 @@
 define([
-  'aeris/util',
-  'aeris/events',
+  'ai/util',
+  'ai/events',
   'sinon',
   'testUtils',
   'testErrors/untestedspecerror',
-  'aeris/promise',
+  'ai/promise',
   'mocks/promise',
-  'aeris/aerisapi',
+  'ai/aerisapi',
   'ai/maps/animations/aerisinteractivetile',
   'ai/maps/layers/aerisinteractivetile',
   'mocks/times'

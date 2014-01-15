@@ -1,5 +1,5 @@
 define([
-  'aeris/util',
+  'ai/util',
   'ai/api/params/model/query',
   'ai/errors/validationerror'
 ], function(_, Query, ValidationError) {

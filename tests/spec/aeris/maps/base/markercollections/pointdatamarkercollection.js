@@ -1,7 +1,7 @@
 define([
-  'aeris/util',
+  'ai/util',
   'ai/maps/markercollections/pointdatamarkercollection',
-  'aeris/collection',
+  'ai/collection',
   'ai/api/endpoint/collection/pointdatacollection'
 ], function(_, PointDataMarkerCollection, Collection, PointDataCollection) {
 

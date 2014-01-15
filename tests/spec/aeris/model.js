@@ -1,6 +1,6 @@
 define([
-  'aeris/util',
-  'aeris/model'
+  'ai/util',
+  'ai/model'
 ], function(_, Model, ValidationError) {
   function TestFactory(opt_options) {
     var options = _.extend({

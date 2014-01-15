@@ -1,5 +1,5 @@
 define([
-  'aeris/util',
+  'ai/util',
   'ai/api/endpoint/model/pointdata'
 ], function(_, PointData) {
 

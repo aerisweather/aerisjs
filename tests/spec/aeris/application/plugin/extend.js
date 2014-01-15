@@ -1,5 +1,5 @@
 define([
-  'aeris/util',
+  'ai/util',
   'testUtils',
   'wire'
 ], function(_, testUtil, wire) {

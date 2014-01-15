@@ -4,7 +4,7 @@
  */
 define([
   'mocks/command',
-  'aeris/promise',
+  'ai/promise',
   'testErrors/untestedspecerror',
   'testUtils'
 ], function(ConcreteCommand, Promise, UntestedSpecError, testUtils) {

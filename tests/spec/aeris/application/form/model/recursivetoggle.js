@@ -1,5 +1,5 @@
 define([
-  'aeris/util',
+  'ai/util',
   'ai/application/form/model/recursivetoggle',
   'ai/application/form/collection/togglecollection'
 ], function(_, RecursiveToggle, ToggleCollection) {

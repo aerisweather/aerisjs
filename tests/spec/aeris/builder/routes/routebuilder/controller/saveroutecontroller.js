@@ -1,8 +1,8 @@
 define([
-  'aeris/util',
-  'aeris/events',
-  'aeris/model',
-  'aeris/collection',
+  'ai/util',
+  'ai/events',
+  'ai/model',
+  'ai/collection',
   'jquery',
   'ai/builder/routes/routebuilder/controller/saveroutecontroller'
 ], function(_, Events, Model, Collection, $, SaveRouteController) {

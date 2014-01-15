@@ -1,5 +1,5 @@
 define([
-  'aeris/util',
+  'ai/util',
   'mocks/waypoint',
   'ai/maps/routes/route',
   'jasmine'

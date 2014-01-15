@@ -1,7 +1,7 @@
 define([
-  'aeris/util',
-  'aeris/events',
-  'aeris/model',
+  'ai/util',
+  'ai/events',
+  'ai/model',
   'sinon',
   'ai/maps/markers/pointdatamarker',
   'ai/api/endpoint/model/pointdata'

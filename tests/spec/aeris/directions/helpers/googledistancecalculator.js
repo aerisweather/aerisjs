@@ -1,5 +1,5 @@
 define([
-  'aeris/util',
+  'ai/util',
   'ai/directions/helpers/googledistancecalculator'
 ], function(_, GoogleDistanceCalculator) {
 

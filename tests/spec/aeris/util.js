@@ -1,6 +1,6 @@
 define([
   'sinon',
-  'aeris/util'
+  'ai/util'
 ], function(sinon, _) {
   describe('The Aeris Utility Library', function() {
     describe('should convert latLon to degrees', function() {
@@ -800,7 +800,7 @@ define([
 
         expect(spec).toEqual({
           create: {
-            module: 'aeris/classfactory',
+            module: 'ai/classfactory',
             args: [
               { module: 'ai/builder/maps/core/model/mapobjecttoggle' },
               [
@@ -827,7 +827,7 @@ define([
 
         expect(spec).toEqual({
           create: {
-            module: 'aeris/classfactory',
+            module: 'ai/classfactory',
             args: [
               { module: 'some/parent/type' }
             ]

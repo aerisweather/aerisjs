@@ -1,5 +1,5 @@
 define([
-  'aeris/util',
+  'ai/util',
   'ai/maps/polylines/polyline'
 ], function(_, Polyline) {
 

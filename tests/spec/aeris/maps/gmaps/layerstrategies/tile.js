@@ -1,6 +1,6 @@
 require.setStrategy('gmaps');
 define([
-  'aeris/util',
+  'ai/util',
   'mocks/layer',
   'strategy/layerstrategies/tile'
 ], function(_, MockLayer, TileStrategy) {

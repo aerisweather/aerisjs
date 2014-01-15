@@ -1,5 +1,5 @@
 define([
-  'aeris/util',
+  'ai/util',
   'ai/maps/routes/commands/reverseroutecommand',
   'ai/maps/routes/route'
 ], function(_, ReverseRouteCommand, Route) {

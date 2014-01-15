@@ -1,6 +1,6 @@
 require.setStrategy('gmaps');
 define([
-  'aeris/util',
+  'ai/util',
   'sinon',
   'mocks/layer',
   'strategy/layerstrategies/kml',

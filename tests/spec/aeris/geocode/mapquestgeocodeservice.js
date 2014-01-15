@@ -1,5 +1,5 @@
 define([
-  'aeris/util',
+  'ai/util',
   'testErrors/untestedspecerror',
   'ai/geocode/mapquestgeocodeservice',
   'ai/geocode/geocodeservicestatus'

@@ -2,7 +2,7 @@ define([
   'ai/maps/markercollection',
   'ai/maps/marker',
   'mocks/map',
-  'aeris/util'
+  'ai/util'
 ], function(MarkerCollection, Marker, MockMap, _) {
 
   describe('A MarkerCollection', function() {

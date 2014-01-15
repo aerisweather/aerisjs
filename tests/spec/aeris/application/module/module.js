@@ -1,5 +1,5 @@
 define([
-  'aeris/util',
+  'ai/util',
   'ai/application/module/module',
   'sinon'
 ], function(_, Module, sinon) {

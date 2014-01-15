@@ -1,5 +1,5 @@
 define([
-  'aeris/util',
+  'ai/util',
   'ai/directions/googledirectionsservice',
   'mocks/google/maps/directionsservice',
   'mocks/google/maps/latlng',

@@ -1,7 +1,7 @@
 define([
-  'aeris/util',
+  'ai/util',
   'jasmine',
-  'aeris/events',
+  'ai/events',
   'testUtils',
   'testErrors/untestedspecerror',
   'backbone'

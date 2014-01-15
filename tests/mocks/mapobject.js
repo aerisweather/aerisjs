@@ -1,6 +1,6 @@
 define([
-  'aeris/util',
-  'aeris/model'
+  'ai/util',
+  'ai/model'
 ], function(_, Model) {
   var MockMapObject = function() {
     var stubbedMethods = [

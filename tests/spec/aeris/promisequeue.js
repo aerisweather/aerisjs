@@ -1,11 +1,11 @@
 define([
-  'aeris/util',
+  'ai/util',
   'sinon',
   'testUtils',
   'testErrors/untestedspecerror',
-  'aeris/promise',
+  'ai/promise',
   'mocks/promise',
-  'aeris/promisequeue'
+  'ai/promisequeue'
 ], function(_, sinon, testUtils, UntestedSpecError, Promise, MockPromise, PromiseQueue) {
   var clock;
 

@@ -1,9 +1,9 @@
 define([
-  'aeris/util',
-  'aeris/viewcollection',
-  'aeris/viewmodel',
-  'aeris/collection',
-  'aeris/model'
+  'ai/util',
+  'ai/viewcollection',
+  'ai/viewmodel',
+  'ai/collection',
+  'ai/model'
 ], function(_, ViewCollection, ViewModel, Collection, Model) {
   var MockViewModel;
 

@@ -1,5 +1,5 @@
 define([
-  'aeris/util',
+  'ai/util',
   'ai/maps/routes/commands/appendreverseroutecommand',
   'ai/maps/routes/route',
   'ai/maps/routes/waypoint'

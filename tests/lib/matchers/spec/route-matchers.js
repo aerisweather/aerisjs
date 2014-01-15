@@ -1,6 +1,6 @@
 require([
   'jasmine',
-  'aeris/util',
+  'ai/util',
   'ai/maps/routes/waypoint',
   'mocks/waypoint',
   'ai/maps/routes/route',

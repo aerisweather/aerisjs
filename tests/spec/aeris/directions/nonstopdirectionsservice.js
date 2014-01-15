@@ -1,5 +1,5 @@
 define([
-  'aeris/util',
+  'ai/util',
   'ai/directions/nonstopdirectionsservice',
   'mocks/aeris/directions/promise/promisetofetchdirections'
 ], function(_, NonstopDirectionsService, MockPromiseToFetchDirections) {

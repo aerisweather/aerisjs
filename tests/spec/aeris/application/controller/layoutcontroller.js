@@ -1,5 +1,5 @@
 define([
-  'aeris/util',
+  'ai/util',
   'ai/application/controller/layoutcontroller',
   'jquery'
 ], function (_, LayoutController, $) {

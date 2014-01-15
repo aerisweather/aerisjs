@@ -1,5 +1,5 @@
 define([
-  'aeris/util',
+  'ai/util',
   'mocks/model'
 ], function(_, MockModel) {
   /**

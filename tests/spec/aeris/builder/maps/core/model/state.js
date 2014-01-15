@@ -1,6 +1,6 @@
 define([
-  'aeris/util',
-  'aeris/events',
+  'ai/util',
+  'ai/events',
   'sinon',
   'ai/builder/maps/core/model/state',
   'ai/builder/maps/core/collection/mapobjecttogglecollection'

@@ -1,5 +1,5 @@
 define([
-  'aeris/util',
+  'ai/util',
   'ai/errors/errortypefactory'
 ], function(_, ErrorTypeFactory) {
 
