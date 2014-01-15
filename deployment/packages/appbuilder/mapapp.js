@@ -1,6 +1,6 @@
 ({
   name: 'ai/builder/maps/mapappbuilder',
-  out: '../../../build/packages/routeplanner.js',
+  out: '../../../build/packages/mapapp.js',
 
   mainConfigFile: '../../../lib/config.js',
   baseUrl: '../../../lib',
