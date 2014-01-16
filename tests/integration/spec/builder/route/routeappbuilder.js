@@ -5,7 +5,7 @@ define([
   'sinon',
   'ai/builder/route/routeappbuilder',
   'jquery',
-  'googlemaps'
+  'googlemaps!'
 ], function(sinon, RouteAppBuilder, $, googlemaps) {
   describe('A RouteAppBuilder', function() {
     var $appDiv = $('<div></div>');

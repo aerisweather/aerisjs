@@ -5,7 +5,7 @@ define([
   'testUtils',
   'ai/maps/strategy/utils',
   'ai/util',
-  'googlemaps'
+  'googlemaps!'
 ], function(testUtils, mapUtils, _) {
   /**
    * Mock of google.maps.DirectionsResult
