@@ -10,17 +10,6 @@
   <script type="text/javascript">
     var map;
 
-    require.config({
-      config: {
-        'ai/geocode/config': {
-          // PLEASE DO NOT USE THIS KEY
-          // It is Edan's personal key for MapQuest
-          // Please get a new MLG account key.
-          apiId: 'Fmjtd%7Cluub2dubl9%2C2g%3Do5-9u2l5z'
-        }
-      }
-    });
-
     function bindUIControls() {
       var $location = $('#location');
       $('#search').click(function() {

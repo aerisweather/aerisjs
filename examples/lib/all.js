@@ -11,14 +11,6 @@ LayerRepository.prototype.getLayer = function(layer) {
 };
 
 function initialize() {
-  require.config({
-    config: {
-      aeris: {
-        apiId: 'ezHWL0MiLsxwlN2ik8U4c',
-        apiSecret: 'uCDMeSj91lBfIKCmeQkpeZjsAwUUQJHuKesCvqTm'
-      }
-    }
-  });
   require(["aeris/maps/" + NS], function(aeris) {
 
     var layerRepo = new LayerRepository(aeris);

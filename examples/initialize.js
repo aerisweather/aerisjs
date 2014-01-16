@@ -22,29 +22,37 @@ require.setStrategy = function(strategy) {
 };
 
 require.config({
-  baseUrl: '[YOUR BASE URL]/lib',
+  baseUrl: '/lib',
   paths: {
     examples: '../examples',
     tests: '../tests'
   },
-  config: {
-    'ai/config': {
-      path: '/',
-      apiId: '[YOUR AERIS API ID]',
-      apiSecret: '[YOUR AERIS API SECRET]'
-    }
-  },
-  waitSeconds: 2,
+  waitSeconds: 2
+})
 
-  googlemaps: {
-    params: {
-      libraries: 'geometry',
-      key: '[YOUR GOOGLE API KEY]'
+require(['config', 'examples/lib/domReady!', 'examples/apikeys'], function() {
+
+  // Configure api keys
+  require.config({
+    config: {
+      'ai/config': {
+        path: '/',
+        apiId: apiKeys.aeris.id,
+        apiSecret: apiKeys.aeris.secret
+      },
+
+      'ai/geocode/config': {
+        apiId: apiKeys.mapquest
+      }
+    },
+
+    googlemaps: {
+      params: {
+        libraries: 'geometry',
+        key: apiKeys.google
+      }
     }
-  }
-});
-require(['config'], function() {
-  require(['examples/lib/domReady!'], function() {
-    initialize();
   });
+
+  initialize();
 });

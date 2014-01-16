@@ -67,16 +67,7 @@
 
 
       function initialize() {
-        var req = require.config({
-          config: {
-            aeris: {
-              apiId: 'ezHWL0MiLsxwlN2ik8U4c',
-              apiSecret: 'uCDMeSj91lBfIKCmeQkpeZjsAwUUQJHuKesCvqTm',
-              path: '/'
-            }
-          }
-        });
-        req(['ai/maps/openlayers', 'aeris/aerisapi'], function(aeris, AerisAPI) {
+        require(['ai/maps/openlayers', 'aeris/aerisapi'], function(aeris, AerisAPI) {
           var map = new aeris.maps.openlayers.Map("map-canvas", {
             baseLayer: new aeris.maps.layers.GoogleRoadMap(),
             center: [44.98, -93.2636],

@@ -31,15 +31,6 @@
       };
       
       function initialize() {
-        require(['../lib/config'], function() {
-          require.config({
-            config: {
-              aeris: {
-                apiId: 'ezHWL0MiLsxwlN2ik8U4c',
-                apiSecret: 'uCDMeSj91lBfIKCmeQkpeZjsAwUUQJHuKesCvqTm'
-              }
-            }
-          });
           require([
             'ai/maps/' + NS,
             'ai/maps/animations/animationsync'

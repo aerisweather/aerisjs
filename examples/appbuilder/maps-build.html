@@ -7,6 +7,7 @@
 
   <link rel="stylesheet" href="theme/default/css/style.css"/>
 
+  <script type="text/javascript" src="../apikeys.js"></script>
   <script type="text/javascript" src="../../build/packages/mapapp.js"></script>
 
   <script type="text/javascript">
@@ -16,10 +17,10 @@
 
     aeris.MapBuilder({
       path: '/',
-      apiId: 'wgE96YE3scTQLKjnqiMsv',
-      apiSecret: 'DGCTq4z2xxttTBwTiimwlWyxmx5IDwK0VZ7T2WMS',
+      apiId: apiKeys.aeris.id,
+      apiSecret: apiKeys.aeris.secret,
       google: {
-        apiKey: 'AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU'
+        apiKey: apiKeys.google
       },
 
       el: '#app',
