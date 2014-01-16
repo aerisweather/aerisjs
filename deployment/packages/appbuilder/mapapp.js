@@ -32,7 +32,13 @@
     'ai/packages/gmaps'
   ],
   wrap: {
-    startFile: ['../../frag/builder/start.frag.js', '../../../externals/require.js'],
-    endFile: ['../../frag/builder/end.frag.js']
+    startFile: [
+      '../../frag/wrap/start.frag.js',
+      '../../../externals/require.js'
+    ],
+    endFile: [
+      '../../frag/facade/mapapp.frag.js',
+      '../../frag/wrap/end.frag.js'
+    ]
   }
 })

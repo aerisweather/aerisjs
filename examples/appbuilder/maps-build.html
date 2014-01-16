@@ -14,34 +14,21 @@
       console.log('logArgs: ', args);
     }
 
-    require.config({
-      baseUrl: 'http://aeris-maps/lib',
-      config: {
-        'aeris/config': {
-          path: '/',
-          apiId: 'wgE96YE3scTQLKjnqiMsv',
-          apiSecret: 'DGCTq4z2xxttTBwTiimwlWyxmx5IDwK0VZ7T2WMS'
-        }
-      }
-    });
+    aeris.MapBuilder({
+      path: '/',
+      apiId: 'wgE96YE3scTQLKjnqiMsv',
+      apiSecret: 'DGCTq4z2xxttTBwTiimwlWyxmx5IDwK0VZ7T2WMS',
+      google: {
+        apiKey: 'AIzaSyDxTEbJsXwGRW4zDj8fpVsenDMMQGhZhUU'
+      },
 
-    aeris.Loader.load({
-      mapbuilder: {
-        mapType: 'gmaps',
-        el: '#app',
-        mapOptions: {
-          zoom: 4
-        },
-        onload: function(maps) {
-          window.maps = maps;
-          console.log('Mapbuild complete:', arguments);
-        }
+      el: '#app',
+      mapOptions: {
+        zoom: 4
       },
-      onload: function() {
-        console.log('aeris Loader complete', arguments);
-      },
-      onerror: function(err) {
-        console.error('Error loading', err);
+      onload: function(maps) {
+        window.maps = maps;
+        console.log('Mapbuild complete:', arguments);
       }
     });
   </script>
