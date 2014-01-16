@@ -6,7 +6,7 @@ require([
     'jasmine-slow',
     'jasmine-html',
     'matchers/matchers.package',
-    'googlemaps'
+    'googlemaps!'
   ], function() {
     var jasmineEnv = jasmine.getEnv();
     jasmineEnv.updateInterval = 1000;
