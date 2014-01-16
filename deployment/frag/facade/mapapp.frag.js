@@ -7,11 +7,15 @@ aeris.MapBuilder = function(buildConfig) {
         apiSecret: buildConfig.apiSecret
       },
 
-      googlemaps: {
-        params: {
-          libraries: 'geometry',
-          key: buildConfig.google.apiKey
-        }
+      'ai/geocode/config': {
+        apiId: buildConfig.mapquest.apiKey
+      }
+    },
+
+    googlemaps: {
+      params: {
+        libraries: 'geometry',
+        key: buildConfig.google.apiKey
       }
     }
   });
