@@ -34,7 +34,14 @@ require.config({
       apiSecret: '[YOUR AERIS API SECRET]'
     }
   },
-  waitSeconds: 2
+  waitSeconds: 2,
+
+  googlemaps: {
+    params: {
+      libraries: 'geometry',
+      key: '[YOUR GOOGLE API KEY]'
+    }
+  }
 });
 require(['config'], function() {
   require(['examples/lib/domReady!'], function() {
