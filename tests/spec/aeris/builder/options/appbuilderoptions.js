@@ -8,35 +8,43 @@ define([
     var STUB_API_ID = 'STUB_API_ID';
     var STUB_API_SECRET = 'STUB_API_SECRET';
 
-    describe('should require apiKeys are set, either by...', function() {
+    describe('validate', function() {
 
-      beforeEach(function() {
-        aerisConfig.unset('apiId');
-        aerisConfig.unset('apiSecret');
-      });
+      describe('should require apiKeys are set, either by...', function() {
+        var options;
 
+        beforeEach(function() {
+          options = new AppBuilderOptions();
 
-      it('existing aerisConfig attrs', function() {
-        expect(function() {
-          new AppBuilderOptions();
-        }).toThrowType('BuilderConfigError');
-
-        aerisConfig.set({
-          apiId: STUB_API_ID,
-          apiSecret: STUB_API_SECRET
+          aerisConfig.unset('apiId');
+          aerisConfig.unset('apiSecret');
         });
-        new AppBuilderOptions();
-      });
 
-      it('attributes passed to constructor', function() {
-        expect(function() {
-          new AppBuilderOptions();
-        }).toThrowType('BuilderConfigError');
 
-        new AppBuilderOptions({
-          apiId: STUB_API_ID,
-          apiSecret: STUB_API_SECRET
+        it('existing aerisConfig attrs', function() {
+          expect(function() {
+            options.isValid();
+          }).toThrowType('BuilderConfigError');
+
+          aerisConfig.set({
+            apiId: STUB_API_ID,
+            apiSecret: STUB_API_SECRET
+          });
+          options.isValid();
         });
+
+        it('attributes set on options', function() {
+          expect(function() {
+            options.isValid();
+          }).toThrowType('BuilderConfigError');
+
+          options.set({
+            apiId: STUB_API_ID,
+            apiSecret: STUB_API_SECRET
+          });
+          options.isValid();
+        });
+
       });
 
     });
