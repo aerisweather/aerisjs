@@ -34,7 +34,7 @@
   wrap: {
     startFile: [
       '../../frag/wrap/start.frag.js',
-      '../../../externals/require.js'
+      '../../../bower_components/requirejs/require.js'
     ],
     endFile: [
       '../../frag/facade/mapapp.frag.js',
