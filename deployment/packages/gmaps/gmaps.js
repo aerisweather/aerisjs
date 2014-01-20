@@ -1,6 +1,6 @@
 ({
   name: 'almond',
-  out: '../../../build/packages/gmaps-min.js',
+  out: '../../../build/packages/gmaps.js',
 
   mainConfigFile: '../../../lib/config.js',
   baseUrl: '../../../lib',
@@ -9,7 +9,7 @@
     'ai/maps/strategy': 'aeris/maps/gmaps'
   },
 
-  optimize: 'uglify2',
+  optimize: 'none',
   preserveLicenseComments: false,
 
   // Handlebars config
@@ -27,7 +27,8 @@
 
   include: [
     'ai/packages/maps',
-    'ai/packages/gmaps'
+    'ai/packages/gmaps',
+    'ai/packages/api'
   ],
   wrap: {
     startFile: ['../../frag/almond/start.frag.js'],
