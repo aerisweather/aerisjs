@@ -28,7 +28,7 @@ define([
       jsonp = new MockJSONP();
 
       ENDPOINT_STUB = 'ENDPOINT_STUB';
-      SERVER_STUB = 'TEST://SERVER.STUB/';
+      SERVER_STUB = 'TEST://SERVER.STUB';
       ID_STUB = 'ID_STUB';
 
       API_ID_STUB = 'API_ID_STUB';
@@ -69,16 +69,19 @@ define([
           success: onSuccess
         }
       });
+      
+      
+      it('should append the model id onto the request url', function() {
+        apiModel.fetch();
 
+        expect(jsonp.getRequestedUrl()).toEqual(SERVER_STUB + '/' + ENDPOINT_STUB + '/' + ID_STUB);
+      });
 
-      it('should errback if the model cannot be found on the server', function() {
-        jsonp.respondWith(new NoResultsResponse());
+      it('should not require a model id', function() {
+        apiModel.id = null;
 
-        expect(function() {
-          apiModel.fetch(fetchOptions);
-        }).toThrowType('APIResponseError');
-
-        expect(onError).toHaveBeenCalled();
+        apiModel.fetch();
+        expect(jsonp.getRequestedUrl()).toEqual(SERVER_STUB + '/' + ENDPOINT_STUB + '/');
       });
 
     });

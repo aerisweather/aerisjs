@@ -125,10 +125,20 @@ define([
         endpoint = test.options.endpoint;
       });
 
-      it('should target SERVERENDPOINT/ACTION/', function() {
+      it('should target SERVER/ENDPOINT/ACTION/', function() {
         apiCollection.fetch();
 
-        expect(jsonp.getRequestedUrl()).toEqual(server + endpoint + '/' + action + '/');
+        expect(jsonp.getRequestedUrl()).toEqual(server + '/' + endpoint + '/' + action + '/');
+      });
+
+      it('should accept an empty action', function() {
+        var test = new TestFactory({
+          action: ''
+        });
+        test.collection.fetch();
+
+        expect(test.options.jsonp.getRequestedUrl()).
+          toEqual(test.options.server + '/' + test.options.endpoint + '/');
       });
 
       it('should trigger a request event', function() {
