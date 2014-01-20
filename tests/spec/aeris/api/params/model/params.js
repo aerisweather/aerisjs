@@ -315,6 +315,30 @@ define([
         params.toJSON();
       });
 
+      it('should not return undefined, null, or empty arrays', function() {
+        var params = new Params({
+          emptyArray: [],
+          nullValue: null,
+          und: undefined,
+
+          // Should keep these
+          foo: 'bar',
+          falseValue: false,
+          negativeNumber: -5,
+          emptyString: ''
+        });
+        var json = params.toJSON();
+
+        expect(json.emptyArray).not.toBeDefined();
+        expect(json.nullValue).not.toBeDefined();
+        expect(json.und).not.toBeDefined();
+
+        expect(json.foo).toEqual('bar');
+        expect(json.falseValue).toEqual(false);
+        expect(json.negativeNumber).toEqual(-5);
+        expect(json.emptyString).toEqual('');
+      });
+
     });
 
 
