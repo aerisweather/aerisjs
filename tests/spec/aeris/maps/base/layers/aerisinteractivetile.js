@@ -2,8 +2,9 @@ define([
   'ai/util',
   'sinon',
   'ai/maps/layers/aerisinteractivetile',
-  'ai/maps/abstractstrategy'
-], function(_, sinon, AITile, Strategy) {
+  'ai/maps/abstractstrategy',
+  'ai/config'
+], function(_, sinon, AerisInteractiveTile, Strategy, aerisConfig) {
 
   function TestFactory(opt_options) {
     var options = _.extend({
@@ -13,15 +14,17 @@ define([
       autoUpdateInterval: 100
     }, opt_options);
 
-    var attrs = _.pick(options,
+    var attrs = _.defaults(_.pick(options,
       'tileType',
       'autoUpdateInterval',
       'autoUpdate',
       'name'
-    );
+    ), {
+      tileType: 'STUB_TILE_TYPE'
+    });
 
     this.strategy = options.strategy;
-    this.tile = new AITile(attrs, { strategy: this.strategy });
+    this.tile = new AerisInteractiveTile(attrs, { strategy: this.strategy });
   }
 
   function getStubbedStrategy() {
@@ -48,6 +51,60 @@ define([
             tileType: null
           });
         }).toThrowType('ValidationError');
+      });
+
+    });
+
+    describe('getUrl', function() {
+
+      describe('should require aeris keys from...', function() {
+        var aerisKeys_orig = aerisConfig.pick('apiId', 'apiSecret');
+        var API_ID_STUB = 'API_ID_STUB';
+        var API_SECRET_STUB = 'API_SECRET_STUB';
+        var tile;
+
+        beforeEach(function() {
+          aerisConfig.set({
+            apiId: null,
+            apiSecret: null
+          });
+
+          tile = new AerisInteractiveTile({
+            tileType: 'STUB_TILE_TYPE',
+            name: 'STUB_NAME'
+          });
+        });
+
+        afterEach(function() {
+          aerisConfig.set(aerisKeys_orig);
+        });
+
+
+
+        it('aeris config', function() {
+          expect(function() {
+            tile.getUrl();
+          }).toThrowType('MissingApiKeyError');
+
+          aerisConfig.set({
+            apiId: API_ID_STUB,
+            apiSecret: API_SECRET_STUB
+          });
+          tile.getUrl();
+        });
+
+        it('model attributes', function() {
+          expect(function() {
+            tile.getUrl();
+          }).toThrowType('MissingApiKeyError');
+
+          tile.set({
+            apiId: API_ID_STUB,
+            apiSecret: API_SECRET_STUB
+          });
+          tile.getUrl();
+        });
+
       });
 
     });

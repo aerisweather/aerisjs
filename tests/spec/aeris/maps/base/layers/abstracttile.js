@@ -4,6 +4,21 @@ define([
 ], function(_, AbstractTile) {
 
 
+  var ConcreteTile = function(opt_attrs, opt_options) {
+    var attrs = _.defaults(opt_attrs || {}, {
+      name: 'STUB_NAME',
+      server: 'STUB_SERVER'
+    });
+
+    AbstractTile.call(this, attrs, opt_options);
+  };
+  _.inherits(ConcreteTile, AbstractTile);
+
+  ConcreteTile.prototype.getUrl = function() {
+    return 'STUB_URL';
+  };
+
+
   function testFactory() {
     var Tile = function() {
       var options = {
@@ -27,32 +42,31 @@ define([
 
   describe('An AbstractTile', function() {
     describe('constructor', function() {
-      it('should require name and server', function() {
-        var reqProps = ['name', 'server'];
 
-        // Create several Tile classes,
-        // each missing one required property version
-        _.each(reqProps, function(missingProp) {
-          expect(function() {
-            var Tile = function() {
-              var options = {
-                strategy: function() {}
-              };
-              var attrs = {
-                name: (missingProp === 'name') ? undefined : 'myName',
-                server: (missingProp === 'server') ? undefined : 'someServer'
-              };
+      it('should require a name', function() {
+        expect(function() {
+          new ConcreteTile({
+            name: null
+          });
+        }).toThrowType('ValidationError');
 
-              AbstractTile.call(this, attrs, options);
-            };
-            _.inherits(Tile, AbstractTile);
-            new Tile();
-          }).toThrowType('ValidationError');
+        new ConcreteTile({
+          name: 'STUB_NAME'
         });
-
-        // Check that we're fine with properties defined.
-        testFactory();
       });
+
+      it('should require server', function() {
+        expect(function() {
+          new ConcreteTile({
+            server: null
+          });
+        }).toThrowType('ValidationError');
+
+        new ConcreteTile({
+          server: 'STUB_NAME'
+        });
+      });
+
     });
 
     describe('getRandomSubdomain', function() {
