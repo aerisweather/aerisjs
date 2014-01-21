@@ -74,7 +74,7 @@ require([
 
       //'spec/aeris/geocode/mapquestgeocodeservice',
       //'spec/aeris/geocode/googlegeocodeservice',
-      //'spec/aeris/geolocate/html5geolocateservice',
+      'spec/aeris/geolocate/html5geolocateservice',
       //'spec/aeris/geolocate/freegeoipgeolocateservice',
 
 

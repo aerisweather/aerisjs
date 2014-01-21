@@ -1,237 +1,176 @@
 define([
   'ai/util',
-  'testUtils',
   'ai/geolocate/html5geolocateservice',
-  'ai/geolocate/geolocateposition',
-  'ai/geolocate/geolocateerror'
-], function(_, testUtils, HTML5GeolocateService, GeolocatePosition, GeolocateError) {
+  'ai/geolocate/errors/geolocateserviceerror',
+  'mocks/window/navigator',
+  'mocks/window/geolocationresults',
+  'mocks/window/geolocationerror'
+], function (_, HTML5GeolocateService, GeolocateServiceError, MockNavigator, MockGeolocationResults, MockGeolocationError) {
+  var root = this;
+  var navigator_orig = root.navigator;
 
-  
-  function getStubbedNavigator(opt_options) {
-    var options = _.extend({
-      position: getCannedNavigatorPosition()
-    }, opt_options);
+  function stubGlobalNavigator(mock) {
+    root.navigator = mock;
+  }
+  function restoreGlobalNavigator() {
+    root.navigator = navigator_orig;
+  }
 
-    return {
-      geolocation: {
-        getCurrentPosition: jasmine.createSpy('getCurrentPosition'),
-        watchPosition: jasmine.createSpy('watchPosition'),
-        clearWatch: jasmine.createSpy('clearWatch')
-      }
+
+  describe('The HTML5 Geolocation Service', function () {
+    var geolocator, navigator, position;
+    var onResolve, onReject;
+    var NAVIGATOR_OPTIONS = {
+      enableHighAccuracy: false,
+      maximumAge: 12345,
+      timeout: 54321
     };
-  }
+    var LAT_STUB = 12.345;
+    var LON_STUB = 54.321;
 
-  function getCannedError(opt_options) {
-    return _.extend({
-      message: 'something went horribly wrong',
-        code: 1
-    }, opt_options);
-  }
+    beforeEach(function () {
+      var geolocatorOptions;
+      navigator = new MockNavigator();
+      geolocatorOptions = _.extend({}, NAVIGATOR_OPTIONS, {
+        navigator: navigator
+      });
+      geolocator = new HTML5GeolocateService(geolocatorOptions);
 
-  function getCannedNavigatorPosition(opt_options) {
-    return _.extend({
-      coords: {
-        latitude: 45.12345,
-        longitude: -90.7890,
-        accuracy: 12345,
-        altitude: 100,
-        altitudeAccuracy: 25,
-        heading: 90,
-        speed: 50
-      },
-      timestamp: (new Date()).getTime()
-    }, opt_options);
-  }
-
-  function testFactory(opt_options) {
-    var options = _.extend({
-      navigator: getStubbedNavigator()
-    }, opt_options);
-
-    var gls = new HTML5GeolocateService(options);
-
-    return {
-      gls: gls,
-      navigator: options.navigator
-    };
-  }
-
-  describe('The HTML5 Geolocation Service', function() {
-
-    describe('getCurrentPosition', function() {
-
-      it('should request the users current position', function() {
-        var glsOptions = {
-          enableHighAccuracy: true,
-          maximumAge: 12345,
-          timeout: 67890
-        };
-        var test = testFactory(glsOptions);
-        test.gls.getCurrentPosition();
-
-        // Check that options were passed to navigator
-        test.navigator.geolocation.getCurrentPosition.andCallFake(
-          function(onsuccess, onerror, options) {
-            expect(options).toEqual(glsOptions);
-          }
-        );
-
-        expect(test.navigator.geolocation.getCurrentPosition).toHaveBeenCalled();
+      position = new MockGeolocationResults({
+        coords: {
+          latitude: LAT_STUB,
+          longitude: LON_STUB
+        }
       });
 
-      it('should return the users current position', function() {
-        var test = testFactory();
-        var position = getCannedNavigatorPosition();
+      onResolve = jasmine.createSpy('onResolve');
+      onReject = jasmine.createSpy('onReject');
 
-        // Return canned position object
-        test.navigator.geolocation.getCurrentPosition.andCallFake(
-          function(onSuccess, onError, options) {
-            onSuccess(position);
-          }
-        );
+      onResolve.getPosition = _.bind(function() {
+        if (!this.callCount) { throw new Error('onResolve was never called'); }
+        return this.mostRecentCall.args[0];
+      }, onResolve);
 
-        test.gls.getCurrentPosition().done(function(res) {
-          expect(res.latLon).toEqual([position.coords.latitude, position.coords.longitude]);
-          expect(res.altitude).toEqual(position.coords.altitude);
-          expect(res.altitudeAccuracy).toEqual(position.coords.altitudeAccuracy);
-          expect(res.accuracy).toEqual(position.coords.accuracy);
-          expect(res.heading).toEqual(position.coords.heading);
-          expect(res.speed).toEqual(position.coords.speed);
-          expect(res.timestamp).toEqual(position.timestamp);
-          testUtils.setFlag();
-        });
-        waitsFor(testUtils.checkFlag, 'getCurrentPosition to resolve', 25);
+      onReject.getError = _.bind(function() {
+        if (!this.callCount) { throw new Error('onrReject was never called'); }
+        return this.mostRecentCall.args[0];
+      }, onReject);
+    });
+
+
+    afterEach(function() {
+      restoreGlobalNavigator();
+    });
+
+
+
+    describe('getCurrentPosition', function () {
+
+      it('should request the users current position from the navigator', function () {
+        geolocator.getCurrentPosition();
+
+        expect(navigator.geolocation.getCurrentPosition).toHaveBeenCalled();
+        expect(navigator.geolocation.getCurrentPosition.getOptions()).toEqual(NAVIGATOR_OPTIONS);
       });
 
-      it('should handle errors from the HTML5 geolocator', function() {
-        var test = testFactory();
-        var error = getCannedError();
+      it('should resolve with the users current position', function () {
+        geolocator.getCurrentPosition().done(onResolve);
+        navigator.geolocation.getCurrentPosition.resolve(position);
 
-        test.navigator.geolocation.getCurrentPosition.andCallFake(
-          function(onSuccess, onError, options) {
-            onError(error);
-          }
-        );
-
-        test.gls.getCurrentPosition().fail(function(res) {
-          expect(res.message).toEqual(error.message);
-          expect(res.code).toEqual(error.code);
-          testUtils.setFlag();
-        });
-        waitsFor(testUtils.checkFlag, 'getCurrentPosition to fail', 25);
+        expect(onResolve).toHaveBeenCalled();
+        expect(onResolve.getPosition().latLon).toEqual([LAT_STUB, LON_STUB]);
       });
 
-      it('should reject the request if HTML5 geolocation is not available', function() {
-        var test = testFactory({
-          navigator: 'IE8 FTW'
-        });
+      it('should handle errors from the HTML5 geolocator', function () {
+        geolocator.getCurrentPosition().fail(onReject);
+        navigator.geolocation.getCurrentPosition.reject(new MockGeolocationError());
 
-        test.gls.getCurrentPosition().fail(function(res) {
-          expect(res.code).toEqual(GeolocateError.POSITION_UNAVAILABLE);
-          testUtils.setFlag();
-        });
-        waitsFor(testUtils.checkFlag, 'getCurrentPosition to fail', 25);
+        expect(onReject).toHaveBeenCalled();
+        expect(onReject.getError().name).toEqual('GeolocateServiceError');
+      });
+
+      it('should reject the request if HTML5 geolocation is not available', function () {
+        stubGlobalNavigator(null);
+
+        geolocator.getCurrentPosition().fail(onReject);
+
+        expect(onReject).toHaveBeenCalled();
+        expect(onReject.getError().name).toEqual('GeolocateServiceError');
+        expect(onReject.getError().code).toEqual(GeolocateServiceError.POSITION_UNAVAILABLE);
       });
     });
 
-    describe('watchPostion', function() {
-      it('should use the HTML5 geolocation API', function() {
-        var test = testFactory();
+    describe('watchPostion', function () {
+      it('should use the HTML5 geolocation API', function () {
+        geolocator.watchPosition();
 
-        test.gls.watchPosition();
-
-        expect(test.navigator.geolocation.watchPosition).toHaveBeenCalled();
+        expect(navigator.geolocation.watchPosition).toHaveBeenCalled();
+        expect(navigator.geolocation.watchPosition.getOptions()).toEqual(NAVIGATOR_OPTIONS);
       });
 
-      it('should return the user\'s location', function() {
-        var test = testFactory();
-        var cannedPosition = getCannedNavigatorPosition();
+      it('should return the user\'s location', function () {
+        geolocator.watchPosition(onResolve);
+        navigator.geolocation.watchPosition.resolve(position);
 
-        // Return canned data
-        test.navigator.geolocation.watchPosition.andCallFake(
-          function(onSuccess, onError, options) {
-            onSuccess(cannedPosition);
-          }
-        );
-
-        test.gls.watchPosition(function(res) {
-            expect(res.latLon).toEqual([cannedPosition.coords.latitude, cannedPosition.coords.longitude]);
-            expect(res.altitude).toEqual(cannedPosition.coords.altitude);
-            expect(res.altitudeAccuracy).toEqual(cannedPosition.coords.altitudeAccuracy);
-            expect(res.accuracy).toEqual(cannedPosition.coords.accuracy);
-            expect(res.heading).toEqual(cannedPosition.coords.heading);
-            expect(res.speed).toEqual(cannedPosition.coords.speed);
-            expect(res.timestamp).toEqual(cannedPosition.timestamp);
-            testUtils.setFlag();
-          });
-        waitsFor(testUtils.checkFlag, 'watchPosition to resolve');
+        expect(onResolve).toHaveBeenCalled();
+        expect(onResolve.getPosition().latLon).toEqual([LAT_STUB, LON_STUB]);
       });
 
-      it('should return the user\'s location multiple times', function() {
-        var cb = jasmine.createSpy('watchPosition callback');
-        var test = testFactory();
+      it('should return the user\'s location multiple times', function () {
+        var COUNT = 3;
+        geolocator.watchPosition(onResolve);
 
-        test.navigator.geolocation.watchPosition.
-          andCallFake(function(onSuccess, onError, options) {
-            onSuccess(getCannedNavigatorPosition());
-            onSuccess(getCannedNavigatorPosition());
-            onSuccess(getCannedNavigatorPosition());
-          });
-
-        test.gls.watchPosition(cb);
-
-        expect(cb.callCount).toEqual(3);
-      });
-
-      it('should handle errors', function() {
-        var test = testFactory();
-        var cannedError = getCannedError();
-
-        test.navigator.geolocation.watchPosition.
-          andCallFake(function(onSuccess, onError, options) {
-            onError(cannedError);
-          });
-
-        test.gls.watchPosition(function() {}, function(error) {
-          expect(error.message).toEqual(cannedError.message);
-          expect(error.code).toEqual(cannedError.code);
-          testUtils.setFlag();
+        _.times(COUNT, function() {
+          navigator.geolocation.watchPosition.resolve(position);
         });
-        waitsFor(testUtils.checkFlag, 'watchPosition to fail', 25);
+
+        expect(onResolve.callCount).toEqual(COUNT);
+      });
+
+      it('should handle errors', function () {
+        geolocator.watchPosition(null, onReject);
+        navigator.geolocation.watchPosition.reject(new MockGeolocationError());
+
+        expect(onReject.getError().name).toEqual('GeolocateServiceError');
+      });
+
+      it('should invoke the errback if HTML5 navigation is not supported', function() {
+        stubGlobalNavigator(null);
+
+        geolocator.watchPosition(null, onReject);
+
+        expect(onReject).toHaveBeenCalled();
+        expect(onReject.getError().name).toEqual('GeolocateServiceError');
+        expect(onReject.getError().code).toEqual(GeolocateServiceError.POSITION_UNAVAILABLE);
       });
     });
 
-    describe('clearWatch', function() {
-      it('should stop watching for changes in position', function() {
-        var test = testFactory();
-        var watchID = 123;
+    describe('clearWatch', function () {
+      it('should stop watching for changes in position', function () {
+        var WATCH_ID_STUB = 12345;
+        navigator.geolocation.watchPosition.andReturn(WATCH_ID_STUB);
+        geolocator.watchPosition();
 
-        test.navigator.geolocation.watchPosition.andReturn(watchID);
+        geolocator.clearWatch();
 
-        test.gls.watchPosition();
-        test.gls.clearWatch();
-
-        expect(test.navigator.geolocation.clearWatch).toHaveBeenCalledWith(watchID);
+        expect(navigator.geolocation.clearWatch).toHaveBeenCalledWith(WATCH_ID_STUB);
       });
     });
 
-    describe('isSupported', function() {
-      it('should return true if HTML5 geolocation is supported', function() {
-        var test = testFactory({
-          navigator: window.navigator
-        });
+    describe('isSupported', function () {
+      it('should return true if HTML5 geolocation is supported', function () {
+        stubGlobalNavigator(new MockNavigator());
 
-        expect(test.gls.isSupported()).toEqual(true);
+        expect(HTML5GeolocateService.isSupported()).toEqual(true);
       });
 
-      it('should return false if HTML5 geolocation is not supported', function() {
-        var test = testFactory({
-          navigator: 'IE8 FTW'
-        });
+      it('should return false if HTML5 geolocation is not supported', function () {
+        stubGlobalNavigator(null);
 
-        expect(test.gls.isSupported()).toEqual(false);
+        expect(HTML5GeolocateService.isSupported()).toEqual(false);
       });
     });
 
   });
-});
+})
+;
