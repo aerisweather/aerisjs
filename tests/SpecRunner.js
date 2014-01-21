@@ -102,7 +102,12 @@ require([
       'spec/aeris/maps/base/extension/mapobjectcollection',
       //'spec/aeris/maps/base/extension/mapextensionobject',
       //'spec/aeris/maps/base/abstractstrategy',
-      'spec/aeris/maps/base/abstractlayer',
+
+      'spec/aeris/maps/base/layers/abstractlayer',
+      'spec/aeris/maps/base/layers/abstracttile',
+      'spec/aeris/maps/base/layers/aerisinteractivetile',
+      'spec/aeris/maps/base/layers/aerismodistile',
+      'spec/aeris/maps/base/layers/aerisseasurfacetemps',
 
       //'spec/aeris/maps/base/markers/pointdatamarker',
 
