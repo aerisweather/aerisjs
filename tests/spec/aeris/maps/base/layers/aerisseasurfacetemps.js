@@ -6,9 +6,9 @@ define(['ai/maps/layers/aerisseasurfacetemps'], function(AerisSeaSurfaceTemps) {
       expect(layer.get('tileType')).toBe('modis_sst_3day');
     });
 
-    it('should default to a 1 day modis period', function() {
+    it('should default to a 14 day modis period', function() {
       var layer = new AerisSeaSurfaceTemps();
-      expect(layer.get('tileType')).toBe('modis_sst_1day');
+      expect(layer.get('tileType')).toBe('modis_sst_14day');
     });
 
   });

@@ -13,7 +13,8 @@ define([
       }
     };
     var options = {
-      strategy: function() {}
+      strategy: function() {},
+      period: 1
     };
 
     AerisModisTile.call(this, attrs, options);
