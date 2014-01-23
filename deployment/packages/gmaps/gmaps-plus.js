@@ -1,6 +1,6 @@
 ({
   name: 'almond',
-  out: '../../../build/packages/gmaps.js',
+  out: '../../../build/packages/gmaps-plus.js',
 
   mainConfigFile: '../../../lib/config.js',
   baseUrl: '../../../lib',
@@ -27,7 +27,9 @@
 
   include: [
     'ai/packages/maps',
-    'ai/packages/gmaps'
+    'ai/packages/gmaps',
+    'ai/packages/api',
+    'ai/packages/geoservice'
   ],
   wrap: {
     startFile: ['../../frag/almond/start.frag.js'],
