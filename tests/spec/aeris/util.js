@@ -650,5 +650,32 @@ define([
       
     });
 
+    describe('inherits', function() {
+      var Parent, Child, GrandChild;
+      var parent, child, grandChild;
+
+      beforeEach(function() {
+        Parent = function() {};
+
+        Child = function() {};
+        _.inherits(Child, Parent);
+
+        GrandChild = function() {};
+        _.inherits(GrandChild, Child);
+
+        parent = new Parent();
+        child = new Child();
+        grandChild = new GrandChild();
+      });
+
+
+      it('should save a reference to the parent class', function() {
+        expect(child.__Parent).toEqual(Parent);
+        expect(grandChild.__Parent).toEqual(Child);
+      });
+
+
+    });
+
   });
 });
