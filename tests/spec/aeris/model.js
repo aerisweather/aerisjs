@@ -202,56 +202,83 @@ define([
     });
 
 
-    describe('cloneUsingType', function() {
-
-      var MockModel;
+    describe('clone', function() {
+      var ChildModel;
 
       beforeEach(function() {
-        MockModel = jasmine.createSpy('MockModel#ctor');
-        _.inherits(MockModel, Model);
+        ChildModel = jasmine.createSpy('ChildModel#ctor').andCallFake(function() {
+          Model.apply(this, arguments);
+        });
+        _.inherits(ChildModel, Model);
       });
 
-      it('should create an instance of the specified Type', function() {
-        var model = new Model();
-        expect(model.cloneUsingType(MockModel)).toBeInstanceOf(MockModel);
-      });
-
-      it('should reject non-constructors', function() {
-        var model = new Model();
-
-        expect(function() {
-          model.cloneUsingType('foo');
-        }).toThrowType('TypeError');
-
-        model.cloneUsingType(MockModel);
-      });
-
-      it('should reject constructors for non-models', function() {
-        var model = new Model();
-        var NotAModel = function() {};
-
-        expect(function() {
-          model.cloneUsingType(NotAModel);
-        }).toThrowType('InvalidArgumentError');
-
-        model.cloneUsingType(MockModel);
+      it('should create an instance of the same type', function() {
+        var model = new ChildModel();
+        expect(model.clone()).toBeInstanceOf(ChildModel);
       });
 
       describe('the cloned model', function() {
 
-        it('should be constructed with the same attributes as the original', function() {
-          var model = new Model({
+        it('should be constructed with the same attributes and options as the original', function() {
+          var attrs = {
             foo: 'bar',
             hello: { you: 'all' }
+          };
+          var opts = {
+            optA: 'OPT_A',
+            optB: 'OPT_B'
+          };
+          var model = new ChildModel(attrs, opts);
+
+          ChildModel.andCallFake(function(opt_attrs, opt_options) {
+            expect(opt_attrs).toEqual(attrs);
+            expect(opt_options).toEqual(opts);
           });
 
-          MockModel.andCallFake(function(attrs) {
-            expect(attrs.foo).toEqual('bar');
-            expect(attrs.hello).toEqual({ you: 'all' });
-          });
+          model.clone();
+          expect(ChildModel).toHaveBeenCalled();
+        });
 
-          model.cloneUsingType(MockModel);
-          expect(MockModel).toHaveBeenCalled();
+        it('should be constructed with the same attributes, even after attributes have been changes', function() {
+          var model = new ChildModel({
+            attrA: 'ATTR_A'
+          });
+          var ATTR_A_CHANGED = 'ATTR_A_CHANGED';
+          model.set('attrA', ATTR_A_CHANGED);
+
+          ChildModel.andCallFake(function(attrs, options) {
+            expect(attrs.attrA).toEqual(ATTR_A_CHANGED);
+          })
+
+          model.clone();
+          expect(ChildModel).toHaveBeenCalled();
+        });
+
+        it('should be constructed with extended attributes and options', function() {
+          var attrsOrig = {
+            attrA: 'ATTR_A',
+            attrB: 'ATTR_B'
+          }
+          var optsOrig = {
+            optA: 'OPT_A',
+            optB: 'OPT_B',
+            validate: false
+          };
+          var model = new ChildModel(attrsOrig, optsOrig);
+
+          model.clone({
+            attrA: 'ATTR_A_CHANGED'
+          }, {
+            optB: 'OPT_B_CHANGED'
+          });
+          expect(ChildModel).toHaveBeenCalledWith({
+            attrA: 'ATTR_A_CHANGED',
+            attrB: 'ATTR_B'
+          }, {
+            optA: 'OPT_A',
+            optB: 'OPT_B_CHANGED',
+            validate: false
+          });
         });
 
         it('should not contain a reference to the original\'s attributes object', function() {
@@ -259,46 +286,12 @@ define([
             foo: 'bar',
             hello: { you: 'all' }
           });
+          var clone = model.clone();
 
-          MockModel.andCallFake(function(attrs) {
-            attrs.foo = 'shazaam';
-
-            // Changes to clone should not effect original
-            expect(model.attributes.foo).toEqual('bar');
-          });
-
-          model.cloneUsingType(MockModel);
-          expect(MockModel).toHaveBeenCalled();
+          model.set('foo', 'changed');
+          expect(clone.get('foo')).toEqual('bar');
         });
 
-        it('should be created with the same options as the original', function() {
-          var model = new Model(null, {
-            isPassingSpec: 'I sure hope so.'
-          });
-
-          MockModel.andCallFake(function(attrs, options) {
-            expect(options.isPassingSpec).toEqual('I sure hope so.');
-          });
-
-          model.cloneUsingType(MockModel);
-          expect(MockModel).toHaveBeenCalled();
-        });
-
-      });
-
-    });
-
-
-    describe('clone', function() {
-
-      it('should act as though it\'s not defined', function() {
-        // Because Backbone's Model#clone is broken by
-        // our inheritance pattern.
-        var model = new Model();
-
-        expect(function() {
-          model.clone();
-        }).toThrowType('TypeError');
       });
 
     });

@@ -15,12 +15,21 @@ define([
       distance: _.uniqueId('distance_')
     });
 
-    Model.call(this, attrs, opt_options);
+    this.map_ = attrs.map || null;
 
-    // Stub validation
-    spyOn(this, 'validate');
+    Model.call(this, attrs, opt_options);
   };
   _.inherits(MockWaypoint, Waypoint);
+
+  MockWaypoint.prototype.validate = jasmine.createSpy('validate');
+
+  MockWaypoint.prototype.setMap = function(map) {
+    this.map_ = map;
+  };
+
+  MockWaypoint.prototype.getMap = function() {
+    return this.map_;
+  }
 
 
   var MockRoute = function() {
@@ -90,7 +99,7 @@ define([
 
       it('should reject waypoints which do not belong to the route', function() {
         var route = new MockRoute();
-        var reverser = new RouteReverser(route, { Waypoint: MockWaypoint });
+        var reverser = new RouteReverser(route);
 
         route.contains.andReturn(false);
 
@@ -107,7 +116,7 @@ define([
         beforeEach(function() {
           route = new MockRoute();
           waypoint = new MockWaypoint();
-          reverser = new RouteReverser(route, { Waypoint: MockWaypoint });
+          reverser = new RouteReverser(route);
 
           route.setStubbedWaypoints([waypoint]);
           route.setHasNext(false);
@@ -183,7 +192,7 @@ define([
           middleWaypoint = new MockWaypoint();
           nextWaypoint = new MockWaypoint();
 
-          reverser = new RouteReverser(route, { Waypoint: MockWaypoint });
+          reverser = new RouteReverser(route);
 
           spyOn(reverser, 'getWaypointPathInReverse').andReturn([]);
 
@@ -293,7 +302,7 @@ define([
 
       beforeEach(function() {
         route = new MockRoute();
-        reverser = new RouteReverser(route, { Waypoint: MockWaypoint });
+        reverser = new RouteReverser(route);
       });
 
       describe('For a route with no waypoints', function() {
@@ -422,7 +431,7 @@ define([
           throw Error('MockMethodError: Unexpected waypoint param for route.getNext');
         });
 
-        reverser = new RouteReverser(route, { Waypoint: MockWaypoint });
+        reverser = new RouteReverser(route);
 
 
         this.addMatchers({
@@ -480,8 +489,7 @@ define([
           path: [],
           distance: 0,
           followDirections: 'youGotta',
-          travelMode: 'FASTER_THAN_YOU',
-          map: null
+          travelMode: 'FASTER_THAN_YOU'
         });
 
         // Reverse of middleWaypoint
@@ -496,8 +504,7 @@ define([
           ],
           distance: 300.3,
           followDirections: 'youGotta',
-          travelMode: 'FASTER_THAN_YOU',
-          map: null
+          travelMode: 'FASTER_THAN_YOU'
         });
 
         // Reverse of firstWaypoint
@@ -510,8 +517,7 @@ define([
           ],
           distance: 200.2,
           followDirections: 'nah',
-          travelMode: 'THE_WORM',
-          map: null
+          travelMode: 'THE_WORM'
         });
       });
 
