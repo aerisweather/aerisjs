@@ -15,7 +15,14 @@ define(function() {
     return this.get.mostRecentCall.args[2];
   };
 
-  MockJSONP.prototype.respondWith = function(res) {
+  MockJSONP.prototype.resolveWith = function(res) {
+    var cb;
+
+    if (this.get.callCount) {
+      cb = this.getRequestedCallback()
+      cb(res);
+    }
+
     this.get.andCallFake(function(url, params, callback) {
       callback(res);
     });
