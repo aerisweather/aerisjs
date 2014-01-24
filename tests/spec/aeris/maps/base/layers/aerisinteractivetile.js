@@ -1,10 +1,14 @@
 define([
   'ai/util',
   'sinon',
+  'ai/promise',
   'ai/maps/layers/aerisinteractivetile',
   'ai/maps/abstractstrategy',
-  'ai/config'
-], function(_, sinon, AerisInteractiveTile, Strategy, aerisConfig) {
+  'ai/config',
+  'mocks/aeris/jsonp',
+  'ai/errors/timeouterror'
+], function(_, sinon, Promise, AerisInteractiveTile, Strategy, aerisConfig, MockJSONP, TimeoutError) {
+
 
   function TestFactory(opt_options) {
     var options = _.extend({
@@ -186,6 +190,88 @@ define([
         test.tile.set('autoUpdate', false);
 
         expect(test.tile).not.toBeAutoUpdating();
+      });
+
+    });
+
+
+    describe('loadTileTimes', function() {
+      var tile, jsonp, clock;
+      var API_ID_STUB = 'API_ID_STUB', API_SECRET_STUB = 'API_SECRET_STUB';
+      var TILE_TYPE_STUB = 'TILE_TYPE_STUB';
+      var STUB_TIMES = [1000, 2000, 3000, 4000, 5000];
+
+      var MockTimesResponse = function(times) {
+        return {
+          files: _.map(times, this.timeToResponseObject_, this)
+        }
+      };
+
+      MockTimesResponse.prototype.timeToResponseObject_ = function(time, i) {
+        var unixTimestamp = time / 1000;
+        return {
+          number: i,
+          timestamp: unixTimestamp,
+          time: 'TIMESTRING_STUB'
+        };
+      };
+
+      beforeEach(function() {
+        // Stub out validation
+        spyOn(AerisInteractiveTile.prototype, 'isValid');
+
+        jsonp = new MockJSONP();
+        tile = new AerisInteractiveTile({
+          apiId: API_ID_STUB,
+          apiSecret: API_SECRET_STUB,
+          tileType: TILE_TYPE_STUB
+        }, {
+          jsonp: jsonp
+        });
+
+        clock = sinon.useFakeTimers();
+      });
+
+      afterEach(function() {
+        clock.restore();
+      });
+
+
+
+      it('should return a promise', function() {
+        expect(tile.loadTileTimes()).toBeInstanceOf(Promise);
+      });
+
+      it('should request json data from the aeris tiles API', function() {
+        tile.loadTileTimes();
+
+        expect(jsonp.getRequestedUrl()).toEqual(
+          'http://tile.aerisapi.com/' +
+          API_ID_STUB + '_' + API_SECRET_STUB + '/' +
+          TILE_TYPE_STUB + '.jsonp'
+        );
+      });
+
+      it('should resolve with an array of timestamps', function() {
+        var promiseToLoadTimes = tile.loadTileTimes();
+        var onDone = jasmine.createSpy('onDone');
+        promiseToLoadTimes.done(onDone);
+
+        jsonp.resolveWith(new MockTimesResponse(STUB_TIMES));
+
+        expect(onDone).toHaveBeenCalledWith(STUB_TIMES);
+      });
+
+      it('should reject after a timeout of 5 seconds', function() {
+        var TIMEOUT = 5000;
+        var promiseToLoadTimes = tile.loadTileTimes();
+        var onFail = jasmine.createSpy('onFail');
+        promiseToLoadTimes.fail(onFail);
+
+        clock.tick(TIMEOUT);
+
+        expect(onFail).toHaveBeenCalled();
+        expect(onFail.mostRecentCall.args[0]).toBeInstanceOf(TimeoutError);
       });
 
     });
