@@ -86,7 +86,7 @@ define([
 
         describe('single animation', function() {
 
-          it('should trigger a \'load\' event when the animation is finshed loading', function() {
+          it('should trigger a \'load:complete\' event when the animation is finshed loading', function() {
             var listener = jasmine.createSpy('load handler');
             var animation = new MockAnimation({
               progress: 1
@@ -94,13 +94,13 @@ define([
             var test = new TestFactory();
 
             test.sync.add(animation);
-            test.sync.on('load', listener);
+            test.sync.on('load:complete', listener);
 
-            animation.trigger('load');
+            animation.trigger('load:complete');
             expect(listener).toHaveBeenCalled();
           });
 
-          it('should trigger a \'load\' event while the animations is loading', function() {
+          it('should trigger a \'load:progress\' event while the animations is loading', function() {
             var listener = jasmine.createSpy('load:progress handler');
             var progress = 0.75;
             var animation = new MockAnimation({
@@ -143,14 +143,14 @@ define([
             // and listen to sync load events
             test.sync.add(animations);
             test.sync.on('load:progress', progListener);
-            test.sync.on('load', completeListener);
+            test.sync.on('load:complete', completeListener);
 
             animations[3].trigger('load:progress', progressArr[3]);
             expect(progListener).toHaveBeenCalledWith(_.average(progressArr));
             expect(completeListener).not.toHaveBeenCalled();
           });
 
-          it('should trigger a load event when all animations are loaded', function() {
+          it('should trigger a \'load:complete\' event when all animations are loaded', function() {
             var listener = jasmine.createSpy('sync load complete handler');
             var test = new TestFactory();
             var animations = [
@@ -159,10 +159,10 @@ define([
               new MockAnimation({ progress: 1 })
             ];
 
-            test.sync.on('load', listener);
+            test.sync.on('load:complete', listener);
             test.sync.add(animations);
 
-            animations[1].trigger('load');
+            animations[1].trigger('load:copmlete');
             expect(listener).toHaveBeenCalled();
           });
 
