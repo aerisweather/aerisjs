@@ -119,7 +119,7 @@ require([
 
       'spec/aeris/maps/base/animations/abstractanimation',
       'spec/aeris/maps/base/animations/animationsync',
-      //'spec/aeris/maps/base/animations/aerisinteractivetile',
+      'spec/aeris/maps/base/animations/aerisinteractivetile',
       'spec/aeris/maps/base/animations/helpers/timelayersfactory',
       'spec/aeris/maps/base/animations/helpers/animationlayerloader',
 

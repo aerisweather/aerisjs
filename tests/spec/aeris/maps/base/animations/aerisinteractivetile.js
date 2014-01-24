@@ -1,364 +1,561 @@
 define([
   'ai/util',
-  'ai/events',
-  'sinon',
-  'testUtils',
-  'testErrors/untestedspecerror',
-  'ai/promise',
-  'mocks/promise',
-  'ai/aerisapi',
   'ai/maps/animations/aerisinteractivetile',
-  'ai/maps/layers/aerisinteractivetile',
-  'mocks/times'
-], function(_, Events, sinon, testUtils, UntestedSpecError, Promise, MockPromise, AerisAPI, TileAnimation, TileLayer) {
-  var clock;
-  var CannedTimes = require('mocks/times');
+  'ai/model',
+  'ai/promise',
+  'ai/events',
+  'mocks/aeris/maps/animations/helpers/times'
+], function(_, AerisInteractiveTileAnimation, Model, Promise, Events, MockTimes) {
 
-  var getCannedTimes = function(opt_options) {
-    return new CannedTimes(opt_options);
+  var MockOrderedTimes = function() {
+    var times = MockTimes.apply(null, arguments);
+
+    return _.sortBy(times, _.identity);
   };
 
-  var getTimesPromise = function(opt_options) {
-    var options = _.extend({
-      times: getCannedTimes(),
-      resolve: true
-    }, opt_options);
+  var MockMap = function() {};
 
-    return new MockPromise({
-      resolve: options.resolve,
-      args: [options.times]
+
+  var MockLayer = function(opt_attrs, opt_options) {
+    var attrs = _.defaults(opt_attrs || {}, {
+      opacity: 1
     });
+
+    Model.call(this, attrs, opt_options);
+  };
+  _.inherits(MockLayer, Model);
+
+  MockLayer.prototype.setMap = function(map) {
+    this.set('map', map);
+  }
+
+  MockLayer.prototype.getMap = function() {
+    return this.get('map');
+  }
+
+  MockLayer.prototype.isLoaded = function() {
+    return true;
+  }
+
+  MockLayer.prototype.setOpacity = function(opacity) {
+    this.set('opacity', opacity);
+  };
+
+  MockLayer.prototype.getOpacity = function() {
+    return this.get('opacity');
+  }
+
+  MockLayer.prototype.stop = function() {
+    return this;
+  }
+
+  MockLayer.prototype.show = function() {
+    this.setOpacity(1);
+  };
+
+  MockLayer.prototype.hide = function() {
+    this.setOpacity(0);
   };
 
 
-  var testFactory = function(opt_options) {
-    var layers = [];
-    var animation;
-    var animationOptions;
-    var options = _.extend({
-      timesCount: 100,
-      baseTime: 100,
-      limit: 10,
-      timestep: 100,
-      interval: 1,
-      speed: 1
-    }, opt_options);
+  var MockTimeLayers = function(opt_times) {
+    var times = opt_times || new MockOrderedTimes();
+    var timeLayers = {};
 
-    _.extend(options, {
-      times: getCannedTimes({
-        count: options.timesCount,
-        baseTime: options.baseTime,
-        interval: options.interval
-      }),
-      baseLayer: new MockTileLayer({ time: options.baseTime })
-    }, opt_options);
-
-    _.extend(options, {
-      timesPromise: getTimesPromise({ times: options.times })
-    }, opt_options);
-
-    // Retain our stubbed layer 'frames'
-    options.baseLayer.clone.andCallFake(function(options) {
-      var layer = new MockTileLayer({ time: options.time });
-      layers.push(layer);
-      return layer;
+    _.each(times, function(time) {
+      timeLayers[time] = new MockLayer({
+        time: new Date(time)
+      });
     });
 
-    AerisAPI.getTileTimes.andReturn(options.timesPromise);
+    return timeLayers;
+  };
 
-    animationOptions = _.pick(options, [
-      'from',
-      'to',
-      'limit',
-      'timestep',
-      'speed',
-      'opacity',
-      'endDelay'
-    ]);
-    animation = new TileAnimation(options.baseLayer, animationOptions);
 
-    spyOn(animation, 'goToTime').andCallThrough();
+  var MockLayerLoader = function() {
+    this.createPromiseSpy_('load');
+    Events.call(this);
+  };
+  _.extend(MockLayerLoader.prototype, Events.prototype);
 
-    return {
-      times: options.times,
-      timesPromise: options.timesPromise,
-      animation: animation,
-      baseLayer: options.baseLayer,
-      layers: _.sortBy(layers, function(lyr) { return lyr.getTimestamp(); })
+  MockLayerLoader.prototype.load = function() {
+    return new Promise();
+  };
+
+  MockLayerLoader.prototype.createPromiseSpy_ = function(methodName) {
+    var methodNotCalledError = new Error('Unable to resolve mock promise method: ' +
+      methodName + ' method was never called');
+    var throwMethodNotCalledError = function() {
+      throw methodNotCalledError;
     };
-  };
 
+    // Stub the spy,
+    // and provide test methods for resolving the returned promise;
+    var methodSpy = spyOn(this, methodName).andCallFake(function() {
+      var promise = new Promise();
 
-  var MockTileLayer = function(opt_options) {
-    var options = _.extend({
-      time: 100,
-      isLoaded: true
-    }, opt_options);
+      methodSpy.andResolveWith = function(var_args) {
+        promise.resolve.apply(promise, arguments);
+      };
+      methodSpy.andRejectWith = function(var_args) {
+        promise.reject.apply(promise, arguments);
+      };
 
-    var layer = sinon.createStubInstance(TileLayer);
-
-    Events.call(layer);
-    _.extend(layer, Events.prototype);
-
-    layer.time = new Date(options.time);
-
-    layer.cid = _.uniqueId('testLayer_');
-
-    spyOn(layer, 'clone').andCallFake(function(cloneOpts) {
-      return new MockTileLayer({ time: cloneOpts.time });
+      return promise;
     });
 
-    // Make 'layer.stop' chainable
-    spyOn(layer, 'stop').andReturn(layer);
+    methodSpy.andResolveWith = throwMethodNotCalledError;
+    methodSpy.andRejectWith = throwMethodNotCalledError;
+  }
 
-    spyOn(layer, 'getTimestamp').andReturn(layer.time.getTime());
-
-    spyOn(layer, 'isLoaded').andReturn(options.isLoaded);
-
-    spyOn(layer, 'setOpacity');
-
-    return layer;
-  };
-
-
-
-  beforeEach(function() {
-    clock = sinon.useFakeTimers();
-    clock.tick(100000000000000);
-  });
-  afterEach(function() {
-    clock.restore();
-  });
+  MockLayerLoader.prototype.getLoadProgress = function() {
+    return 0.12345;
+  }
 
 
 
 
-  describe('An AerisInteractiveTileAnimation', function() {
+
+  describe('An AerisInteractiveTile Animation', function() {
+    var animation, layerLoader, baseLayer;
+    var times, timeLayers;
+    var TIMES_COUNT = 10;
 
     beforeEach(function() {
-      spyOn(AerisAPI, 'getTileTimes').andReturn(getTimesPromise());
-    });
-
-    describe('constructor', function() {
-      it('should create layers for a limited number of tile times', function() {
-        var times = getCannedTimes(20);
-        var timesPromise = getTimesPromise({ times: times });
-        var layer = new MockTileLayer();
-        var limit = 10;
-
-        AerisAPI.getTileTimes.andReturn(timesPromise);
-
-        new TileAnimation(layer, { limit: limit });
-
-        expect(layer.clone.callCount).toEqual(limit);
+      baseLayer = new MockLayer();
+      layerLoader = new MockLayerLoader();
+      animation = new AerisInteractiveTileAnimation(baseLayer, {
+        animationLayerLoader: layerLoader
       });
 
-      describe('load events', function() {
-        it('should throw load and load:progress events', function() {
-          var test = testFactory({
-            timesCount: 10
-          });
-          var progressListener = jasmine.createSpy('load:progress listener');
-          var loadListener = jasmine.createSpy('load listener');
 
-          test.animation.on('load:progress', progressListener);
-          test.animation.on('load', loadListener);
+      times = new MockOrderedTimes(TIMES_COUNT);
+      timeLayers = new MockTimeLayers(times);
+    });
 
-          // Mark all layers as not loaded
-          _.each(test.layers, function(layer) {
-            layer.isLoaded.andReturn(false);
-          });
 
-          // Load each layer,
-          // and check that load events were triggered
-          _.each(test.layers, function(layer, i) {
-            var progress;
 
-            layer.isLoaded.andReturn(true);
-            layer.trigger('load');
+    describe('loadAnimationLayers', function() {
 
-            progress = progressListener.mostRecentCall.args[0];
-            expect(progress).toBeNear(0.1 * (i + 1), 0.000001);
-            expect(progressListener.callCount).toEqual(i + 1);
+      it('should load layers using the AnimationLayerLoader', function() {
+        animation.loadAnimationLayers();
 
-            if (progress < 1) {
-              expect(loadListener).not.toHaveBeenCalled();
+        expect(layerLoader.load).toHaveBeenCalled();
+      });
+
+      it('should proxy load events from the AnimationLayerLoader', function() {
+        function shouldProxyLoaderEvent(event) {
+          var listener = jasmine.createSpy(event + '_listener');
+          var eventParam = _.uniqueId(event + 'param_stub_');
+          animation.on(event, listener);
+
+          layerLoader.trigger(event, eventParam);
+          expect(listener).toHaveBeenCalledWith(eventParam);
+        }
+
+        animation.loadAnimationLayers();
+
+        _.each([
+          'load:times',
+          'load:progress',
+          'load:complete',
+          'load:error'
+        ], shouldProxyLoaderEvent);
+      });
+
+      it('should turn of autoUpdating on the base layer', function() {
+        baseLayer.set('autoUpdate', true);
+
+        animation.loadAnimationLayers();
+
+        expect(baseLayer.get('autoUpdate')).toEqual(false);
+      });
+
+
+      describe('when layers are loaded', function() {
+        var timeLayers, times;
+
+        beforeEach(function() {
+          times = new MockOrderedTimes();
+          timeLayers = new MockTimeLayers(times);
+          animation.loadAnimationLayers();
+        });
+
+
+        it('should set the current time to the latest time', function() {
+          var latestTime = Math.max.apply(null, times);
+          layerLoader.load.andResolveWith(timeLayers);
+
+          expect(animation.getCurrentTime()).toEqual(latestTime);
+        });
+
+        it('should hide all layers except for the latest', function() {
+          var timeLayers = {
+            10: new MockLayer({ opacity: 1}),
+            20: new MockLayer({ opacity: 1}),
+            30: new MockLayer({ opacity: 1})
+          }
+          layerLoader.load.andResolveWith(timeLayers);
+
+          expect(timeLayers[10].getOpacity()).toEqual(0);
+          expect(timeLayers[20].getOpacity()).toEqual(0);
+          expect(timeLayers[30].getOpacity()).toBeGreaterThan(0);
+        });
+
+      });
+
+    });
+
+
+    describe('Animation step methods', function() {
+
+      beforeEach(function() {
+        animation.loadAnimationLayers();
+        
+        spyOn(animation, 'goToTime').andCallThrough();
+      });
+
+
+      describe('next', function() {
+
+        it('should go to the next time', function() {
+          layerLoader.load.andResolveWith(timeLayers);
+          animation.goToTime(times[0]);
+          
+          animation.next();
+          expect(animation.getCurrentTime()).toEqual(times[1]);
+          
+          animation.next();
+          expect(animation.getCurrentTime()).toEqual(times[2]);
+        });
+
+        it('should go to the first time, if the last time is current', function() {
+          layerLoader.load.andResolveWith(timeLayers);
+
+          animation.goToTime(_.last(times));
+          
+          animation.next();
+          expect(animation.getCurrentTime()).toEqual(times[0]);
+        });
+
+        it('should do nothing if no times are loaded', function() {
+          // Should not throw an error
+          animation.next();
+          animation.next();
+        });
+
+      });
+
+
+      describe('previous', function() {
+
+        it('should go to the previous time', function() {
+          layerLoader.load.andResolveWith(timeLayers);
+          animation.goToTime(times[2]);
+
+          animation.previous();
+          expect(animation.getCurrentTime()).toEqual(times[1]);
+
+          animation.previous();
+          expect(animation.getCurrentTime()).toEqual(times[0]);
+        });
+
+        it('should go to the last time, if the first time is current', function() {
+          layerLoader.load.andResolveWith(timeLayers);
+          animation.goToTime(times[0]);
+
+          animation.previous();
+          expect(animation.getCurrentTime()).toEqual(_.last(times));
+        });
+
+        it('should do nothing if no times are loaded', function() {
+          // Should not throw error
+          animation.previous();
+          animation.previous();
+        });
+
+      });
+
+
+      describe('goToTime', function() {
+
+        beforeEach(function() {
+          animation.loadAnimationLayers();
+
+          this.addMatchers({
+            toBeShowingLayerForTime: function(time) {
+              var timeLayers = this.actual;
+
+              var shownTimes = _.filter(_.keys(timeLayers), function(time) {
+                var layer = timeLayers[time];
+                return layer.getOpacity() > 0;
+              });
+              // Convert to numbers
+              shownTimes = _.map(shownTimes, function(time) {
+                return parseInt(time);
+              });
+
+              this.message = _.bind(function() {
+                var message = 'Expected only layer with time ' + time + ' to be shown, ';
+
+                if (shownTimes.length) {
+                  message += 'but layers were shown for times ' + shownTimes.join(', ') + '.';
+                }
+                else {
+                  message += 'but no layers were shown';
+                }
+
+                return message;
+              }, this);
+
+              return _.isEqual(shownTimes, [time]);
             }
-          });
-
-          expect(loadListener).toHaveBeenCalled();
+          })
         });
 
-        it('should throw a load:times event, with an array of times', function() {
-          var promise = new Promise();
-          var test = testFactory({
-            timesPromise: promise
-          });
-          var times = getCannedTimes();
-          var timesListener = jasmine.createSpy('times listener');
 
-          test.animation.on('load:times', timesListener);
+        it('should show only the layer for the closest available time', function() {
+          var timeLayers = {
+            10: new MockLayer(),
+            20: new MockLayer(),
+            30: new MockLayer()
+          };
+          layerLoader.load.andResolveWith(timeLayers);
 
-          promise.resolve(times);
+          animation.goToTime(0);
+          expect(timeLayers).toBeShowingLayerForTime(10);
 
-          expect(timesListener).toHaveBeenCalledWith(times);
+          animation.goToTime(2);
+          expect(timeLayers).toBeShowingLayerForTime(10);
+
+          animation.goToTime(10);
+          expect(timeLayers).toBeShowingLayerForTime(10);
+
+          animation.goToTime(14);
+          expect(timeLayers).toBeShowingLayerForTime(10);
+
+          animation.goToTime(16);
+          expect(timeLayers).toBeShowingLayerForTime(20);
+
+          animation.goToTime(24);
+          expect(timeLayers).toBeShowingLayerForTime(20);
+
+          animation.goToTime(9999);
+          expect(timeLayers).toBeShowingLayerForTime(30);
+        });
+        
+        it('should set the current time to the specified time', function() {
+          animation.goToTime(0);
+          expect(animation.getCurrentTime()).toEqual(0);
+
+          animation.goToTime(2);
+          expect(animation.getCurrentTime()).toEqual(2);
+
+          animation.goToTime(10);
+          expect(animation.getCurrentTime()).toEqual(10);
+
+          animation.goToTime(14);
+          expect(animation.getCurrentTime()).toEqual(14);
+
+          animation.goToTime(16);
+          expect(animation.getCurrentTime()).toEqual(16);
+
+          animation.goToTime(24);
+          expect(animation.getCurrentTime()).toEqual(24);
+
+          animation.goToTime(9999);
+          expect(animation.getCurrentTime()).toEqual(9999);
         });
 
-        it('should trigger load:progress when a layer\'s load resets', function() {
-          var test = testFactory({
-            timesCount: 10
-          });
-          var progressListener = jasmine.createSpy('progress listener');
+        it('should not show the layer, if the layer is not loaded', function() {
+          var layer = new MockLayer();
+          var timeLayers = {
+            10: layer
+          };
+          spyOn(layer, 'isLoaded').andReturn(false);
+          layerLoader.load.andResolveWith(timeLayers);
 
-          // Set loading to complete
-          _.each(test.layers, function(layer) {
-            layer.isLoaded.andReturn(true);
-          });
+          animation.goToTime(10);
+          expect(layer.getOpacity()).toEqual(0);
+        });
 
-          test.animation.on('load:progress', progressListener);
+        it('should trigger a \'change:time\' event, with a Date object', function() {
+          var onChangeTime = jasmine.createSpy('onChangeTime');
+          animation.on('change:time', onChangeTime);
 
-          // Reset the first layer's loading progress
-          test.layers[0].isLoaded.andReturn(false);
-          test.layers[0].trigger('load:reset');
+          animation.goToTime(10);
 
-          expect(progressListener.mostRecentCall.args[0]).toBeNear(0.9, 0.0000001);
+          expect(onChangeTime).toHaveBeenCalledWith(new Date(10));
         });
 
       });
+
+
     });
+
 
     describe('getLoadProgress', function() {
-      it('should return a percentage count of loaded tiles', function() {
-        var test = testFactory({
-          timesCount: 10
-        });
 
-        // Mark half the layers as loaded
-        _.times(5, function(i) {
-          test.layers[i].isLoaded.andReturn(false);
-          test.layers[i + 5].isLoaded.andReturn(true);
-        });
+      it('should return the load progress, using the AnimationLayerLoader', function() {
+        var LOAD_PROGRESS_STUB = 0.12345;
+        spyOn(layerLoader, 'getLoadProgress').andReturn(LOAD_PROGRESS_STUB);
 
-        expect(test.animation.getLoadProgress()).toBeNear(0.5, 0.00001);
-
-        test.layers[0].isLoaded.andReturn(true);
-        expect(test.animation.getLoadProgress()).toBeNear(0.6, 0.00001);
+        expect(animation.getLoadProgress()).toEqual(LOAD_PROGRESS_STUB);
       });
+
     });
 
-    describe('goToTime', function() {
-      it('should hide the current layer', function() {
-        var test = testFactory();
-        var firstLayer = test.layers[0];
 
-        spyOn(firstLayer, 'hide');
+    describe('remove', function() {
 
-        test.animation.goToTime(test.times[75]);
+      it('should stop the animation', function() {
+        spyOn(animation, 'stop');
 
-        expect(firstLayer.hide).toHaveBeenCalled();
+        animation.remove();
+
+        expect(animation.stop).toHaveBeenCalled();
       });
 
-      it('should show a layer with the closest timestamp', function() {
-        var test = testFactory({
-          baseTime: 100,
-          interval: 10,
-          timesCount: 10,
-          limit: 10
+      it('should stop firing load events', function() {
+        var onLoadSpy = jasmine.createSpy('onLoadSpy');
+        var loadEvents = [
+          'load:times',
+          'load:progress',
+          'load:complete',
+          'load:error'
+        ];
+        animation.on(loadEvents.join(' '), onLoadSpy);
+
+        animation.remove();
+
+        _.each(loadEvents, function(event) {
+          layerLoader.trigger(event);
         });
 
-        _.each(test.layers, function(layer) {
-          spyOn(layer, 'show');
-        });
-
-        test.animation.goToTime(101);
-        expect(test.layers[0].setOpacity).toHaveBeenCalled();
-
-        test.animation.goToTime(147);
-        expect(test.layers[5].setOpacity).toHaveBeenCalled();
-
-        test.animation.goToTime(9999999);
-        expect(test.layers[test.layers.length - 1].setOpacity).toHaveBeenCalled();
+        expect(onLoadSpy).not.toHaveBeenCalled();
       });
+
+      it('should remove all layers from the map', function() {
+        animation.loadAnimationLayers();
+        layerLoader.load.andResolveWith(timeLayers);
+        _.each(timeLayers, function(layer) {
+          layer.setMap(new MockMap());
+        });
+
+        animation.remove();
+
+        _.each(timeLayers, function(layer) {
+          expect(layer.getMap()).toEqual(null);
+        });
+      });
+
     });
 
-    describe('next', function() {
 
-      it('should go to the next time', function() {
-        var count = 5;
-        var test = testFactory({
-          timesCount: count,
-          limit: count
-        });
+    describe('setOpacity', function() {
+      var OPACITY_STUB = 0.1234321;
 
-        _.times(count - 1, function(i) {
-          test.animation.next();
-          expect(test.animation.goToTime.mostRecentCall.args[0]).
-            toEqual(test.times[i + 1]);
-        });
+      beforeEach(function() {
+        animation.loadAnimationLayers();
       });
 
-      it('should start over from the first time', function() {
-        var count = 3;
-        var test = testFactory({ timesCount: count });
 
-        _.times(count, test.animation.next, test.animation);
-        expect(test.animation.goToTime.mostRecentCall.args[0]).
-          toEqual(test.times[0]);
+      it('should set the opacity of the current layer', function() {
+        layerLoader.load.andResolveWith(timeLayers);
+
+        animation.setOpacity(OPACITY_STUB);
+
+        expect(animation.getCurrentLayer().getOpacity()).toEqual(OPACITY_STUB);
       });
+
+      it('should not set the opacity of non-current layers', function() {
+        var timeLayers = {
+          10: new MockLayer(),
+          20: new MockLayer(),
+          30: new MockLayer()
+        }
+        layerLoader.load.andResolveWith(timeLayers);
+        animation.goToTime(20);
+
+        animation.setOpacity(OPACITY_STUB);
+
+        expect(timeLayers[10].getOpacity()).toEqual(0);
+        expect(timeLayers[30].getOpacity()).toEqual(0);
+
+      });
+
+      it('should not throw a fit if no times are loaded', function() {
+        animation.setOpacity(OPACITY_STUB);
+      });
+
+      it('should use the opacity on the next layer rendered with goToTime', function() {
+        var timeLayers = {
+          10: new MockLayer(),
+          20: new MockLayer(),
+          30: new MockLayer()
+        }
+        layerLoader.load.andResolveWith(timeLayers);
+        animation.goToTime(20);
+
+        animation.setOpacity(OPACITY_STUB);
+        animation.goToTime(30);
+
+        expect(timeLayers[10].getOpacity()).toEqual(0);
+        expect(timeLayers[20].getOpacity()).toEqual(0);
+        expect(timeLayers[30].getOpacity()).toEqual(OPACITY_STUB);
+      });
+
     });
+
 
     describe('getTimes', function() {
 
-      it('should return times', function() {
-        var test = testFactory({
-          timesCount: 10,
-          limit: 10
-        });
+      beforeEach(function() {
+        animation.loadAnimationLayers();
+      });
 
-        expect(test.animation.getTimes()).toEqual(test.times);
+
+      it('should return a safe copy of the loaded times', function() {
+        var times;
+        var timeLayers = {
+          10: new MockLayer(),
+          20: new MockLayer(),
+          30: new MockLayer()
+        };
+        layerLoader.load.andResolveWith(timeLayers);
+
+        times = animation.getTimes();
+
+        expect(times).toEqual([10, 20, 30]);
+
+        // Should be safe copy
+        times.splice(0);
+        expect(animation.getTimes()).toEqual([10, 20, 30]);
       });
 
       it('should return an empty array if no times are loaded', function() {
-        var timesPromise = new Promise();
-        var test = testFactory({
-          limit: 10,
-          timesPromise: timesPromise
-        });
-        var times = getCannedTimes({ count: 10 });
-
-        expect(test.animation.getTimes()).toEqual([]);
-
-        timesPromise.resolve(times);
-        expect(test.animation.getTimes()).toEqual(times);
+        expect(animation.getTimes()).toEqual([]);
       });
 
-      it('should return a safe copy of the times array', function() {
-        var test = testFactory();
+    });
+    
+    
+    describe('getCurrentTime', function() {
 
-        var times = test.animation.getTimes();
+      it('should return the current time', function() {
+        var CURRENT_TIME = 1234;
+        animation.goToTime(1234);
 
-        times.push('eat it');
-        expect(test.animation.getTimes().indexOf('eat it')).toEqual(-1);
+        expect(animation.getCurrentTime()).toEqual(1234);
+      });
+
+      it('should return null, if no time are loaded, and goToTime hasn\'t been called', function() {
+        expect(animation.getCurrentTime()).toEqual(null);
       });
 
     });
 
-    describe('setOpacity', function() {
 
-      it('should set the opacity of animated layers', function() {
-        var test = testFactory({
-          timesCount: 5,
-          baseTime: 0,
-          interval: 100,
-          speed: 1
-        });
-
-        test.animation.setOpacity(0.675);
-        test.animation.goToTime(100);
-
-        expect(test.layers[1].setOpacity).toHaveBeenCalledWith(0.675);
-      });
-
-    });
   });
+
 });
