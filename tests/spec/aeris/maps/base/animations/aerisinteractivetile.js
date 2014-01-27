@@ -229,6 +229,18 @@ define([
           expect(animation.getCurrentTime()).toEqual(times[2]);
         });
 
+        it('should go to the next closest time', function() {
+          var timeLayers = new MockTimeLayers([
+            10, 20, 30
+          ]);
+          layerLoader.load.andResolveWith(timeLayers);
+          animation.goToTime(22);
+
+          animation.next();
+          expect(animation.getCurrentTime()).toEqual(30);
+
+        });
+
         it('should go to the first time, if the last time is current', function() {
           layerLoader.load.andResolveWith(timeLayers);
 
@@ -258,6 +270,17 @@ define([
 
           animation.previous();
           expect(animation.getCurrentTime()).toEqual(times[0]);
+        });
+
+        it('should go to the previous closest time', function() {
+          var timeLayers = new MockTimeLayers([
+            10, 20, 30
+          ]);
+          layerLoader.load.andResolveWith(timeLayers);
+          animation.goToTime(22);
+
+          animation.previous();
+          expect(animation.getCurrentTime()).toEqual(10);
         });
 
         it('should go to the last time, if the first time is current', function() {
