@@ -61,7 +61,7 @@ define([
       });
 
 
-      it('speed test', function() {
+      xit('speed test', function() {
         var factory, average;
 
         var LAYER_COUNT = 1000;
