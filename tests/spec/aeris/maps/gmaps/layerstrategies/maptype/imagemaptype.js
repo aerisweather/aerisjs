@@ -147,6 +147,29 @@ define([
       });
 
 
+      // This test should only be used for debugging,
+      // as performance results are not consistent enough
+      // for a potentially build-breaking test.
+      xit('speed test', function() {
+        // 10 animation frames on a full-screen map on my
+        // mac creates 900 tiles. 100 creates 9000.
+        var COUNT = 3000;
+        var pSamples = [];
+        var pSum;
+
+        _.times(COUNT, function() {
+          var p0 = performance.now();
+          tile = mapType.getTile(COORD_STUB, ZOOM_STUB, document);
+          var p1 = performance.now();
+
+          pSamples.push(p1 - p0);
+        });
+
+        pSum = pSamples.reduce(function(sum, val) { return sum + val; }, 0);
+        console.log(COUNT + ' tiles in ' + (pSum / 1000).toFixed(2) + ' seconds.');
+      });
+
+
       describe('the returned tile', function() {
         var tile;
 
