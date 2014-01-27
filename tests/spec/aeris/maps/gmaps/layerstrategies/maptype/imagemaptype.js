@@ -5,7 +5,8 @@ define([
 ], function(_, ImageMapType, $) {
 
   var MockDocument = function() {
-  }
+  };
+
   MockDocument.prototype.createElement = function(tagName) {
     if (tagName === 'img') {
       return new MockImageElement();
@@ -46,6 +47,16 @@ define([
         return getAttribute_orig.call(this.img_, attr);
       }
     }, this);
+  };
+
+
+
+
+  function createParentNodeForTile(tile) {
+    var firstLevelParent = $('<div></div>').append(tile)[0];
+    var secondLevelParent = $('<div></div>').append(firstLevelParent)[0];
+
+    return secondLevelParent;
   }
   
   
@@ -100,13 +111,16 @@ define([
 
       beforeEach(function() {
         mapTypeA = new ImageMapType({
-          zIndex: Z_INDEX_A
+          zIndex: Z_INDEX_A,
+          getTileUrl: getTileUrl
         });
         mapTypeB = new ImageMapType({
-          zIndex: Z_INDEX_B
+          zIndex: Z_INDEX_B,
+          getTileUrl: getTileUrl
         });
         mapTypeC = new ImageMapType({
-          zIndex: Z_INDEX_C
+          zIndex: Z_INDEX_C,
+          getTileUrl: getTileUrl
         });
 
         spyOn(mapTypeA, 'setZIndex').andCallThrough();
@@ -115,21 +129,21 @@ define([
       });
 
 
-      it('should reset it\'s zIndex when another ImageMapType update\'s it\'s zIndex', function() {
-        mapTypeB.setZIndex(123);
+      it('should reset it\'s zIndex when another ImageMapType retrieves a tile', function() {
+        var tileA = mapTypeA.getTile(COORD_STUB, ZOOM_STUB, ownerDocument);
+        var tileC = mapTypeC.getTile(COORD_STUB, ZOOM_STUB, ownerDocument);
+        var parentA = createParentNodeForTile(tileA);
+        var parentC = createParentNodeForTile(tileC);
 
-        expect(mapTypeA.setZIndex).toHaveBeenCalled();
-        expect(mapTypeB.setZIndex).toHaveBeenCalled();
-        expect(mapTypeA.setZIndex.mostRecentCall.args[0]).toEqual(Z_INDEX_A);
-        expect(mapTypeC.setZIndex.mostRecentCall.args[0]).toEqual(Z_INDEX_C);
-      });
+        // Reset parent zIndex's, mimicking google behavior
+        parentA.style.zIndex = 0;
+        parentC.style.zIndex = 0;
 
-      it('should not create a redundant loop of zIndex updating', function() {
-        mapTypeB.setZIndex(123);
+        mapTypeB.getTile(COORD_STUB, ZOOM_STUB, ownerDocument);
 
-        expect(mapTypeA.setZIndex.callCount).toEqual(1);
-        expect(mapTypeB.setZIndex.callCount).toEqual(1);
-        expect(mapTypeC.setZIndex.callCount).toEqual(1);
+        // Should reset zIndexes to orig values
+        expect(parseInt(parentA.style.zIndex)).toEqual(Z_INDEX_A);
+        expect(parseInt(parentC.style.zIndex)).toEqual(Z_INDEX_C);
       });
 
     });
@@ -213,7 +227,7 @@ define([
             COORD_STUB = {
               x: 1,
               y: -1
-            }
+            };
             tile = mapType.getTile(COORD_STUB, ZOOM_STUB, ownerDocument);
           });
 
@@ -283,7 +297,7 @@ define([
     });
 
     describe('setZIndex', function() {
-      var secondLevelParent, tile, mapType;
+      var parentNode, tile, mapType;
 
       beforeEach(function() {
         var firstLevelParent;
@@ -292,8 +306,7 @@ define([
         });
 
         tile = mapType.getTile(COORD_STUB, ZOOM_STUB, ownerDocument);
-        firstLevelParent = $('<div></div>').append(tile)[0];
-        secondLevelParent = $('<div></div>').append(firstLevelParent)[0];
+        parentNode = createParentNodeForTile(tile);
       });
 
 
@@ -302,7 +315,7 @@ define([
 
         mapType.setZIndex(Z_INDEX);
 
-        expect(parseFloat(secondLevelParent.style.zIndex)).toEqual(Z_INDEX);
+        expect(parseFloat(parentNode.style.zIndex)).toEqual(Z_INDEX);
       });
 
     });
