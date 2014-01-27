@@ -10,6 +10,7 @@ define([
     Model.apply(this, arguments);
 
     this.promiseToLoadTimes_;
+    this.isLoaded_ = false;
   };
   _.inherits(MockLayer, Model);
 
@@ -34,7 +35,7 @@ define([
   MockLayer.prototype.markAsLoaded = function() {
     this.isLoaded_ = true;
     this.trigger('load');
-  }
+  };
 
 
   MockLayer.prototype.isLoaded = function() {
@@ -90,13 +91,14 @@ define([
       loader = new AnimationLayerLoader(baseLayer, options);
     });
 
+    function resolveLoadDependencies(opt_times) {
+      var times = opt_times || new MockTimes();
+      baseLayer.resolveTileTimes(times);
+      _.invoke(timeLayersFactory.getStubbedLayers(), 'markAsLoaded');
+    }
+
 
     describe('load', function() {
-
-      function resolveLoadDependencies() {
-        baseLayer.resolveTileTimes(new MockTimes());
-        _.invoke(timeLayersFactory.getStubbedLayers(), 'markAsLoaded');
-      }
 
       it('should return a promise', function() {
         expect(loader.load()).toBeInstanceOf(Promise);
@@ -196,6 +198,34 @@ define([
 
 
     describe('getLoadProgress', function() {
+      var layers;
+
+      it('should return 0 if times have not yet been loaded', function() {
+        expect(loader.getLoadProgress()).toEqual(0);
+      });
+
+      it('should return the percentage of layers loaded', function() {
+        var layers;
+
+        loader.load();
+        baseLayer.resolveTileTimes([10, 20, 30, 40]);
+        layers = timeLayersFactory.getStubbedLayers();
+
+        layers[10].markAsLoaded();
+        layers[30].markAsLoaded();
+
+        expect(loader.getLoadProgress()).toEqual(0.5);
+      });
+
+
+      it('should return 1 if all layers are loaded', function() {
+        loader.load();
+        resolveLoadDependencies();
+
+        _.invoke(timeLayersFactory.getStubbedLayers(), 'markAsLoaded');
+
+        expect(loader.getLoadProgress()).toEqual(1);
+      });
 
     });
 
