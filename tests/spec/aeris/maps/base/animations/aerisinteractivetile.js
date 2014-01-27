@@ -106,11 +106,13 @@ define([
 
     methodSpy.andResolveWith = throwMethodNotCalledError;
     methodSpy.andRejectWith = throwMethodNotCalledError;
-  }
+
+    return methodSpy;
+  };
 
   MockLayerLoader.prototype.getLoadProgress = function() {
     return 0.12345;
-  }
+  };
 
 
 
@@ -133,6 +135,11 @@ define([
       timeLayers = new MockTimeLayers(times);
     });
 
+    function resolveLayerLoader(opt_times, opt_timeLayers) {
+      layerLoader.trigger('load:times', opt_times || times, opt_timeLayers || timeLayers);
+      layerLoader.load.andResolveWith(opt_timeLayers || timeLayers);
+    }
+
 
 
     describe('loadAnimationLayers', function() {
@@ -146,11 +153,10 @@ define([
       it('should proxy load events from the AnimationLayerLoader', function() {
         function shouldProxyLoaderEvent(event) {
           var listener = jasmine.createSpy(event + '_listener');
-          var eventParam = _.uniqueId(event + 'param_stub_');
           animation.on(event, listener);
 
-          layerLoader.trigger(event, eventParam);
-          expect(listener).toHaveBeenCalledWith(eventParam);
+          layerLoader.trigger(event, times, timeLayers);
+          expect(listener).toHaveBeenCalledWith(times, timeLayers);
         }
 
         animation.loadAnimationLayers();
@@ -159,7 +165,8 @@ define([
           'load:times',
           'load:progress',
           'load:complete',
-          'load:error'
+          'load:error',
+          'load:reset'
         ], shouldProxyLoaderEvent);
       });
 
@@ -172,7 +179,7 @@ define([
       });
 
 
-      describe('when layers are loaded', function() {
+      describe('when layers times are loaded', function() {
         var timeLayers, times;
 
         beforeEach(function() {
@@ -184,7 +191,7 @@ define([
 
         it('should set the current time to the latest time', function() {
           var latestTime = Math.max.apply(null, times);
-          layerLoader.load.andResolveWith(timeLayers);
+          resolveLayerLoader();
 
           expect(animation.getCurrentTime()).toEqual(latestTime);
         });
@@ -194,8 +201,8 @@ define([
             10: new MockLayer({ opacity: 1}),
             20: new MockLayer({ opacity: 1}),
             30: new MockLayer({ opacity: 1})
-          }
-          layerLoader.load.andResolveWith(timeLayers);
+          };
+          resolveLayerLoader([10, 20, 30], timeLayers);
 
           expect(timeLayers[10].getOpacity()).toEqual(0);
           expect(timeLayers[20].getOpacity()).toEqual(0);
@@ -219,7 +226,7 @@ define([
       describe('next', function() {
 
         it('should go to the next time', function() {
-          layerLoader.load.andResolveWith(timeLayers);
+          resolveLayerLoader();
           animation.goToTime(times[0]);
           
           animation.next();
@@ -230,10 +237,9 @@ define([
         });
 
         it('should go to the next closest time', function() {
-          var timeLayers = new MockTimeLayers([
-            10, 20, 30
-          ]);
-          layerLoader.load.andResolveWith(timeLayers);
+          var times = [10, 20, 30];
+          var timeLayers = new MockTimeLayers(times);
+          resolveLayerLoader(times, timeLayers);
           animation.goToTime(22);
 
           animation.next();
@@ -242,7 +248,7 @@ define([
         });
 
         it('should go to the first time, if the last time is current', function() {
-          layerLoader.load.andResolveWith(timeLayers);
+          resolveLayerLoader();
 
           animation.goToTime(_.last(times));
           
@@ -262,7 +268,7 @@ define([
       describe('previous', function() {
 
         it('should go to the previous time', function() {
-          layerLoader.load.andResolveWith(timeLayers);
+          resolveLayerLoader();
           animation.goToTime(times[2]);
 
           animation.previous();
@@ -273,10 +279,9 @@ define([
         });
 
         it('should go to the previous closest time', function() {
-          var timeLayers = new MockTimeLayers([
-            10, 20, 30
-          ]);
-          layerLoader.load.andResolveWith(timeLayers);
+          var times = [10, 20, 30];
+          var timeLayers = new MockTimeLayers(times);
+          resolveLayerLoader(times, timeLayers);
           animation.goToTime(22);
 
           animation.previous();
@@ -284,7 +289,7 @@ define([
         });
 
         it('should go to the last time, if the first time is current', function() {
-          layerLoader.load.andResolveWith(timeLayers);
+          resolveLayerLoader();
           animation.goToTime(times[0]);
 
           animation.previous();
@@ -343,7 +348,7 @@ define([
             20: new MockLayer(),
             30: new MockLayer()
           };
-          layerLoader.load.andResolveWith(timeLayers);
+          resolveLayerLoader([10, 20, 30], timeLayers);
 
           animation.goToTime(0);
           expect(timeLayers).toBeShowingLayerForTime(10);
@@ -391,12 +396,14 @@ define([
         });
 
         it('should not show the layer, if the layer is not loaded', function() {
-          var layer = new MockLayer();
+          var layer = new MockLayer({
+            opacity: 0
+          });
           var timeLayers = {
             10: layer
           };
           spyOn(layer, 'isLoaded').andReturn(false);
-          layerLoader.load.andResolveWith(timeLayers);
+          resolveLayerLoader([10], timeLayers);
 
           animation.goToTime(10);
           expect(layer.getOpacity()).toEqual(0);
@@ -460,7 +467,7 @@ define([
 
       it('should remove all layers from the map', function() {
         animation.loadAnimationLayers();
-        layerLoader.load.andResolveWith(timeLayers);
+        resolveLayerLoader();
         _.each(timeLayers, function(layer) {
           layer.setMap(new MockMap());
         });
@@ -484,7 +491,7 @@ define([
 
 
       it('should set the opacity of the current layer', function() {
-        layerLoader.load.andResolveWith(timeLayers);
+        resolveLayerLoader();
 
         animation.setOpacity(OPACITY_STUB);
 
@@ -496,8 +503,8 @@ define([
           10: new MockLayer(),
           20: new MockLayer(),
           30: new MockLayer()
-        }
-        layerLoader.load.andResolveWith(timeLayers);
+        };
+        resolveLayerLoader([10, 20, 30], timeLayers);
         animation.goToTime(20);
 
         animation.setOpacity(OPACITY_STUB);
@@ -516,8 +523,8 @@ define([
           10: new MockLayer(),
           20: new MockLayer(),
           30: new MockLayer()
-        }
-        layerLoader.load.andResolveWith(timeLayers);
+        };
+        resolveLayerLoader([10, 20, 30], timeLayers);
         animation.goToTime(20);
 
         animation.setOpacity(OPACITY_STUB);
@@ -545,7 +552,7 @@ define([
           20: new MockLayer(),
           30: new MockLayer()
         };
-        layerLoader.load.andResolveWith(timeLayers);
+        resolveLayerLoader([10, 20, 30], timeLayers);
 
         times = animation.getTimes();
 
