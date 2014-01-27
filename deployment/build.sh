@@ -25,6 +25,7 @@ logHeader() {
 logBuildComplete() {
   logSeparator
   logAndOutput "Aeris Interactive build successfully completed."
+  logAndOutput "`date`"
   logSeparator
 }
 
