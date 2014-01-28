@@ -418,6 +418,15 @@ define([
           expect(onChangeTime).toHaveBeenCalledWith(new Date(10));
         });
 
+        it('should reject invalid times', function() {
+          expect(function() {
+            animation.goToTime('today');
+          }).toThrowType('InvalidArgumentError');
+
+          animation.goToTime(12345);
+          animation.goToTime(new Date(12345));
+        });
+
       });
 
 
@@ -446,37 +455,29 @@ define([
         expect(animation.stop).toHaveBeenCalled();
       });
 
-      it('should stop firing load events', function() {
-        var onLoadSpy = jasmine.createSpy('onLoadSpy');
-        var loadEvents = [
-          'load:times',
-          'load:progress',
-          'load:complete',
-          'load:error'
-        ];
-        animation.on(loadEvents.join(' '), onLoadSpy);
+      it('should hide all layers', function() {
+        resolveLayerLoader();
+        animation.goToTime(0);
 
         animation.remove();
 
-        _.each(loadEvents, function(event) {
-          layerLoader.trigger(event);
+        _.each(timeLayers, function(layer) {
+          expect(layer.get('opacity')).toEqual(0);
         });
-
-        expect(onLoadSpy).not.toHaveBeenCalled();
       });
 
-      it('should remove all layers from the map', function() {
-        animation.loadAnimationLayers();
-        resolveLayerLoader();
-        _.each(timeLayers, function(layer) {
-          layer.setMap(new MockMap());
-        });
+      it('should not destroy the animation (animation can be re-started)', function() {
+        var timeLayers = {
+          10: new MockLayer(),
+          20: new MockLayer(),
+          30: new MockLayer()
+        };
+        resolveLayerLoader([10, 20, 30], timeLayers);
 
         animation.remove();
+        animation.goToTime(20);
 
-        _.each(timeLayers, function(layer) {
-          expect(layer.getMap()).toEqual(null);
-        });
+        expect(timeLayers[20].getOpacity()).toBeGreaterThan(0);
       });
 
     });
