@@ -98,6 +98,7 @@ require([
       'spec/aeris/api/params/collection/filtercollection',
       'spec/aeris/api/params/collection/chainedquery',
 
+      'spec/aeris/maps/base/map',
       //'spec/aeris/maps/base/extension/strategyobject',
       'spec/aeris/maps/base/extension/mapobjectcollection',
       //'spec/aeris/maps/base/extension/mapextensionobject',
