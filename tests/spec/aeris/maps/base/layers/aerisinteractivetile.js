@@ -59,6 +59,50 @@ define([
 
     });
 
+    describe('data binding', function() {
+      var apiKeys_orig = _.pick(aerisConfig, 'apiId', 'apiSecret');
+      var ID_STUB = 'ID_STUB_PARAMS', SECRET_STUB = 'SECRET_STUB_PARAMS';
+      var stubbedApiKeys;
+
+      beforeEach(function() {
+        stubbedApiKeys = {
+          apiId: ID_STUB,
+          apiSecret: SECRET_STUB
+        }
+        aerisConfig.unset('apiId');
+        aerisConfig.unset('apiSecret');
+      });
+
+
+      afterEach(function() {
+        aerisConfig.set(apiKeys_orig);
+      });
+
+      it('should bind to aeris/config api keys', function() {
+        var tile = new TestFactory().tile;
+        aerisConfig.set(stubbedApiKeys);
+
+        expect(tile.get('apiId')).toEqual(ID_STUB);
+        expect(tile.get('apiSecret')).toEqual(SECRET_STUB);
+      });
+
+      it('should prefer set api key attributes', function() {
+        var tile = new TestFactory().tile;
+        var API_ID_ATTR = 'API_ID_ATTR';
+        var API_SECRET_ATTR = 'API_SECRET_ATTR';
+
+        tile.set({
+          apiSecret: API_SECRET_ATTR,
+          apiId: API_ID_ATTR
+        });
+        aerisConfig.set(stubbedApiKeys);
+
+        expect(tile.get('apiId')).toEqual(API_ID_ATTR);
+        expect(tile.get('apiSecret')).toEqual(API_SECRET_ATTR);
+      });
+
+    });
+
     describe('getUrl', function() {
 
       describe('should require aeris keys from...', function() {
