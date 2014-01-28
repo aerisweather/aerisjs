@@ -3,8 +3,9 @@ define([
   'ai/api/params/model/params',
   'ai/model',
   'ai/collection',
-  'ai/api/params/collection/chainedquery'
-], function(_, Params, Model, Collection, ChainedQuery) {
+  'ai/api/params/collection/chainedquery',
+  'ai/config'
+], function(_, Params, Model, Collection, ChainedQuery, aerisConfig) {
 
   function TestFactory() {
     this.params = new Params({
@@ -116,6 +117,49 @@ define([
         }, { QueryType: MockQuery });
 
         expect(params.get('query')).toEqual(query);
+      });
+
+    });
+
+
+    describe('data binding', function() {
+      var apiKeys_orig = _.pick(aerisConfig, 'apiId', 'apiSecret');
+      var ID_STUB = 'ID_STUB_PARAMS', SECRET_STUB = 'SECRET_STUB_PARAMS';
+      var stubbedApiKeys;
+
+      beforeEach(function() {
+        stubbedApiKeys = {
+          apiId: ID_STUB,
+          apiSecret: SECRET_STUB
+        }
+      });
+
+
+      afterEach(function() {
+        aerisConfig.set(apiKeys_orig);
+      });
+
+      it('should bind to aeris/config api keys', function() {
+        var params = new Params();
+        aerisConfig.set(stubbedApiKeys);
+
+        expect(params.get('client_id')).toEqual(ID_STUB);
+        expect(params.get('client_secret')).toEqual(SECRET_STUB);
+      });
+
+      it('should prefer set api key attributes', function() {
+        var params = new Params();
+        var CLIENT_SECRET_ATTR = 'CLIENT_SECRET_ATTR_PARAMS';
+        var CLIENT_ID_ATTR = 'CLIENT_ID_ATTR_PARAMS';
+
+        params.set({
+          client_id: CLIENT_ID_ATTR,
+          client_secret: CLIENT_SECRET_ATTR
+        });
+        aerisConfig.set(stubbedApiKeys);
+
+        expect(params.get('client_id')).toEqual(CLIENT_ID_ATTR);
+        expect(params.get('client_secret')).toEqual(CLIENT_SECRET_ATTR);
       });
 
     });
