@@ -296,12 +296,15 @@ define([
       });
 
       it('should convert the query param to the Aeris query format', function() {
-        var query = new Model();
+        var query = { some: 'query' };
+        var QueryType = Model;
         var params = new Params({
           query: query
+        }, {
+          QueryType: QueryType
         });
 
-        spyOn(query, 'toString').andReturn('foo:bar;foo:shabaaz');
+        spyOn(QueryType.prototype, 'toString').andReturn('foo:bar;foo:shabaaz');
 
         expect(params.toJSON().query).toEqual('foo:bar;foo:shabaaz');
       });

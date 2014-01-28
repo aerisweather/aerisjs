@@ -49,6 +49,23 @@ define([
         spyOn(Collection.prototype, 'isValid');
       });
 
+      it('should reject invalid models as first argument', function() {
+        expect(function() {
+          new Collection({
+            not: {
+              an: {
+                array: 'of models'
+              }
+            }
+          })
+        }).toThrowType('InvalidArgumentError');
+
+        new Collection([new Model(), new Model()]);
+        new Collection([]);
+        new Collection();
+        new Collection(null);
+      });
+
       it('should optionally validate', function() {
         new Collection(null, {
           validate: true
