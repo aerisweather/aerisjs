@@ -132,6 +132,8 @@ define([
           apiId: ID_STUB,
           apiSecret: SECRET_STUB
         }
+        aerisConfig.unset('apiId');
+        aerisConfig.unset('apiSecret');
       });
 
 
