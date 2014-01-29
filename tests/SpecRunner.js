@@ -124,12 +124,12 @@ require([
       'spec/aeris/maps/animations/helpers/timelayersfactory',
       'spec/aeris/maps/animations/helpers/animationlayerloader',
 
-      //'spec/aeris/maps/gmaps/events',
-      //'spec/aeris/maps/gmaps/abstractstrategy',
-      //'spec/aeris/maps/gmaps/layerstrategies/abstractmaptype',
-      //'spec/aeris/maps/gmaps/layerstrategies/googlemaptype',
-      //'spec/aeris/maps/gmaps/layerstrategies/tile',
-      //'spec/aeris/maps/gmaps/layerstrategies/kml',
+      'spec/aeris/maps/gmaps/events',
+      'spec/aeris/maps/gmaps/abstractstrategy',
+      'spec/aeris/maps/gmaps/layerstrategies/abstractmaptype',
+      'spec/aeris/maps/gmaps/layerstrategies/googlemaptype',
+      'spec/aeris/maps/gmaps/layerstrategies/tile',
+      'spec/aeris/maps/gmaps/layerstrategies/kml',
       'spec/aeris/maps/gmaps/layerstrategies/maptype/imagemaptype',
       'spec/aeris/maps/gmaps/markerstrategies/markerclusterstrategy',
 
