@@ -56,9 +56,21 @@ html, body {
     display: block;
   }
 
+  .animationControls {
+  }
+    .animationControls button {
+      padding: 4px 2px;
+      margin: 2px 0;
+    }
+    .animationControls button img {
+      display: block;
+      height: 13px;
+    }
+
 #loading {
   display: none;
   position: absolute;
+  z-index: 10;
   bottom: 20px;
   right: 20px;
   font-family: sans-serif;
