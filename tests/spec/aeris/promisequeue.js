@@ -374,47 +374,5 @@ define([
 
     });
 
-
-    it('should integrate', function() {
-      var times = 10, callCount = 0;
-      var pq = new PromiseQueue();
-      var prev;
-
-      _.times(times, function(i) {
-        var timeout = Math.ceil(100 + Math.random() * 50);
-        var delay = Math.ceil(100 + Math.random() * 50);
-        var promiseFn = getPromiseFn({ delay: delay }, 'pfn_' + i);
-
-        // Queue the fn after a random timeout
-        window.setTimeout(function() {
-          // Save a reference to the last promiseFn
-          if (prev) {
-            promiseFn.prev = prev;
-          }
-          prev = promiseFn;
-
-          pq.queue(promiseFn.fn);
-
-          if (!pq.isRunning()) {
-            pq.dequeue();
-          }
-        }, timeout);
-
-
-        // Spy on the called function
-        promiseFn.fn.andCallFake(function() {
-          if (promiseFn.prev) {
-            expect(promiseFn.prev.fn).toHaveBeenCalled();
-          }
-          callCount++;
-          return promiseFn.promise;
-        });
-      });
-
-      waitsFor(function() {
-        return callCount === times;
-      }, 10000, 'all promiseFns to have been called');
-    });
-
   });
 });
