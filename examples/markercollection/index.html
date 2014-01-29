@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Aeris Interactive - Marker Collection Example</title>
+
+  <link rel="stylesheet" href="../css/example.css"/>
+  <link rel="shortcut icon" type="image/x-icon" href="../weather.ico"/>
+
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false&libraries=geometry"></script>
+  <script type="text/javascript" src="../../build/packages/gmaps-plus.js"></script>
+  <script type="text/javascript" src="../apikeys.js"></script>
+</head>
+<body>
+  <div id="map-canvas"></div>
+
+  <div id="loading">Loading...</div>
+
+  <div class="prompt">
+    <h1>Example: Marker Collection</h1>
+
+    <h2>Aeris Interactive</h2>
+
+    <p>
+      The Aeris API provides collections of data that is best displayed using markers (e.g. earthquake, fire, lightning, and storm reports).
+    </p>
+
+    <small>
+      Having trouble? <br>
+      Make sure you've created a <code>apikeys.js</code> file, with a valid Aeris <code>client_id</code> and <code>client_secret</code>.
+    </small>
+  </div>
+
+  <div class="controls">
+    <ul>
+      <li>
+        <input type="checkbox" name="filter" value="avalanche">
+        Avalanche
+      </li>
+      <li>
+        <input type="checkbox" name="filter" value="blizzard">
+        Blizzard
+      </li>
+      <li>
+        <input type="checkbox" name="filter" value="flood">
+        Flood
+      </li>
+      <li>
+        <input type="checkbox" name="filter" value="fog">
+        Fog
+      </li>
+      <li>
+        <input type="checkbox" name="filter" value="ice">
+        Ice
+      </li>
+      <li>
+        <input type="checkbox" name="filter" value="hail">
+        Hail
+      </li>
+      <li>
+        <input type="checkbox" name="filter" value="lightning">
+        Lightning
+      </li>
+      <li>
+        <input type="checkbox" name="filter" value="rain">
+        Rain
+      </li>
+      <li>
+        <input type="checkbox" name="filter" value="snow">
+        Snow
+      </li>
+      <li>
+        <input type="checkbox" name="filter" value="tides">
+        Tides
+      </li>
+      <li>
+        <input type="checkbox" name="filter" value="tornado">
+        Tornado
+      </li>
+      <li>
+        <input type="checkbox" name="filter" value="wind">
+        Wind
+      </li>
+    </ul>
+  </div>
+
+  <script type="text/javascript">
+    aeris.config.set({
+      apiId: apiKeys.aeris.id,
+      apiSecret: apiKeys.aeris.secret
+    });
+
+    var map = new aeris.maps.Map('map-canvas');
+    var stormMarkers = new aeris.maps.StormReportMarkers();
+    var $loading = $('#loading');
+
+    function fetchStorms() {
+      $loading.show();
+      var data = stormMarkers.getData();
+      data.once('sync', function() {
+        $loading.fadeOut(100);
+      });
+      data.fetch();
+    }
+
+    stormMarkers.on('click', function(latLon, marker) {
+      var json = marker.getData().toJSON();
+      var infoBox = new aeris.maps.InfoBox();
+      infoBox.setPosition(latLon);
+      infoBox.setContent('<strong>' + json.report.name + '</strong>: ' +
+                         json.report.comments);
+      infoBox.setMap(map);
+    });
+
+    stormMarkers.setMap(map);
+
+    map.on('change:bounds', function(map, bounds) {
+      stormMarkers.getData().getParams().setBounds(bounds);
+      fetchStorms();
+    });
+
+    var $filters = $('input[name="filter"]');
+    $filters.change(function() {
+      var $filter = $(this);
+      var params = stormMarkers.getData().getParams();
+
+      if ($filter.prop('checked'))
+        params.addFilter($filter.val(), {
+          operator: 'OR'
+        });
+      else
+        params.removeFilter($filter.val());
+
+      fetchStorms();
+    });
+  </script>
+</body>
+</html>
