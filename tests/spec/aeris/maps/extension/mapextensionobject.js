@@ -145,14 +145,37 @@ define([
     
     
     describe('getView', function() {
-      
-      it('should return the strategy\'s view', function() {
-        throw new UntestedSpecError();
+      var VIEW_STUB;
+
+      var MockStrategy = function() {
+      }
+
+      MockStrategy.prototype.getView = function() {
+        return VIEW_STUB;
+      };
+
+      beforeEach(function() {
+        VIEW_STUB = { view: 'stub' }
       });
-      
-      
+
+
+      it('should return the strategy\'s view', function() {
+        var object = new MapExtensionObject(null, {
+          strategy: MockStrategy
+        });
+
+        expect(object.getView()).toEqual(VIEW_STUB);
+      });
+
+
       it('should complain if there\'s no strategy set', function() {
-        throw new UntestedSpecError();
+        var object = new MapExtensionObject(null, {
+          strategy: function() { return null; }
+        });
+
+        expect(function() {
+          object.getView();
+        }).toThrow();
       });
       
     });
@@ -200,6 +223,8 @@ define([
         var obj = new MapExtensionObject();
         var onResolved = jasmine.createSpy('onResolved');
 
+        spyOn(obj, 'getView').andReturn(view);
+
         obj.requestView().
           done(function(res) {
             expect(res).toEqual(view);
@@ -207,18 +232,9 @@ define([
           done(onResolved).
           fail(throwError);
 
-        obj.loadStrategy('mockStrategy').
-          done(testUtil.setFlag).
-          fail(throwError);
+        obj.trigger('strategy:set', new MockStrategy());
 
-        // Request view shouldn't be resolved yet:
-        // Strategy needs to load first (async)
-        expect(onResolved).not.toHaveBeenCalled();
-
-        waitsFor(testUtil.checkFlag, 100, 'loadStrategy to resolve');
-        runs(function() {
-          expect(onResolved).toHaveBeenCalled();
-        });
+        expect(onResolved).toHaveBeenCalled();
       });
       
     });
