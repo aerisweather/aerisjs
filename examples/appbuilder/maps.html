@@ -5,43 +5,65 @@
 
   <link rel="shortcut icon" type="image/x-icon" href="../weather.ico"/>
 
-  <link rel="stylesheet" href="theme/default/css/style.css"/>
+  <link rel="stylesheet" href="../css/example.css"/>
 
-  <script type="text/javascript" src="../../bower_components/requirejs/require.js" data-main="../initialize"></script>
+  <style type="text/css">
+    #app, .aeris-maps-app, .aeris-mapContainer, .mapCanvasRegion, .mapCanvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    .aeris-maps-app {
+      width: 100%;
+      height: 100%;
+    }
+
+    .sideMenu {
+      position: absolute;
+      z-index: 100;
+      top: 50px;
+      right: 20px;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
+
+      min-width: 200px;
+    }
+  </style>
+
+  <script type="text/javascript" src="../apikeys.js"></script>
+  <script type="text/javascript" src="../../build/packages/mapapp.js"></script>
 
   <script type="text/javascript">
-    function logArgs(args) {
-      console.log('logArgs: ', args);
-    }
+    aeris.MapBuilder({
+      // The map builder requires aeris and google maps
+      // API keys.
+      apiId: apiKeys.aeris.id,
+      apiSecret: apiKeys.aeris.secret,
+      google: {
+        apiKey: apiKeys.google
+      },
 
-    function initialize() {
-      require.setStrategy('gmaps');
-      require([
-        'ai/builder/maps/mapappbuilder',
-        'ai/packages/layers',
-        'ai/packages/markers'
-      ], function(Builder) {
-        var builder = new Builder({
-          el: '#app',
-          mapOptions: {
-            zoom: 4
-          },
-          onload: function(maps) {
-            window.maps = maps;
-            console.log('onload called, with:', arguments);
-          },
-          onerror: function(err) {
-            throw err;
-          }
-        });
+      // Set the main container element for the map app.
+      el: '#app'
 
-        builder.build();
-      });
-    }
+      // The MapBuilder allows you to configure
+      // which map object and controls are rendered.
+      // See the aeris.MapBuilder documentation for a full
+      // list of configuration options.
+    });
   </script>
 </head>
 <body>
-  <div id="app"></div>
+<div id="app"></div>
+
+<div class="prompt">
+  <h1>Example: Map AppBuilder</h1>
+
+  <h2>Aeris Interactive</h2>
+
+  <p>The <code>aeris.MapBuilder</code> allows you to easily create a full-featured weather map application using a simple configuration object.</p>
+</div>
 
 </body>
 </html>
