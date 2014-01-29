@@ -19,10 +19,41 @@ html, body {
   padding: 10px;
   background: rgba(255,255,255, 0.95);
   box-shadow: 0 0 5px rgba(0,0,0,0.25);
+
+  min-width: 200px;
 }
   .controls button {
     font-size: 20px;
     padding: 10px 15px;
+  }
+
+  .controls ul {
+    margin: 0;
+    padding: 0;
+  }
+  .controls li {
+    padding: 15px 0;
+    list-style-type: none;
+    border-bottom: 1px solid #ababab;
+
+    font-size: 12px;
+    line-height: 1.5em;
+  }
+  .controls li:first-child {
+    padding-top: 0;
+  }
+  .controls li:last-child {
+    padding-bottom: 0;
+    border: none;
+  }
+    .controls li label {
+      display: block;
+    }
+  .controls .collapseable {
+    display: none;
+  }
+  .controls input:checked.collapseControl + .collapseable {
+    display: block;
   }
 
 #loading {
