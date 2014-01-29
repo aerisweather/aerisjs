@@ -148,7 +148,7 @@ require([
 
       'spec/mocks/require',
 
-      //'tests/integration/spec/wire/wire'
+      'tests/integration/spec/wire/wire'
     ], function() {
 
       // Yes, it's a hack,

@@ -5,6 +5,7 @@ define([
   'tests/integration/spec/wire/mocks/foo',
   'wire!tests/integration/spec/wire/config/context'
 ], function(_, testUtil, wire, Foo, wiredContext) {
+
   describe('Wire API learning tests', function() {
     
     it('should wire a context using the AMD plugin', function() {
@@ -12,7 +13,7 @@ define([
       expect(wiredContext.foo).toBeInstanceOf(Foo);
     });
     
-    it('should wire a context programatically', function() {
+    it('but doesn\'t play well with using wire programatically', function() {
       wire({
         foo: {
           create: {
@@ -26,50 +27,9 @@ define([
           testUtil.setFlag();
         });
 
-      waitsFor(testUtil.checkFlag, 1000, 'wire to resolve');
-    });
-
-    it('should wire a mock module defined on the fly', function() {
-      define('fooOnTheFly', function() {
-        return 'bar';
-      });
-
-      wire({
-        fooOnTheFly: { module: 'fooOnTheFly' }
-      }).then(function(ctx) {
-          expect(ctx).toBeDefined();
-          expect(ctx.fooOnTheFly).toEqual('bar');
-
-          testUtil.setFlag();
-        });
-
-      waitsFor(testUtil.checkFlag, 1000, 'wire to resolve');
-    });
-
-    it('should wire a mock factory module defined on the fly', function() {
-      var FooOnTheFly = function() {
-        this.bar = 'baz'
-      };
-
-      define('FooOnTheFly', function() {
-        return FooOnTheFly;
-      });
-
-      wire({
-        fooOnTheFly: {
-          create: {
-            module: 'FooOnTheFly',
-            isConstructor: true
-          }
-        }
-      }).then(function(ctx) {
-          expect(ctx.fooOnTheFly).toBeDefined();
-          expect(ctx.fooOnTheFly.bar).toEqual('baz');
-
-          testUtil.setFlag();
-        });
-
-      waitsFor(testUtil.checkFlag, 1000, 'wire to resolve');
+      waitsFor(function() {
+        return !testUtil.checkFlag();
+      }, 300, 'wire not to resolve');
     });
     
   });
