@@ -1,10 +1,11 @@
 define([
   'ai/util',
+  'sinon',
   'testUtils',
   'ai/jsonp',
   'ai/geolocate/freegeoipgeolocateservice',
-  'ai/geolocate/geolocateerror'
-], function(_, testUtils, JSONP, FreeGeoIpGeolocateService, GeolocateError) {
+  'ai/geolocate/errors/geolocateserviceerror'
+], function(_, sinon, testUtils, JSONP, FreeGeoIpGeolocateService, GeolocateServiceError) {
 
   function testFactory(opt_options) {
     var options = _.extend({
@@ -46,12 +47,21 @@ define([
   }
 
   describe('The FreeGeoIPGeolocateService', function() {
+    var clock;
+
+    beforeEach(function() {
+      clock = sinon.useFakeTimers();
+    });
+
+    afterEach(function() {
+      clock.restore();
+    });
+
+
 
     describe('isSupported', function() {
       it('should return true', function() {
-        var test = testFactory();
-
-        expect(test.gls.isSupported()).toEqual(true);
+        expect(FreeGeoIpGeolocateService.isSupported()).toEqual(true);
       });
     });
 
@@ -88,7 +98,7 @@ define([
         });
 
         test.gls.getCurrentPosition().fail(function(error) {
-          expect(error.code).toEqual(GeolocateError.POSITION_UNAVAILABLE);
+          expect(error.code).toEqual(GeolocateServiceError.POSITION_UNAVAILABLE);
           testUtils.setFlag();
         });
         waitsFor(testUtils.checkFlag, 'getCurrentPosition to fail', 25);
@@ -98,39 +108,45 @@ define([
 
     describe('watchPosition', function() {
       it('should query the FreeGeoIP API at a set interval', function() {
-        var test = testFactory();
+        var geolocationService = testFactory().gls;
+        var INTERVAL = 25;
 
-        spyOn(test.gls, 'getCurrentPosition').andCallThrough();
+        spyOn(geolocationService, 'getCurrentPosition').andCallThrough();
 
-        test.gls.watchPosition(null, null, { interval: 25 });
+        geolocationService.watchPosition(null, null, { interval: INTERVAL });
 
-        window.setTimeout(function() {
-          // Call at 0 ms
-          // Call at 25 ms
-          // Call at 50 ms
-          expect(test.gls.getCurrentPosition.callCount).toEqual(3);
-          testUtils.setFlag();
-        }, 60);
-        waitsFor(testUtils.checkFlag, 'setTimeout', 75);
+        expect(geolocationService.getCurrentPosition.callCount).toEqual(1);
+
+        clock.tick(INTERVAL);
+        expect(geolocationService.getCurrentPosition.callCount).toEqual(2);
+
+        clock.tick(INTERVAL);
+        expect(geolocationService.getCurrentPosition.callCount).toEqual(3);
+
+        clock.tick(INTERVAL);
+        expect(geolocationService.getCurrentPosition.callCount).toEqual(4);
       });
     });
 
     describe('clearWatch', function() {
       it('should stop quering the FreeGeoIP API', function() {
-        var test = testFactory();
+        var geolocationService = testFactory().gls;
+        var INTERVAL = 25;
+        spyOn(geolocationService, 'getCurrentPosition').andCallThrough();
 
-        spyOn(test.gls, 'getCurrentPosition').andCallThrough();
+        geolocationService.watchPosition(null, null, { interval: INTERVAL });
+        expect(geolocationService.getCurrentPosition.callCount).toEqual(1);
 
-        test.gls.watchPosition(null, null, { interval: 25 });
-        test.gls.clearWatch();
+        geolocationService.clearWatch();
 
-        window.setTimeout(function() {
-          // Call at 0 ms
-          // then stops calling...
-          expect(test.gls.getCurrentPosition.callCount).toEqual(1);
-          testUtils.setFlag();
-        }, 60);
-        waitsFor(testUtils.checkFlag, 'setTimeout', 75);
+        clock.tick(INTERVAL);
+        expect(geolocationService.getCurrentPosition.callCount).toEqual(1);
+
+        clock.tick(INTERVAL);
+        expect(geolocationService.getCurrentPosition.callCount).toEqual(1);
+
+        clock.tick(INTERVAL);
+        expect(geolocationService.getCurrentPosition.callCount).toEqual(1);
       });
     });
 
