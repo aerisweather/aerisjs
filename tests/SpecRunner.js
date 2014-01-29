@@ -108,12 +108,10 @@ require([
       'spec/aeris/maps/layers/aerismodistile',
       'spec/aeris/maps/layers/aerisseasurfacetemps',
 
-      //'spec/aeris/maps/markers/pointdatamarker',
 
       'spec/aeris/maps/polylines/polyline',
 
-      //'spec/aeris/maps/markercollection',
-      //'spec/aeris/maps/markercollections/apiendpoint',
+      //'spec/aeris/maps/markers/pointdatamarker',
       'spec/aeris/maps/markercollections/pointdatamarkercollection',
 
       'spec/aeris/maps/animations/abstractanimation',
