@@ -26,6 +26,15 @@ define([
         expect(query.id).toEqual('foo');
       });
 
+      it('should use Query.AND as the default operator', function() {
+        var query = new Query({
+          property: 'foo',
+          value: 'bar'
+        });
+
+        expect(query.get('operator')).toEqual(Query.AND);
+      });
+
     });
 
 
