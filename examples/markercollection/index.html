@@ -21,7 +21,13 @@
     <h2>Aeris Interactive</h2>
 
     <p>
-      The Aeris API provides collections of data that is best displayed using markers (e.g. earthquake, fire, lightning, and storm reports).
+      The Aeris API provides several data-sets which are associated with lat/lon coordinates (e.g. earthquake, fire, lightning, and storm reports). In order to render this data points on a map, you can use a <code>PointDataMarkerCollection</code>. A <code>PointDataMarkerCollection</code> creates markers for every model in a data collection, and renders the model on the map.
+    </p>
+    <p>
+      <code>PointDataMarkerCollection</code>s are bound to data collections, so whenever a data collection is updated, the markers on the map will be re-rendered accordingly. This example shows how setting <em>filters</em> on a data collection will render filtered point data on the map. <strong>Select one or more storm type filters</strong> to test out the filtering functionality. Or, <strong>click on a marker</strong> to see how data can be rendered from a <code>PointDataMarker</code>.
+    </p>
+    <p>
+      See the <a href="http://www.hamweather.com/support/documentation/aeris/endpoints/stormreports" target="_blank">StormReport endpoint documentation</a> for a list of available filters.
     </p>
 
     <small>
@@ -33,52 +39,79 @@
   <div class="controls">
     <ul>
       <li>
-        <input type="checkbox" name="filter" value="avalanche">
-        Avalanche
+        <strong>Storm Report Types</strong>
       </li>
       <li>
-        <input type="checkbox" name="filter" value="blizzard">
-        Blizzard
+        <label>
+          <input type="checkbox" name="filter" value="avalanche">
+          Avalanche
+        </label>
       </li>
       <li>
-        <input type="checkbox" name="filter" value="flood">
-        Flood
+        <label>
+          <input type="checkbox" name="filter" value="blizzard">
+          Blizzard
+        </label>
       </li>
       <li>
-        <input type="checkbox" name="filter" value="fog">
-        Fog
+        <label>
+          <input type="checkbox" name="filter" value="flood">
+          Flood
+        </label>
       </li>
       <li>
-        <input type="checkbox" name="filter" value="ice">
-        Ice
+        <label>
+          <input type="checkbox" name="filter" value="fog">
+          Fog
+        </label>
       </li>
       <li>
-        <input type="checkbox" name="filter" value="hail">
-        Hail
+        <label>
+          <input type="checkbox" name="filter" value="ice">
+          Ice
+        </label>
       </li>
       <li>
-        <input type="checkbox" name="filter" value="lightning">
-        Lightning
+        <label>
+          <input type="checkbox" name="filter" value="hail">
+          Hail
+        </label>
       </li>
       <li>
-        <input type="checkbox" name="filter" value="rain">
-        Rain
+        <label>
+          <input type="checkbox" name="filter" value="lightning">
+          Lightning
+        </label>
       </li>
       <li>
-        <input type="checkbox" name="filter" value="snow">
-        Snow
+        <label>
+          <input type="checkbox" name="filter" value="rain">
+          Rain
+        </label>
       </li>
       <li>
-        <input type="checkbox" name="filter" value="tides">
-        Tides
+        <label>
+          <input type="checkbox" name="filter" value="snow">
+          Snow
+        </label>
       </li>
       <li>
-        <input type="checkbox" name="filter" value="tornado">
-        Tornado
+        <label>
+          <input type="checkbox" name="filter" value="tides">
+          Tides
+        </label>
       </li>
       <li>
-        <input type="checkbox" name="filter" value="wind">
-        Wind
+        <label>
+          <input type="checkbox" name="filter" value="tornado">
+          Tornado
+        </label>
+      </li>
+      <li>
+        <label>
+          <input type="checkbox" name="filter" value="wind">
+          Wind
+        </label>
       </li>
     </ul>
   </div>
@@ -90,47 +123,74 @@
     });
 
     var map = new aeris.maps.Map('map-canvas');
+
+    // The StormReportMarkers object is a type
+    // of PointDataMarkerCollection, which is bound to
+    // an aeris.api.StormReportCollection object.
     var stormMarkers = new aeris.maps.StormReportMarkers();
-    var $loading = $('#loading');
+    stormMarkers.setMap(map);
 
-    function fetchStorms() {
-      $loading.show();
-      var data = stormMarkers.getData();
-      data.once('sync', function() {
-        $loading.fadeOut(100);
-      });
-      data.fetch();
-    }
 
+    // Show a 'loading' prompt whenever requests are
+    // being made to the AerisAPI server.
+    //
+    // You can access the StormReportCollection object
+    // directly by calling `getData()`
+    stormMarkers.getData().on({
+      request: function() {
+        $('#loading').show();
+      },
+      sync: function() {
+        $('#loading').delay(500).hide();
+      }
+    });
+
+
+
+    // Fetch storm report data from the Aeris API.
+    // Markers will be created automatically from
+    // the API response.
+    stormMarkers.fetchData();
+
+
+    // PointDataMarkerCollection trigger 'click' event
+    // when any marker is clicked. The individual marker
+    // is passed in as the second parameter.
     stormMarkers.on('click', function(latLon, marker) {
-      var json = marker.getData().toJSON();
       var infoBox = new aeris.maps.InfoBox();
+
+      // Use the 'getDataAttribute' method to
+      // retrieve data associated with a PointDataMarker
+      var stormReportName =  marker.getDataAttribute('report.name');
+      var stormReportComment = marker.getDataAttribute('report.comments');
+
+      infoBox.setContent($('<div><strong>' + stormReportName + ': </strong>' + stormReportComment + '</div>')[0]);
       infoBox.setPosition(latLon);
-      infoBox.setContent('<strong>' + json.report.name + '</strong>: ' +
-                         json.report.comments);
       infoBox.setMap(map);
     });
 
-    stormMarkers.setMap(map);
 
-    map.on('change:bounds', function(map, bounds) {
-      stormMarkers.getData().getParams().setBounds(bounds);
-      fetchStorms();
-    });
-
-    var $filters = $('input[name="filter"]');
-    $filters.change(function() {
-      var $filter = $(this);
+    // To filter the PointDataCollectionMarkers
+    // you will need to make a new request to the
+    // AerisAPI with `filter` parameters set.
+    $('input[name="filter"]').change(function() {
+      var isSelected = $(this).prop('checked');
+      var filterName = $(this).val();
       var params = stormMarkers.getData().getParams();
 
-      if ($filter.prop('checked'))
-        params.addFilter($filter.val(), {
-          operator: 'OR'
+      if (isSelected) {
+        params.addFilter(filterName, {
+          // Use the 'OR' operator in order
+          // to show more than one type of marker
+          // at a time.
+          operator: aeris.api.Filter.OR
         });
-      else
-        params.removeFilter($filter.val());
+      }
+      else {
+        params.removeFilter(filterName);
+      }
 
-      fetchStorms();
+      stormMarkers.fetchData();
     });
   </script>
 </body>
