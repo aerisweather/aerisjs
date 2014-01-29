@@ -1,6 +1,6 @@
 define([
   'ai/util',
-  'ai/maps/gmaps/layerstrategies/maptype/imagemaptype',
+  'ai/maps/strategy/layerstrategies/maptype/imagemaptype',
   'jquery'
 ], function(_, ImageMapType, $) {
 
