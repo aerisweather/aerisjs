@@ -28,18 +28,30 @@
 </div>
 
 <div class="controls">
-  <p>
-    Time:
-    <span id="currentTime"></span>
-  </p>
-
-  <div class="animationControls">
-    <button id="prev"><img src="../images/prev.png"/></button>
-    <button id="start"><img src="../images/play.png"/></button>
-    <button id="next"><img src="../images/next.png"/></button>
-    <button id="pause"><img src="../images/pause.png"/></button>
-    <button id="stop"><img src="../images/stop.png"/></button>
-  </div>
+  <ul>
+    <li>
+    </li>
+    <li class="animationControls">
+      <button id="prev"><img src="../images/prev.png"/></button>
+      <button id="start"><img src="../images/play.png"/></button>
+      <button id="next"><img src="../images/next.png"/></button>
+      <button id="pause"><img src="../images/pause.png"/></button>
+      <button id="stop"><img src="../images/stop.png"/></button>
+    </li>
+    <li>
+      Time: <span id="currentTime"></span>
+      <br>
+      <input id="time" type="range" step="900000"/>
+    </li>
+    <li>
+      <input class="layerToggle" type="checkbox" id="radar" checked/>
+      Radar
+    </li>
+    <li>
+      <input class="layerToggle" type="checkbox" id="satellite" checked/>
+      Satellite
+    </li>
+  </ul>
 </div>
 
 <script type="text/javascript">
@@ -88,6 +100,16 @@
   // The animation object triggers
   // load:* events, to update listeners on loading progress.
   animationSync.on({
+    // Available animation layer times have
+    // been loaded from the AerisAPI.
+    // Times is an array of javascript timestamps,
+    // sorted from earliest to latest.
+    'load:times': function(times) {
+      // Set the bounds of the time range input
+      $('#time').attr('min', times[0]);
+      $('#time').attr('max', times[times.length - 1]);
+    },
+
     'load:progress': function(progress) {
       $('#progress').text((progress * 100).toFixed(1));
     },
@@ -115,8 +137,12 @@
   // with a date object corresponding to the
   // current animation frame.
   animationSync.on('change:time', function(date) {
+    // Update the hh:mm display
     var formattedTime = date.toTimeString().replace(/.*(\d{2}:\d{2})(:\d{2}).*/, "$1");
     $('#currentTime').text(formattedTime);
+
+    // Update the position of the time range input
+    $('#time').val(date.getTime());
   });
 
 
@@ -131,11 +157,49 @@
     animationSync.pause();
   });
   $('#prev').click(function() {
+    animationSync.pause();
     animationSync.previous();
   });
   $('#next').click(function() {
+    animationSync.pause();
     animationSync.next();
   });
+
+
+  // Toggle animation layers
+  //
+  // Layers can be added and removed
+  // from an animation sync.
+  $('#satellite').change(function() {
+    var isChecked = $(this).prop('checked');
+
+    if (isChecked) {
+      animationSync.add(satelliteAnimation);
+    }
+    else {
+      animationSync.remove(satelliteAnimation);
+    }
+  });
+  $('#radar').change(function() {
+    var isChecked = $(this).prop('checked');
+
+    if (isChecked) {
+      animationSync.add(radarAnimation);
+    }
+    else {
+      animationSync.remove(radarAnimation);
+    }
+  });
+
+
+  // Time range slider
+  $('#time').change(function() {
+    var time = parseInt($(this).val());
+
+    animationSync.pause();
+    animationSync.goToTime(time);
+  });
+
 </script>
 </body>
 </html>
