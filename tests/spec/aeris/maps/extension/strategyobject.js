@@ -122,9 +122,6 @@ define([
 
         spyOn(StrategyObject.prototype, 'setStrategy');
       });
-      afterEach(function() {
-        require.setStrategy('gmaps');
-      });
 
 
       it('should set the strategy to a named ReqJS module', function() {

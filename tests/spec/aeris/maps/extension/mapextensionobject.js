@@ -171,7 +171,6 @@ define([
           return view;
         });
 
-      require.setStrategy('gmaps');
       define('ai/maps/strategy/mockStrategy', function() {
         return MockStrategy;
       });

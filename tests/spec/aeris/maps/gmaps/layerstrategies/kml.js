@@ -1,4 +1,3 @@
-require.setStrategy('gmaps');
 define([
   'ai/util',
   'sinon',
