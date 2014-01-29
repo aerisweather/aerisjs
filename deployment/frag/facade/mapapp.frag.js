@@ -5,10 +5,6 @@ aeris.MapBuilder = function(buildConfig) {
         path: buildConfig.path,
         apiId: buildConfig.apiId,
         apiSecret: buildConfig.apiSecret
-      },
-
-      'ai/geocode/config': {
-        apiId: buildConfig.mapquest.apiKey
       }
     },
 
@@ -19,7 +15,11 @@ aeris.MapBuilder = function(buildConfig) {
       }
     }
   });
-  require(['ai/builder/maps/mapappbuilder'], function(Builder) {
-    new Builder(buildConfig).build();
+  require([
+    'ai/packages/maps'
+  ], function() {
+    require(['ai/builder/maps/mapappbuilder'], function(Builder) {
+      new Builder(buildConfig).build();
+    });
   });
 };
