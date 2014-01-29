@@ -62,7 +62,6 @@ require([
 
       //'spec/aeris/builder/maps/options/mapappbuilderoptions',
       'spec/aeris/builder/maps/core/helper/renderer',
-      //'spec/aeris/builder/maps/core/model/toggle',
       'spec/aeris/builder/maps/core/model/state',
       //'spec/aeris/builder/maps/mapcontrols/controller/mapcontrolscontroller',
 
