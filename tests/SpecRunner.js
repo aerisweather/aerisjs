@@ -34,7 +34,7 @@ require([
       'spec/aeris/aerisapi',
       'spec/aeris/promise',
       'spec/aeris/emptypromise',
-      //'spec/aeris/promisequeue',
+      'spec/aeris/promisequeue',
 
       'spec/aeris/errors/abstracterror',
       'spec/aeris/errors/errortypefactory',
@@ -63,16 +63,16 @@ require([
       //'spec/aeris/builder/maps/options/mapappbuilderoptions',
       'spec/aeris/builder/maps/core/helper/renderer',
       'spec/aeris/builder/maps/core/model/state',
-      //'spec/aeris/builder/maps/mapcontrols/controller/mapcontrolscontroller',
+      'spec/aeris/builder/maps/mapcontrols/controller/mapcontrolscontroller',
 
       'spec/aeris/builder/routes/plugin/travelmode',
-      //'spec/aeris/builder/routes/routebuilder/controller/controlscontroller',
+      'spec/aeris/builder/routes/routebuilder/controller/controlscontroller',
       'spec/aeris/builder/routes/routebuilder/controller/saveroutecontroller',
 
       'spec/aeris/geocode/mapquestgeocodeservice',
       'spec/aeris/geocode/googlegeocodeservice',
       'spec/aeris/geolocate/html5geolocateservice',
-      //'spec/aeris/geolocate/freegeoipgeolocateservice',
+      'spec/aeris/geolocate/freegeoipgeolocateservice',
 
 
       //'spec/aeris/commands/abstractcommand',
@@ -86,7 +86,7 @@ require([
 
       'spec/aeris/helpers/validator/pathvalidator',
 
-      //'spec/aeris/api/endpoint/model/pointdata',
+      'spec/aeris/api/endpoint/model/pointdata',
       'spec/aeris/api/params/model/params',
       'spec/aeris/api/params/model/query',
       'spec/aeris/api/endpoint/model/aerisapimodel',
@@ -96,10 +96,10 @@ require([
       'spec/aeris/api/params/collection/chainedquery',
 
       'spec/aeris/maps/map',
-      //'spec/aeris/maps/extension/strategyobject',
+      'spec/aeris/maps/extension/strategyobject',
       'spec/aeris/maps/extension/mapobjectcollection',
-      //'spec/aeris/maps/extension/mapextensionobject',
-      //'spec/aeris/maps/abstractstrategy',
+      'spec/aeris/maps/extension/mapextensionobject',
+      'spec/aeris/maps/abstractstrategy',
 
       'spec/aeris/maps/layers/abstractlayer',
       'spec/aeris/maps/layers/abstracttile',
@@ -110,7 +110,7 @@ require([
 
       'spec/aeris/maps/polylines/polyline',
 
-      //'spec/aeris/maps/markers/pointdatamarker',
+      'spec/aeris/maps/markers/pointdatamarker',
       'spec/aeris/maps/markercollections/pointdatamarkercollection',
 
       'spec/aeris/maps/animations/abstractanimation',
