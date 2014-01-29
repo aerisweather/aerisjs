@@ -1,49 +1,23 @@
 define([
-  'wire',
-  'testUtils',
-  'ai/model'
-], function(wire, testUtil, Model) {
-  describe('The WireJS factory plugin', function() {
-    var modId;
-    var plugins = [ 'ai/application/plugin/classfactory' ];
-
-    beforeEach(function() {
-      modId = _.unique('MockModule_');
-    });
-
+  'ai/model',
+  'wire!./fixtures/config/classfactory'
+], function(Model, ctx) {
+  describe('The WireJS ClassFactory plugin', function() {
     describe('Integration', function() {
 
       it('should create a Model with default attributes and options', function() {
-        wire({
-          ModelFactory: {
-            ClassFactory: {
-              module: 'ai/model',
-              args: [
-                {
-                  color: 'blue',
-                  width: 100
-                }
-              ]
-            }
-          },
-          $plugins: plugins
-        }).then(function(context) {
-            var modelInstance;
+        var modelInstance;
 
-            expect(context.ModelFactory).toBeDefined();
-            expect(_.isFunction(context.ModelFactory)).toEqual(true);
+        expect(ctx.ModelFactory).toBeDefined();
+        expect(_.isFunction(ctx.ModelFactory)).toEqual(true);
 
-            modelInstance = new context.ModelFactory({
-              color: 'red'
-            });
+        modelInstance = new ctx.ModelFactory({
+          color: 'red'
+        });
 
-            expect(modelInstance.get('color')).toEqual('red');
-            expect(modelInstance.get('width')).toEqual(100);
-
-            testUtil.setFlag();
-          }, _.throwUncatchable).otherwise(_.throwUncatchable);
-
-        waitsFor(testUtil.checkFlag, 1000, 'wire to resolve');
+        expect(modelInstance).toBeInstanceOf(Model);
+        expect(modelInstance.get('color')).toEqual('red');
+        expect(modelInstance.get('width')).toEqual(100);
       });
 
     });

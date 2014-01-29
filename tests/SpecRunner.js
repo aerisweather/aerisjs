@@ -53,9 +53,9 @@ require([
       'spec/aeris/application/form/model/combotoggle',
       'spec/aeris/application/form/collection/radiocollection',
       'spec/aeris/application/form/controller/togglebuttoncontroller',
-      //'spec/aeris/application/plugin/events',
-      //'spec/aeris/application/plugin/classfactory',
-      //'spec/aeris/application/plugin/attrresolver',
+      'spec/aeris/application/plugin/events',
+      'spec/aeris/application/plugin/classfactory',
+      'spec/aeris/application/plugin/attrresolver',
       'spec/aeris/application/plugin/aerisconfig',
 
       'spec/aeris/builder/appbuilder',
