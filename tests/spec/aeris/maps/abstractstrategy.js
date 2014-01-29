@@ -9,13 +9,21 @@ define([
       map: null
     });
 
+    spyOn(this, 'hasMap').andCallThrough();
+    spyOn(this, 'getMap').andCallThrough();
     this.hasMap.andReturn(!!attrs.map);
 
     Model.call(this, attrs, opt_options);
   };
   _.inherits(MockObject, Model);
 
-  MockObject.prototype.hasMap = jasmine.createSpy('MockObject#hasMap');
+  MockObject.prototype.hasMap = function() {
+    return !!this.get('map');
+  };
+
+  MockObject.prototype.getMap = function() {
+    return this.get('map');
+  }
 
 
   var MockMap = function() {
@@ -28,12 +36,16 @@ define([
 
     describe('constructor', function() {
 
+      beforeEach(function() {
+        spyOn(AbstractStrategy.prototype, 'setMap');
+        spyOn(AbstractStrategy.prototype, 'remove');
+      });
+
+
       it('should bind to the object\'s map', function() {
         var obj = new MockObject();
         var map = new MockMap();
 
-        spyOn(AbstractStrategy.prototype, 'setMap');
-        spyOn(AbstractStrategy.prototype, 'remove');
 
         new AbstractStrategy(obj);
 
@@ -50,7 +62,6 @@ define([
 
         obj.hasMap.andReturn(true);
 
-        spyOn(AbstractStrategy.prototype, 'setMap');
 
         new AbstractStrategy(obj);
         expect(AbstractStrategy.prototype.setMap).toHaveBeenCalledWith(map);
