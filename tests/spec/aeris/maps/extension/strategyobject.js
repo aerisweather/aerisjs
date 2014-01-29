@@ -2,8 +2,9 @@ define([
   'ai/util',
   'ai/maps/extension/strategyobject',
   'ai/promise',
-  'testUtils'
-], function(_, StrategyObject, Promise, testUtil) {
+  'testUtils',
+  'mocks/require'
+], function(_, StrategyObject, Promise, testUtil, MockRequire) {
 
   var StrategyFactory = function() {
     var Strategy = jasmine.createSpy(_.uniqueId('MockStrategyCtor_'));
@@ -102,26 +103,26 @@ define([
 
 
     describe('loadStrategy', function() {
-      var Strategy;
+      var Strategy, mockRequire;
 
       beforeEach(function() {
         Strategy = StrategyFactory();
 
+        mockRequire = new MockRequire();
+        mockRequire.useMockRequire();
+        mockRequire.useMockDefine();
 
-        require.config({
-          map: {
-            '*': {
-              strategy: 'mockStrategyType'
-            }
-          }
-        });
-
-        define('mockStrategyType/mockStrategyModule', function() {
+        define('ai/maps/strategy/mockStrategyModule', function() {
           return Strategy;
         });
 
         spyOn(StrategyObject.prototype, 'setStrategy');
       });
+
+      afterEach(function() {
+        mockRequire.restore();
+      });
+
 
 
       it('should set the strategy to a named ReqJS module', function() {
