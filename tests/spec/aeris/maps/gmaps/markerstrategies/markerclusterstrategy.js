@@ -135,19 +135,55 @@ define([
           expect(strategy.addMarker).toHaveBeenCalledWith(marker);
         });
 
-        it('should remove a marker removed from the object', function() {
+        it('should reset clusters when a marker is removed from the object', function() {
           var marker = new MockMarker();
-
-          spyOn(strategy, 'removeMarker');
+          spyOn(strategy, 'resetClusters');
 
           obj.trigger('remove', marker, obj, { some: 'opts' });
-          expect(strategy.removeMarker).toHaveBeenCalledWith(marker);
+
+          // Required, because event handler is debounced
+          clock.tick(500);
+
+          expect(strategy.resetClusters).toHaveBeenCalled();
+        });
+
+        it('should only reset clusters once, if several markers are removed within 500 ms', function() {
+          spyOn(strategy, 'resetClusters');
+
+          obj.trigger('remove', new MockMarker(), obj);
+          obj.trigger('remove', new MockMarker(), obj);
+          obj.trigger('remove', new MockMarker(), obj);
+
+          clock.tick(500);
+          expect(strategy.resetClusters.callCount).toEqual(1);
+
+
+          obj.trigger('remove', new MockMarker(), obj);
+          obj.trigger('remove', new MockMarker(), obj);
+          obj.trigger('remove', new MockMarker(), obj);
+
+          clock.tick(500);
+          expect(strategy.resetClusters.callCount).toEqual(2);
+
+
+          obj.trigger('remove', new MockMarker(), obj);
+          obj.trigger('remove', new MockMarker(), obj);
+          obj.trigger('remove', new MockMarker(), obj);
+          clock.tick(500);
+          expect(strategy.resetClusters.callCount).toEqual(3);
+
+          clock.tick(500);
+          expect(strategy.resetClusters.callCount).toEqual(3);
         });
 
         it('should reset the MarkerClusterers, if the object is reset', function() {
           spyOn(strategy, 'resetClusters');
 
           obj.trigger('reset', obj, { some: 'opts' });
+
+          // Required, because event handler is debounced
+          clock.tick(500);
+
           expect(strategy.resetClusters).toHaveBeenCalled();
         });
 
@@ -155,6 +191,11 @@ define([
           spyOn(strategy, 'repaint');
 
           obj.trigger('change', new MockMarker(), { some: 'opts' });
+
+
+          // Required, because event handler is debounced
+          clock.tick(500);
+
           expect(strategy.repaint).toHaveBeenCalled();
         });
 
