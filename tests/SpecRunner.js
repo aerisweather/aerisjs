@@ -29,7 +29,6 @@ require([
       'spec/aeris/limitedcollection',
       'spec/aeris/viewmodel',
       'spec/aeris/viewcollection',
-      //'spec/aeris/simplecollection',
       'spec/aeris/util',
       'spec/aeris/events',
       'spec/aeris/aerisapi',
