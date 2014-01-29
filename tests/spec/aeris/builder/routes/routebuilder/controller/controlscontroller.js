@@ -1,5 +1,5 @@
 define([
-  'ai/builder/route/controller/controlscontroller',
+  'ai/builder/routes/routebuilder/controller/routecontrolscontroller',
   'ai/maps/routes/routebuilder',
   'ai/maps/routes/route',
   'ai/maps/routes/waypoint',
@@ -10,14 +10,13 @@ define([
 
   function getStubbedOptions(opt_options) {
     var options = _.extend({
-      builder: sinon.createStubInstance(RouteBuilder),
-      route: sinon.createStubInstance(Route)
+      routeBuilder: sinon.createStubInstance(RouteBuilder)
     }, opt_options);
 
-    spyOn(options.builder, 'getRoute').andReturn(options.route);
+    spyOn(options.routeBuilder, 'getRoute').andReturn(options.route);
 
     return {
-      builder: options.builder
+      routeBuilder: options.routeBuilder
     };
   }
 
@@ -74,13 +73,13 @@ define([
 
 
         // Keep an eye on the Builder
-        spyOn(opts.builder, 'addWaypoint').andCallFake(function(latLon) {
-          expect(latLon).toBeNearLatLng(fakeUI.latLon, 0.01);
+        spyOn(opts.routeBuilder, 'addWaypoint').andCallFake(function(waypoint) {
+          expect(waypoint.getPosition()).toBeNearLatLng(fakeUI.latLon, 0.01);
         });
 
         controller.setStartingWaypoint();
 
-        expect(opts.builder.addWaypoint).toHaveBeenCalled();
+        expect(opts.routeBuilder.addWaypoint).toHaveBeenCalled();
     });
 
       it('when a waypoint exists', function() {
@@ -106,13 +105,13 @@ define([
 
 
         // Keep an eye on MoveWaypoint command
-        spyOn(opts.builder, 'moveWaypoint').andCallFake(function(actualWp, latLon) {
+        spyOn(opts.routeBuilder, 'moveWaypoint').andCallFake(function(actualWp, latLon) {
           expect(actualWp).toEqual(waypoint);
           expect(latLon).toBeNearLatLng(fakeUI.latLon, 0.01);
         });
 
         controller.setStartingWaypoint();
-        expect(opts.builder.moveWaypoint).toHaveBeenCalled();
+        expect(opts.routeBuilder.moveWaypoint).toHaveBeenCalled();
       });
     });
   });

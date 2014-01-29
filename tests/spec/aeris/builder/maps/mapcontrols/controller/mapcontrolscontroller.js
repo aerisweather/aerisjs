@@ -33,11 +33,20 @@ define([
   var MockRegion = function() {
     spyOn(this, 'show');
     spyOn(this, 'close');
+
+    this.$el = $('<div></div>');
   };
   _.inherits(MockRegion, Marionette.Region);
 
 
   describe('A ControlsController', function() {
+    var templateFn;
+
+    beforeEach(function() {
+      templateFn = function() { return 'foo'; };
+    });
+
+
 
     describe('render', function() {
 
@@ -53,7 +62,7 @@ define([
           spyOn(MapControlsController.prototype, 'renderControlsView');
 
           controller = new MapControlsController({
-            template: '<div></div>',
+            template: templateFn,
             builderOptions: new MockBuilderOptions({
               controls: {
                 layers: true,
@@ -65,13 +74,13 @@ define([
           });
           controller.render();
 
-          eventHub.trigger('mapControls:render', layerControls, 'layers');
+          eventHub.trigger('mapControls:ready', layerControls, 'layers');
           expect(MapControlsController.prototype.renderControlsView).toHaveBeenCalledWith(layerControls, 'layers');
 
-          eventHub.trigger('mapControls:render', waypointControls, 'waypoints');
+          eventHub.trigger('mapControls:ready', waypointControls, 'waypoints');
           expect(MapControlsController.prototype.renderControlsView).toHaveBeenCalledWith(waypointControls, 'waypoints');
 
-          eventHub.trigger('mapControls:render', trailsControls, 'trails');
+          eventHub.trigger('mapControls:ready', trailsControls, 'trails');
           expect(MapControlsController.prototype.renderControlsView).not.toHaveBeenCalledWith(trailsControls, 'trails');
 
         });
@@ -91,7 +100,7 @@ define([
             mapOptionControlsRegion: '.someSelector',
             geosearchControlsRegion: '.someOther .selector'
           },
-          controlsRegions: {
+          controlsRegionLookup: {
             mapOptionControlsView: 'mapOptionControlsRegion',
             geosearchControlsView: 'geosearchControlsRegion'
           }
