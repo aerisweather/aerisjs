@@ -14,7 +14,17 @@
 
   // Handlebars config
   inlineText: true,
-  stubModules: ['text', 'hbars'],
+  stubModules: [
+    // Text and hbars AMD plugin
+    // build text files into optimized package
+    'text', 'hbars',
+
+    // jQuery is not required for
+    // core aeris map library
+    // (need to be stubbed, because Backbone thinks
+    //  it needs it)
+    'jquery'
+  ],
   onBuildWrite : function(moduleName, path, content){
     // replace handlebars with the runtime version
     if (moduleName === 'Handlebars') {
