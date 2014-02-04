@@ -43,13 +43,14 @@
    * @returns {Object}
    */
   var parseYuiDocData = function(data) {
-    var nsTree, nsTreePublic, classes, classesPublic;
+    var nsTree, nsTreePublic, classesPublic;
 
     processClasses(data.classes, data.classitems);
     classesPublic = createPublicApiClasses(data.classes);
 
     nsTree = createNamespaceTree(_.values(data.classes));
     nsTreePublic = createNamespaceTree(_.values(classesPublic));
+
 
     return {
       classes: data.classes,
@@ -113,10 +114,12 @@
         properties: {},
         events: {},
         attributes: {},
-        other: {}
+        other: {},
+        params: []
       });
 
       while (currentChild.parent) {
+        // Extend with parent class items
         _.each(['methods', 'properties', 'events', 'attributes', 'other'], function(itemType) {
           _.defaults(classObj[itemType], currentChild.parent[itemType]);
 
@@ -124,6 +127,17 @@
             _.defaults(classObj['itemType'], currentChild.mixesRef['itemType']);
           }
         });
+
+        // Extend with parent ctor params
+        if (currentChild.parent.params) {
+          currentChild.parent.params.forEach(function(param, i) {
+            var isExistingParam = _.findWhere(classObj.params, { name: param.name });
+
+            if (!isExistingParam) {
+              classObj.params.splice(i, 0, param);
+            }
+          });
+        }
 
         currentChild = currentChild.parent;
       }
