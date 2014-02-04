@@ -1,0 +1,22 @@
+{{#eachPublicNamespace aeris}}
+  <a class="tocTitle" href="#ns-{{name}}">{{shortName}}</a>
+  <ul class="tocSection">
+    {{#each namespaces}}
+      {{>toc-classes this}}
+    {{/each}}
+    {{#each classes}}
+      {{#ifPublicApi this }}
+        <li><a href="#{{name}}">{{className this}}</a></li>
+      {{/ifPublicApi}}
+    {{/each}}
+  </ul>
+{{/eachPublicNamespace}}
+
+<a class="tocTitle" href="#ns-util">Util</a>
+<ul class="tocSection">
+  {{#each aeris.classes}}
+    {{#ifPublicApi this}}
+      <li><a href="#{{name}}">{{className this}}</a></li>
+    {{/ifPublicApi}}
+  {{/each}}
+</ul>

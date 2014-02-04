@@ -17,3 +17,6 @@ build/
 
 # node
 **/node_modules/
+
+# Generated YUIDoc documentation
+docs/public/

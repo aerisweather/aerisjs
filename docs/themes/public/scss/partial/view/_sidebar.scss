@@ -4,6 +4,8 @@
   border-right: 1px solid #bbb;
   @include box-shadow(0 0 7px rgba(0,0,0, 0.15));
 
+  overflow-y: scroll;
+
   a.tocTitle {
     display: block;
 

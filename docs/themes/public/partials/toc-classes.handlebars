@@ -1,0 +1,13 @@
+  <li class="category">
+    <details>
+      <summary><a href="#{{name}}">{{shortName}}</a></summary>
+      <ul class="tocSection">
+        {{#each classes}}
+          <li><a href="#{{name}}">{{className this}}</a></li>
+        {{/each}}
+        {{#each namespaces}}
+          {{>toc-classes this}}
+        {{/each}}
+      </ul>
+    </details>
+  </li>
