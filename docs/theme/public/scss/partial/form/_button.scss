@@ -1,0 +1,5 @@
+button, a.btn {
+  @extend %buttonWithColorBg;
+
+  margin: 20px 0;
+}

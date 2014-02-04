@@ -1,0 +1,41 @@
+.classDocs {
+  @extend %resetList;
+
+  font-size: 12px;
+  margin: 10px 0;
+}
+
+a.ref {
+  @extend %inlineCode;
+
+  &, &:hover {
+    text-decoration: none;
+  }
+
+  &:hover {
+    background: #eaebf8;
+  }
+}
+
+code {
+  @include font-monospace;
+}
+
+.example {
+  @extend %inlineCode;
+  margin: 0 0 20px 0;
+}
+
+.typeDocs {
+  margin-top: 30px;
+
+  header {
+    font-weight: bold;
+    font-size: 13px;
+  }
+
+}
+
+.isRequired {
+  font-style: italic;
+}

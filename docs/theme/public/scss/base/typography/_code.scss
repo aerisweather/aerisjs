@@ -1,0 +1,13 @@
+%inlineCode {
+  @include inline-block;
+  padding: 1px 6px;
+  background: white;
+
+  border: 1px solid #ddd;
+  border-radius: 4px;
+
+  @include font-monospace;
+  font-size: 12px;
+  line-height: 1.5em;
+  color: rgb(46, 46, 46);
+}

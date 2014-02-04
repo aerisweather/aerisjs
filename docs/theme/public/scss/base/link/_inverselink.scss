@@ -1,0 +1,12 @@
+%inverseLink {
+  @include transition(all .1s ease);
+
+  &, &:hover, &:visited {
+    color: #999;
+    text-decoration: none;
+  }
+
+  &:hover {
+    color: #fff;
+  }
+}

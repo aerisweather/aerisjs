@@ -1,0 +1,59 @@
+#sidebar {
+  background: rgba(#fff, 0.75);
+  padding: 10px 0 30px 20px;
+  border-right: 1px solid #bbb;
+  @include box-shadow(0 0 7px rgba(0,0,0, 0.15));
+
+  a.tocTitle {
+    display: block;
+
+    &, &:hover, &:visited {
+      color: $text-black;
+      font-weight: bold;
+      margin-top: 15px;
+    }
+  }
+
+  ul.tocSection {
+    @extend %resetList;
+
+    font-size: 11px;
+    line-height: 14px;
+    margin: 5px 0 0 0;
+
+    summary:focus {
+      outline: none;
+    }
+
+    li {
+      font-family: Lucida Grande, Arial;
+      margin: 0 0 3px 0;
+      cursor: pointer;
+
+      &::before {
+        content: '- ';
+      }
+
+      a {
+        text-decoration: none;
+
+        &, &:hover, &:visited {
+          color: $text-black;
+        }
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+
+      &.category {
+        &::before {
+          content: none;
+        }
+
+        ul.tocSection {
+          margin: 3px 0 7px 1em;
+        }
+      }
+    }
+  }
+}

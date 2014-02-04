@@ -1,0 +1,42 @@
+input[type=search] {
+
+  background: #272727 image-url('search.png') no-repeat 8px;
+  text-indent: 30px;
+  padding: 5px;
+
+  cursor: pointer;
+
+  @include border-radius(15px);
+  border: 1px solid #414141;
+
+
+
+  @include placeholder {
+    @include transition(all .1s ease);
+    color: #999;
+  }
+
+  &, &:hover, &:visited {
+    @include placeholder {
+      color: #999;
+      text-decoration: none;
+    }
+  }
+
+  &:hover, &:active {
+    @include placeholder {
+      color: #bbbbbb;
+    }
+  }
+
+  &:focus {
+    @include appearance(none);
+    @include box-shadow(none);
+    outline: none;
+    color: #bbbbbb;
+
+    @include placeholder {
+      color: #272727;
+    }
+  }
+}

@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Styleguide for AerisJS Public API Docs</title>
+
+  <link rel="stylesheet" href="../css/style.css"/>
+  <link rel="shortcut icon" type="image/png" href="../images/aeris-favicon.png"/>
+  <link rel="stylesheet" href="../js/tooltipster/tooltipster.css"/>
+
+  <script type="text/javascript" src="../../../../bower_components/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="../js/tooltipster/jquery.tooltipster.min.js"></script>
+</head>
+<body>
+
+<div id="page">
+<div id="super-header">
+  <form id="weatherSearch" action="#">
+    <input type="search" placeholder="Local weather"/>
+  </form>
+  <ul>
+    <li><a href="#">HamWeather.com</a></li>
+    <li><a href="#">Developer Center</a></li>
+    <li><a href="#">Support</a></li>
+    <li><a href="#">Blog</a></li>
+  </ul>
+</div>
+
+<div id="sidebar">
+  <a class="tocTitle" href="#">Aeris.js (v0.1.0)</a>
+  <ul class="tocSection">
+    <li><a href="#">Github Repo</a></li>
+    <li><a href="#">Aeris Weather API Documenation</a></li>
+  </ul>
+
+  <a class="tocTitle" href="#">Introduction</a>
+  <ul class="tocSection">
+    <li><a href="#">Getting Started</a></li>
+    <li><a href="#">Get an API key</a></li>
+  </ul>
+
+  <a href="#" class="tocTitle">Maps</a>
+  <ul class="tocSection">
+    <li><a href="#">Map</a></li>
+    <li><a href="#">InfoBox</a></li>
+    <li><a href="#">Marker</a></li>
+    <li class="category">
+      <details>
+        <summary><a href="#">Layers</a></summary>
+        <ul class="tocSection">
+          <li><a href="#aeris.maps.layers.AerisRadar">AerisRadar</a></li>
+          <li><a href="#aeris.maps.layers.AerisSatellite">AerisSatellite</a></li>
+          <li><a href="#aeris.maps.layers.AerisWinds">AerisWinds</a></li>
+        </ul>
+      </details>
+    </li>
+    <li class="category">
+      <details>
+        <summary><a href="#">Animations</a></summary>
+        <ul class="tocSection">
+          <li><a href="#">AerisInteractiveTileAnimation</a></li>
+          <li><a href="#">AnimationSync</a></li>
+        </ul>
+      </details>
+    </li>
+    <li class="category">
+      <details>
+        <summary><a href="#">Markers</a></summary>
+        <ul class="tocSection">
+          <li><a href="#">EarthquakeMarker</a></li>
+          <li><a href="#">EarthquakeMarkerCollection</a></li>
+          <li><a href="#">StormReportMarker</a></li>
+          <li><a href="#">StormReportMarkerCollection</a></li>
+          <li><a href="#">FireMarker</a></li>
+          <li><a href="#">FireMarkerCollection</a></li>
+        </ul>
+      </details>
+    </li>
+  </ul>
+
+  <a href="#" class="tocTitle">Api</a>
+
+  <a href="#" class="tocTitle">Geocode</a>
+
+  <a href="#" class="tocTitle">Geolocate</a>
+
+  <a href="#" class="tocTitle">Util</a>
+</div>
+
+
+<div class="container">
+
+  <a href="#"><img id="logo" src="../images/aeris_logo.png" alt="Aeris.js"/></a>
+
+  <h1>Aeris.js</h1>
+
+  <p>
+    In the works of Stone, a predominant concept is the concept of textual consciousness. However, Lyotard uses the term
+    'postcapitalist desituationism' to denote the role of the poet as observer.
+  </p>
+
+  <p>
+    "Class is part of the rubicon of truth," says Baudrillard; however, according to Reicher[1] , it is not so much
+    class that is part of the rubicon of truth, but rather the paradigm, and therefore the rubicon, of class. The
+    primary theme of the works of Stone is a pretextual whole. Thus, la Fournier[2] suggests that we have to choose
+    between postmodern textual theory and capitalist theory.
+  </p>
+
+  <p>
+    In the works of Pynchon, a predominant concept is the distinction between opening and closing. The characteristic
+    theme of Brophy's[3] essay on postcapitalist desituationism is the common ground between art and society. It could
+    be said that Debord's model of textual discourse holds that the purpose of the reader is deconstruction.
+  </p>
+
+  <p>
+    <a class="btn" href="#">Download Aeris.js</a>
+  </p>
+
+
+  <h2 id="Maps">Aeris Maps</h2>
+
+  <p>
+    The Aeris maps library...
+  </p>
+
+  <p>
+    However, the subject is interpolated into a deconstructivist theory that includes language as a totality. Bataille
+    uses the term ‘neotextual cultural theory’ to denote the bridge between society and class.
+  </p>
+
+  <h3>Layers</h3>
+
+  <p>
+    "Society is intrinsically impossible," says Baudrillard; however, according to Pickett[1] , it is not so much
+    society that is intrinsically impossible, but rather the collapse, and subsequent defining characteristic, of
+    society. Any number of appropriations concerning pretextual theory exist.
+  </p>
+
+
+  <h4 id="aeris.maps.layers.AerisRadar">AerisRadar</h4>
+
+  <ul class="classDocs">
+    <li><a class="ref" href="fullApiDocs/aeris.maps.layers.AerisRadar" target="_blank">aeris.maps.layers.AerisRadar</a>
+    </li>
+    <li>extends <a class="ref tooltip" href="fullApiDocs/aeris.maps.layers.AerisInteractiveTile"
+                   title="<code>aeris.maps.layers.AerisInteractiveTile</code>" target="_blank">AerisInteractiveTile</a>
+    </li>
+  </ul>
+
+  <p>Representation of an Aeris Radar layer.</p>
+
+
+  <h5 id="aeris.maps.layers.AerisRadar-constructor">constructor</h5>
+
+  <code class="example">
+    new aeris.maps.layers.AerisRadar(opt_attrs, opt_options);
+  </code>
+
+  <table>
+    <thead>
+    <tr>
+      <td>Parameter</td>
+      <td>Type</td>
+      <td>Description</td>
+      <td></td>
+    </tr>
+    </thead>
+    <tr>
+      <td><code>opt_attrs</code></td>
+      <td><a class="ref" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object"
+             target="_blank">Object</a></td>
+      <td>Radar layer attributes</td>
+      <td class="isRequired">optional</td>
+    </tr>
+    <tr>
+      <td><code>opt_attrs</code></td>
+      <td><a class="ref" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object"
+             target="_blank">Object</a></td>
+      <td></td>
+      <td class="isRequired">optional</td>
+    </tr>
+  </table>
+
+
+  <h5 id="aeris.maps.layers.AerisRadar-methods">methods</h5>
+
+  <table>
+    <thead>
+    <tr>
+      <td>Method</td>
+      <td>Return value</td>
+      <td>Description</td>
+    </tr>
+    </thead>
+    <tr>
+      <td><code>setMap(map:<a class="ref" href="#aeris.maps.Map" title="<code>aeris.maps.Map</code>">Map</a>)</code>
+      </td>
+      <td>none</td>
+      <td>Add the radar layer to a map.</td>
+    </tr>
+    <tr>
+      <td><code>getMap()</code></td>
+      <td><a class="ref" href="#aeris.maps.Map" title="<code>aeris.maps.Map</code>">Map</a></td>
+      <td></td>
+    </tr>
+  </table>
+
+
+  <h5 id="aeris.maps.layers.AerisRadar-events">events</h5>
+
+  <aside>See <a class="ref" href="#aeris.Events">aeris.Events</a> documentation for information about handling events
+  </aside>
+
+  <h6>load</h6>
+
+  <code class="example">
+    aerisRadar.on('load', function(radarLayer, status) {});
+  </code>
+
+  <div class="typeDocs">
+    <table>
+      <thead>
+      <tr>
+        <td>Event parameter</td>
+        <td>Type</td>
+        <td>Description</td>
+      </tr>
+      </thead>
+      <tr>
+        <td><code>layer</code></td>
+        <td><a class="ref" href="fullApiDocs/AbstractTile.html" target="_blank"
+               title="<code>aeris.maps.layers.AbstractTile</code>">AbstractTile</a></td>
+        <td>The layer which has been loaded.</td>
+      </tr>
+      <tr>
+        <td><code>status</code></td>
+        <td><a class="ref" href="fullApiDocs/LayerLoadedStatus.html" target="_blank"
+               title="<code>aeris.maps.layers.LayerLoadedStatus">LayerLoadedStatus</a></td>
+        <td>Status of the loaded layer.</td>
+      </tr>
+    </table>
+  </div>
+
+  <h6>load:error</h6>
+
+  <code class="example">
+    aerisRadar.on('load:error', function(loadingError) {});
+  </code>
+
+  <table>
+    <thead>
+    <tr>
+      <td>Event parameter</td>
+      <td>Type</td>
+      <td>Description</td>
+    </tr>
+    </thead>
+    <tr>
+      <td><code>layer</code></td>
+      <td><a class="ref" href="fullApiDocs/AbstractTile.html" target="_blank"
+             title="<code>aeris.maps.layers.AbstractTile</code>">AbstractTile</a></td>
+      <td>The layer which has been loaded.</td>
+    </tr>
+    <tr>
+      <td><code>status</code></td>
+      <td><a class="ref" href="fullApiDocs/LayerLoadedStatus.html" target="_blank"
+             title="<code>aeris.maps.layers.LayerLoadedStatus</code>">LayerLoadedStatus</a></td>
+      <td>Status of the loaded layer.</td>
+    </tr>
+  </table>
+
+
+</div>
+</div>
+
+<footer>
+  <nav>
+    <ul>
+      <li><a href="#">Products</a></li>
+    </ul>
+  </nav>
+
+  <div class="copyright">&copy; 2013 HAMWeather, LLC</div>
+</footer>
+
+<script type="text/javascript">
+  function stickyScroll($sticker, topOffset, bottomOffset) {
+    function stickTheSticker() { // scroll event
+      var scrollDiffTop = topOffset - $(window).scrollTop();
+      var isScrollBeyondTopViewport = scrollDiffTop > topOffset;
+
+      var scrollDiffBottom = $(document).height() - $(window).height() - $(window).scrollTop() - bottomOffset;
+      var isScrollBeyondBottomViewport = (scrollDiffBottom * -1) > bottomOffset;
+
+      if (scrollDiffTop >= 0 && !isScrollBeyondTopViewport) {
+        $sticker.css('top', scrollDiffTop);
+      }
+      else if (!isScrollBeyondTopViewport) {
+        $sticker.css('top', 0);
+      }
+
+      if (scrollDiffBottom < 0) {
+        if (!isScrollBeyondBottomViewport) {
+          $sticker.css('bottom', scrollDiffBottom * -1);
+        }
+        else {
+          $sticker.css('bottom', bottomOffset);
+        }
+      }
+      else {
+        $sticker.css('bottom', 0);
+      }
+    }
+
+    $(window).scroll(stickTheSticker);
+
+    stickTheSticker();
+  }
+
+  stickyScroll($('#sidebar'), $('#super-header').height(), $('footer').outerHeight());
+
+
+  function goToWeather(place) {
+    window.location = 'http://wx.hamweather.com/?pands=' + 55417;
+  }
+
+  $('#weatherSearch').submit(function (evt) {
+    var weatherLocation = $(this).find('input[type=search]').val();
+
+    goToWeather(weatherLocation);
+
+    evt.preventDefault();
+    return false;
+  });
+
+
+  // Tooltips
+  // http://iamceege.github.io/tooltipster/#options
+  $('.ref').tooltipster({
+    delay: 100,
+    speed: 100,           // animation speed
+    position: 'top',
+    theme: 'tooltipster-aerisjs',
+    interactive: true,
+    contentAsHTML: true
+  });
+
+</script>
+</body>
+</html>
