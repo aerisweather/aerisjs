@@ -106,7 +106,7 @@
      */
     log: function(obj) {
       return '<script type="text/javascript">' +
-        'console.log(' + JSON.stringify(obj) + ');' +
+        'console.log(window._log = ' + JSON.stringify(obj) + ');' +
         '</script>'
     }
   };
