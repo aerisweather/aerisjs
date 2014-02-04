@@ -84,26 +84,50 @@
 
       if (!classObj) { return; }
 
-      if (isItemTypeUndefined && itemType !== 'properties') {
+      // Store a list of items without proper annotations
+      // for debugging purposes
+      if (isItemTypeUndefined) {
         missingItems.push(item);
       }
 
-      classObj[itemType] || (classObj[itemType] = []);
-      classObj[itemType].push(item);
+
+      classObj[itemType] || (classObj[itemType] = {});
+      classObj[itemType][item.name] = item;
     });
   }
 
   function addParentRefsToClasses(classes) {
-    var stormReport = classes['aeris.api.model.StormReport'];
-    console.log('StormReport: "' + stormReport.extends + '"');
-    console.log('PointData: ' + classes['aeris.api.model.PointData']);
-
     _.each(classes, function(classObj) {
       classObj.parent = classes[classObj.extends];
+      classObj.mixesRef = classes[classObj.mixes];
     });
   }
 
   function extendClassesWithParentItems(classes) {
+    _.each(classes, addParentItems);
+
+    function addParentItems(classObj) {
+      var currentChild = classObj;
+      _.defaults(classObj, {
+        methods: {},
+        properties: {},
+        events: {},
+        attributes: {},
+        other: {}
+      });
+
+      while (currentChild.parent) {
+        _.each(['methods', 'properties', 'events', 'attributes', 'other'], function(itemType) {
+          _.defaults(classObj[itemType], currentChild.parent[itemType]);
+
+          if (currentChild.mixesRef) {
+            _.defaults(classObj['itemType'], currentChild.mixesRef['itemType']);
+          }
+        });
+
+        currentChild = currentChild.parent;
+      }
+    }
 
   }
 
