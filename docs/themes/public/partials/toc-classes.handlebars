@@ -6,6 +6,7 @@
           <li><a href="#{{name}}">{{className this}}</a></li>
         {{/each}}
         {{#each namespaces}}
+          {{! Recursively render child namespaces }}
           {{>toc-classes this}}
         {{/each}}
       </ul>

@@ -43,6 +43,8 @@
     fs.unlinkSync(path.join(tempDir, 'data.json'));
     fs.rmdirSync(tempDir);
 
+    GLOBAL.data = parsedData;
+
     return handlebars.compile(template)(parsedData);
   }
 

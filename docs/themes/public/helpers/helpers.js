@@ -1,98 +1,115 @@
-(function(module) {
+(function (module) {
   var _ = require('underscore');
+  var handlebars = require('handlebars');
 
-  function isPublicApiClass(classObj) {
-    return classObj.hasOwnProperty('publicapi');
+  function isPublicApi(obj) {
+    return obj.hasOwnProperty('publicapi');
   }
 
-  function isPublicApiNs(ns) {
-    var isPublicApi = false;
+  var NATIVES = {
+    'Array': 1,
+    'Boolean': 1,
+    'Date': 1,
+    'decodeURI': 1,
+    'decodeURIComponent': 1,
+    'encodeURI': 1,
+    'encodeURIComponent': 1,
+    'eval': 1,
+    'Error': 1,
+    'EvalError': 1,
+    'Function': 1,
+    'Infinity': 1,
+    'isFinite': 1,
+    'isNaN': 1,
+    'Math': 1,
+    'NaN': 1,
+    'null': 1,
+    'Number': 1,
+    'Object': 1,
+    'parseFloat': 1,
+    'parseInt': 1,
+    'RangeError': 1,
+    'ReferenceError': 1,
+    'RegExp': 1,
+    'String': 1,
+    'SyntaxError': 1,
+    'TypeError': 1,
+    'undefined': 1,
+    'URIError': 1,
+    'HTMLElement': 'https:/' + '/developer.mozilla.org/en/Document_Object_Model_(DOM)/',
+    'HTMLCollection': 'https:/' + '/developer.mozilla.org/en/Document_Object_Model_(DOM)/',
+    'DocumentFragment': 'https:/' + '/developer.mozilla.org/en/Document_Object_Model_(DOM)/',
+    'HTMLDocument': 'https:/' + '/developer.mozilla.org/en/Document_Object_Model_(DOM)/'
+  };
 
-    function checkForPublicApiClasses(ns) {
-      ns.classes.forEach(function(cls) {
-        if (isPublicApiClass(cls)) { isPublicApi = true }
-      });
+  function isNativeType(type) {
+    return _.has(NATIVES, type);
+  }
 
-      _.each(ns.namespaces, checkForPublicApiClasses);
+
+  function getNativeLink(name) {
+    var url = 'https:/' + '/developer.mozilla.org/en/JavaScript/Reference/Global_Objects/';
+    if (NATIVES[name] !== 1) {
+      url = NATIVES[name];
     }
-    checkForPublicApiClasses(ns);
-
-    return isPublicApi;
+    return url + name;
   }
 
-  function filterPublicApi(ns) {
-    var namespaces = {};
+  function createLinkToObj(obj, content) {
+    var href, target;
+    var cssClass = "ref";
+    var linkTemplate = '<a class="{class}" href="{href}" target="{target}">{content}</a>';
 
-    ns.classes = ns.classes.filter(isPublicApiClass);
-
-
-    _.each(ns.namespaces, function(childNs, name) {
-      if (isPublicApiNs(childNs)) {
-        namespaces[name] = filterPublicApi(childNs);
-      }
-    });
-
-    ns.namespaces = namespaces;
-
-    return ns;
-  }
-
-  // Memeoize public apis
-  var publicApis = {};
-  function getPublicApi(ns) {
-    if (!publicApis[ns.name]) {
-      publicApis[ns.name] = filterPublicApi(ns);
+    if (isPublicApi(obj)) {
+      href = '#' + obj.name;
+      target = '_self';
+    }
+    else {
+      href = '/docs/api/' + obj.name + '.html'
+      target = '_blank';
     }
 
-    return publicApis[ns.name];
+
+    return linkTemplate.
+      replace('{href}', href).
+      replace('{target}', target).
+      replace('{class}', cssClass).
+      replace('{content}', content);
   }
 
   var helpers = {
 
-    ifPublicApi: function(classObj, options) {
-      return isPublicApiClass(classObj) ? options.fn(this) : options.inverse(this);
-    },
-
-    ifPublicApiNs: function(ns, options) {
-      return isPublicApiNs(ns) ? options.fn(this) : options.inverse(this);
-    },
-
-    logPublicApi: function(ns) {
-      return helpers.log(getPublicApi(ns));
-    },
-
-    eachPublicNamespace: function(namespace, options) {
-      var output = '';
-      var publicApi = getPublicApi(namespace);
-
-      _.each(publicApi.namespaces, function(ns) {
-        output += options.fn(ns);
-      });
-
-      return output;
-    },
-    
-    nsHeading: function(namespace) {
-      var nsDepth = namespace.name.split('.').length;
-      var headingLevel = nsDepth + 1;
-      return '<h{lvl} id="#{id}">{shortName}</h{lvl}>'.
-        replace('{lvl}', headingLevel).
-        replace('{id}', namespace.name).
-        replace('{shortName}', namespace.shortName);
-    },
-
     // Returns namespace name without 'aeris' root
-    nsName: function(nsObj) {
+    nsName: function (nsObj) {
+      if (!nsObj.name) {
+        throw JSON.stringify(nsObj, null, 2);
+      }
       var nsParts = nsObj.name.split('.');
       return nsParts.slice(1).join('.');
     },
 
-    id: function(obj) {
-      return obj.replace('.', '-');
+    className: function (classObj) {
+      return _.last(classObj.name.split('.'));
     },
 
-    className: function(classObj) {
-      return _.last(classObj.name.split('.'));
+    linkTo: function (obj, options) {
+      return createLinkToObj(obj, options.fn(this));
+    },
+
+    parseForTypes: function(text) {
+      return text.replace(/(\{.*?\})/gi, function(match) {
+        var type = match.substr(1, match.length - 2);
+
+        if (isNativeType(type)) {
+          return '<a class="ref" href="' + getNativeLink(type) + '">' + type + '</a>';
+        }
+        else if (GLOBAL.data.classes[type]) {
+          return createLinkToObj(GLOBAL.data.classes[type], type);
+        }
+        else {
+          throw 'Unable to parse type ' + match + '.';
+        }
+      });
     },
 
     /**
@@ -104,7 +121,7 @@
      * @param {Object} obj
      * @return {string}
      */
-    log: function(obj) {
+    log: function (obj) {
       return '<script type="text/javascript">' +
         'console.log(window._log = ' + JSON.stringify(obj) + ');' +
         '</script>'

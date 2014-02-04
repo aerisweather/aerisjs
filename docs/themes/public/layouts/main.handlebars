@@ -11,7 +11,7 @@
   <script type="text/javascript" src="themes/public/js/tooltipster/jquery.tooltipster.min.js"></script>
 </head>
 <body>
-{{!--
+
 <div id="page">
   <div id="super-header">
     <form id="weatherSearch" action="#">
@@ -38,7 +38,7 @@
       <li><a href="#">Get an API key</a></li>
     </ul>
 
-    {{>toc}}
+    {{>toc publicApi.namespaces.aeris}}
 
   </div>
 
@@ -65,13 +65,13 @@
       <a class="btn" href="#">Download Aeris.js</a>
     </p>
 
-    {{#eachPublicNamespace aeris}}
-      <h3 id="{{name}}">{{nsName this}}</h3>
+    {{#each publicApi.namespaces.aeris.namespaces}}
+      {{>classdocs this}}
+    {{/each}}
 
-      {{#each namespaces}}
-        {{>classdocs this}}
-      {{/each}}
-    {{/eachPublicNamespace}}
+    {{#each publicApi.namespaces.aeris.classes }}
+      {{>class this}}
+    {{/each}}
 
   </div>
 
@@ -149,7 +149,7 @@
     contentAsHTML: true
   });
 
-</script> --}}
-{{{log this}}}
+</script>
+{{{log publicApi}}}
 </body>
 </html>
