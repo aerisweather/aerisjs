@@ -72,7 +72,30 @@
     },
 
     getRef: function(className) {
-      return GLOBAL.data.classes[className];
+      return GLOBAL.data.classes[className.trim()];
+    },
+
+    ifEquals: function(a , b, options) {
+      if (a === b) {
+        return options.fn(this);
+      }
+      else {
+        return options.inverse(this);
+      }
+    },
+
+    ifPublicApi: function(cls, options) {
+      var classObj = _.isString(cls) ? GLOBAL.data.classes[cls.trim()] : cls;
+
+      if (!classObj) {
+        return options.inverse(this);
+      }
+      if (isPublicApi(classObj)) {
+        return options.fn(this);
+      }
+      else {
+        return options.inverse(this);
+      }
     },
 
     /**
