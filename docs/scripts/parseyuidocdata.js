@@ -65,6 +65,7 @@
 
 
   function processClasses(classes, classItems) {
+    _.each(classes, fixItemLineEndings);
     addItemsToClasses(classes, classItems);
     addParentRefsToClasses(classes);
     extendClassesWithParentItems(classes);
@@ -85,6 +86,8 @@
 
       if (!classObj) { return; }
 
+      fixItemLineEndings(item);
+
       // Store a list of items without proper annotations
       // for debugging purposes
       if (isItemTypeUndefined) {
@@ -95,6 +98,18 @@
       classObj[itemType] || (classObj[itemType] = {});
       classObj[itemType][item.name] = item;
     });
+  }
+
+  function fixItemLineEndings(item) {
+    if (item.name) {
+      item.name = item.name.replace('!~YUIDOC_LINE~!', '');
+    }
+    if (item.params) {
+      item.params = item.params.map(function(param) {
+        param.name = param.name.replace('!~YUIDOC_LINE~!', '');
+        return param;
+      });
+    }
   }
 
   function addParentRefsToClasses(classes) {
