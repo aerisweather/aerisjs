@@ -165,6 +165,23 @@
     var publicClasses = {};
 
     _.each(classes, function(classObj, className) {
+      classObj = _.clone(classObj);
+
+      // Filter out private items
+      _.each(['methods', 'properties', 'events', 'attributes', 'other'], function(itemType) {
+        if (!classObj[itemType]) { return; }
+
+        _.each(classObj[itemType], function(item, itemName) {
+          var isPublicItem = (item.access !== 'private') && (item.access !== 'protected');
+
+          if (!isPublicItem) {
+            delete classObj[itemType][itemName];
+          }
+        });
+      });
+
+
+      // Filter for @publicApi annotated classes
       if (classObj.hasOwnProperty('publicapi')) {
         publicClasses[className] = classObj;
       }
