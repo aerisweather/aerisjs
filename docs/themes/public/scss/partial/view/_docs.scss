@@ -23,7 +23,9 @@ code {
 
 .example {
   @extend %inlineCode;
+  @include inline-block;
   margin: 0 0 20px 0;
+  padding: 8px 12px;
 }
 
 .typeDocs {
