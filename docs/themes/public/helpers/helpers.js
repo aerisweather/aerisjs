@@ -42,45 +42,6 @@
     'HTMLDocument': 'https:/' + '/developer.mozilla.org/en/Document_Object_Model_(DOM)/'
   };
 
-  function isNativeType(type) {
-    return _.has(NATIVES, type);
-  }
-
-
-  function createNativeLink(name) {
-    var linkTemplate = '<a class="ref" href="{href}" target="_blank">{content}</a>';
-    var url = 'https:/' + '/developer.mozilla.org/en/JavaScript/Reference/Global_Objects/';
-    if (NATIVES[name] !== 1) {
-      url = NATIVES[name];
-    }
-
-    return linkTemplate.
-      replace('{href}', url + name).
-      replace('{content}', name);
-  }
-
-  function createLinkToObj(obj, content) {
-    var href, target;
-    var cssClass = "ref";
-    var linkTemplate = '<a class="{class}" href="{href}" target="{target}">{content}</a>';
-
-    if (isPublicApi(obj)) {
-      href = '#' + obj.name;
-      target = '_self';
-    }
-    else {
-      href = '/docs/api/' + obj.name + '.html'
-      target = '_blank';
-    }
-
-
-    return linkTemplate.
-      replace('{href}', href).
-      replace('{target}', target).
-      replace('{class}', cssClass).
-      replace('{content}', content);
-  }
-
   var helpers = {
 
     joinEach: function(arr, separator, options) {
@@ -110,34 +71,8 @@
       return _.last(name.split('.'));
     },
 
-    linkTo: function (type, options) {
-      var dataObj = GLOBAL.data.classes[type];
-
-      if (dataObj) {
-        return createLinkToObj(dataObj, options.fn(dataObj));
-      }
-      else if (isNativeType(type)) {
-        return createNativeLink(type);
-      }
-      else {
-        throw 'Unable to parse type \'' + type + '\'.';
-      }
-    },
-
-    parseForTypes: function(text) {
-      return text.replace(/(\{.*?\})/gi, function(match) {
-        var type = match.substr(1, match.length - 2);
-
-        if (isNativeType(type)) {
-          return createNativeLink(type);
-        }
-        else if (GLOBAL.data.classes[type]) {
-          return createLinkToObj(GLOBAL.data.classes[type], type);
-        }
-        else {
-          throw 'Unable to parse type ' + match + '.';
-        }
-      });
+    getRef: function(className) {
+      return GLOBAL.data.classes[className];
     },
 
     /**

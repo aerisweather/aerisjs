@@ -1,0 +1,11 @@
+{{#if isNative}}
+  <a href="{{getMDNLink name}}"
+     class="ref"
+     target="_blank">{{name}}</a>
+{{else}}
+  {{#ifPublicApi name}}
+    <a href="#{{name}}" class="ref">{{shortName name}}</a>
+  {{else}}
+    <a href="/docs/api/{{name}}.html" class="ref">{{shortName name}}</a>
+  {{/ifPublicApi}}
+{{/if}}

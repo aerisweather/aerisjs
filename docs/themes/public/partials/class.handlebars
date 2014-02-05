@@ -2,17 +2,19 @@
 
 <ul class="classDocs">
   <li>
-    {{#linkTo name }}{{name}}{{/linkTo}}
+    {{>eachtypelink name}}
   </li>
   {{#if parent}}
     <li>
-      extends {{#linkTo extends}}{{name}}{{/linkTo}}
+      extends {{>eachtypelink extends }}
     </li>
   {{/if}}
 </ul>
 
 {{#if description }}
-  <p>{{{parseForTypes description}}}</p>
+  {{#eachTypeInText description }}
+    {{>typelink this}}
+  {{/eachTypeInText}}
 {{/if}}
 
 
@@ -32,7 +34,7 @@
     {{#each params }}
       <tr>
         <td><code>{{name}}</code></td>
-        <td>{{shortName type}}</td>
+        <td>{{>eachtypelink type}}</td>
         <td>{{description}}</td>
       </tr>
     {{/each}}
@@ -54,11 +56,13 @@
     {{#each methods}}
       <tr>
         <td>
-          {{name}}({{#joinEach params ', '}}{{name}}:<code>{{shortName type}}</code>{{/joinEach}})
+          <code>
+            {{name}}({{#joinEach params ', '}}{{name}}:{{>eachtypelink type}}{{/joinEach}})
+          </code>
         </td>
         <td>
           {{#if return}}
-            {{return.type}}
+            {{>eachtypelink return.type}}
           {{else}}
             none
           {{/if}}
