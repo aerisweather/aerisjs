@@ -47,12 +47,16 @@
   }
 
 
-  function getNativeLink(name) {
+  function createNativeLink(name) {
+    var linkTemplate = '<a class="ref" href="{href}" target="_blank">{content}</a>';
     var url = 'https:/' + '/developer.mozilla.org/en/JavaScript/Reference/Global_Objects/';
     if (NATIVES[name] !== 1) {
       url = NATIVES[name];
     }
-    return url + name;
+
+    return linkTemplate.
+      replace('{href}', url + name).
+      replace('{content}', name);
   }
 
   function createLinkToObj(obj, content) {
@@ -79,6 +83,16 @@
 
   var helpers = {
 
+    joinEach: function(arr, separator, options) {
+      var outputs = [];
+
+      _.each(arr, function(item) {
+        outputs.push(options.fn(item));
+      });
+
+      return outputs.join(separator);
+    },
+
     // Returns namespace name without 'aeris' root
     nsName: function (nsObj) {
       if (!nsObj.name) {
@@ -88,12 +102,26 @@
       return nsParts.slice(1).join('.');
     },
 
-    className: function (classObj) {
-      return _.last(classObj.name.split('.'));
+    shortName: function(classObj) {
+      var name = _.isString(classObj) ? classObj : classObj.name;
+
+      if (!name) { return ''; }
+
+      return _.last(name.split('.'));
     },
 
-    linkTo: function (obj, options) {
-      return createLinkToObj(obj, options.fn(this));
+    linkTo: function (type, options) {
+      var dataObj = GLOBAL.data.classes[type];
+
+      if (dataObj) {
+        return createLinkToObj(dataObj, options.fn(dataObj));
+      }
+      else if (isNativeType(type)) {
+        return createNativeLink(type);
+      }
+      else {
+        throw 'Unable to parse type \'' + type + '\'.';
+      }
     },
 
     parseForTypes: function(text) {
@@ -101,7 +129,7 @@
         var type = match.substr(1, match.length - 2);
 
         if (isNativeType(type)) {
-          return '<a class="ref" href="' + getNativeLink(type) + '">' + type + '</a>';
+          return createNativeLink(type);
         }
         else if (GLOBAL.data.classes[type]) {
           return createLinkToObj(GLOBAL.data.classes[type], type);

@@ -1,16 +1,70 @@
-<h4 id="{{name}}">{{className this}}</h4>
+<h4 id="{{name}}">{{shortName this}}</h4>
 
 <ul class="classDocs">
   <li>
-    {{#linkTo this }}{{name}}{{/linkTo}}
+    {{#linkTo name }}{{name}}{{/linkTo}}
   </li>
   {{#if parent}}
     <li>
-      extends {{#linkTo parent}}{{parent.name}}{{/linkTo}}
+      extends {{#linkTo extends}}{{name}}{{/linkTo}}
     </li>
   {{/if}}
 </ul>
 
 {{#if description }}
   <p>{{{parseForTypes description}}}</p>
+{{/if}}
+
+
+<h5 id="{{name}}-constructor">constructor</h5>
+
+<code class="example">new {{name}}({{#joinEach params ', '}}{{name}}{{/joinEach}});</code>
+
+{{#if params}}
+  <table>
+    <thead>
+    <tr>
+      <td>Parameter</td>
+      <td>Type</td>
+      <td>Description</td>
+    </tr>
+    </thead>
+    {{#each params }}
+      <tr>
+        <td><code>{{name}}</code></td>
+        <td>{{shortName type}}</td>
+        <td>{{description}}</td>
+      </tr>
+    {{/each}}
+  </table>
+{{/if}}
+
+{{#if methods}}
+
+  <h5 id="{{name}}-methods">methods</h5>
+
+  <table>
+    <thead>
+    <tr>
+      <td>Method</td>
+      <td>Return value</td>
+      <td>Description</td>
+    </tr>
+    </thead>
+    {{#each methods}}
+      <tr>
+        <td>
+          {{name}}({{#joinEach params ', '}}{{name}}:<code>{{shortName type}}</code>{{/joinEach}})
+        </td>
+        <td>
+          {{#if return}}
+            {{return.type}}
+          {{else}}
+            none
+          {{/if}}
+        </td>
+        <td></td>
+      </tr>
+    {{/each}}
+  </table>
 {{/if}}
