@@ -8,6 +8,17 @@
     return obj.hasOwnProperty('publicapi');
   }
 
+  function ifHelper(isTrue, options, opt_ctx) {
+    var ctx = opt_ctx || this;
+
+    if (isTrue) {
+      return options.fn(ctx);
+    }
+    else {
+      return options.inverse(ctx);
+    }
+  }
+
   var NATIVES = {
     'Array': 1,
     'Boolean': 1,
@@ -78,26 +89,20 @@
     },
 
     ifEquals: function(a , b, options) {
-      if (a === b) {
-        return options.fn(this);
-      }
-      else {
-        return options.inverse(this);
-      }
+      return ifHelper(a === b, options, this);
     },
 
     ifPublicApi: function(cls, options) {
       var classObj = _.isString(cls) ? GLOBAL.data.classes[cls.trim()] : cls;
+      var isClassPublicApi = !_.isUndefined(classObj) && isPublicApi(classObj);
 
-      if (!classObj) {
-        return options.inverse(this);
-      }
-      if (isPublicApi(classObj)) {
-        return options.fn(this);
-      }
-      else {
-        return options.inverse(this);
-      }
+      return ifHelper(isClassPublicApi, options, this);
+    },
+
+    ifTopLevelNs: function(namespaceName, options) {
+      var isToplevelNs = namespaceName.split('.').length <= 2;
+
+      return ifHelper(isToplevelNs, options, this);
     },
 
     /**
