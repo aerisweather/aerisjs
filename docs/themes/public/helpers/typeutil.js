@@ -97,6 +97,10 @@
      *  .&lt;<a href="/docs/api/aeris.Model.html">aeris.Model</a>&gt;
      */
     eachType: function(typeString, options) {
+      if (_.isUndefined(typeString)) {
+        return '';
+      }
+
       return typeString.replace(TYPE_PATTERN, function(type) {
         return options.fn(new TypeContext(type)).trim();
       }).trim();
