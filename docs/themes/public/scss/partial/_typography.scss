@@ -55,6 +55,14 @@ body {
       margin: 15px 0 0 0;
     }
 
+    pre {
+      font-family: sans-serif;
+    }
+
+    code pre {
+      @include font-monospace;
+    }
+
     a {
       &, &:visited {
         text-decoration: none;
