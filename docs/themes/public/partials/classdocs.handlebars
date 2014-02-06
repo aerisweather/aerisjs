@@ -1,4 +1,8 @@
-<h3 id="{{name}}">{{nsName this}}</h3>
+{{#ifTopLevelNs name}}
+  <h2 id="{{name}}">{{nsName this}}</h2>
+{{else}}
+  <span id="{{name}}"></span>
+{{/ifTopLevelNs}}
 
 {{#each classes}}
   {{>class this}}
