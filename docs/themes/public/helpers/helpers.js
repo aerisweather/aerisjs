@@ -1,5 +1,7 @@
 (function (module) {
+  var path = require('path');
   var _ = require('underscore');
+  var fs = require('fs');
   var handlebars = require('handlebars');
 
   function isPublicApi(obj) {
