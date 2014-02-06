@@ -123,7 +123,7 @@
     _.each(classes, addParentItems);
 
     function addParentItems(classObj) {
-      var currentChild = classObj;
+      var child = classObj;
       _.defaults(classObj, {
         methods: {},
         properties: {},
@@ -133,31 +133,62 @@
         params: []
       });
 
-      while (currentChild.parent) {
-        // Extend with parent class items
-        _.each(['methods', 'properties', 'events', 'attributes', 'other'], function(itemType) {
-          _.defaults(classObj[itemType], currentChild.parent[itemType]);
+      while (child) {
+        var parent = child.parent;
 
-          if (currentChild.mixesRef) {
-            _.defaults(classObj['itemType'], currentChild.mixesRef['itemType']);
-          }
-        });
-
-        // Extend with parent ctor params
-        if (currentChild.parent.params) {
-          currentChild.parent.params.forEach(function(param, i) {
-            var isExistingParam = _.findWhere(classObj.params, { name: param.name });
-
-            if (!isExistingParam) {
-              classObj.params.splice(i, 0, param);
-            }
-          });
+        if (!_.isUndefined(child.parent)) {
+          extendClass(classObj, parent);
         }
 
-        currentChild = currentChild.parent;
+        if (!_.isUndefined(child.mixesRef)) {
+          extendClass(classObj, child.mixesRef);
+        }
+        if (!_.isUndefined(child.implements)) {
+          var implementsRef = classes[child.implements];
+
+          if (!_.isUndefined(implementsRef)) {
+            extendClass(classObj, implementsRef);
+          }
+          else {
+            console.warn('Unable to find class ' + child.implements + 'implemented by ' + child.name);
+          }
+
+        }
+
+        child = parent;
       }
     }
 
+  }
+
+  function extendClass(child, parent) {
+    var types = ['methods', 'properties', 'events', 'attributes', 'other'];
+
+    _.each(types, function(itemType) {
+      var parentItems = parent[itemType];
+
+      // Add any missing items to child
+      var childItems = child[itemType] = _.defaults(child[itemType] || {}, parentItems);
+
+      // Prefer parent type docs,
+      // unless @override is used on child
+      _.each(childItems, function(item, itemName) {
+        if (_.isUndefined(item.override) && parentItems && parentItems[itemName]) {
+          childItems[itemName] = parentItems[itemName]
+        }
+      });
+
+      // Extend ctor params
+      if (parent.params) {
+        parent.params.forEach(function(param, i) {
+          var doesChildHaveParam = _.findWhere(child.params, { name: param.name });
+
+          if (!doesChildHaveParam) {
+            child.params.splice(i, 0, param);
+          }
+        });
+      }
+    });
   }
 
 
