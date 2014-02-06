@@ -207,7 +207,7 @@ define([
         var obj = new MapExtensionObject();
         var onResolved = jasmine.createSpy('onResolved');
 
-        obj.setStrategy(MockStrategy);
+        obj.setStrategy_(MockStrategy);
 
         obj.requestView().
           done(function(res) {

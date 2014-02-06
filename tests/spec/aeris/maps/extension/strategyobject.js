@@ -27,23 +27,23 @@ define([
       it('should set a strategy', function() {
         var Strategy = StrategyFactory();
 
-        spyOn(StrategyObject.prototype, 'setStrategy');
+        spyOn(StrategyObject.prototype, 'setStrategy_');
 
         new StrategyObject({
           strategy: Strategy
         });
 
-        expect(StrategyObject.prototype.setStrategy).toHaveBeenCalledWith(Strategy);
+        expect(StrategyObject.prototype.setStrategy_).toHaveBeenCalledWith(Strategy);
       });
 
       it('should load a strategy from a string path', function() {
-        spyOn(StrategyObject.prototype, 'loadStrategy').andReturn(new Promise());
+        spyOn(StrategyObject.prototype, 'loadStrategy_').andReturn(new Promise());
 
         new StrategyObject({
           strategy: 'mock/strategy'
         });
 
-        expect(StrategyObject.prototype.loadStrategy).toHaveBeenCalledWith('mock/strategy');
+        expect(StrategyObject.prototype.loadStrategy_).toHaveBeenCalledWith('mock/strategy');
       });
 
       it('should not require a strategy argument', function() {
@@ -60,13 +60,13 @@ define([
     });
 
 
-    describe('setStrategy', function() {
+    describe('setStrategy_', function() {
 
       it('should instantiate a strategy', function() {
         var Strategy = StrategyFactory();
         var obj = new StrategyObject();
 
-        obj.setStrategy(Strategy);
+        obj.setStrategy_(Strategy);
         expect(Strategy).toHaveBeenCalledWith(obj);
       });
 
@@ -75,10 +75,10 @@ define([
         var NewStrategy = StrategyFactory();
         var obj = new StrategyObject();
 
-        obj.setStrategy(OldStrategy);
+        obj.setStrategy_(OldStrategy);
 
         spyOn(obj, 'removeStrategy');
-        obj.setStrategy(NewStrategy);
+        obj.setStrategy_(NewStrategy);
 
         expect(obj.removeStrategy).toHaveBeenCalled();
       });
@@ -93,7 +93,7 @@ define([
 
         _(invalids).each(function(baddy) {
           expect(function() {
-            obj.setStrategy(baddy);
+            obj.setStrategy_(baddy);
           }).toThrowType('InvalidArgumentError');
         });
 
@@ -102,7 +102,7 @@ define([
     });
 
 
-    describe('loadStrategy', function() {
+    describe('loadStrategy_', function() {
       var Strategy, mockRequire;
 
       beforeEach(function() {
@@ -116,7 +116,7 @@ define([
           return Strategy;
         });
 
-        spyOn(StrategyObject.prototype, 'setStrategy');
+        spyOn(StrategyObject.prototype, 'setStrategy_');
       });
 
       afterEach(function() {
@@ -128,21 +128,21 @@ define([
       it('should set the strategy to a named ReqJS module', function() {
         var obj = new StrategyObject();
 
-        obj.loadStrategy('mockStrategyModule').
+        obj.loadStrategy_('mockStrategyModule').
           done(testUtil.setFlag).
           fail(errBack);
 
         waitsFor(testUtil.checkFlag, 100, 'load to complete');
         runs(function() {
-          expect(obj.setStrategy).toHaveBeenCalledWith(Strategy);
-          expect(obj.setStrategy).toHaveBeenCalledInTheContextOf(obj);
+          expect(obj.setStrategy_).toHaveBeenCalledWith(Strategy);
+          expect(obj.setStrategy_).toHaveBeenCalledInTheContextOf(obj);
         });
       });
 
       it('should complain if the strategy module doesn\'t exist', function() {
         var obj = new StrategyObject();
 
-        obj.loadStrategy('no/module/here').
+        obj.loadStrategy_('no/module/here').
           fail(function(e) {
             expect(e.name).toEqual('InvalidArgumentError');
             testUtil.setFlag();
@@ -167,7 +167,7 @@ define([
         var obj = new StrategyObject();
         var Strategy = StrategyFactory();
 
-        obj.setStrategy(Strategy);
+        obj.setStrategy_(Strategy);
 
         obj.removeStrategy();
         expect(Strategy.prototype.destroy).toHaveBeenCalled();
@@ -177,7 +177,7 @@ define([
         var obj = new StrategyObject();
         var Strategy = StrategyFactory();
 
-        obj.setStrategy(Strategy);
+        obj.setStrategy_(Strategy);
 
         obj.removeStrategy();
         obj.removeStrategy();
