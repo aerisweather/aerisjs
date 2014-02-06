@@ -46,7 +46,7 @@
   </table>
 {{/if}}
 
-{{#if methods}}
+{{#if methods.length}}
 
   <h5 id="{{name}}-methods">methods</h5>
 
@@ -62,7 +62,7 @@
       <tr>
         <td>
           <code>
-            {{name}}({{#joinEach params ', '}}{{name}}:{{>eachtypelink type}}{{/joinEach}})
+            <strong>{{name}}</strong>({{#joinEach params ', '}}{{name}}:{{>eachtypelink type}}{{/joinEach}})
           </code>
         </td>
         <td>
