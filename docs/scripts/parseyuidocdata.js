@@ -194,6 +194,7 @@
 
   function createPublicApiClasses(classes) {
     var publicClasses = {};
+    classes = _.clone(classes);
 
     _.each(classes, function(classObj, className) {
       classObj = _.clone(classObj);
@@ -201,6 +202,8 @@
       // Filter out private items
       _.each(['methods', 'properties', 'events', 'attributes', 'other'], function(itemType) {
         if (!classObj[itemType]) { return; }
+
+        classObj[itemType] = _.clone(classObj[itemType]);
 
         _.each(classObj[itemType], function(item, itemName) {
           var isPublicItem = (item.access !== 'private') && (item.access !== 'protected');
