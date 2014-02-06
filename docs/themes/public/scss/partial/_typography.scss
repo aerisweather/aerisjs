@@ -49,5 +49,15 @@ body {
     p {
       margin: 15px 0 0 0;
     }
+
+    a {
+      &, &:visited {
+        text-decoration: none;
+      }
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
   }
 }

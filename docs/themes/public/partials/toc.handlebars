@@ -1,12 +1,12 @@
 {{#each namespaces}}
-  <a class="tocTitle" href="#ns-{{name}}">{{shortName}}</a>
+  <a class="tocTitle" href="#ns-{{name}}">{{shortName name}}</a>
   <ul class="tocSection">
     {{#each namespaces }}
       {{>toc-classes this}}
     {{/each}}
 
     {{#each classes}}
-      <li><a href="#{{name}}">{{shortName this}}</a></li>
+      <li><a href="#{{name}}">{{shortName name}}</a></li>
     {{/each}}
   </ul>
 {{/each}}

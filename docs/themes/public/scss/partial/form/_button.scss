@@ -1,5 +1,11 @@
-button, a.btn {
-  @extend %buttonWithColorBg;
+body .container {
+  button, a.btn {
+    @extend %buttonWithColorBg;
 
-  margin: 20px 0;
+    margin: 20px 0;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
 }

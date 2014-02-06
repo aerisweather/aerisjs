@@ -4,8 +4,8 @@
      target="_blank">{{name}}</a>
 {{else}}
   {{#ifPublicApi name}}
-    <a href="#{{name}}" class="ref">{{shortName name}}</a>
+    <a href="#{{name}}" class="ref" title="<code>{{name}}</code>">{{shortName name}}</a>
   {{else}}
-    <a href="/docs/api/{{name}}.html" class="ref">{{shortName name}}</a>
+    <a href="/docs/api/{{name}}.html" class="ref" title="<code>{{name}}</code>">{{shortName name}}</a>
   {{/ifPublicApi}}
 {{/if}}

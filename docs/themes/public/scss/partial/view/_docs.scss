@@ -21,6 +21,11 @@ code {
   @include font-monospace;
 }
 
+pre {
+  margin: 0;
+  padding: 0;
+}
+
 .example {
   @extend %inlineCode;
   @include inline-block;

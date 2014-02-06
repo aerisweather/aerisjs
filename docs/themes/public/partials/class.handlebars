@@ -2,11 +2,16 @@
 
 <ul class="classDocs">
   <li>
-    {{>eachtypelink name}}
+    {{#eachType name}}
+        <a href="#{{name}}" class="ref">{{name}}</a>
+    {{/eachType}}
   </li>
   {{#if parent}}
     <li>
-      extends {{>eachtypelink extends }}
+      extends
+      {{#eachType extends}}
+        <a href="#{{name}}" class="ref">{{name}}</a>
+      {{/eachType}}
     </li>
   {{/if}}
 </ul>
@@ -65,7 +70,9 @@
             {{>eachtypelink return.type}}
           {{/if}}
         </td>
-        <td></td>
+        <td>
+          {{description}}
+        </td>
       </tr>
     {{/each}}
   </table>
