@@ -46,3 +46,10 @@ pre {
 .isRequired {
   font-style: italic;
 }
+
+.classTitle {
+  span {
+    display: inline;
+    font-size: 0.75em;
+  }
+}

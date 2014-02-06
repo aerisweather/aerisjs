@@ -1,6 +1,10 @@
 table {
   margin: 10px 0;
 
+  &.methods {
+    width: 960px;
+  }
+
   thead > tr {
     @include font-header;
     background-color: $highlightDark;
