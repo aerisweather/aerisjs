@@ -22,22 +22,6 @@ define([
     Person.prototype.eavesdrop = function() {};
 
     describe('off', function() {
-      it('should return the number of remaining handlers on the given topic', function () {
-        var talker = new Person();
-        var handlerA = function() {};
-        var handlerB = function() {};
-        var handlerC = function() {};
-        talker.on('talk', handlerA);
-        talker.on('talk', handlerB);
-        talker.on('talk', handlerC);
-        talker.on('walk', handlerA);
-        talker.on('walk', handlerB);
-        
-        expect(talker.off('talk', handlerA)).toEqual(2);
-        expect(talker.off('talk', handlerB)).toEqual(1);
-        expect(talker.off('walk')).toEqual(0);
-        expect(talker.off()).toEqual(0);
-      });
     });
 
     describe('Event hash', function() {
