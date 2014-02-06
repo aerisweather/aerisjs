@@ -166,14 +166,16 @@
 
     _.each(types, function(itemType) {
       var parentItems = parent[itemType];
-
-      // Add any missing items to child
-      var childItems = child[itemType] = _.defaults(child[itemType] || {}, parentItems);
+      var childItems = child[itemType];
 
       // Prefer parent type docs,
       // unless @override is used on child
-      _.each(childItems, function(item, itemName) {
-        if (_.isUndefined(item.override) && parentItems && parentItems[itemName]) {
+      _.each(parentItems, function(parentItem, itemName) {
+        var childItem = childItems[itemName];
+        var childOverridesDocs = childItem && !_.isUndefined(childItem.override);
+        var isItemStatic = !!parentItem.static;
+
+        if (!childOverridesDocs && !isItemStatic) {
           childItems[itemName] = parentItems[itemName]
         }
       });
