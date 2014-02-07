@@ -35,7 +35,9 @@
     'HTMLCollection': 'https:/' + '/developer.mozilla.org/en/Document_Object_Model_(DOM)/{type}',
     'DocumentFragment': 'https:/' + '/developer.mozilla.org/en/Document_Object_Model_(DOM)/{type}',
     'HTMLDocument': 'https:/' + '/developer.mozilla.org/en/Document_Object_Model_(DOM)/{type}',
-    '*': 'https:/' + '/developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects'
+    '*': 'https:/' + '/developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects',
+    'Backbone.Model': 'http:/' + '/backbonejs.org/#Model',
+    'Backbone.Collection': 'http:/' + '/backbonejs.org/#Collection'
   };
 
   var NATIVES_UNCAPITALIZED = {};
