@@ -68,7 +68,8 @@
   };
 
   TypeContext.prototype.getLink_ = function() {
-    var classObj = GLOBAL.data.classes[this.type_];
+    var hasGlobalData = GLOBAL && GLOBAL.data && GLOBAL.data.classes;
+    var classObj = hasGlobalData ? GLOBAL.data.classes[this.type_] : null;
     var isPublicApi = classObj && classObj.hasOwnProperty('publicapi');
 
     if (isNativeType(this.type_)) {
@@ -105,7 +106,7 @@
   };
 
   TypeContext.prototype.getReferenceApiLink_ = function() {
-    return '/docs/api/' + this.type_;
+    return '/docs/api/classes/' + this.type_ + '.html';
   };
 
   function isNativeType(type) {
