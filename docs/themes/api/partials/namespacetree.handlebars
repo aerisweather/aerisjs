@@ -1,0 +1,22 @@
+<li>
+  <details>
+    <summary>{{shortName name}}</summary>
+    {{#if namespaces}}
+      <ul>
+        {{#each namespaces }}
+          {{>namespacetree this}}
+        {{/each}}
+      </ul>
+    {{/if}}
+
+    {{#if classes}}
+      <ul>
+        {{#each classes}}
+          <li class="{{#if access}}{{access}}{{/if}}">
+            <a href="/docs/api/classes/{{name}}.html">{{shortName name}}</a>
+          </li>
+        {{/each}}
+      </ul>
+    {{/if}}
+  </details>
+</li>
