@@ -23,3 +23,4 @@ build/
 
 # Generated YUIDoc documentation
 docs/public/
+docs/api/
