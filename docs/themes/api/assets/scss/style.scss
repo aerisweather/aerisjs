@@ -6,11 +6,13 @@
 @import "base/util/inlinelist";
 @import "base/color";
 @import "base/typography/font";
+@import "base/typography/code";
 @import "base/link/inverselink";
 @import "base/form/placeholder";
 
 
 // View styles
+@import "partial/code";
 @import "partial/form/textinput";
 @import "partial/form/searchinput";
 @import "partial/view/body";
