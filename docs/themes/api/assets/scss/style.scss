@@ -4,7 +4,19 @@
 @import "blue";
 
 @import "base/util/inlinelist";
+@import "base/color";
+@import "base/typography/font";
+@import "base/link/inverselink";
+@import "base/form/placeholder";
+
 
 // View styles
-@import "partials/view/sidebar";
-@import "partials/view/apidocs";
+@import "partial/form/textinput";
+@import "partial/form/searchinput";
+@import "partial/view/body";
+@import "partial/view/footer/slideoutfooter";
+@import "partial/view/footer/footer";
+@import "partial/view/header";
+@import "partial/view/sidebar";
+@import "partial/view/apidocs";
+@import "partial/view/forkme";
