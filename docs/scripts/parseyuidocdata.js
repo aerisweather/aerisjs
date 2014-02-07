@@ -181,7 +181,7 @@
       });
 
       // Extend ctor params
-      if (parent.params) {
+      if (parent.params && _.isUndefined(child.override)) {
         parent.params.forEach(function(param, i) {
           var doesChildHaveParam = _.findWhere(child.params, { name: param.name });
 
