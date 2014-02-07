@@ -1,12 +1,12 @@
 # Require any additional compass plugins here.
 
 # Set this to the root of your project when deployed:
-http_path = "/docs/"
-css_dir = "css"
-sass_dir = "scss"
-images_dir = "images"
-fonts_dir = "fonts"
-javascripts_dir = "lib"
+project_path = "../../../docs"
+css_dir = "assets/css"
+sass_dir = "themes/public/scss"
+images_dir = "assets/images"
+fonts_dir = "assets/fonts"
+javascripts_dir = "assets/js"
 relative_assets = true
 
 # You can select your preferred output style here (can be overridden via the command line):

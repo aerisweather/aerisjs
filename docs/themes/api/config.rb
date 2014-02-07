@@ -1,14 +1,15 @@
 # Require any additional compass plugins here.
 
 # Set this to the root of your project when deployed:
-http_path = "/docs/api"
-css_dir = "css"
-sass_dir = "scss"
-images_dir = "img"
-http_images_path = "/docs/api/assets/img"
-javascripts_dir = "js"
+project_path = "../../../docs"
+css_dir = "assets/css"
+sass_dir = "themes/api/scss"
+images_dir = "assets/images"
+fonts_dir = "assets/fonts"
+javascripts_dir = "assets/js"
+relative_assets = true
 
-add_import_path "../../public/scss"
+add_import_path "themes/public/scss"
 
 # You can select your preferred output style here (can be overridden via the command line):
 # output_style = :expanded or :nested or :compact or :compressed
