@@ -1,9 +1,10 @@
-<h4 id="{{name}}" class="classTitle"><small>{{namespace}}.</small>{{shortName this}}</h4>
+<h4 id="{{name}}" class="classTitle">
+  <small>{{namespace}}.</small>{{shortName this}}</h4>
 
 <ul class="classDocs">
   <li>
     {{#eachType name}}
-        <a href="#{{name}}" class="ref">{{name}}</a>
+      <a href="#{{name}}" class="ref">{{name}}</a>
     {{/eachType}}
   </li>
   {{#if parent}}
@@ -63,18 +64,14 @@
             <strong>{{name}}</strong>(
             {{#joinEach params ', '}}{{name}}:
               {{#eachType type}}
-                {{#if isNative }}
-                  <a href="{{getMDNLink name}}"
-                     target="_blank"
+                <a href="{{link}}" class="ref"
+                   title="<code>{{name}}</code>{{#if ../../description}}<br>{{../../../description}}{{/if}}"
+                {{#if isNative}}
+                   target="_blank"
+                           >{{name}}</a>
                 {{else}}
-                  {{#ifPublicApi name }}
-                    <a href="#{{name}}"
-                  {{else}}
-                  <a href="/docs/api/{{name}}.html"
-                  {{/ifPublicApi}}
+                    >{{shortName name}}</a>
                 {{/if}}
-                     title="<code>{{name}}</code>{{#if ../description}}<br>{{../../description}}{{/if}}"
-                     class="ref">{{shortName name}}</a>
               {{/eachType}}
             {{/joinEach}})
           </code>

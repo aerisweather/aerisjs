@@ -37,7 +37,9 @@
     'HTMLDocument': 'https:/' + '/developer.mozilla.org/en/Document_Object_Model_(DOM)/{type}',
     '*': 'https:/' + '/developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects',
     'Backbone.Model': 'http:/' + '/backbonejs.org/#Model',
-    'Backbone.Collection': 'http:/' + '/backbonejs.org/#Collection'
+    'Backbone.Collection': 'http:/' + '/backbonejs.org/#Collection',
+    'google.maps.LatLng': 'https:/' + '/developers.google.com/maps/documentation/javascript/reference#LatLng',
+    'google.maps.LatLngBounds': 'https:/' + '/developers.google.com/maps/documentation/javascript/reference#LatLngBounds'
   };
 
   var NATIVES_UNCAPITALIZED = {};
@@ -60,8 +62,50 @@
 
     return {
       name: this.type_,
-      isNative: isNativeType(this.type_)
+      isNative: isNativeType(this.type_),
+      link: _.isUndefined(this.type_) ? '#' : this.getLink_()
     };
+  };
+
+  TypeContext.prototype.getLink_ = function() {
+    var classObj = GLOBAL.data.classes[this.type_];
+    var isPublicApi = classObj && classObj.hasOwnProperty('publicapi');
+
+    if (isNativeType(this.type_)) {
+      return this.getMDNLink_();
+    }
+    else if (isPublicApi) {
+      return '#' + this.type_;
+    }
+    else if (!_.isUndefined(classObj)) {
+      return this.getReferenceApiLink_();
+    }
+    else {
+      console.warn('Cannot locate reference to type: ' + this.type_);
+      return '#';
+    }
+  };
+
+  TypeContext.prototype.getMDNLink_ = function() {
+    var typeValue;
+
+    if (!isNativeType(this.type_)) {
+      throw new Error('Unable to get MDN link: ' + this.type_ + ' is not a native type.');
+    }
+
+    this.type_ = NATIVES[this.type_] ? this.type_ : capitalize(this.type_);
+
+    typeValue = getTypeValue(this.type_);
+    if (typeValue === 1) {
+      return 'https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/' + this.type_;
+    }
+    else {
+      return typeValue.replace('{type}', this.type_);
+    }
+  };
+
+  TypeContext.prototype.getReferenceApiLink_ = function() {
+    return '/docs/api/' + this.type_;
   };
 
   function isNativeType(type) {
@@ -115,24 +159,6 @@
         var matchWithoutBrackets = match.substr(1, match.length - 2);
         return typeUtil.eachType(matchWithoutBrackets, options);
       });
-    },
-
-    getMDNLink: function(type) {
-      var typeValue;
-
-      if (!isNativeType(type)) {
-        throw new Error('Unable to get MDN link: ' + type + ' is not a native type.');
-      }
-
-      type = NATIVES[type] ? type : capitalize(type);
-
-      typeValue = getTypeValue(type);
-      if (typeValue === 1) {
-        return 'https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/' + type;
-      }
-      else {
-        return typeValue.replace('{type}', type);
-      }
     }
   };
 
