@@ -3,12 +3,13 @@
 <head>
   <title>Styleguide for AerisJS Public API Docs</title>
 
-  <link rel="stylesheet" href="themes/public/css/style.css"/>
-  <link rel="shortcut icon" type="image/png" href="themes/public/images/aeris-favicon.png"/>
-  <link rel="stylesheet" href="themes/public/js/tooltipster/tooltipster.css"/>
+  <link rel="stylesheet" href="{{project.themeRoot}}/css/style.css"/>
+  <link rel="shortcut icon" type="image/png" href="{{project.themeRoot}}/images/aeris-favicon.png"/>
+  <link rel="stylesheet" href="{{project.themeRoot}}/js/tooltipster/tooltipster.css"/>
 
-  <script type="text/javascript" src="../bower_components/jquery/jquery.min.js"></script>
-  <script type="text/javascript" src="themes/public/js/tooltipster/jquery.tooltipster.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+  <script type="text/javascript" src="{{project.themeRoot}}/js/tooltipster/jquery.tooltipster.min.js"></script>
+  <script type="text/javascript" src="{{project.themeRoot}}/js/page.js"></script>
 </head>
 <body>
 
@@ -18,35 +19,10 @@
 </div>
 
 <div id="page">
-  <div id="super-header">
-    <form id="weatherSearch" action="#">
-      <input type="search" placeholder="Local weather"/>
-    </form>
-    <ul>
-      <li><a href="http://www.hamweather.com/" target="_blank">HamWeather.com</a></li>
-      <li><a href="http://developer.hamweather.com/" target="_blank">Developer Center</a></li>
-      <li><a href="http://support.hamweather.com/" target="_blank">Support</a></li>
-      <li><a href="http://labs.hamweather.com/" target="_blank">Blog</a></li>
-    </ul>
-  </div>
 
-  <div id="sidebar">
-    <a class="tocTitle" href="#">Aeris.js ({{project.version}})</a>
-    <ul class="tocSection">
-      <li><a href="{{project.githubUrl}}"  target="_blank">Github Repo</a></li>
-      <li><a href="{{project.aerisApiUrl}}"  target="_blank">Aeris Weather API</a></li>
-    </ul>
+  {{>header }}
 
-    <a class="tocTitle" href="#Introduction">Introduction</a>
-    <ul class="tocSection">
-      <li><a href="#Downloads">Downloads</a></li>
-      <li><a href="#Getting-Started">Getting Started</a></li>
-      <li><a href="#Get-An-API-Key">Get an API key</a></li>
-    </ul>
-
-    {{>toc publicApi.namespaces.aeris}}
-
-  </div>
+  {{>sidebar}}
 
   <div class="container">
 
@@ -66,86 +42,11 @@
 
 </div>
 
-<footer>
-  <nav>
-    <ul>
-      <li><a href="http://www.hamweather.com/products" target="_blank">Products</a></li>
-    </ul>
-  </nav>
+{{>footer}}
 
-  <div class="copyright">&copy; 2013 HAMWeather, LLC</div>
-</footer>
 
 <script type="text/javascript">
-  function stickyScroll($sticker, topOffset, bottomOffset) {
-    function stickTheSticker() { // scroll event
-      var scrollDiffTop = topOffset - $(window).scrollTop();
-      var isScrollBeyondTopViewport = scrollDiffTop > topOffset;
-
-      var scrollDiffBottom = $(document).height() - $(window).height() - $(window).scrollTop() - bottomOffset;
-      var isScrollBeyondBottomViewport = (scrollDiffBottom * -1) > bottomOffset;
-
-      if (scrollDiffTop >= 0 && !isScrollBeyondTopViewport) {
-        $sticker.css('top', scrollDiffTop);
-      }
-      else if (!isScrollBeyondTopViewport) {
-        $sticker.css('top', 0);
-      }
-
-      if (scrollDiffBottom < 0) {
-        if (!isScrollBeyondBottomViewport) {
-          $sticker.css('bottom', scrollDiffBottom * -1);
-        }
-        else {
-          $sticker.css('bottom', bottomOffset);
-        }
-      }
-      else {
-        $sticker.css('bottom', 0);
-      }
-    }
-
-    $(window).scroll(stickTheSticker);
-
-    stickTheSticker();
-  }
-
-  stickyScroll($('#sidebar'), $('#super-header').height(), $('footer').outerHeight());
-
-  // Fork Me
-  stickyScroll($('.forkMe img'), $('#super-header').height(), $('footer').outerHeight());
-  // So we don't need to customize the widget code
-  $('.forkMe a').attr('target', '_blank');
-
-
-  function goToWeather(place) {
-    window.location = 'http://wx.hamweather.com/?pands=' + 55417;
-  }
-
-  $('#weatherSearch').submit(function (evt) {
-    var weatherLocation = $(this).find('input[type=search]').val();
-
-    goToWeather(weatherLocation);
-
-    evt.preventDefault();
-    return false;
-  });
-
-
-  // Tooltips
-  // http://iamceege.github.io/tooltipster/#options
-  $('.ref').tooltipster({
-    delay: 100,
-    speed: 100,           // animation speed
-    position: 'top',
-    theme: 'tooltipster-aerisjs',
-    interactive: true,
-    contentAsHTML: true
-  });
 
 </script>
-{{{log publicApi}}}
-{{{log project}}}
-{{{log classes}}}
 </body>
 </html>

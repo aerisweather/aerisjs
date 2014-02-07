@@ -2,5 +2,6 @@
   "version": "0.1.1",
   "githubUrl": "https://github.com/hamweather/aeris-interactive",
   "aerisApiUrl": "http://www.hamweather.com/support/documentation/aeris",
-  "demoPath": "http://uat.hamweather.com/eschwartz/examples"
+  "demoPath": "http://uat.hamweather.com/eschwartz/examples",
+  "themeRoot": "../themes/public"
 }
