@@ -75,11 +75,11 @@
     if (isNativeType(this.type_)) {
       return this.getMDNLink_();
     }
-    else if (isPublicApi) {
-      return '#' + this.type_;
-    }
     else if (!_.isUndefined(classObj)) {
       return this.getReferenceApiLink_();
+    }
+    else if (isPublicApi) {
+      return '#' + this.type_;
     }
     else {
       console.warn('Cannot locate reference to type: ' + this.type_);
@@ -89,19 +89,14 @@
 
   TypeContext.prototype.getMDNLink_ = function() {
     var typeValue;
+    var type = NATIVES[this.type_] ? this.type_ : capitalize(this.type_);
+    typeValue = getTypeValue(type);
 
-    if (!isNativeType(this.type_)) {
-      throw new Error('Unable to get MDN link: ' + this.type_ + ' is not a native type.');
-    }
-
-    this.type_ = NATIVES[this.type_] ? this.type_ : capitalize(this.type_);
-
-    typeValue = getTypeValue(this.type_);
     if (typeValue === 1) {
-      return 'https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/' + this.type_;
+      return 'https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/' + type;
     }
     else {
-      return typeValue.replace('{type}', this.type_);
+      return typeValue.replace('{type}', type);
     }
   };
 

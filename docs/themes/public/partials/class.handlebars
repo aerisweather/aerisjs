@@ -4,14 +4,14 @@
 <ul class="classDocs">
   <li>
     {{#eachType name}}
-      <a href="#{{name}}" class="ref">{{name}}</a>
+      <a href="{{link}}" class="ref">{{name}}</a>
     {{/eachType}}
   </li>
   {{#if parent}}
     <li>
       extends
       {{#eachType extends}}
-        <a href="#{{name}}" class="ref">{{name}}</a>
+        <a href="{{link}}" class="ref">{{name}}</a>
       {{/eachType}}
     </li>
   {{/if}}
