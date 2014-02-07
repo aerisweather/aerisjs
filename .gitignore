@@ -24,3 +24,4 @@ build/
 # Generated YUIDoc documentation
 docs/public/
 docs/api/
+docs/assets/css/
