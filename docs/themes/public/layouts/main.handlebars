@@ -3,13 +3,13 @@
 <head>
   <title>Styleguide for AerisJS Public API Docs</title>
 
-  <link rel="stylesheet" href="{{project.themeRoot}}/css/style.css"/>
-  <link rel="shortcut icon" type="image/png" href="{{project.themeRoot}}/images/aeris-favicon.png"/>
-  <link rel="stylesheet" href="{{project.themeRoot}}/js/tooltipster/tooltipster.css"/>
+  <link rel="stylesheet" href="{{projectConfig.assetPath}}/css/public.css"/>
+  <link rel="shortcut icon" type="image/png" href="{{projectConfig.assetPath}}/images/aeris-favicon.png"/>
+  <link rel="stylesheet" href="{{projectConfig.assetPath}}/js/tooltipster/tooltipster.css"/>
 
   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-  <script type="text/javascript" src="{{project.themeRoot}}/js/tooltipster/jquery.tooltipster.min.js"></script>
-  <script type="text/javascript" src="{{project.themeRoot}}/js/page.js"></script>
+  <script type="text/javascript" src="{{projectConfig.assetPath}}/js/tooltipster/jquery.tooltipster.min.js"></script>
+  <script type="text/javascript" src="{{projectConfig.assetPath}}/js/page.js"></script>
 </head>
 <body>
 
@@ -23,7 +23,7 @@
 
   <div class="container">
 
-    {{>intro project }}
+    {{>intro projectConfig }}
 
 
 

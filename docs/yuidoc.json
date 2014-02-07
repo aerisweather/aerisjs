@@ -9,6 +9,13 @@
     "themes/public/helpers/typeutil.js",
     "themes/api/helpers/helpers.js"
   ],
+  "config": {
+    "version": "0.1.1",
+    "githubUrl": "https://github.com/hamweather/aeris-interactive",
+    "aerisApiUrl": "http://www.hamweather.com/support/documentation/aeris",
+    "demoPath": "http://uat.hamweather.com/eschwartz/examples",
+    "assetPath": "/docs/assets"
+  },
   "options": {
     "outdir": "./api",
     "linkNatives": true,
