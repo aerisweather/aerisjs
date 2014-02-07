@@ -60,7 +60,23 @@
       <tr>
         <td>
           <code>
-            <strong>{{name}}</strong>({{#joinEach params ', '}}{{name}}:{{>eachtypelink type}}{{/joinEach}})
+            <strong>{{name}}</strong>(
+            {{#joinEach params ', '}}{{name}}:
+              {{#eachType type}}
+                {{#if isNative }}
+                  <a href="{{getMDNLink name}}"
+                     target="_blank"
+                {{else}}
+                  {{#ifPublicApi name }}
+                    <a href="#{{name}}"
+                  {{else}}
+                  <a href="/docs/api/{{name}}.html"
+                  {{/ifPublicApi}}
+                {{/if}}
+                     title="<code>{{name}}</code>{{#if ../description}}<br>{{../../description}}{{/if}}"
+                     class="ref">{{shortName name}}</a>
+              {{/eachType}}
+            {{/joinEach}})
           </code>
         </td>
         <td>
@@ -73,7 +89,7 @@
             <pre>{{>eachtypeintext description}}</pre>
           {{/if}}
           {{#if return.description}}
-            Returns: {{>eachtypeintext return.description}}
+            {{>eachtypeintext return.description}}
           {{/if}}
         </td>
       </tr>

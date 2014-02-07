@@ -9,8 +9,8 @@
 
   <p>
 
-    Out of the box, Aeris Interactive provides a suite of tools for rendering <strong>weather maps and widgets</strong>, using <strong>data from
-    the Aeris API</strong>. Maps can be rendered using the [<a href="https://developers.google.com/maps/" target="_blank">Google
+    Out of the box, Aeris Interactive provides a suite of tools for rendering <strong>weather maps and widgets,</strong> and using <strong>data from
+    the Aeris API</strong>. Maps can be rendered using the <a href="https://developers.google.com/maps/" target="_blank">Google
     Maps API</a> or <a href="http://openlayers.org/" target="_blank">OpenLayers</a>.
   </p>
 
@@ -25,13 +25,13 @@
  * Aeris interactive is currently in <strong>beta release</strong>.
  * While we will make our best efforts to maintain a stable API,
  * minor changes may be made to the interface while Aeris Interactive
- * is in beta release.
+ * is still in beta.
  *
  *
  * We would love to hear your feedback, thoughts, and dreams for
  * this library.
  *
- * Why not <strong><a href="{{githubUrl}}" target="_blank">open a pull request</a></strong>?!
+ * Hey, why not contribute yourself, then <strong><a href="{{githubUrl}}" target="_blank">open a pull request</a></strong>?!
  */
     </code>
   </pre>
@@ -43,11 +43,11 @@
 
   <table class="downloads">
     <tr>
-      <td><a class="btn" href="#">Weather for Google Maps</a></td>
+      <td><a class="btn" href="//js.aerisapi.com/aerisjs/0.1.1/gmaps.min.js">Weather for Google Maps</a></td>
       <td>Render weather tile layers and data using Google Maps. ~37k gzipped.</td>
     </tr>
     <tr>
-      <td><a class="btn" href="#">Weather for Google Maps +</a></td>
+      <td><a class="btn" href="//js.aerisapi.com/aerisjs/0.1.1/gmaps-plus.min.js">Weather for Google Maps +</a></td>
       <td>Includes additional APIs for geolocation, geocoding, and directions. ~39k gzipped.</td>
     </tr>
     <tr>
@@ -55,7 +55,7 @@
       <td>Render weather tile layers and data using OpenLayers. (Coming soon!)</td>
     </tr>
     <tr>
-      <td><a class="btn" href="#">Weather API only</a></td>
+      <td><a class="btn" href="//js.aerisapi.com/aerisjs/0.1.1/api.min.js">Weather API only</a></td>
       <td>A javascript interface for the <a target="_blank" href="http://www.hamweather.com/support/documentation/aeris/">Aeris Weather API</a>.</td>
     </tr>
   </table>
@@ -82,10 +82,10 @@
         src="//js.aerisapi.com/aerisjs/{{version}}/api.min.js"&gt;
 &lt;/script&gt;
 
-      &lt;!-- Most recent Google Maps + build--&gt;
-      &lt;script type="text/javascript"
-      src="//js.aerisapi.com/aeris.js"&gt;
-      &lt;/script&gt;
+&lt;!-- Most recent Google Maps + build--&gt;
+&lt;script type="text/javascript"
+        src="//js.aerisapi.com/aeris.js"&gt;
+&lt;/script&gt;
     </code>
   </pre>
 
@@ -98,7 +98,7 @@
   </p>
 
   <p>
-    See the <a href="{{githubUrl}}/docs/install.d.d">Aeris.js installation guide on Github</a> for more information on using Aeris.js AMD modules.
+    See the <a href="{{githubUrl}}/docs/install.mdd">Aeris.js installation guide on Github</a> for more information on using Aeris.js AMD modules.
   </p>
 
 
@@ -134,8 +134,9 @@ earthquakeMarkers.on('click', function(latLon, marker) {
   alert('Magnitude ' + marker.getDataAttribute('report.mag') + ' earthquake.');
 });
 
-// Update markers with data from
-// the Aeris API
+// Query the Aeris API
+// Markers will be redrawn when
+// the API responds.
 earthquakeMarkers.setParams({
   query: 'mag:3.0:5.0'
 });
