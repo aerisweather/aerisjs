@@ -13,7 +13,9 @@
     <div id="api-tabview-panel">
       <ul id="api-classes" class="apis classes">
         {{#eachNamespace classes}}
-          {{>namespacetree this}}
+          {{#ifEquals name 'aeris'}}
+            {{>namespacetree this}}
+          {{/ifEquals}}
         {{/eachNamespace}}
       </ul>
     </div>
