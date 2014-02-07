@@ -1,10 +1,11 @@
 # Require any additional compass plugins here.
 
 # Set this to the root of your project when deployed:
-http_path = "/"
+http_path = "/docs/api"
 css_dir = "css"
 sass_dir = "scss"
 images_dir = "img"
+http_images_path = "/docs/api/assets/img"
 javascripts_dir = "js"
 
 add_import_path "../../public/scss"
