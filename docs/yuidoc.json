@@ -19,7 +19,7 @@
   "options": {
     "outdir": "./api",
     "linkNatives": true,
-    "paths": "../lib/aeris/maps/layers",
+    "paths": "../lib/aeris",
     "themedir": "themes/api"
   }
 }
