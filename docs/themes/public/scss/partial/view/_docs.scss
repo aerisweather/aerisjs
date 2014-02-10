@@ -15,6 +15,10 @@ a.ref {
   &:hover {
     background: #eaebf8;
   }
+
+  &.description {
+    border-bottom: 2px dotted $highlightDark;
+  }
 }
 
 .typeDocs {

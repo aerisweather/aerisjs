@@ -46,50 +46,13 @@
 {{/if}}
 
 {{#if methods}}
-
   <h5 id="{{name}}-methods">methods</h5>
 
-  <table class="methods">
-    <thead>
-    <tr>
-      <td>Method</td>
-      <td>Return value</td>
-      <td>Description</td>
-    </tr>
-    </thead>
-    {{#each methods}}
-      <tr>
-        <td>
-          <code>
-            <strong>{{name}}</strong>(
-            {{#joinEach params ', '}}{{name}}:
-              {{#eachType type}}
-                <a href="{{link}}" class="ref"
-                   title="<code>{{name}}</code>{{#if ../../description}}<br>{{../../../description}}{{/if}}"
-                {{#if isNative}}
-                   target="_blank"
-                           >{{name}}</a>
-                {{else}}
-                    >{{shortName name}}</a>
-                {{/if}}
-              {{/eachType}}
-            {{/joinEach}})
-          </code>
-        </td>
-        <td>
-          {{#if return}}
-            {{>eachtypelink return.type}}
-          {{/if}}
-        </td>
-        <td>
-          {{#if description}}
-            <pre>{{>eachtypeintext description}}</pre>
-          {{/if}}
-          {{#if return.description}}
-            {{>eachtypeintext return.description}}
-          {{/if}}
-        </td>
-      </tr>
-    {{/each}}
-  </table>
+  {{>methods }}
+{{/if}}
+
+{{#if events}}
+  <h5 id="{{name}}-events">events</h5>
+
+  {{>events}}
 {{/if}}
