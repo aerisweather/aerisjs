@@ -1,9 +1,8 @@
 define([
     'ai/util',
-    'ai/config',
     'ai/geocode/geocodeservicestatus',
     'ai/geocode/aerisgeocodeservice'
-], function(_, AerisConfig, GeocodeServiceStatus, AerisGeocodeService) {
+], function(_, GeocodeServiceStatus, AerisGeocodeService) {
 
     function getSuccessResponse() {
         return [{
@@ -50,9 +49,17 @@ define([
     }
 
     describe('The AerisGeocodeService', function() {
+        var aerisService = new AerisGeocodeService();
+        it('should get proper api keys', function() {
+            console.log('check api keys');
+            var apiKeys =  aerisService.checkApiKeys();
+            expect(apiKeys).toBe(true);
+        });
         it('should query the Aeris places api', function() {
-            var aerisService = new AerisGeocodeService();
-            expect(true).toBe(true);
+
+            spyOn(aerisService, 'geocode').andCallThrough();
+
+            window.geodata = aerisService.geocode('minneapolis,mn');
         });
     });
 });
