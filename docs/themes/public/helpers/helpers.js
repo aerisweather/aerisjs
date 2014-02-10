@@ -105,6 +105,15 @@
       return ifHelper(isToplevelNs, options, this);
     },
 
+    ifHasLength: function(obj, options) {
+      var hasLength;
+      obj || (obj = []);
+
+      hasLength = _.isArray(obj) ? !!obj.length : !!_.keys(obj).length;
+
+      return ifHelper(hasLength, options, this);
+    },
+
     /**
      * Log the object to the console.
      * Call {{{log this}}} to log entire page context.

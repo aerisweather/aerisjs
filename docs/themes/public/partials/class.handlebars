@@ -45,14 +45,14 @@
   </table>
 {{/if}}
 
-{{#if methods}}
+{{#ifHasLength methods}}
   <h5 id="{{name}}-methods">methods</h5>
 
   {{>methods }}
-{{/if}}
+{{/ifHasLength}}
 
-{{#if events}}
+{{#ifHasLength events}}
   <h5 id="{{name}}-events">events</h5>
 
   {{>events}}
-{{/if}}
+{{/ifHasLength}}
