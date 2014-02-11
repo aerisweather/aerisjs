@@ -194,7 +194,7 @@ var earthquakeCollection = new aeris.api.collections.Earthquakes({
         p: map.getBounds();             // only look for earthquakes within the map bounds.
     }
 });
-var earthquakeMarkers = new aeris.maps.EarthquakeMarkers(null, {
+var earthquakeMarkers = new aeris.maps.markercollections.EarthquakeMarkers(null, {
     data: earthquakeCollection          // Bind to earthquakeCollection data
 });
 
