@@ -31,7 +31,6 @@ require([
       'spec/aeris/viewcollection',
       'spec/aeris/util',
       'spec/aeris/events',
-      'spec/aeris/aerisapi',
       'spec/aeris/promise',
       'spec/aeris/emptypromise',
       'spec/aeris/promisequeue',
