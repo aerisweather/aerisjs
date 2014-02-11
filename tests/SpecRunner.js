@@ -86,11 +86,11 @@ require([
 
       'spec/aeris/helpers/validator/pathvalidator',
 
-      'spec/aeris/api/endpoint/models/pointdata',
+      'spec/aeris/api/models/pointdata',
       'spec/aeris/api/params/models/params',
       'spec/aeris/api/params/models/query',
-      'spec/aeris/api/endpoint/models/aerisapimodel',
-      'spec/aeris/api/endpoint/collections/aerisapicollection',
+      'spec/aeris/api/models/aerisapimodel',
+      'spec/aeris/api/collections/aerisapicollection',
       'spec/aeris/api/params/models/filter',
       'spec/aeris/api/params/collections/filtercollection',
       'spec/aeris/api/params/collections/chainedquery',

@@ -1,6 +1,6 @@
 define([
   'ai/util',
-  'ai/api/endpoint/models/pointdata'
+  'ai/api/models/pointdata'
 ], function(_, PointData) {
 
   describe('A PointData model', function() {

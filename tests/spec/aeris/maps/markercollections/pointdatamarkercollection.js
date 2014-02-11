@@ -2,7 +2,7 @@ define([
   'ai/util',
   'ai/maps/markercollections/pointdatamarkercollection',
   'ai/collection',
-  'ai/api/endpoint/collections/pointdatacollection'
+  'ai/api/collections/pointdatacollection'
 ], function(_, PointDataMarkerCollection, Collection, PointDataCollection) {
 
   var MockDataCollection = function() {

@@ -1,6 +1,6 @@
 define([
   'ai/util',
-  'ai/api/endpoint/models/aerisapimodel',
+  'ai/api/models/aerisapimodel',
   'mocks/aeris/config',
   'mocks/aeris/jsonp'
 ], function(_, AerisApiModel, MockConfig, MockJSONP) {

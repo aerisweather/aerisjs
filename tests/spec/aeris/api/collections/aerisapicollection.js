@@ -1,6 +1,6 @@
 define([
   'ai/util',
-  'ai/api/endpoint/collections/aerisapicollection',
+  'ai/api/collections/aerisapicollection',
   'ai/model',
   'ai/api/params/models/params',
   'mocks/aeris/jsonp'
