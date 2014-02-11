@@ -3,9 +3,9 @@ define([
   'ai/api/params/models/params',
   'ai/model',
   'ai/collection',
-  'ai/api/params/collections/chainedquery',
+  'ai/api/params/collections/chainedqueries',
   'mocks/aeris/config'
-], function(_, Params, Model, Collection, ChainedQuery, MockConfig) {
+], function(_, Params, Model, Collection, ChainedQueries, MockConfig) {
 
   function TestFactory() {
     this.params = new Params({
@@ -104,7 +104,7 @@ define([
         new Params();
       });
 
-      it('should convert a query array to a ChainedQuery object', function() {
+      it('should convert a query array to a ChainedQueries object', function() {
         var MockQuery = jasmine.createSpy('MockQuery');
         var params = new Params({
           query: ['foo', 'bar']
@@ -253,7 +253,7 @@ define([
         test.params.isValid();
       });
 
-      it('should require \'query\' to be a ChainedQuery', function() {
+      it('should require \'query\' to be a ChainedQueries', function() {
         expect(function() {
           var params = new Params();
 

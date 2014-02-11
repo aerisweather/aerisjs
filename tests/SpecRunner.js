@@ -93,7 +93,7 @@ require([
       'spec/aeris/api/collections/aerisapicollection',
       'spec/aeris/api/params/models/filter',
       'spec/aeris/api/params/collections/filtercollection',
-      'spec/aeris/api/params/collections/chainedquery',
+      'spec/aeris/api/params/collections/chainedqueries',
 
       'spec/aeris/maps/map',
       'spec/aeris/maps/extensions/strategyobject',

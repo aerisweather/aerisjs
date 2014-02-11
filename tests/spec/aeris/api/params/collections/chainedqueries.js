@@ -1,17 +1,17 @@
 define([
   'ai/util',
-  'ai/api/params/collections/chainedquery',
+  'ai/api/params/collections/chainedqueries',
   'ai/api/params/models/query',
   'ai/model'
-], function(_, ChainedQuery, Query, Model) {
+], function(_, ChainedQueries, Query, Model) {
 
 
-  describe('A ChainedQuery', function() {
+  describe('A ChainedQueries Collection', function() {
 
     describe('toString', function() {
 
       it('should prepare a single model for a API request', function() {
-        var query = new ChainedQuery([
+        var query = new ChainedQueries([
           {
             property: 'foo',
             value: 'bar',
@@ -23,7 +23,7 @@ define([
       });
 
       it('should should prepare multiple models with multiple operator types', function() {
-        var query = new ChainedQuery([
+        var query = new ChainedQueries([
           {
             property: 'foo',
             value: 'bar',
@@ -52,7 +52,7 @@ define([
       });
 
       it('should return an empty string, if there are no query models', function() {
-        var query = new ChainedQuery();
+        var query = new ChainedQueries();
 
         expect(query.toString()).toEqual('');
       });
