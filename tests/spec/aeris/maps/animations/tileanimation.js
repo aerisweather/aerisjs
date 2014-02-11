@@ -1,6 +1,6 @@
 define([
   'ai/util',
-  'ai/maps/animations/aerisinteractivetile',
+  'ai/maps/animations/tileanimation',
   'ai/model',
   'ai/promise',
   'ai/events',
