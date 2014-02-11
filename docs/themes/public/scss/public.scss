@@ -3,8 +3,8 @@
 @import "base/color";
 @import "base/typography/font";
 @import "base/typography/code";
-@import "base/link/inverselink";
-@import "base/util/inlinelist";
+@import "base/links/inverselink";
+@import "base/utils/inlinelist";
 @import "base/forms/placeholder";
 @import "base/forms/button";
 
@@ -13,17 +13,17 @@
 @import "partial/code";
 @import "partial/layout";
 
-@import "partial/view/body";
-@import "partial/view/header";
+@import "partial/views/body";
+@import "partial/views/header";
 @import "partial/forms/button";
 @import "partial/forms/textinput";
 @import "partial/forms/searchinput";
-@import "partial/view/sidebar";
-@import "partial/view/forkme";
-@import "partial/view/logo";
-@import "partial/view/docs";
-@import "partial/view/tooltipster";
+@import "partial/views/sidebar";
+@import "partial/views/forkme";
+@import "partial/views/logo";
+@import "partial/views/docs";
+@import "partial/views/tooltipster";
 @import "partial/table";
-@import "partial/view/footer/footer";
-@import "partial/view/downloads";
-@import "partial/view/intro";
+@import "partial/views/footer/footer";
+@import "partial/views/downloads";
+@import "partial/views/intro";

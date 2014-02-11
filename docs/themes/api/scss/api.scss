@@ -7,22 +7,22 @@
 // Original blue theme styles
 @import "blue";
 
-@import "base/util/inlinelist";
+@import "base/utils/inlinelist";
 @import "base/color";
 @import "base/typography/font";
 @import "base/typography/code";
-@import "base/link/inverselink";
+@import "base/links/inverselink";
 @import "base/forms/placeholder";
 
 
-// View styles
+// views styles
 @import "partial/code";
 @import "partial/forms/textinput";
 @import "partial/forms/searchinput";
-@import "partial/view/body";
-@import "partial/view/footer/slideoutfooter";
-@import "partial/view/footer/footer";
-@import "partial/view/header";
-@import "partial/view/sidebar";
-@import "partial/view/apidocs";
-@import "partial/view/forkme";
+@import "partial/views/body";
+@import "partial/views/footer/slideoutfooter";
+@import "partial/views/footer/footer";
+@import "partial/views/header";
+@import "partial/views/sidebar";
+@import "partial/views/apidocs";
+@import "partial/views/forkme";
