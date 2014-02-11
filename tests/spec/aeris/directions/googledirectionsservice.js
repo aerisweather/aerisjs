@@ -4,7 +4,7 @@ define([
   'mocks/google/maps/directionsservice',
   'mocks/google/maps/latlng',
   'mocks/google/maps/travelmode',
-  'mocks/aeris/directions/promise/promisetofetchgoogledirections'
+  'mocks/aeris/directions/promises/promisetofetchgoogledirections'
 ], function(_, GoogleDirectionsService, MockDirectionsServiceApi, MockLatLng, StubTravelMode, MockPromiseToFetchDirections) {
   var google_orig = window.google;
 

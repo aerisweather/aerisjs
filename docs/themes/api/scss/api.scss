@@ -12,13 +12,13 @@
 @import "base/typography/font";
 @import "base/typography/code";
 @import "base/link/inverselink";
-@import "base/form/placeholder";
+@import "base/forms/placeholder";
 
 
 // View styles
 @import "partial/code";
-@import "partial/form/textinput";
-@import "partial/form/searchinput";
+@import "partial/forms/textinput";
+@import "partial/forms/searchinput";
 @import "partial/view/body";
 @import "partial/view/footer/slideoutfooter";
 @import "partial/view/footer/footer";

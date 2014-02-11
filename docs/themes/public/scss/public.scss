@@ -5,8 +5,8 @@
 @import "base/typography/code";
 @import "base/link/inverselink";
 @import "base/util/inlinelist";
-@import "base/form/placeholder";
-@import "base/form/button";
+@import "base/forms/placeholder";
+@import "base/forms/button";
 
 @import "partial/normalize";
 @import "partial/typography";
@@ -15,9 +15,9 @@
 
 @import "partial/view/body";
 @import "partial/view/header";
-@import "partial/form/button";
-@import "partial/form/textinput";
-@import "partial/form/searchinput";
+@import "partial/forms/button";
+@import "partial/forms/textinput";
+@import "partial/forms/searchinput";
 @import "partial/view/sidebar";
 @import "partial/view/forkme";
 @import "partial/view/logo";
