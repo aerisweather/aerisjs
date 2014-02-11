@@ -3,7 +3,7 @@ define([
   'ai/maps/markercollections/pointdatamarkers',
   'ai/collection',
   'ai/api/collections/pointdatacollection'
-], function(_, PointDataMarkerCollection, Collection, PointDataCollection) {
+], function(_, PointDataMarkers, Collection, PointDataCollection) {
 
   var MockDataCollection = function() {
     Collection.apply(this, arguments);
@@ -14,30 +14,30 @@ define([
 
 
 
-  describe('A PointDataMarkerCollection', function() {
+  describe('A PointDataMarkers', function() {
 
     describe('constructor', function() {
 
       beforeEach(function() {
-        spyOn(PointDataMarkerCollection.prototype, 'startClustering');
+        spyOn(PointDataMarkers.prototype, 'startClustering');
       });
 
       it('should start clustering, if the cluster option is set to true', function() {
-        new PointDataMarkerCollection(undefined, {
+        new PointDataMarkers(undefined, {
           data: new MockDataCollection(),
           cluster: true
         });
 
-        expect(PointDataMarkerCollection.prototype.startClustering).toHaveBeenCalled();
+        expect(PointDataMarkers.prototype.startClustering).toHaveBeenCalled();
       });
 
       it('should start clustering, if the cluster option is set to false', function() {
-        new PointDataMarkerCollection(undefined, {
+        new PointDataMarkers(undefined, {
           data: new MockDataCollection(),
           cluster: false
         });
 
-        expect(PointDataMarkerCollection.prototype.startClustering).not.toHaveBeenCalled();
+        expect(PointDataMarkers.prototype.startClustering).not.toHaveBeenCalled();
       });
 
     });

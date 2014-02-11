@@ -22,10 +22,10 @@
     <h2>Aeris Interactive</h2>
 
     <p>
-      The Aeris API provides several data-sets which are associated with lat/lon coordinates (e.g. earthquake, fire, lightning, and storm reports). In order to render this data points on a map, you can use a <code>PointDataMarkerCollection</code>. A <code>PointDataMarkerCollection</code> creates markers for every model in a data collection, and renders the model on the map.
+      The Aeris API provides several data-sets which are associated with lat/lon coordinates (e.g. earthquake, fire, lightning, and storm reports). In order to render this data points on a map, you can use a <code>PointDataMarkers</code>. A <code>PointDataMarkers</code> creates markers for every model in a data collection, and renders the model on the map.
     </p>
     <p>
-      <code>PointDataMarkerCollection</code>s are bound to data collections, so whenever a data collection is updated, the markers on the map will be re-rendered accordingly. This example shows how setting <em>filters</em> on a data collection will render filtered point data on the map. <strong>Select one or more storm type filters</strong> to test out the filtering functionality. Or, <strong>click on a marker</strong> to see how data can be rendered from a <code>PointDataMarker</code>.
+      <code>PointDataMarkers</code>s are bound to data collections, so whenever a data collection is updated, the markers on the map will be re-rendered accordingly. This example shows how setting <em>filters</em> on a data collection will render filtered point data on the map. <strong>Select one or more storm type filters</strong> to test out the filtering functionality. Or, <strong>click on a marker</strong> to see how data can be rendered from a <code>PointDataMarker</code>.
     </p>
     <p>
       See the <a href="http://www.hamweather.com/support/documentation/aeris/endpoints/stormreports" target="_blank">StormReport endpoint documentation</a> for a list of available filters.
@@ -126,7 +126,7 @@
     var map = new aeris.maps.Map('map-canvas');
 
     // The StormReportMarkers object is a type
-    // of PointDataMarkerCollection, which is bound to
+    // of PointDataMarkers, which is bound to
     // an aeris.api.collections.StormReports object.
     var stormMarkers = new aeris.maps.markercollections.StormReportMarkers();
     stormMarkers.setMap(map);
@@ -154,7 +154,7 @@
     stormMarkers.fetchData();
 
 
-    // PointDataMarkerCollection trigger 'click' event
+    // PointDataMarkers trigger 'click' event
     // when any marker is clicked. The individual marker
     // is passed in as the second parameter.
     stormMarkers.on('click', function(latLon, marker) {
