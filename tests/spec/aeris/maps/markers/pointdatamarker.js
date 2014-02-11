@@ -4,7 +4,7 @@ define([
   'ai/model',
   'sinon',
   'ai/maps/markers/pointdatamarker',
-  'ai/api/endpoint/model/pointdata'
+  'ai/api/endpoint/models/pointdata'
 ], function(_, Events, Model, sinon, PointDataMarker, PointData) {
 
   function TestFactory(opt_options) {
