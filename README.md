@@ -46,7 +46,7 @@ Usage of the Aeris API requires an Aeris API developer account. Visit [hamweathe
         center: [45, -90],
         zoom: 12
     });
-    var radarLayer = new aeris.maps.layers.AerisRadar();
+    var radarLayer = new aeris.maps.layers.Radar();
     
     radarLayer.setMap(map);
 </script>

@@ -1,7 +1,7 @@
 define([
   'ai/util',
-  'ai/maps/layers/aerismodistile'
-], function(_, AerisModisTile) {
+  'ai/maps/layers/modistile'
+], function(_, ModisTile) {
   var ConcreteModisTile = function() {
     var attrs = {
       tileType: 'some tile type',
@@ -17,15 +17,15 @@ define([
       period: 1
     };
 
-    AerisModisTile.call(this, attrs, options);
+    ModisTile.call(this, attrs, options);
   };
-  _.inherits(ConcreteModisTile, AerisModisTile);
+  _.inherits(ConcreteModisTile, ModisTile);
 
 
   /**
-   * @fileoverview Tests specs for aeris.maps.layers.AerisModisTile.
+   * @fileoverview Tests specs for aeris.maps.layers.ModisTile.
    */
-  describe('An AerisModisTile layer', function() {
+  describe('An ModisTile layer', function() {
 
     it('should dynamically set tileType from modis period', function() {
       var layer = new ConcreteModisTile();

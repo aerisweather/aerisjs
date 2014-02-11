@@ -47,9 +47,9 @@
       <details>
         <summary><a href="#">Layers</a></summary>
         <ul class="tocSection">
-          <li><a href="#aeris.maps.layers.AerisRadar">AerisRadar</a></li>
-          <li><a href="#aeris.maps.layers.AerisSatellite">AerisSatellite</a></li>
-          <li><a href="#aeris.maps.layers.AerisWinds">AerisWinds</a></li>
+          <li><a href="#aeris.maps.layers.Radar">Radar</a></li>
+          <li><a href="#aeris.maps.layers.Satellite">Satellite</a></li>
+          <li><a href="#aeris.maps.layers.Winds">Winds</a></li>
         </ul>
       </details>
     </li>
@@ -131,10 +131,10 @@
   </p>
 
 
-  <h4 id="aeris.maps.layers.AerisRadar">AerisRadar</h4>
+  <h4 id="aeris.maps.layers.Radar">Radar</h4>
 
   <ul class="classDocs">
-    <li><a class="ref" href="fullApiDocs/aeris.maps.layers.AerisRadar" target="_blank">aeris.maps.layers.AerisRadar</a>
+    <li><a class="ref" href="fullApiDocs/aeris.maps.layers.Radar" target="_blank">aeris.maps.layers.Radar</a>
     </li>
     <li>extends <a class="ref tooltip" href="fullApiDocs/aeris.maps.layers.AerisInteractiveTile"
                    title="<code>aeris.maps.layers.AerisInteractiveTile</code>" target="_blank">AerisInteractiveTile</a>
@@ -144,10 +144,10 @@
   <p>Representation of an Aeris Radar layer.</p>
 
 
-  <h5 id="aeris.maps.layers.AerisRadar-constructor">constructor</h5>
+  <h5 id="aeris.maps.layers.Radar-constructor">constructor</h5>
 
   <code class="example">
-    new aeris.maps.layers.AerisRadar(opt_attrs, opt_options);
+    new aeris.maps.layers.Radar(opt_attrs, opt_options);
   </code>
 
   <table>
@@ -176,7 +176,7 @@
   </table>
 
 
-  <h5 id="aeris.maps.layers.AerisRadar-methods">methods</h5>
+  <h5 id="aeris.maps.layers.Radar-methods">methods</h5>
 
   <table>
     <thead>
@@ -200,7 +200,7 @@
   </table>
 
 
-  <h5 id="aeris.maps.layers.AerisRadar-events">events</h5>
+  <h5 id="aeris.maps.layers.Radar-events">events</h5>
 
   <aside>See <a class="ref" href="#aeris.Events">aeris.Events</a> documentation for information about handling events
   </aside>
@@ -208,7 +208,7 @@
   <h6>load</h6>
 
   <code class="example">
-    aerisRadar.on('load', function(radarLayer, status) {});
+    Radar.on('load', function(radarLayer, status) {});
   </code>
 
   <div class="typeDocs">
@@ -238,7 +238,7 @@
   <h6>load:error</h6>
 
   <code class="example">
-    aerisRadar.on('load:error', function(loadingError) {});
+    Radar.on('load:error', function(loadingError) {});
   </code>
 
   <table>

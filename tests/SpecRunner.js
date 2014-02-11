@@ -104,8 +104,8 @@ require([
       'spec/aeris/maps/layers/abstractlayer',
       'spec/aeris/maps/layers/abstracttile',
       'spec/aeris/maps/layers/aerisinteractivetile',
-      'spec/aeris/maps/layers/aerismodistile',
-      'spec/aeris/maps/layers/aerisseasurfacetemps',
+      'spec/aeris/maps/layers/modistile',
+      'spec/aeris/maps/layers/seasurfacetemps',
 
 
       'spec/aeris/maps/polylines/polyline',

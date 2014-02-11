@@ -48,9 +48,9 @@ TBD (how is this done when using a CDN? Has this been tested?)
 Aeris.js uses [RequireJS](http://requirejs.org/) to load modules and components. Using RequireJS (or a compatible [AMD loader](http://en.wikipedia.org/wiki/Asynchronous_module_definition)), you can pick and choose which Aeris Interactive components you would like to use.
 
 ```javascript
-require(['ai/maps/map', 'ai/maps/layers/aerisradar'], function(AerisMap, AerisRadar) {
+require(['ai/maps/map', 'ai/maps/layers/radar'], function(AerisMap, Radar) {
     var map = new AerisMap('map-canvas');
-    var radar = new AerisRadar();
+    var radar = new Radar();
 
     radar.setMap(map);
 });

@@ -13,7 +13,7 @@ This document is only an introduction to the features of Aeris Interactive. Chec
 #### A Note For RequireJS Users
 The examples in this document reference components within the global `aeris` namespace. This is appropriate when loading the library from a CDN. If you are loading components as RequireJS/AMD modules, you can find *most* items in a module path matchig up to the global namespace.
 
-For example, `aeris.maps.layers.AerisRadar` can be found at `ai/maps/layers/aerisradar`.
+For example, `aeris.maps.layers.Radar` can be found at `ai/maps/layers/radar`.
 
 ## Data and Weather API
 
@@ -135,7 +135,7 @@ marker.getPosition();       // [45.1, -89.9]
 ```
 
 ```javascript
-var layer = new aeris.maps.layers.AerisRadar({
+var layer = new aeris.maps.layers.Radar({
     opacity: 1.0
 });
 layer.setMap(map);
@@ -264,8 +264,8 @@ The Aeris AppBuilder is a dead-simple tool for creating a weather map applicatio
 new MapApp({
     el: 'myMapApp'      // ID of application container element
     layers: [
-        'AerisRadar',
-        'AerisSatellite'
+        'Radar',
+        'Satellite'
     ],
     markers: [
         'EarthquakeMarkers',
