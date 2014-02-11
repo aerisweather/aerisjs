@@ -1,6 +1,6 @@
 define([
   'ai/util',
-  'ai/application/controllers/templatehelperregistrar/handlebarstemplatehelperregistrar'
+  'ai/application/controllers/templatehelperregistrars/handlebarstemplatehelperregistrar'
 ], function(_, HandlebarsTemplateHelperRegistrar) {
 
 

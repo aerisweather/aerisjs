@@ -44,7 +44,7 @@ require([
 
       'spec/aeris/application/controllers/layoutcontroller',
       'spec/aeris/application/controllers/mixins/viewmixin',
-      'spec/aeris/application/controllers/templatehelperregistrar/handlebarstemplatehelperregistrar',
+      'spec/aeris/application/controllers/templatehelperregistrars/handlebarstemplatehelperregistrar',
       'spec/aeris/application/models/eventparambag',
       'spec/aeris/application/modules/module',
       'spec/aeris/application/menu/controllers/menucontroller',
