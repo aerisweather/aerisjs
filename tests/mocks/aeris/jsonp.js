@@ -4,15 +4,24 @@ define(function() {
   }
 
   MockJSONP.prototype.getRequestedUrl = function() {
-    return this.get.mostRecentCall.args[0];
+    return this.getGetArgAt_(0);
   };
 
   MockJSONP.prototype.getRequestedData = function() {
-    return this.get.mostRecentCall.args[1];
+    return this.getGetArgAt_(1);
   };
 
   MockJSONP.prototype.getRequestedCallback = function() {
-    return this.get.mostRecentCall.args[2];
+    return this.getGetArgAt_(2);
+  };
+
+  MockJSONP.prototype.getGetArgAt_ = function(argIndex) {
+    if (!this.get.callCount) {
+      new Error('Unable to return argument for MockJSONP#get: ' +
+        'MockJSONP#get was never called');
+    }
+
+    return this.get.mostRecentCall.args[argIndex];
   };
 
   MockJSONP.prototype.resolveWith = function(res) {
