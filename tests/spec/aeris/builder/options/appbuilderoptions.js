@@ -1,12 +1,15 @@
 define([
   'ai/util',
   'ai/builder/options/appbuilderoptions',
-  'ai/config'
-], function(_, AppBuilderOptions, aerisConfig) {
+  'mocks/aeris/config'
+], function(_, AppBuilderOptions, MockConfig) {
 
   describe('A AppBuilderOptions', function() {
-    var STUB_API_ID = 'STUB_API_ID';
-    var STUB_API_SECRET = 'STUB_API_SECRET';
+    
+    afterEach(function() {
+      MockConfig.restore();
+    });
+    
 
     describe('validate', function() {
 
@@ -15,9 +18,6 @@ define([
 
         beforeEach(function() {
           options = new AppBuilderOptions();
-
-          aerisConfig.unset('apiId');
-          aerisConfig.unset('apiSecret');
         });
 
 
@@ -26,21 +26,20 @@ define([
             options.isValid();
           }).toThrowType('BuilderConfigError');
 
-          aerisConfig.set({
-            apiId: STUB_API_ID,
-            apiSecret: STUB_API_SECRET
-          });
+          MockConfig.stubApiKeys();
           options.isValid();
         });
 
         it('attributes set on options', function() {
+          var apiIdStub = _.uniqueId('apiIdStub_');
+          var apiSecretStub = _.uniqueId('apiSecretStub_');
           expect(function() {
             options.isValid();
           }).toThrowType('BuilderConfigError');
 
           options.set({
-            apiId: STUB_API_ID,
-            apiSecret: STUB_API_SECRET
+            apiId: apiIdStub,
+            apiSecret: apiSecretStub
           });
           options.isValid();
         });

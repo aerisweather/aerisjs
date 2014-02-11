@@ -1,9 +1,9 @@
 define([
   'ai/util',
   'ai/api/endpoint/model/aerisapimodel',
-  'ai/config',
+  'mocks/aeris/config',
   'mocks/aeris/jsonp'
-], function(_, AerisApiModel, aerisConfig, MockJSONP) {
+], function(_, AerisApiModel, MockConfig, MockJSONP) {
 
   var NoResultsResponse = function() {
     return {
@@ -20,9 +20,6 @@ define([
     var apiModel;
     var jsonp;
     var SERVER_STUB, ENDPOINT_STUB, ID_STUB;
-    var API_ID_STUB, API_SECRET_STUB;
-    var apiId_orig = aerisConfig.get('apiId');
-    var apiSecret_orig = aerisConfig.get('apiSecret');
 
     beforeEach(function() {
       jsonp = new MockJSONP();
@@ -30,9 +27,6 @@ define([
       ENDPOINT_STUB = 'ENDPOINT_STUB';
       SERVER_STUB = 'TEST://SERVER.STUB';
       ID_STUB = 'ID_STUB';
-
-      API_ID_STUB = 'API_ID_STUB';
-      API_SECRET_STUB = 'API_SECRET_STUB';
 
       apiModel = new AerisApiModel({
         id: ID_STUB
@@ -42,17 +36,11 @@ define([
         endpoint: ENDPOINT_STUB
       });
 
-      aerisConfig.set({
-        apiId: API_ID_STUB,
-        apiSecret: API_SECRET_STUB
-      });
+      MockConfig.stubApiKeys();
     });
 
     afterEach(function() {
-      aerisConfig.set({
-        apiId: apiId_orig,
-        apiSecret: apiSecret_orig
-      })
+      MockConfig.restore();
     });
 
 

@@ -4,8 +4,8 @@ define([
   'ai/model',
   'ai/collection',
   'ai/api/params/collection/chainedquery',
-  'ai/config'
-], function(_, Params, Model, Collection, ChainedQuery, aerisConfig) {
+  'mocks/aeris/config'
+], function(_, Params, Model, Collection, ChainedQuery, MockConfig) {
 
   function TestFactory() {
     this.params = new Params({
@@ -15,6 +15,11 @@ define([
 
 
   describe('A Params model', function() {
+
+
+    afterEach(function() {
+      MockConfig.restore();
+    });
 
     describe('constructor', function() {
 
@@ -123,30 +128,13 @@ define([
 
 
     describe('data binding', function() {
-      var apiKeys_orig = _.pick(aerisConfig, 'apiId', 'apiSecret');
-      var ID_STUB = 'ID_STUB_PARAMS', SECRET_STUB = 'SECRET_STUB_PARAMS';
-      var stubbedApiKeys;
-
-      beforeEach(function() {
-        stubbedApiKeys = {
-          apiId: ID_STUB,
-          apiSecret: SECRET_STUB
-        }
-        aerisConfig.unset('apiId');
-        aerisConfig.unset('apiSecret');
-      });
-
-
-      afterEach(function() {
-        aerisConfig.set(apiKeys_orig);
-      });
 
       it('should bind to aeris/config api keys', function() {
         var params = new Params();
-        aerisConfig.set(stubbedApiKeys);
+        MockConfig.stubApiKeys();
 
-        expect(params.get('client_id')).toEqual(ID_STUB);
-        expect(params.get('client_secret')).toEqual(SECRET_STUB);
+        expect(params.get('client_id')).toEqual(MockConfig.API_ID_STUB);
+        expect(params.get('client_secret')).toEqual(MockConfig.API_SECRET_STUB);
       });
 
       it('should prefer set api key attributes', function() {
@@ -158,7 +146,7 @@ define([
           client_id: CLIENT_ID_ATTR,
           client_secret: CLIENT_SECRET_ATTR
         });
-        aerisConfig.set(stubbedApiKeys);
+        MockConfig.stubApiKeys();
 
         expect(params.get('client_id')).toEqual(CLIENT_ID_ATTR);
         expect(params.get('client_secret')).toEqual(CLIENT_SECRET_ATTR);

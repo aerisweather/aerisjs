@@ -1,9 +1,8 @@
 define([
   'ai/util',
   'ai/builder/appbuilder',
-  'ai/config',
   'ai/model'
-], function(_, AppBuilder, aerisConfig, Model) {
+], function(_, AppBuilder, Model) {
 
   var MockBuilderOptions = function() {
     Model.apply(this, arguments);

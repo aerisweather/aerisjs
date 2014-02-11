@@ -4,10 +4,10 @@ define([
   'ai/promise',
   'ai/maps/layers/aerisinteractivetile',
   'ai/maps/abstractstrategy',
-  'ai/config',
   'mocks/aeris/jsonp',
+  'mocks/aeris/config',
   'ai/errors/timeouterror'
-], function(_, sinon, Promise, AerisInteractiveTile, Strategy, aerisConfig, MockJSONP, TimeoutError) {
+], function(_, sinon, Promise, AerisInteractiveTile, Strategy, MockJSONP, MockConfig, TimeoutError) {
 
 
   function TestFactory(opt_options) {
@@ -47,6 +47,10 @@ define([
 
   describe('An AerisInteractiveTile', function() {
 
+    afterEach(function() {
+      MockConfig.restore();
+    });
+
     describe('constructor', function() {
 
       it('should require a tileType', function() {
@@ -60,45 +64,28 @@ define([
     });
 
     describe('data binding', function() {
-      var apiKeys_orig = _.pick(aerisConfig, 'apiId', 'apiSecret');
-      var ID_STUB = 'ID_STUB_PARAMS', SECRET_STUB = 'SECRET_STUB_PARAMS';
-      var stubbedApiKeys;
-
-      beforeEach(function() {
-        stubbedApiKeys = {
-          apiId: ID_STUB,
-          apiSecret: SECRET_STUB
-        }
-        aerisConfig.unset('apiId');
-        aerisConfig.unset('apiSecret');
-      });
-
-
-      afterEach(function() {
-        aerisConfig.set(apiKeys_orig);
-      });
 
       it('should bind to aeris/config api keys', function() {
         var tile = new TestFactory().tile;
-        aerisConfig.set(stubbedApiKeys);
+        MockConfig.stubApiKeys();
 
-        expect(tile.get('apiId')).toEqual(ID_STUB);
-        expect(tile.get('apiSecret')).toEqual(SECRET_STUB);
+        expect(tile.get('apiId')).toEqual(MockConfig.API_ID_STUB);
+        expect(tile.get('apiSecret')).toEqual(MockConfig.API_SECRET_STUB);
       });
 
       it('should prefer set api key attributes', function() {
         var tile = new TestFactory().tile;
-        var API_ID_ATTR = 'API_ID_ATTR';
-        var API_SECRET_ATTR = 'API_SECRET_ATTR';
+        var apiIdAttr = _.uniqueId('API_ID_ATTR');
+        var apiSecretAttr = _.uniqueId('API_SECRET_ATTR');
 
         tile.set({
-          apiSecret: API_SECRET_ATTR,
-          apiId: API_ID_ATTR
+          apiSecret: apiSecretAttr,
+          apiId: apiIdAttr
         });
-        aerisConfig.set(stubbedApiKeys);
+        MockConfig.stubApiKeys();
 
-        expect(tile.get('apiId')).toEqual(API_ID_ATTR);
-        expect(tile.get('apiSecret')).toEqual(API_SECRET_ATTR);
+        expect(tile.get('apiId')).toEqual(apiIdAttr);
+        expect(tile.get('apiSecret')).toEqual(apiSecretAttr);
       });
 
     });
@@ -106,13 +93,10 @@ define([
     describe('getUrl', function() {
 
       describe('should require aeris keys from...', function() {
-        var aerisKeys_orig = aerisConfig.pick('apiId', 'apiSecret');
-        var API_ID_STUB = 'API_ID_STUB';
-        var API_SECRET_STUB = 'API_SECRET_STUB';
         var tile;
 
         beforeEach(function() {
-          aerisConfig.set({
+          MockConfig.stubApiKeys({
             apiId: null,
             apiSecret: null
           });
@@ -123,21 +107,13 @@ define([
           });
         });
 
-        afterEach(function() {
-          aerisConfig.set(aerisKeys_orig);
-        });
-
-
 
         it('aeris config', function() {
           expect(function() {
             tile.getUrl();
           }).toThrowType('MissingApiKeyError');
 
-          aerisConfig.set({
-            apiId: API_ID_STUB,
-            apiSecret: API_SECRET_STUB
-          });
+          MockConfig.stubApiKeys();
           tile.getUrl();
         });
 
@@ -147,8 +123,8 @@ define([
           }).toThrowType('MissingApiKeyError');
 
           tile.set({
-            apiId: API_ID_STUB,
-            apiSecret: API_SECRET_STUB
+            apiId: _.uniqueId('API_ID_ATTR_'),
+            apiSecret: _.uniqueId('API_ID_ATTR_')
           });
           tile.getUrl();
         });
