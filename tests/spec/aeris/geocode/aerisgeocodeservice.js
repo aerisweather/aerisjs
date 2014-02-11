@@ -52,14 +52,16 @@ define([
         var aerisService = new AerisGeocodeService();
         it('should get proper api keys', function() {
             console.log('check api keys');
-            var apiKeys =  aerisService.checkApiKeys();
+            var apiKeys = aerisService.checkApiKeys();
             expect(apiKeys).toBe(true);
         });
         it('should query the Aeris places api', function() {
-
             spyOn(aerisService, 'geocode').andCallThrough();
-
-            window.geodata = aerisService.geocode('minneapolis,mn');
+            var geodata = aerisService.geocode('minneapolis,mn');
+            geodata.done(function(res) {
+                console.log(res);
+                expect(res.code).toBe('OK');
+            });
         });
     });
 });
