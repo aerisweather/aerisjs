@@ -79,7 +79,7 @@ stormReportCollection.each(function(stormReport) {
 Individual models can be retrieved from the AerisAPI by id.
 
 ```javascript
-    var earthquake = new aeris.api.Earthquake({
+    var earthquake = new aeris.api.models.Earthquake({
         id: 'nc72142075'
     });
 
@@ -91,9 +91,9 @@ Data collections are defined for the following [AerisAPI endpoints](http://www.h
 
 | Endpoint | Model | Collection |
 | ----------------- |-------| -----------|
-| /earthquakes | `aeris.api.Earthquake` | `aeris.api.collections.Earthquakes`|
-| /fires | `aeris.api.Fire` | `aeris.api.collections.Fires` |
-| /stormreports | `aeris.api.StormReport` | `aeris.api.collections.StormReports` |
+| /earthquakes | `aeris.api.models.Earthquake` | `aeris.api.collections.Earthquakes`|
+| /fires | `aeris.api.models.Fire` | `aeris.api.collections.Fires` |
+| /stormreports | `aeris.api.models.StormReport` | `aeris.api.collections.StormReports` |
 
 
 
