@@ -1,6 +1,6 @@
 define([
   'ai/util',
-  'ai/maps/markercollections/pointdatamarkercollection',
+  'ai/maps/markercollections/pointdatamarkers',
   'ai/collection',
   'ai/api/collections/pointdatacollection'
 ], function(_, PointDataMarkerCollection, Collection, PointDataCollection) {
