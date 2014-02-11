@@ -106,7 +106,7 @@ Map objects are rendered and erased using the `setMap` method.
 
 ```javascript
 var map = new aeris.maps.Map('map-canvas');
-var marker = new aeris.maps.Marker({
+var marker = new aeris.maps.markers.Marker({
     position: [45, -90]     // lat lon coordinate
 });
 
@@ -117,7 +117,7 @@ marker.setMap(null);        // marker is erased from the map
 Map objects can be manipulted using **getter** and **setter** methods.
 
 ```javascript
-var marker = new aeris.maps.Marker({
+var marker = new aeris.maps.markers.Marker({
     // Attributes can also be set in constructor
     position: [45, -90];
 });
@@ -158,7 +158,7 @@ Map objects fire events.
 
 ```javascript
 var infoBox;
-var marker = new aeris.maps.Marker({
+var marker = new aeris.maps.markers.Marker({
     position: [45, -90]
 });
 marker.setMap(map);
