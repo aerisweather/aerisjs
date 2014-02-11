@@ -127,7 +127,7 @@
 
     // The StormReportMarkers object is a type
     // of PointDataMarkerCollection, which is bound to
-    // an aeris.api.StormReportCollection object.
+    // an aeris.api.collection.StormReports object.
     var stormMarkers = new aeris.maps.StormReportMarkers();
     stormMarkers.setMap(map);
 
@@ -135,7 +135,7 @@
     // Show a 'loading' prompt whenever requests are
     // being made to the AerisAPI server.
     //
-    // You can access the StormReportCollection object
+    // You can access the StormReports object
     // directly by calling `getData()`
     stormMarkers.getData().on({
       request: function() {

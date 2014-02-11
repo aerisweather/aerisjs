@@ -20,7 +20,7 @@ For example, `aeris.maps.layers.AerisRadar` can be found at `ai/maps/layers/aeri
 The Aeris Interactive api library provides a javascript interface for interacting with data from the [Aeris API](http://www.hamweather.com/support/documentation/aeris/endpoints/). Data collection objects accept a `params` object, which is used to query the AerisAPI.
 
 ```javascript
-var stormReportCollection = new aeris.api.StormReportCollection(null, {
+var stormReportCollection = new aeris.api.collection.StormReports(null, {
     // See AerisAPI documentation for accepted params
     // http://www.hamweather.com/support/documentation/aeris/endpoints/
     params: {
@@ -36,7 +36,7 @@ var stormReportCollection = new aeris.api.StormReportCollection(null, {
 You may also specify the action to use for requesting data (generally, defaults to `within`)
 
 ```javascript
-var stormReportCollection = new aeris.api.StormReportCollection(null, {
+var stormReportCollection = new aeris.api.collection.StormReports(null, {
     action: 'closest',
     params: {
         p: '55415'
@@ -91,9 +91,9 @@ Data collections are defined for the following [AerisAPI endpoints](http://www.h
 
 | Endpoint | Model | Collection |
 | ----------------- |-------| -----------|
-| /earthquakes | `aeris.api.Earthquake` | `aeris.api.EarthquakeCollection`|
-| /fires | `aeris.api.Fire` | `aeris.api.FireCollection` |
-| /stormreports | `aeris.api.StormReport` | `aeris.api.StormReportCollection` |
+| /earthquakes | `aeris.api.Earthquake` | `aeris.api.collection.Earthquakes`|
+| /fires | `aeris.api.Fire` | `aeris.api.collection.Fires` |
+| /stormreports | `aeris.api.StormReport` | `aeris.api.collection.StormReports` |
 
 
 
@@ -188,7 +188,7 @@ marker.on({
 Data collections can be bound to collection of markers, allowing you to render point data as markers on a map.
 
 ```javascript
-var earthquakeCollection = new aeris.api.EarthquakeCollection({
+var earthquakeCollection = new aeris.api.collection.Earthquakes({
     params: {
         filters: ['moderate', 'strong', 'major'],
         p: map.getBounds();             // only look for earthquakes within the map bounds.
