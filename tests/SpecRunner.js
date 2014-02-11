@@ -121,12 +121,12 @@ require([
 
       'spec/aeris/maps/gmaps/events',
       'spec/aeris/maps/gmaps/abstractstrategy',
-      'spec/aeris/maps/gmaps/layerstrategies/abstractmaptype',
-      'spec/aeris/maps/gmaps/layerstrategies/googlemaptype',
-      'spec/aeris/maps/gmaps/layerstrategies/tile',
-      'spec/aeris/maps/gmaps/layerstrategies/kml',
-      'spec/aeris/maps/gmaps/layerstrategies/maptype/imagemaptype',
-      'spec/aeris/maps/gmaps/markerstrategies/markerclusterstrategy',
+      'spec/aeris/maps/gmaps/layers/abstractmaptype',
+      'spec/aeris/maps/gmaps/layers/googlemaptype',
+      'spec/aeris/maps/gmaps/layers/tile',
+      'spec/aeris/maps/gmaps/layers/kml',
+      'spec/aeris/maps/gmaps/layers/maptype/imagemaptype',
+      'spec/aeris/maps/gmaps/markers/markercluster',
 
 
       'spec/aeris/maps/routes/waypoint',
