@@ -70,17 +70,17 @@
   });
 
   // Create individual animation objects
-  var radarAnimation = new aeris.maps.animations.AerisInteractiveTile(radar, {
+  var radarAnimation = new aeris.maps.animations.AerisinteractiveTile(radar, {
     // Limit the number of layers to load
     limit: 20
   });
-  var satelliteAnimation = new aeris.maps.animations.AerisInteractiveTile(satellite, {
+  var satelliteAnimation = new aeris.maps.animations.AerisinteractiveTile(satellite, {
     limit: 20
   });
 
   // Pass the animation objects to an AnimationSync
   // The AnimationSync uses the same interface as the
-  // AerisInteractiveTile animation objects.
+  // AerisTile animation objects.
   var animationSync = new aeris.maps.animations.AnimationSync([radarAnimation, satelliteAnimation]);
 
   radar.setMap(map);

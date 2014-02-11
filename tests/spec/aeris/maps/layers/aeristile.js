@@ -2,12 +2,12 @@ define([
   'ai/util',
   'sinon',
   'ai/promise',
-  'ai/maps/layers/aerisinteractivetile',
+  'ai/maps/layers/aeristile',
   'ai/maps/abstractstrategy',
   'mocks/aeris/jsonp',
   'mocks/aeris/config',
   'ai/errors/timeouterror'
-], function(_, sinon, Promise, AerisInteractiveTile, Strategy, MockJSONP, MockConfig, TimeoutError) {
+], function(_, sinon, Promise, AerisTile, Strategy, MockJSONP, MockConfig, TimeoutError) {
 
 
   function TestFactory(opt_options) {
@@ -28,7 +28,7 @@ define([
     });
 
     this.strategy = options.strategy;
-    this.tile = new AerisInteractiveTile(attrs, { strategy: this.strategy });
+    this.tile = new AerisTile(attrs, { strategy: this.strategy });
   }
 
   function getStubbedStrategy() {
@@ -45,7 +45,7 @@ define([
   }
 
 
-  describe('An AerisInteractiveTile', function() {
+  describe('An AerisTile', function() {
 
     afterEach(function() {
       MockConfig.restore();
@@ -101,7 +101,7 @@ define([
             apiSecret: null
           });
 
-          tile = new AerisInteractiveTile({
+          tile = new AerisTile({
             tileType: 'STUB_TILE_TYPE',
             name: 'STUB_NAME'
           });
@@ -238,10 +238,10 @@ define([
 
       beforeEach(function() {
         // Stub out validation
-        spyOn(AerisInteractiveTile.prototype, 'isValid');
+        spyOn(AerisTile.prototype, 'isValid');
 
         jsonp = new MockJSONP();
-        tile = new AerisInteractiveTile({
+        tile = new AerisTile({
           apiId: API_ID_STUB,
           apiSecret: API_SECRET_STUB,
           tileType: TILE_TYPE_STUB

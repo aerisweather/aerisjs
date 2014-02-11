@@ -2,9 +2,9 @@ define([
   'ai/util',
   'sinon',
   'ai/maps/map',
-  'ai/maps/abstractlayer',
+  'ai/maps/layers/layer',
   'ai/promise'
-], function(_, sinon, AerisMap, AbstractLayer, Promise) {
+], function(_, sinon, AerisMap, Layer, Promise) {
 
   function getStubbedMap() {
     return sinon.createStubInstance(AerisMap);
@@ -26,7 +26,7 @@ define([
 
   function testFactory() {
     var Strategy = getStubbedStrategy();
-    var layer = new AbstractLayer(null, {
+    var layer = new Layer(null, {
       strategy: Strategy
     });
 
@@ -37,7 +37,7 @@ define([
   }
 
 
-  describe('An AbstractLayer', function() {
+  describe('An Layer', function() {
 
     describe('constructor', function() {
 

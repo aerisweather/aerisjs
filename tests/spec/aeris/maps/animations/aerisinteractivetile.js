@@ -5,7 +5,7 @@ define([
   'ai/promise',
   'ai/events',
   'mocks/aeris/maps/animations/helpers/times'
-], function(_, AerisInteractiveTileAnimation, Model, Promise, Events, MockTimes) {
+], function(_, AerisTileAnimation, Model, Promise, Events, MockTimes) {
 
   var MockOrderedTimes = function() {
     var times = MockTimes.apply(null, arguments);
@@ -118,7 +118,7 @@ define([
 
 
 
-  describe('An AerisInteractiveTile Animation', function() {
+  describe('An AerisTile Animation', function() {
     var animation, layerLoader, baseLayer;
     var times, timeLayers;
     var TIMES_COUNT = 10;
@@ -126,7 +126,7 @@ define([
     beforeEach(function() {
       baseLayer = new MockLayer();
       layerLoader = new MockLayerLoader();
-      animation = new AerisInteractiveTileAnimation(baseLayer, {
+      animation = new AerisTileAnimation(baseLayer, {
         animationLayerLoader: layerLoader
       });
 

@@ -101,9 +101,9 @@ require([
       'spec/aeris/maps/extensions/mapextensionobject',
       'spec/aeris/maps/abstractstrategy',
 
-      'spec/aeris/maps/layers/abstractlayer',
+      'spec/aeris/maps/layers/layer',
       'spec/aeris/maps/layers/abstracttile',
-      'spec/aeris/maps/layers/aerisinteractivetile',
+      'spec/aeris/maps/layers/aeristile',
       'spec/aeris/maps/layers/modistile',
       'spec/aeris/maps/layers/seasurfacetemps',
 

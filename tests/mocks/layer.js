@@ -3,7 +3,7 @@ define([
   'mocks/model'
 ], function(_, MockModel) {
   /**
-   * A stubbed out {aeris.maps.AbstractLayer}
+   * A stubbed out {aeris.maps.layers.Layer}
    *
    * @param {Object=} opt_options Layer properties.
    * @class MockLayer
@@ -39,7 +39,7 @@ define([
     // Use MockModel to stub attributes
     MockModel.call(layer, cannedAttrs);
 
-    // Mock AbstractLayer methods
+    // Mock Layer methods
     layer.zoomFactor.andCallFake(function(zoom) {
         return zoom;
       });
