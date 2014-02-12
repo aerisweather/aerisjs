@@ -2,8 +2,9 @@ define([
   'ai/util',
   'ai/model',
   'ai/collection',
-  'ai/api/params/collections/filtercollection'
-], function(_, Model, BaseCollection, BaseFilterCollection) {
+  'ai/api/params/collections/filtercollection',
+  'ai/api/operator'
+], function(_, Model, BaseCollection, BaseFilterCollection, Operator) {
 
   // Create a test version of a FilterCollection,
   // which uses a generic model.
@@ -30,7 +31,7 @@ define([
         var filters = new FilterCollection();
         var filter = new Model({
           name: 'foo',
-          operator: 'AND'
+          operator: Operator.AND
         });
         filters.add(filter);
 
@@ -48,11 +49,11 @@ define([
           },
           {
             name: 'bar',
-            operator: 'AND'
+            operator: Operator.AND
           },
           {
             name: 'wazaam',
-            operator: 'OR'
+            operator: Operator.OR
           }
         ]);
 
@@ -87,10 +88,10 @@ define([
       it('should create models with an optional operator', function() {
         var filters = new FilterCollection();
         var filterNames = ['sieve', 'colander', 'coffee filter'];
-        filters.add(filterNames, { operator: 'OR' });
+        filters.add(filterNames, { operator: Operator.OR });
 
         filters.each(function(ff) {
-          expect(ff.get('operator')).toEqual('OR');
+          expect(ff.get('operator')).toEqual(Operator.OR);
         });
         expect(filters.length).toEqual(3);
       });
@@ -98,15 +99,15 @@ define([
       it('should allow for standard aeris.Collection#add syntax', function() {
         var filters = new FilterCollection();
         filters.add([
-          { name: 'sieve', operator: 'AND' },
-          { name: 'colander', operator: 'OR' }
+          { name: 'sieve', operator: Operator.AND },
+          { name: 'colander', operator: Operator.OR }
         ]);
 
         expect(filters.at(0)).toBeInstanceOf(Model);
         expect(filters.at(0).get('name')).toEqual('sieve');
-        expect(filters.at(0).get('operator')).toEqual('AND');
+        expect(filters.at(0).get('operator')).toEqual(Operator.AND);
         expect(filters.at(1).get('name')).toEqual('colander');
-        expect(filters.at(1).get('operator')).toEqual('OR');
+        expect(filters.at(1).get('operator')).toEqual(Operator.OR);
       });
 
     });
@@ -118,7 +119,7 @@ define([
 
         filters.add(new Model({
           name: 'wire mesh',
-          operator: 'AND'
+          operator: Operator.AND
         }));
 
         filters.reset('sieve');
@@ -134,7 +135,7 @@ define([
 
         filters.add(new Model({
           name: 'wire mesh',
-          operator: 'AND'
+          operator: Operator.AND
         }));
 
         filters.reset(filterNames);
@@ -151,14 +152,14 @@ define([
 
         filters.add(new Model({
           name: 'wire mesh',
-          operator: 'AND'
+          operator: Operator.AND
         }));
 
-        filters.reset(filterNames, { operator: 'OR' });
+        filters.reset(filterNames, { operator: Operator.OR });
 
         expect(filters.length).toEqual(3);
         filters.each(function(ff) {
-          expect(ff.get('operator')).toEqual('OR');
+          expect(ff.get('operator')).toEqual(Operator.OR);
         });
       });
 
@@ -167,26 +168,26 @@ define([
 
         filters.add(new Model({
           name: 'wire mesh',
-          operator: 'AND'
+          operator: Operator.AND
         }));
 
         filters.reset([
-          { name: 'sieve', operator: 'AND' },
-          { name: 'colander', operator: 'OR' }
+          { name: 'sieve', operator: Operator.AND },
+          { name: 'colander', operator: Operator.OR }
         ]);
 
         expect(filters.length).toEqual(2);
         expect(filters.at(0)).toBeInstanceOf(Model);
         expect(filters.at(0).get('name')).toEqual('sieve');
-        expect(filters.at(0).get('operator')).toEqual('AND');
+        expect(filters.at(0).get('operator')).toEqual(Operator.AND);
         expect(filters.at(1).get('name')).toEqual('colander');
-        expect(filters.at(1).get('operator')).toEqual('OR');
+        expect(filters.at(1).get('operator')).toEqual(Operator.OR);
       });
 
       it('should remove all filters, if called with no arguments', function() {
         var filters = new FilterCollection([
-          { name: 'sieve', operator: 'AND' },
-          { name: 'colander', operator: 'OR' }
+          { name: 'sieve', operator: Operator.AND },
+          { name: 'colander', operator: Operator.OR }
         ]);
 
         filters.reset();
@@ -196,8 +197,8 @@ define([
 
       it('should remove all filter, if called with an empty array', function() {
         var filters = new FilterCollection([
-          { name: 'sieve', operator: 'AND' },
-          { name: 'colander', operator: 'OR' }
+          { name: 'sieve', operator: Operator.AND },
+          { name: 'colander', operator: Operator.OR }
         ]);
 
         filters.reset([]);
@@ -210,8 +211,8 @@ define([
     describe('remove', function() {
 
       it('should remove a single filter by name', function() {
-        var fatedFilter = new Model({ name: 'sieve', operator: 'AND' });
-        var luckyFilter = new Model({ name: 'colander', operator: 'OR' });
+        var fatedFilter = new Model({ name: 'sieve', operator: Operator.AND });
+        var luckyFilter = new Model({ name: 'colander', operator: Operator.OR });
         var filters = new FilterCollection([luckyFilter, fatedFilter]);
 
         filters.remove('sieve');
@@ -221,9 +222,9 @@ define([
       });
 
       it('should remove multiple filters by name', function() {
-        var fatedFilterA = new Model({ name: 'sieve', operator: 'AND' });
-        var fatedFilterB = new Model({ name: 'wire mesh', operator: 'OR' });
-        var luckyFilter = new Model({ name: 'colander', operator: 'OR' });
+        var fatedFilterA = new Model({ name: 'sieve', operator: Operator.AND });
+        var fatedFilterB = new Model({ name: 'wire mesh', operator: Operator.OR });
+        var luckyFilter = new Model({ name: 'colander', operator: Operator.OR });
         var filters = new FilterCollection([fatedFilterA, luckyFilter, fatedFilterB]);
 
         filters.remove(['sieve', 'wire mesh']);
@@ -232,9 +233,9 @@ define([
       });
 
       it('should remove a multiple filters with the same name', function() {
-        var fatedFilterA = new Model({ name: 'sieve', operator: 'AND' });
-        var fatedFilterB = new Model({ name: 'sieve', operator: 'OR' });
-        var luckyFilter = new Model({ name: 'colander', operator: 'OR' });
+        var fatedFilterA = new Model({ name: 'sieve', operator: Operator.AND });
+        var fatedFilterB = new Model({ name: 'sieve', operator: Operator.OR });
+        var luckyFilter = new Model({ name: 'colander', operator: Operator.OR });
         var filters = new FilterCollection([fatedFilterA, luckyFilter, fatedFilterB]);
 
         filters.remove('sieve');
@@ -243,9 +244,9 @@ define([
       });
 
       it('should allow for standard aeris.Collection#remove syntax', function() {
-        var fatedFilterA = new Model({ name: 'sieve', operator: 'AND' });
-        var fatedFilterB = new Model({ name: 'sieve', operator: 'OR' });
-        var luckyFilter = new Model({ name: 'colander', operator: 'OR' });
+        var fatedFilterA = new Model({ name: 'sieve', operator: Operator.AND });
+        var fatedFilterB = new Model({ name: 'sieve', operator: Operator.OR });
+        var luckyFilter = new Model({ name: 'colander', operator: Operator.OR });
         var filters = new FilterCollection([fatedFilterA, luckyFilter, fatedFilterB]);
 
         spyOn(BaseCollection.prototype, 'remove');

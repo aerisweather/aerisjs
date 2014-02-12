@@ -2,8 +2,8 @@ define([
   'ai/util',
   'ai/api/params/collections/chainedqueries',
   'ai/api/params/models/query',
-  'ai/model'
-], function(_, ChainedQueries, Query, Model) {
+  'ai/api/operator'
+], function(_, ChainedQueries, Query, Operator) {
 
 
   describe('A ChainedQueries Collection', function() {
@@ -15,7 +15,7 @@ define([
           {
             property: 'foo',
             value: 'bar',
-            operator: Query.AND
+            operator: Operator.AND
           }
         ]);
 
@@ -27,22 +27,22 @@ define([
           {
             property: 'foo',
             value: 'bar',
-            operator: Query.AND
+            operator: Operator.AND
           },
           {
             property: 'hello',
             value: 'world',
-            operator: Query.AND
+            operator: Operator.AND
           },
           {
             property: 'wazaam',
             value: 'shazbaloo',
-            operator: Query.OR
+            operator: Operator.OR
           },
           {
             property: 'adjibadadji',
             value: 'badadjibadoo',
-            operator: Query.AND
+            operator: Operator.AND
           }
         ]);
 

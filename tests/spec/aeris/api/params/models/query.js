@@ -1,8 +1,9 @@
 define([
   'ai/util',
   'ai/api/params/models/query',
-  'ai/errors/validationerror'
-], function(_, Query, ValidationError) {
+  'ai/errors/validationerror',
+  'ai/api/operator'
+], function(_, Query, ValidationError, Operator) {
 
   describe('A Query', function() {
 
@@ -26,13 +27,13 @@ define([
         expect(query.id).toEqual('foo');
       });
 
-      it('should use Query.AND as the default operator', function() {
+      it('should use Operator.AND as the default operator', function() {
         var query = new Query({
           property: 'foo',
           value: 'bar'
         });
 
-        expect(query.get('operator')).toEqual(Query.AND);
+        expect(query.get('operator')).toEqual(Operator.AND);
       });
 
     });
@@ -51,7 +52,7 @@ define([
       it('should require \'property\' to be defined', function() {
         var query = new Query({
           value: 'foo',
-          operator: Query.AND
+          operator: Operator.AND
         });
 
         expect(query.validate(query.attributes)).toBeInstanceOf(ValidationError);
@@ -62,7 +63,7 @@ define([
         var query = new Query({
           property: new Date(),
           value: 'foo',
-          operator: Query.AND
+          operator: Operator.AND
         });
 
         expect(query.validate(query.attributes)).toBeInstanceOf(ValidationError);
@@ -71,7 +72,7 @@ define([
       it('should require \'value\' to be defined', function() {
         var query = new Query({
           property: 'foo',
-          operator: Query.AND
+          operator: Operator.AND
         });
 
         expect(query.validate(query.attributes)).toBeInstanceOf(ValidationError);
@@ -91,7 +92,7 @@ define([
         var query = new Query({
           property: 'foo',
           value: 'bar',
-          operator: Query.AND
+          operator: Operator.AND
         });
 
         expect(query.validate(query.attributes)).not.toBeInstanceOf(ValidationError);
@@ -107,7 +108,7 @@ define([
         query = new Query({
           property: 'foo',
           value: 'bar',
-          operator: Query.OR
+          operator: Operator.OR
         });
       });
 
