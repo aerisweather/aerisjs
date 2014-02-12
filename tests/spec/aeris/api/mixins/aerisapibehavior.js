@@ -24,9 +24,10 @@ define([
   
   
   describe('AerisApiBehavior', function() {
-    var aerisApi, mockParams;
+    var aerisApi, mockParams, OPTIONS_STUB;
     
     beforeEach(function() {
+      OPTIONS_STUB = { STUB: 'OPTIONS_STUB' };
       mockParams = new MockParams();
       aerisApi = new ConcreteAerisApi({
         params: mockParams
@@ -53,6 +54,40 @@ define([
         aerisApi.setParams(ATTRS_STUB);
       });
       
+    });
+
+    describe('*Filter methods', function() {
+      var FILTER_STUB = 'FILTER_STUB';
+
+      it('should proxy params *Filter methods', function() {
+        _.each([
+          'addFilter',
+          'removeFilter',
+          'resetFilter'
+        ], function(methodName) {
+          aerisApi[methodName](FILTER_STUB, OPTIONS_STUB);
+          expect(mockParams[methodName]).toHaveBeenCalledWith(FILTER_STUB, OPTIONS_STUB);
+        });
+      });
+
+    });
+
+
+    describe('*Query methods', function() {
+      var QUERY_STUB = 'QUERY_STUB';
+
+
+      it('should proxy params *Query command methods', function() {
+        _.each([
+          'addQuery',
+          'removeQuery',
+          'resetQuery'
+        ], function(methodName) {
+          aerisApi[methodName](QUERY_STUB, OPTIONS_STUB);
+          expect(mockParams[methodName]).toHaveBeenCalledWith(QUERY_STUB, OPTIONS_STUB);
+        });
+      });
+
     });
     
   });

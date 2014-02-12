@@ -2,9 +2,10 @@ define([
   'ai/util',
   'ai/api/collections/aerisapicollection',
   'ai/model',
+  'ai/promise',
   'ai/api/params/models/params',
   'mocks/aeris/jsonp'
-], function(_, AerisApiCollection, Model, Params, MockJSONP) {
+], function(_, AerisApiCollection, Model, Promise, Params, MockJSONP) {
 
   var MockParams = function() {
     Model.apply(this, arguments);
@@ -143,11 +144,17 @@ define([
 
       it('should trigger a request event', function() {
         var onRequest = jasmine.createSpy('onRequest');
+        var REQUEST_OPTIONS_STUB = { STUB:'REQUEST_OPTIONS_STUB' };
         apiCollection.on('request', onRequest);
+
+        onRequest.andCallFake(function(collection, promise) {
+          expect(collection).toEqual(apiCollection);
+          expect(promise).toBeInstanceOf(Promise);
+        });
 
         apiCollection.fetch();
 
-        expect(onRequest).toHaveBeenCalledWith(apiCollection);
+        expect(onRequest).toHaveBeenCalled();
       });
 
       it('should send parameters as request data', function() {
@@ -188,9 +195,14 @@ define([
           var onSync = jasmine.createSpy('onSync');
           apiCollection.on('sync', onSync);
 
+          onSync.andCallFake(function(collection, resp) {
+            expect(collection).toEqual(apiCollection);
+            expect(resp).toEqual(SUCCESS_RESPONSE);
+          });
+
           jsonpCallback(SUCCESS_RESPONSE);
 
-          expect(onSync).toHaveBeenCalledWith(apiCollection, SUCCESS_RESPONSE);
+          expect(onSync).toHaveBeenCalled();
         });
 
         it('should resolve it\'s promise with the jsonp data', function() {
