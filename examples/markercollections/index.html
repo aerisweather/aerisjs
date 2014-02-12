@@ -134,14 +134,11 @@
 
     // Show a 'loading' prompt whenever requests are
     // being made to the AerisAPI server.
-    //
-    // You can access the StormReports object
-    // directly by calling `getData()`
-    stormMarkers.getData().on({
-      request: function() {
+    stormMarkers.on({
+      'data:request': function() {
         $('#loading').show();
       },
-      sync: function() {
+      'data:sync': function() {
         $('#loading').delay(500).hide();
       }
     });
@@ -177,18 +174,18 @@
     $('input[name="filter"]').change(function() {
       var isSelected = $(this).prop('checked');
       var filterName = $(this).val();
-      var params = stormMarkers.getData().getParams();
 
       if (isSelected) {
-        params.addFilter(filterName, {
-          // Use the 'OR' operator in order
-          // to show more than one type of marker
-          // at a time.
+        stormMarkers.addFilter(filterName, {
+          // Use the 'OR' operator to return storm reports
+          // which are, for example, either 'snow' or 'rain'.
+          // Using the 'AND' operator in this case would only return
+          // reports which are both 'snow' and 'rain'.
           operator: aeris.api.params.models.Filter.OR
         });
       }
       else {
-        params.removeFilter(filterName);
+        stormMarkers.removeFilter(filterName);
       }
 
       stormMarkers.fetchData();

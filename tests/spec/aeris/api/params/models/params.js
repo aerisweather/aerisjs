@@ -4,8 +4,9 @@ define([
   'ai/model',
   'ai/collection',
   'ai/api/params/collections/chainedqueries',
-  'mocks/aeris/config'
-], function(_, Params, Model, Collection, ChainedQueries, MockConfig) {
+  'mocks/aeris/config',
+  'mocks/mockfactory'
+], function(_, Params, Model, Collection, ChainedQueries, MockConfig, MockFactory) {
 
   function TestFactory() {
     this.params = new Params({
@@ -398,6 +399,84 @@ define([
       });
 
     });
+
+
+    describe('*Filter methods', function() {
+      var params, mockFilter;
+      var FILTERS_STUB, OPTIONS_STUB;
+
+      var MockFilter = new MockFactory({
+        methods: [
+          'add',
+          'remove',
+          'reset'
+        ],
+        inherits: Collection
+      });
+
+      beforeEach(function() {
+        mockFilter = new MockFilter();
+        params = new Params({
+          filter: mockFilter
+        }, { validate: false });
+        FILTERS_STUB = ['FILTERS_STUB_A', 'FILTERS_STUB_B'];
+        OPTIONS_STUB = { STUB: 'OPTIONS_STUB' };
+      });
+
+
+      it('should proxy Filter methods', function() {
+        _.each([
+          'add',
+          'remove',
+          'reset'
+        ], function(filterMethodName) {
+          params[filterMethodName + 'Filter'](FILTERS_STUB, OPTIONS_STUB);
+          expect(mockFilter[filterMethodName]).toHaveBeenCalledWith(FILTERS_STUB, OPTIONS_STUB);
+        })
+      });
+
+    });
+
+
+    describe('*Query methods', function() {
+      var params, mockQuery;
+      var QUERY_STUB, OPTIONS_STUB;
+
+      var MockQuery = new MockFactory({
+        methods: [
+          'add',
+          'remove',
+          'reset'
+        ],
+        inherits: Collection
+      })
+
+      beforeEach(function() {
+        QUERY_STUB = ['QUERY_STUB_A', 'QUERY_STUB_B'];
+        OPTIONS_STUB = { STUB: 'OPTIONS_STUB' };
+
+        mockQuery = new MockQuery();
+        params = new Params({
+          query: mockQuery
+        }, {
+          validate: false,
+          QueryType: MockQuery
+        });
+      });
+
+
+      it('should proxy Query methods', function() {
+        _.each([
+          'add',
+          'remove',
+          'reset'
+        ], function(queryMethodName) {
+          params[queryMethodName + 'Query'](QUERY_STUB, OPTIONS_STUB);
+          expect(mockQuery[queryMethodName]).toHaveBeenCalledWith(QUERY_STUB, OPTIONS_STUB);
+        });
+      });
+
+    })
 
   });
 
