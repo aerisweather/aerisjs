@@ -3,8 +3,9 @@ define([
   'ai/viewcollection',
   'ai/viewmodel',
   'ai/collection',
-  'ai/model'
-], function(_, ViewCollection, ViewModel, Collection, Model) {
+  'ai/model',
+  'ai/promise'
+], function(_, ViewCollection, ViewModel, Collection, Model, Promise) {
   var MockViewModel;
 
 
@@ -118,6 +119,47 @@ define([
           expect(viewCollection.at(1).dataArg).toEqual(dataCollection.at(1));
           expect(viewCollection.at(2).dataArg).toEqual(dataCollection.at(2));
           expect(resetSpy.callCount).toEqual(1);
+        });
+
+      });
+
+    });
+
+    describe('events proxying the dataCollection', function() {
+      var dataCollection, viewCollection, promiseToSync;
+      var RESPONSE_DATA_STUB = { STUB: 'RESPONSE_DATA_STUB' }, OPTIONS_STUB = { STUB: 'OPTIONS_STUB' };
+
+      beforeEach(function() {
+        dataCollection = new Collection();
+        viewCollection = new ViewCollection(null, {
+          data: dataCollection
+        });
+        promiseToSync = new Promise();
+      });
+
+
+      describe('\'data:request\' event', function() {
+
+        it('should proxy the data collection\'s \'request\' event', function() {
+          var onDataRequest = jasmine.createSpy('onDataRequest');
+          viewCollection.on('data:request', onDataRequest);
+
+          dataCollection.trigger('request', dataCollection, promiseToSync, OPTIONS_STUB);
+
+          expect(onDataRequest).toHaveBeenCalledWith(viewCollection, promiseToSync);
+    });
+
+  });
+
+      describe('\'data:sync\' event', function() {
+
+        it('should proxy the data collection\'s \'sync\' event', function() {
+          var onDataSync = jasmine.createSpy('onDataSync');
+          viewCollection.on('data:sync', onDataSync);
+
+          dataCollection.trigger('sync', dataCollection, RESPONSE_DATA_STUB, OPTIONS_STUB);
+
+          expect(onDataSync).toHaveBeenCalledWith(viewCollection, RESPONSE_DATA_STUB);
         });
 
       });
