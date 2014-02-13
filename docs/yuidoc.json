@@ -5,6 +5,7 @@
   "url": "http://aerisjs.com",
   "logo": "themes/public/images/aeris_logo.png",
   "helpers": [
+    "scripts/helpers/common.js",
     "themes/public/helpers/helpers.js",
     "themes/public/helpers/typeutil.js",
     "themes/api/helpers/helpers.js"
