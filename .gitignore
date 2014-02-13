@@ -5,6 +5,7 @@
 *.log
 
 bower_components/
+examples/amd/bower_components
 
 # environment specific files
 examples/apikeys.js

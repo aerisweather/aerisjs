@@ -1,0 +1,9 @@
+{
+  "name": "Aeris.js: Example app using AMD and Bower",
+  "version": "1.0.0",
+  "dependencies": {
+    "aeris-interactive": "../../#master",
+    "requirejs": "~2.1.8"
+  },
+  "private": true
+}
