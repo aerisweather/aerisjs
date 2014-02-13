@@ -4,8 +4,10 @@
   var projectConfig = GLOBAL.projectConfig;
   var handlebars = require('handlebars');
 
-  function getShortName(objName) {
-   return _.last(objName.split('.'));
+  function createRefLink(displayText, href) {
+    return '[`{displayText}`]({href})'.
+      replace('{displayText}', displayText).
+      replace('{href}', href);
   }
 
   var helpers = {
@@ -13,11 +15,14 @@
       var displayText = _.isString(opt_displayText) ? opt_displayText : className;
       var href = path.join(projectConfig.apiDocsPath, 'classes/' + className + '.html');
 
-      var link = '[`{displayText}`]({href})'.
-        replace('{displayText}', displayText).
-        replace('{href}', href);
+      return new handlebars.SafeString(createRefLink(displayText, href));
+    },
 
-      return new handlebars.SafeString(link);
+    publicDocLink: function(className, opt_displayText) {
+      var displayText = _.isString(opt_displayText) ? opt_displayText : className;
+      var href = [projectConfig.publicDocsPath, className].join('#');
+
+      return new handlebars.SafeString(createRefLink(displayText, href));
     }
   };
 
