@@ -22,6 +22,10 @@
 
     getApiDocUrl: function(className) {
       return path.join(projectConfig.apiDocsPath, 'classes/' + className + '.html');
+    },
+
+    getPublicDocUrl: function(className) {
+      return projectConfig.publicDocsPath + '#' + className;
     }
   };
 
