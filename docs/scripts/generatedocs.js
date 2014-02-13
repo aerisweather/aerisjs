@@ -7,7 +7,8 @@
   var HandlebarsRegistrar = require('./handlebarsregistrar');
   var parseYuiDocData = require('./parseyuidocdata');
   var isCalledFromCommandLine = (require.main === module);
-  var projectConfig = require('../yuidoc.json').config;
+
+  GLOBAL.projectConfig = require('../yuidoc.json').config;
 
   /**
    * Generate docs by providing all YUIDoc
@@ -42,7 +43,7 @@
     var parsedData = parseYuiDocData(data);
 
     _.extend(parsedData, {
-      projectConfig: projectConfig
+      projectConfig: GLOBAL.projectConfig
     });
 
     fs.unlinkSync(path.join(tempDir, 'data.json'));
