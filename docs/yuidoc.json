@@ -18,7 +18,8 @@
     "aerisApiUrl": "http://www.hamweather.com/support/documentation/aeris",
     "demoPath": "http://uat.hamweather.com/eschwartz/examples",
     "assetPath": "/docs/assets",
-    "apiDocsPath": "/docs/api"
+    "apiDocsPath": "/docs/api",
+    "publicDocsPath": "/docs/public"
   },
   "options": {
     "outdir": "./api",
