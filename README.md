@@ -31,16 +31,14 @@ Usage of the Aeris API requires an Aeris API developer account. Visit [hamweathe
 
 # Documentation
 
-* [Installing Aeris Interactive](docs/install.md)
-* [Basic usage](docs/usage.md)
-* Example code and apps (TODO)
-* Reference documentation (TODO)
+* [Installing Aeris Interactive](docs/markdown/install.md)
+* [Basic usage](docs/markdown/usage.md)
 
 ----------
 
 **TL;DR**
 ```html
-<script type="text/javascript" src="[[CDN TBD]]"></script>
+<script type="text/javascript" src="//js.aerisapi.com/aerisjs.js"></script>
 <script type="text/javascript">
     var map = new aeris.maps.Map('map-canvas', {
         center: [45, -90],
@@ -51,8 +49,3 @@ Usage of the Aeris API requires an Aeris API developer account. Visit [hamweathe
     radarLayer.setMap(map);
 </script>
 ```
-
-
-----------
-
-> Written with [StackEdit](https://stackedit.io/).

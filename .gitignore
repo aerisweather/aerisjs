@@ -25,7 +25,6 @@ build/
 # Generated YUIDoc documentation
 docs/public/
 docs/api/
-docs/markdown
 docs/assets/css/
 
 aeris-riderx/
