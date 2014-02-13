@@ -4,6 +4,7 @@
   var _ = require('underscore');
   var Y = require('yuidocjs');
   var handlebars = require('handlebars');
+  var HandlebarsRegistrar = require('./handlebarsregistrar');
   var parseYuiDocData = require('./parseyuidocdata');
   var isCalledFromCommandLine = (require.main === module);
   var projectConfig = require('../yuidoc.json').config;
@@ -35,8 +36,7 @@
       outdir: tempDir
     };
 
-    registerHelpersInDir(path.join(themeDir, 'helpers'));
-    registerPartialsInDir(path.join(themeDir, 'partials'));
+    registerHandlebarsComponents(themeDir);
 
     var data = (new Y.YUIDoc(yuidocOptions)).run();
     var parsedData = parseYuiDocData(data);
@@ -53,33 +53,14 @@
     return handlebars.compile(template)(parsedData);
   }
 
-  function registerHelpersInDir(helpersDir) {
-    var helperPaths = fs.readdirSync(helpersDir);
+  function registerHandlebarsComponents(themeDir) {
+    var handlebarsRegistrar = new HandlebarsRegistrar(handlebars);
 
-    helperPaths.forEach(function(fileName) {
-      var helpers = require(path.join(helpersDir, fileName));
-
-      if (_.isFunction(helpers)) {
-        handlebars.registerHelper(path.baseName(fileName, '.js'), helpers);
-      }
-      else {
-        _.each(helpers, function(helperFn, name) {
-          handlebars.registerHelper(name, helperFn);
-        });
-      }
-    });
+    handlebarsRegistrar.registerHelpersInDir(path.join(themeDir, 'helpers'));
+    handlebarsRegistrar.registerHelpersInDir(path.join(__dirname, 'helpers'));
+    handlebarsRegistrar.registerPartialsInDir(path.join(themeDir, 'partials'));
   }
 
-  function registerPartialsInDir(partialsDir) {
-    var partialPaths = fs.readdirSync(partialsDir);
-
-    partialPaths.forEach(function(fileName) {
-      var html = fs.readFileSync(path.join(partialsDir, fileName), 'utf8');
-      var partialName = path.basename(fileName, '.handlebars');
-
-      handlebars.registerPartial(partialName, html);
-    });
-  }
 
   function getFileFromArg(argIndex, errMsg) {
     if (!process.argv[argIndex]) {
