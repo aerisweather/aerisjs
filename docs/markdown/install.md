@@ -44,15 +44,15 @@ There are several hosted versions of the Aeris.js library, each with a varying s
 
 * **Weather for Google Maps + Geo Services**
 
-    Includes additional APIs for [`geolocation`](http://uat.hamweather.net/eschwartz/docs/public#aeris.geolocate), [`geocoding`](http://uat.hamweather.net/eschwartz/docs/public#aeris.geocode), and [`directions`](http:/uat.hamweather.net/eschwartz/docs/api/classes/aeris.directions.DirectionsServiceInterface.html).
+    Includes additional APIs for [`geolocation`](http://uat.hamweather.net/eschwartz/docs/public#aeris.geolocate), [`geocoding`](http://uat.hamweather.net/eschwartz/docs/public#aeris.geocode), and [`directions`](http://uat.hamweather.net/eschwartz/docs/api/classes/aeris.directions.DirectionsServiceInterface.html).
 
     https://js.aerisapi.com/aerisjs/v0.1.1/gmaps-plus.min.js
 
 * **Map AppBuilder**
 
-    The Aeris [`AppBuilder`](http:/uat.hamweather.net/eschwartz/docs/api/classes/aeris.builder.maps.MapAppBuilder.html) provides a configuration-based interface for easily generating a robust weather mapping application.
+    The Aeris [`AppBuilder`](http://uat.hamweather.net/eschwartz/docs/api/classes/aeris.builder.maps.MapAppBuilder.html) provides a configuration-based interface for easily generating a robust weather mapping application.
 
-    *The [`AppBuilder`](http:/uat.hamweather.net/eschwartz/docs/api/classes/aeris.builder.maps.MapAppBuilder.html) component is currently a work in progress. Feel free to play around with it, while we finish up work on this component.*
+    *The [`AppBuilder`](http://uat.hamweather.net/eschwartz/docs/api/classes/aeris.builder.maps.MapAppBuilder.html) component is currently a work in progress. Feel free to play around with it, while we finish up work on this component.*
 
     https://js.aerisapi.com/aerisjs/v0.1.1/mapAppBuilder.min.js
     
@@ -122,7 +122,7 @@ require.config({
 });
 ```
 
-If you are using any of the [`AppBuilder`](http:/uat.hamweather.net/eschwartz/docs/api/classes/aeris.builder.maps.MapAppBuilder.html) components, additional dependencies must be specified:
+If you are using any of the [`AppBuilder`](http://uat.hamweather.net/eschwartz/docs/api/classes/aeris.builder.maps.MapAppBuilder.html) components, additional dependencies must be specified:
 
 ```javascript
 require.config({
@@ -199,7 +199,7 @@ require.config({
 
 All of the components of the public API are strategy-agnostic, meaning that they will interface which whatever strategy is provided to them. By setting the `strategy` path to `gmaps` or `openlayers`, Aeris.js components know to request the correct strategy implementation.
 
-Not all functionalities are currently implemented for all map rendering strategies. If there's something you're sorely missing, I encourage you to take a look at how [strategy architecture](http:/uat.hamweather.net/eschwartz/docs/api/classes/aeris.maps.AbstractStrategy.html) is implemented, and then submit a [pull request.](https://github.com/hamweather/aerisjs/pulls)
+Not all functionalities are currently implemented for all map rendering strategies. If there's something you're sorely missing, I encourage you to take a look at how [strategy architecture](http://uat.hamweather.net/eschwartz/docs/api/classes/aeris.maps.AbstractStrategy.html) is implemented, and then submit a [pull request.](https://github.com/hamweather/aerisjs/pulls)
 
 Note that CDN pacakges are hard-coded to use a single strategy.
 

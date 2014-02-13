@@ -7,6 +7,12 @@
    * Common template helpers.
    */
   var helpers = {
+    // A bit of a hack, to gain access to
+    // projectConfig object, when GLOBAL object
+    // is not provided.
+    registerProjectConfig: function(conf) {
+      projectConfig = GLOBAL.projectConfig = conf;
+    },
     getCDNPath: function(opt_packageName) {
       var isMissingConfig = !projectConfig || !projectConfig.cdnPath || !projectConfig.version;
       var packageName = _.isString(opt_packageName) && opt_packageName.length ?  opt_packageName : 'aeris';
@@ -21,7 +27,7 @@
     },
 
     getApiDocUrl: function(className) {
-      return path.join(projectConfig.apiDocsPath, 'classes/' + className + '.html');
+      return projectConfig.apiDocsPath + '/classes/' + className + '.html';
     },
 
     getPublicDocUrl: function(className) {

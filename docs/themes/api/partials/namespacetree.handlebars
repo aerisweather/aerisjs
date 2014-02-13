@@ -13,7 +13,7 @@
       <ul>
         {{#each classes}}
           <li class="{{#if access}}{{access}}{{/if}}">
-            <a href="/docs/api/classes/{{name}}.html">{{shortName name}}</a>
+            <a href="{{getApiDocUrl name}}">{{shortName name}}</a>
           </li>
         {{/each}}
       </ul>

@@ -13,7 +13,7 @@
   var helpers = {
     apiDocLink: function(className, opt_displayText) {
       var displayText = _.isString(opt_displayText) ? opt_displayText : className;
-      var href = path.join(projectConfig.apiDocsPath, 'classes/' + className + '.html');
+      var href = projectConfig.apiDocsPath +  '/classes/' + className + '.html';
 
       return new handlebars.SafeString(createRefLink(displayText, href));
     },

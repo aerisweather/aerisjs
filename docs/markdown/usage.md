@@ -17,7 +17,7 @@ For example, [`aeris.maps.layers.Radar`](http://uat.hamweather.net/eschwartz/doc
 
 ## Data and Weather API
 
-The Aeris.js `api` library provides a javascript interface for interacting with data from the [Aeris API](http://www.hamweather.com/support/documentation/aeris/endpoints/). Data collection objects accept a [`params`](http:/uat.hamweather.net/eschwartz/docs/api/classes/aeris.api.params.models.Params.html) object, which is used to query the AerisAPI.
+The Aeris.js `api` library provides a javascript interface for interacting with data from the [Aeris API](http://www.hamweather.com/support/documentation/aeris/endpoints/). Data collection objects accept a [`params`](http://uat.hamweather.net/eschwartz/docs/api/classes/aeris.api.params.models.Params.html) object, which is used to query the AerisAPI.
 
 ```javascript
 var stormReportCollection = new aeris.api.collections.StormReports(null, {
@@ -259,7 +259,7 @@ See the reference documentation for more details about geoservices:
 */
 ```
 
-The Aeris [`AppBuilder`](http:/uat.hamweather.net/eschwartz/docs/api/classes/aeris.builder.maps.MapAppBuilder.html) is a dead-simple tool for creating a weather map application.
+The Aeris [`AppBuilder`](http://uat.hamweather.net/eschwartz/docs/api/classes/aeris.builder.maps.MapAppBuilder.html) is a dead-simple tool for creating a weather map application.
 
 ```javascript
 new MapApp({

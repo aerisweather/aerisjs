@@ -102,8 +102,7 @@
   };
 
   TypeContext.prototype.getReferenceApiLink_ = function() {
-    var apiDocsPath = GLOBAL.projectConfig ? path.join(GLOBAL.projectConfig.apiDocsPath, 'classes') : '';
-    return path.join(apiDocsPath, this.type_ + '.html');
+    return GLOBAL.projectConfig.apiDocsPath + '/classes/' + this.type_ + '.html';
   };
 
   function isNativeType(type) {
