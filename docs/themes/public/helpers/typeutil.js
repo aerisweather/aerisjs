@@ -1,5 +1,6 @@
 (function(module) {
   var _ = require('underscore');
+  var path = require('path');
 
   var NATIVES = {
     'Array': 1,
@@ -101,7 +102,8 @@
   };
 
   TypeContext.prototype.getReferenceApiLink_ = function() {
-    return '/docs/api/classes/' + this.type_ + '.html';
+    var apiDocsPath = GLOBAL.projectConfig ? path.join(GLOBAL.projectConfig.apiDocsPath, 'classes') : '';
+    return path.join(apiDocsPath, this.type_ + '.html');
   };
 
   function isNativeType(type) {
