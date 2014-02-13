@@ -11,10 +11,13 @@
   ],
   "config": {
     "version": "0.1.1",
+    "cdnPath": "//js.aerisapi.com/aerisjs/v{VERSION}/{PACKAGE}.min.js",
+    "cndPathLatest": "//js.aerisapi.com/aerisjs.js",
     "githubUrl": "https://github.com/hamweather/aeris-interactive",
     "aerisApiUrl": "http://www.hamweather.com/support/documentation/aeris",
     "demoPath": "http://uat.hamweather.com/eschwartz/examples",
-    "assetPath": "/docs/assets"
+    "assetPath": "/docs/assets",
+    "apiDocsPath": "/docs/api"
   },
   "options": {
     "outdir": "./api",
