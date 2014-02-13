@@ -66,8 +66,19 @@ generateApiDocs() {
   logAndOutput "done."
 }
 
+generateMarkdownDocs() {
+  logWhitespace
+  logAndOutput "Generating markdown docs..."
+
+  node scripts/generatemarkdowndocs.js themes/markdown ./markdown >> $LOG_FILE
+
+  logAndOutput "done."
+}
+
+
 logHeader
 compileCompassProjects
 generatePublicDocs
 generateApiDocs
+generateMarkdownDocs
 logBuildComplete
