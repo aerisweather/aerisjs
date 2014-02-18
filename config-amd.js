@@ -9,7 +9,9 @@ require.config({
     Handlebars: 'bower_components/handlebars/handlebars',
     hbars: 'bower_components/hbars/hbars',
     jquery: 'bower_components/jquery/jquery',
-    marionette: 'bower_components/marionette/lib/backbone.marionette',
+    'backbone.babysitter': 'bower_components/backbone.babysitter/lib/amd/backbone.babysitter',
+    'backbone.wreqr': 'bower_components/backbone.wreqr/lib/amd/backbone.wreqr',
+    marionette: 'bower_components/marionette/lib/core/amd/backbone.marionette',
     text: 'bower_components/requirejs-text/text',
     underscore: 'bower_components/underscore/underscore',
     async: 'bower_components/requirejs-plugins/src/async',
@@ -45,10 +47,6 @@ require.config({
     'backbone': {
       exports: 'Backbone',
       deps: ['underscore', 'jquery']
-    },
-    'marionette': {
-      exports: 'Backbone.Marionette',
-      deps: ['underscore', 'backbone']
     },
     'jquery': {
       init: function() {
