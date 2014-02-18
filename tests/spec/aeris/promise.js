@@ -1,4 +1,4 @@
-define(['ai/promise'], function(Promise) {
+define(['aeris/promise'], function(Promise) {
   describe('A Promise', function() {
     var promise;
     var flag;

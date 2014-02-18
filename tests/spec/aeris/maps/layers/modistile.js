@@ -1,6 +1,6 @@
 define([
-  'ai/util',
-  'ai/maps/layers/modistile'
+  'aeris/util',
+  'aeris/maps/layers/modistile'
 ], function(_, ModisTile) {
   var ConcreteModisTile = function() {
     var attrs = {

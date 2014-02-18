@@ -1,5 +1,5 @@
 define([
-  'ai/util',
+  'aeris/util',
   'wire!spec/aeris/builder/maps/options/context'
 ], function(_, context) {
   // Load wired Options module

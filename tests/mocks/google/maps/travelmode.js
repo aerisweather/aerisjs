@@ -1,5 +1,5 @@
 define([
-  'ai/util'
+  'aeris/util'
 ], function() {
   var TravelMode = {};
 

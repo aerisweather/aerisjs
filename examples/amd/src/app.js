@@ -1,11 +1,11 @@
 require.config({
   paths: {
     // Base directory of the aerisjs library.
-    'ai': '../bower_components/aerisjs/lib/aeris',
+    aeris: '../bower_components/aerisjs/src',
 
     // Set the map strategy to use
-    'ai/maps/strategy': '../bower_components/aerisjs/lib/aeris/maps/gmaps',            // Use Google Maps
-    // 'ai/maps/strategy': '../bower_components/aerisjs/lib/aeris/maps/openlayers',    // Use OpenLayers
+    'aeris/maps/strategy': '../bower_components/aerisjs/lib/aeris/maps/gmaps',            // Use Google Maps
+    // 'aeris/maps/strategy': '../bower_components/aerisjs/lib/aeris/maps/openlayers',    // Use OpenLayers
 
     underscore: '../bower_components/underscore/underscore',
     jquery: '../bower_components/jquery/jquery',
@@ -20,7 +20,7 @@ require.config({
   config: {
     // This configuration gets
     // set onto aeris.config
-    'ai/config': {
+    'aeris/config': {
       apiId: apiKeys.aeris.id,
       apiSecret: apiKeys.aeris.secret
     }
@@ -42,13 +42,13 @@ require.config({
 
 require([
   // aeris.maps.Map
-  'ai/maps/map',
+  'aeris/maps/map',
 
   // aeris.maps.layers.Radar
-  'ai/maps/layers/radar',
+  'aeris/maps/layers/radar',
 
   // aeris.maps.markercollections.StormReportMarkerse
-  'ai/maps/markercollections/stormreportmarkers'
+  'aeris/maps/markercollections/stormreportmarkers'
 ], function(Map, Radar, StormReportMarkers) {
   var map = new Map('map-canvas');
   var radar = new Radar();

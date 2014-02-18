@@ -1,7 +1,7 @@
 define({
   ModelFactory: {
     ClassFactory: {
-      module: 'ai/model',
+      module: 'aeris/model',
       args: [
         {
           color: 'blue',
@@ -12,6 +12,6 @@ define({
   },
 
   $plugins: [
-    'ai/application/plugins/classfactory'
+    'aeris/application/plugins/classfactory'
   ]
 })

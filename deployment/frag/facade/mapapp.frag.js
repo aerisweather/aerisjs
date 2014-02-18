@@ -1,7 +1,7 @@
 aeris.MapBuilder = function(buildConfig) {
   require.config({
     config: {
-      'ai/config': {
+      'aeris/config': {
         path: buildConfig.path,
         apiId: buildConfig.apiId,
         apiSecret: buildConfig.apiSecret
@@ -16,9 +16,9 @@ aeris.MapBuilder = function(buildConfig) {
     }
   });
   require([
-    'ai/packages/maps'
+    'aeris/packages/maps'
   ], function() {
-    require(['ai/builder/maps/mapappbuilder'], function(Builder) {
+    require(['aeris/builder/maps/mapappbuilder'], function(Builder) {
       new Builder(buildConfig).build();
     });
   });

@@ -1,7 +1,7 @@
 define([
-  'ai/util',
-  'ai/maps/extensions/strategyobject',
-  'ai/promise',
+  'aeris/util',
+  'aeris/maps/extensions/strategyobject',
+  'aeris/promise',
   'testUtils',
   'mocks/require'
 ], function(_, StrategyObject, Promise, testUtil, MockRequire) {
@@ -112,7 +112,7 @@ define([
         mockRequire.useMockRequire();
         mockRequire.useMockDefine();
 
-        define('ai/maps/strategy/mockStrategyModule', function() {
+        define('aeris/maps/strategy/mockStrategyModule', function() {
           return Strategy;
         });
 

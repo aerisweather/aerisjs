@@ -73,7 +73,7 @@ aeris.config.setApiSecret('wxyz6789');
 Aeris.js uses [RequireJS](http://requirejs.org/) to load modules and components. Using RequireJS (or a compatible [AMD loader](http://en.wikipedia.org/wiki/Asynchronous_module_definition)), you can pick and choose which Aeris.js components you would like to use.
 
 ```javascript
-require(['ai/maps/map', 'ai/maps/layers/radar'], function(AerisMap, Radar) {
+require(['aeris/maps/map', 'aeris/maps/layers/radar'], function(AerisMap, Radar) {
     var map = new AerisMap('map-canvas');
     var radar = new Radar();
 
@@ -93,7 +93,7 @@ In order to use Aeris.js AMD modules, you must tell the library where to find it
 require.config({
     paths: {
         // Specify base path of aeris-js library 
-        ai: 'myApp/vendor/aerisjs/lib/aeris',
+        aeris: 'myApp/vendor/aerisjs/lib/aeris',
 
         // Core dependencies.
         // Required for all Aeris.js components
@@ -189,10 +189,10 @@ The Aeris.js library allows all of its components to be rendered either by using
 require.config({
     paths: {
         // For Google Maps
-        'ai/maps/strategy': 'myApp/vendor/aerisjs/lib/aeris/maps/gmaps'
+        'aeris/maps/strategy': 'myApp/vendor/aerisjs/lib/aeris/maps/gmaps'
 
         // For OpenLayers
-        'ai/maps/strategy': 'myApp/vendor/aerisjs/lib/aeris/maps/openlayers'
+        'aeris/maps/strategy': 'myApp/vendor/aerisjs/lib/aeris/maps/openlayers'
     }
 });
 ```
@@ -217,13 +217,13 @@ require.config({
         // Required for using weather data or tiles from the
         // Aeris API.
         // See http://www.hamweather.com/products/aeris-api/
-        'ai/config': {
+        'aeris/config': {
             apiId: '[YOUR AERIS API CLIENT ID]',
             apiSecret: '[YOUR AERIS API CLIENT SECRET]'
         },
 
         // Required only when using the MapQuest geocoding service
-        'ai/geocode/config':  {
+        'aeris/geocode/config':  {
             apiId: '[YOUR MAPQUEST API KEY]'
         }
     },
@@ -259,7 +259,7 @@ The only difference from your RequireJS configuration will be the location of yo
 ```javascript
 require.config({
     paths: {
-        ai: 'bower_components/aerisjs/lib/aeris',
+        aeris: 'bower_components/aerisjs/lib/aeris',
 
         underscore: 'bower_components/underscore/underscore'
         // etc...

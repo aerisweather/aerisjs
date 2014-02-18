@@ -15,7 +15,7 @@ require.setStrategy = function(strategy) {
   require.config({
     map: {
       '*': {
-        'ai/maps/strategy': 'ai/maps/' + strategy
+        'aeris/maps/strategy': 'aeris/maps/' + strategy
       }
     }
   });
@@ -35,13 +35,13 @@ require(['config', 'examples/lib/domReady!', 'examples/apikeys'], function() {
   // Configure api keys
   require.config({
     config: {
-      'ai/config': {
+      'aeris/config': {
         path: '/',
         apiId: apiKeys.aeris.id,
         apiSecret: apiKeys.aeris.secret
       },
 
-      'ai/geocode/config': {
+      'aeris/geocode/config': {
         apiId: apiKeys.mapquest
       }
     },

@@ -1,6 +1,6 @@
 define([
-  'ai/util',
-  'ai/maps/strategy/layers/googlemaptype'
+  'aeris/util',
+  'aeris/maps/strategy/layers/googlemaptype'
 ], function(_, GoogleMapTypeStrategy) {
   var google_orig = window.google;
 

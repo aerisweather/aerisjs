@@ -6,7 +6,7 @@
   baseUrl: '../../../lib',
 
   paths: {
-    'ai/maps/strategy': 'aeris/maps/gmaps'
+    'aeris/maps/strategy': 'aeris/maps/gmaps'
   },
 
   optimize: 'none',
@@ -36,10 +36,10 @@
   },
 
   include: [
-    'ai/packages/maps',
-    'ai/packages/gmaps',
-    'ai/packages/api',
-    'ai/packages/geoservice'
+    'aeris/packages/maps',
+    'aeris/packages/gmaps',
+    'aeris/packages/api',
+    'aeris/packages/geoservice'
   ],
   wrap: {
     startFile: ['../../frag/almond/start.frag.js'],

@@ -1,6 +1,6 @@
 define([
-  'ai/util',
-  'ai/application/controllers/templatehelperregistrars/handlebarstemplatehelperregistrar'
+  'aeris/util',
+  'aeris/application/controllers/templatehelperregistrars/handlebarstemplatehelperregistrar'
 ], function(_, HandlebarsTemplateHelperRegistrar) {
 
 

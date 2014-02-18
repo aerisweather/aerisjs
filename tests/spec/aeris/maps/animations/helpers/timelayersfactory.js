@@ -1,7 +1,7 @@
 define([
-  'ai/util',
-  'ai/maps/animations/helpers/timelayersfactory',
-  'ai/model',
+  'aeris/util',
+  'aeris/maps/animations/helpers/timelayersfactory',
+  'aeris/model',
   'mocks/aeris/maps/animations/helpers/times'
 ], function(_, TimeLayersFactory, Model, MockTimes) {
 

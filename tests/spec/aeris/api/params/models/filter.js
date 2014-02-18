@@ -1,7 +1,7 @@
 define([
-  'ai/util',
-  'ai/api/params/models/filter',
-  'ai/collection'
+  'aeris/util',
+  'aeris/api/params/models/filter',
+  'aeris/collection'
 ], function(_, Filter, Collection) {
 
   describe('An AerisApiFilter', function() {

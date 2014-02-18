@@ -1,6 +1,6 @@
 define([
-  'ai/util',
-  'ai/classfactory'
+  'aeris/util',
+  'aeris/classfactory'
 ], function(_, ClassFactory) {
 
   var Type = jasmine.createSpy('Type ctor').andCallFake(

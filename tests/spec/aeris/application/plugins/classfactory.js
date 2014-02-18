@@ -1,5 +1,5 @@
 define([
-  'ai/model',
+  'aeris/model',
   'wire!./fixtures/config/classfactory'
 ], function(Model, ctx) {
   describe('The WireJS ClassFactory plugin', function() {

@@ -1,7 +1,7 @@
 define([
-  'ai/util',
-  'ai/simplecollection',
-  'ai/simplemodel'
+  'aeris/util',
+  'aeris/simplecollection',
+  'aeris/simplemodel'
 ], function(_, SimpleCollection, SimpleModel) {
 
   describe('A SimpleCollection', function() {

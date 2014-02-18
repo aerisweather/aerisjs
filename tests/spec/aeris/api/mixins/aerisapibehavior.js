@@ -1,6 +1,6 @@
 define([
-  'ai/util',
-  'ai/api/mixins/aerisapibehavior',
+  'aeris/util',
+  'aeris/api/mixins/aerisapibehavior',
   'mocks/mockfactory'
 ], function(_, AerisApiBehavior, MockFactory) {
   var ConcreteAerisApi = function(options) {

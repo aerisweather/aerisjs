@@ -1,5 +1,5 @@
 define([
-  'ai/util'
+  'aeris/util'
 ], function(_) {
   var MockTimes = function(opt_count, opt_min, opt_max) {
     var count = opt_count || 10;

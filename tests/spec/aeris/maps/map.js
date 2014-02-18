@@ -1,6 +1,6 @@
 define([
-  'ai/util',
-  'ai/maps/map'
+  'aeris/util',
+  'aeris/maps/map'
 ], function(_, Map) {
 
   var MapFactory = function(opt_el, opt_attrs, opt_options) {

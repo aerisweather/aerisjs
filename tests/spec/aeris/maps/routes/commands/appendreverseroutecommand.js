@@ -1,8 +1,8 @@
 define([
-  'ai/util',
-  'ai/maps/routes/commands/appendreverseroutecommand',
-  'ai/maps/routes/route',
-  'ai/maps/routes/waypoint'
+  'aeris/util',
+  'aeris/maps/routes/commands/appendreverseroutecommand',
+  'aeris/maps/routes/route',
+  'aeris/maps/routes/waypoint'
 ], function(_, AppendReverseRouteCommand, Route, Waypoint) {
 
   var MockRoute = function() {

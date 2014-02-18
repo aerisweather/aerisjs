@@ -1,5 +1,5 @@
 define([
-  'ai/util',
+  'aeris/util',
   'mocks/aeris/directions/promises/promisetofetchdirections'
 ], function(_, MockPromiseToFetchDirections) {
   var MockPromiseToFetchGoogleDirections = function() {

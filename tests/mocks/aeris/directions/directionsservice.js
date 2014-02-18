@@ -1,6 +1,6 @@
 define([
-  'ai/util',
-  'ai/promise'
+  'aeris/util',
+  'aeris/promise'
 ], function(_, Promise) {
   /** @implements {aeris.directions.DirectionsServiceInterface} */
   var MockDirectionsService = function() {

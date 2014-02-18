@@ -1,8 +1,8 @@
 define([
-  'ai/util',
-  'ai/api/params/collections/chainedqueries',
-  'ai/api/params/models/query',
-  'ai/api/operator'
+  'aeris/util',
+  'aeris/api/params/collections/chainedqueries',
+  'aeris/api/params/models/query',
+  'aeris/api/operator'
 ], function(_, ChainedQueries, Query, Operator) {
 
 

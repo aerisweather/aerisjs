@@ -1,10 +1,10 @@
 define([
-  'ai/util',
-  'ai/viewcollection',
-  'ai/viewmodel',
-  'ai/collection',
-  'ai/model',
-  'ai/promise'
+  'aeris/util',
+  'aeris/viewcollection',
+  'aeris/viewmodel',
+  'aeris/collection',
+  'aeris/model',
+  'aeris/promise'
 ], function(_, ViewCollection, ViewModel, Collection, Model, Promise) {
   var MockViewModel;
 

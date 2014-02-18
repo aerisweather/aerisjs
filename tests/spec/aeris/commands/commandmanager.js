@@ -1,7 +1,7 @@
 define([
   'testUtils',
-  'ai/commands/commandmanager',
-  'ai/promise',
+  'aeris/commands/commandmanager',
+  'aeris/promise',
   'mocks/command',
   'testErrors/untestedspecerror'
 ], function(testUtils, CommandManager, Promise, MockCommand, UntestedSpecError) {

@@ -1,7 +1,7 @@
 define([
-  'ai/util',
-  'ai/application/forms/models/toggle',
-  'ai/application/forms/controllers/togglebuttoncontroller'
+  'aeris/util',
+  'aeris/application/forms/models/toggle',
+  'aeris/application/forms/controllers/togglebuttoncontroller'
 ], function(_, Toggle, ToggleButtonController) {
 
   describe('A ToggleButtonController', function() {

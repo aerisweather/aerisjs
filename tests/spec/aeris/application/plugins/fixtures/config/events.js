@@ -49,6 +49,6 @@ define({
   },
 
   plugins: [
-    'ai/application/plugins/events'
+    'aeris/application/plugins/events'
   ]
 });

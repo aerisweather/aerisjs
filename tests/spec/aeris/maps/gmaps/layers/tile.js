@@ -1,7 +1,7 @@
 define([
-  'ai/util',
+  'aeris/util',
   'mocks/layer',
-  'ai/maps/strategy/layers/tile'
+  'aeris/maps/strategy/layers/tile'
 ], function(_, MockLayer, TileStrategy) {
   var google_orig = window.google;
 

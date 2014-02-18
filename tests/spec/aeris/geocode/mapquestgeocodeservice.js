@@ -1,9 +1,9 @@
 define([
-  'ai/util',
+  'aeris/util',
   'testErrors/untestedspecerror',
-  'ai/geocode/mapquestgeocodeservice',
-  'ai/geocode/config',
-  'ai/geocode/geocodeservicestatus'
+  'aeris/geocode/mapquestgeocodeservice',
+  'aeris/geocode/config',
+  'aeris/geocode/geocodeservicestatus'
 ], function(_, UntestedSpecError, MapQuestGeocodeService, geocodeConfig, GeocodeServiceStatus) {
 
 
@@ -98,7 +98,7 @@ define([
 
 
 
-        it('\'ai/geocode/config\'', function() {
+        it('\'aeris/geocode/config\'', function() {
           var geocoder = new MapQuestGeocodeService();
           expect(function() {
             geocoder.geocode();

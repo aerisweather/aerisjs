@@ -1,12 +1,12 @@
 define([
-  'ai/util',
+  'aeris/util',
   'sinon',
-  'ai/promise',
-  'ai/maps/layers/aeristile',
-  'ai/maps/abstractstrategy',
+  'aeris/promise',
+  'aeris/maps/layers/aeristile',
+  'aeris/maps/abstractstrategy',
   'mocks/aeris/jsonp',
   'mocks/aeris/config',
-  'ai/errors/timeouterror'
+  'aeris/errors/timeouterror'
 ], function(_, sinon, Promise, AerisTile, Strategy, MockJSONP, MockConfig, TimeoutError) {
 
 

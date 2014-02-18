@@ -1,7 +1,7 @@
 define([
-  'ai/util',
-  'ai/application/forms/models/recursivetoggle',
-  'ai/application/forms/collections/togglecollection'
+  'aeris/util',
+  'aeris/application/forms/models/recursivetoggle',
+  'aeris/application/forms/collections/togglecollection'
 ], function(_, RecursiveToggle, ToggleCollection) {
 
   function getNestedData() {

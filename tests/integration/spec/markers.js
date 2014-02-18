@@ -1,10 +1,10 @@
 define([
-  'ai/maps/strategy/map',
+  'aeris/maps/strategy/map',
   'jquery',
   'testUtils',
   'testErrors/untestedspecerror',
   'googlemaps!',
-  'ai/packages/gmaps/markers'
+  'aeris/packages/gmaps/markers'
 ], function(AerisMap, $, testUtils, UntestedSpecError) {
   describe('The Markers Package for Google Maps', function() {
     var aerisMap;

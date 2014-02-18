@@ -1,10 +1,10 @@
 define([
-  'ai/builder/routes/routebuilder/controllers/routecontrolscontroller',
-  'ai/maps/routes/routebuilder',
-  'ai/maps/routes/route',
-  'ai/maps/routes/waypoint',
+  'aeris/builder/routes/routebuilder/controllers/routecontrolscontroller',
+  'aeris/maps/routes/routebuilder',
+  'aeris/maps/routes/route',
+  'aeris/maps/routes/waypoint',
   'sinon',
-  'ai/util',
+  'aeris/util',
   'testUtils'
 ], function(ControlsController, RouteBuilder, Route, Waypoint, sinon, _, testUtils) {
 

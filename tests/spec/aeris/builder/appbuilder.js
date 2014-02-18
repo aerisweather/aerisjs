@@ -1,7 +1,7 @@
 define([
-  'ai/util',
-  'ai/builder/appbuilder',
-  'ai/model'
+  'aeris/util',
+  'aeris/builder/appbuilder',
+  'aeris/model'
 ], function(_, AppBuilder, Model) {
 
   var MockBuilderOptions = function() {

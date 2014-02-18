@@ -1,9 +1,9 @@
 define([
-  'ai/util',
-  'ai/api/params/models/params',
-  'ai/model',
-  'ai/collection',
-  'ai/api/params/collections/chainedqueries',
+  'aeris/util',
+  'aeris/api/params/models/params',
+  'aeris/model',
+  'aeris/collection',
+  'aeris/api/params/collections/chainedqueries',
   'mocks/aeris/config',
   'mocks/mockfactory'
 ], function(_, Params, Model, Collection, ChainedQueries, MockConfig, MockFactory) {

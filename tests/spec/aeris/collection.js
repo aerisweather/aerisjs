@@ -1,8 +1,8 @@
 define([
-  'ai/util',
+  'aeris/util',
   'sinon',
-  'ai/collection',
-  'ai/model'
+  'aeris/collection',
+  'aeris/model'
 ], function(_, sinon, Collection, Model) {
 
 

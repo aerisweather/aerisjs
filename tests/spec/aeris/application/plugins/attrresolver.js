@@ -1,5 +1,5 @@
 define([
-  'ai/util',
+  'aeris/util',
   'wire!./fixtures/config/attrresolver'
 ], function(_, ctx) {
   describe('An AttResolver WireJS Plugin', function() {

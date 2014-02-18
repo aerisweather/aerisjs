@@ -1,5 +1,5 @@
 define([
-  'ai/util'
+  'aeris/util'
 ], function(_) {
   var MockLatLng = function(lat, lon) {
     var stubbedMethods = [

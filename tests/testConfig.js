@@ -2,7 +2,6 @@ require.config({
   baseUrl: '/lib',
   //urlArgs: 'cb=' + Math.random(),                   // Cache buster
   paths: {
-    ai: 'aeris',
     tests: '../tests',
     jasmine: '../bower_components/jasmine/lib/jasmine-core/jasmine',
     'jasmine-slow': '../bower_components/jasmine-slow/lib/jasmine-slow',
@@ -15,7 +14,7 @@ require.config({
     testErrors: '/tests/errors',
     testUtils: '/tests/testUtils',
     flag: '/tests/flag',
-    'ai/maps/strategy': 'aeris/maps/gmaps'
+    'aeris/maps/strategy': 'aeris/maps/gmaps'
   },
   shim: {
     jasmine: {

@@ -1,9 +1,9 @@
 define([
-  'ai/util',
-  'ai/model',
-  'ai/collection',
-  'ai/api/params/collections/filtercollection',
-  'ai/api/operator'
+  'aeris/util',
+  'aeris/model',
+  'aeris/collection',
+  'aeris/api/params/collections/filtercollection',
+  'aeris/api/operator'
 ], function(_, Model, BaseCollection, BaseFilterCollection, Operator) {
 
   // Create a test version of a FilterCollection,

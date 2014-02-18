@@ -1,7 +1,7 @@
 define([
-  'ai/util',
-  'ai/maps/strategy/abstractstrategy',
-  'ai/model'
+  'aeris/util',
+  'aeris/maps/strategy/abstractstrategy',
+  'aeris/model'
 ], function(_, AbstractStrategy, Model) {
 
   var MockObject = function() {

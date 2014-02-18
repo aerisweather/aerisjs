@@ -1,6 +1,6 @@
 define([
-  'ai/util',
-  'ai/maps/strategy/layers/maptype/imagemaptype',
+  'aeris/util',
+  'aeris/maps/strategy/layers/maptype/imagemaptype',
   'jquery'
 ], function(_, ImageMapType, $) {
 

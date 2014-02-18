@@ -1,6 +1,6 @@
 define([
-  'ai/util',
-  'ai/datehelper'
+  'aeris/util',
+  'aeris/datehelper'
 ], function(_, DateHelper) {
   var MILLISECOND = 1;
   var SECOND = MILLISECOND * 1000;

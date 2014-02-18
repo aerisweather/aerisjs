@@ -1,9 +1,9 @@
 define([
-  'ai/util',
-  'ai/maps/animations/tileanimation',
-  'ai/model',
-  'ai/promise',
-  'ai/events',
+  'aeris/util',
+  'aeris/maps/animations/tileanimation',
+  'aeris/model',
+  'aeris/promise',
+  'aeris/events',
   'mocks/aeris/maps/animations/helpers/times'
 ], function(_, AerisTileAnimation, Model, Promise, Events, MockTimes) {
 

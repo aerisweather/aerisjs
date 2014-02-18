@@ -1,9 +1,9 @@
 define([
-  'ai/util',
-  'ai/events',
+  'aeris/util',
+  'aeris/events',
   'sinon',
-  'ai/builder/maps/core/models/state',
-  'ai/builder/maps/core/collections/mapobjecttogglecollection'
+  'aeris/builder/maps/core/models/state',
+  'aeris/builder/maps/core/collections/mapobjecttogglecollection'
 ], function(_, Events, sinon, State, MapObjectToggleCollection) {
   var MockMapObjectStateCollection = function() {
     Events.call(this);

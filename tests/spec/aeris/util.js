@@ -1,6 +1,6 @@
 define([
   'sinon',
-  'ai/util'
+  'aeris/util'
 ], function(sinon, _) {
   describe('The Aeris Utility Library', function() {
     describe('should convert latLon to degrees', function() {

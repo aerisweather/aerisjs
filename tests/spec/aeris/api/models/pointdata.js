@@ -1,6 +1,6 @@
 define([
-  'ai/util',
-  'ai/api/models/pointdata'
+  'aeris/util',
+  'aeris/api/models/pointdata'
 ], function(_, PointData) {
 
   describe('A PointData model', function() {

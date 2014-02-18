@@ -3,7 +3,7 @@
 */
 define([
   'sinon',
-  'ai/builder/route/routeappbuilder',
+  'aeris/builder/route/routeappbuilder',
   'jquery',
   'googlemaps!'
 ], function(sinon, RouteAppBuilder, $, googlemaps) {

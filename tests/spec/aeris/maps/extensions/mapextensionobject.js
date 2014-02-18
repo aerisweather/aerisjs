@@ -1,8 +1,8 @@
 define([
-  'ai/util',
+  'aeris/util',
   'testUtils',
-  'ai/maps/extensions/mapextensionobject',
-  'ai/maps/abstractstrategy',
+  'aeris/maps/extensions/mapextensionobject',
+  'aeris/maps/abstractstrategy',
   'testErrors/untestedspecerror',
   'mocks/map'
 ], function(_, testUtil, MapExtensionObject, AbstractStrategy, UntestedSpecError,  MockMap) {
@@ -194,7 +194,7 @@ define([
           return view;
         });
 
-      define('ai/maps/strategy/mockStrategy', function() {
+      define('aeris/maps/strategy/mockStrategy', function() {
         return MockStrategy;
       });
 

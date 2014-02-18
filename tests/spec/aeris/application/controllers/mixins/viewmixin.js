@@ -1,10 +1,10 @@
 define([
-  'ai/util',
-  'ai/application/controllers/mixins/viewmixin',
+  'aeris/util',
+  'aeris/application/controllers/mixins/viewmixin',
   'marionette',
   'jquery',
-  'ai/application/controllers/itemcontroller',
-  'ai/model'
+  'aeris/application/controllers/itemcontroller',
+  'aeris/model'
 ], function(_, ViewMixin, Marionette, $, ItemController, Model) {
   var ConcreteView = function() {
     this.template = this.template || function() {

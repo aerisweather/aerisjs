@@ -1,6 +1,6 @@
 define([
-  'ai/model',
-  'ai/config'
+  'aeris/model',
+  'aeris/config'
 ], function(Model, aerisConfig) {
   var apiKeys_orig = {
     apiId: aerisConfig.get('apiId'),

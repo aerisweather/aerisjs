@@ -3,9 +3,9 @@
  * as a proxy.
  */
 define([
-  'ai/util',
-  'ai/maps/routes/commands/abstractroutecommand',
-  'ai/maps/routes/route'
+  'aeris/util',
+  'aeris/maps/routes/commands/abstractroutecommand',
+  'aeris/maps/routes/route'
 ], function(_, AbstractRouteCommand, Route) {
   describe('An AbstractRouteCommand', function() {
     var ConcreteRouteCommand = function(route, opt_isResolving, opt_timeout) {

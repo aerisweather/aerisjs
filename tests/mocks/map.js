@@ -1,4 +1,4 @@
-define(['ai/util', 'ai/events', 'ai/maps/map'], function(_, Events, Map) {
+define(['aeris/util', 'aeris/events', 'aeris/maps/map'], function(_, Events, Map) {
 
 
   /**

@@ -1,8 +1,8 @@
 define([
-  'ai/util',
-  'ai/maps/animations/helpers/animationlayerloader',
-  'ai/model',
-  'ai/promise',
+  'aeris/util',
+  'aeris/maps/animations/helpers/animationlayerloader',
+  'aeris/model',
+  'aeris/promise',
   'mocks/aeris/maps/animations/helpers/times'
 ], function(_, AnimationLayerLoader, Model, Promise, MockTimes) {
 

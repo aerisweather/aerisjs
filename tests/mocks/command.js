@@ -1,8 +1,8 @@
 define([
-  'ai/util',
-  'ai/errors/invalidargumenterror',
-  'ai/commands/abstractcommand',
-  'ai/promise'
+  'aeris/util',
+  'aeris/errors/invalidargumenterror',
+  'aeris/commands/abstractcommand',
+  'aeris/promise'
 ], function(_, InvalidArgumentError, AbstractCommand, Promise) {
 
   // Testers specific to this mock implementation

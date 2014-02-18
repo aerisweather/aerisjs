@@ -1,12 +1,12 @@
 ({
-  name: 'ai/builder/maps/mapappbuilder',
+  name: 'aeris/builder/maps/mapappbuilder',
   out: '../../../build/packages/mapapp.js',
 
   mainConfigFile: '../../../lib/config.js',
   baseUrl: '../../../lib',
 
   paths: {
-    'ai/maps/strategy': 'aeris/maps/gmaps'
+    'aeris/maps/strategy': 'aeris/maps/gmaps'
   },
 
   optimize: 'none',
@@ -28,8 +28,8 @@
 
   include: [
     'config',
-    'ai/packages/maps',
-    'ai/packages/gmaps'
+    'aeris/packages/maps',
+    'aeris/packages/gmaps'
   ],
   wrap: {
     startFile: [

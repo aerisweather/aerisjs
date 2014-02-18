@@ -1,9 +1,9 @@
 define([
   'jasmine',
   'testUtils',
-  'ai/maps/routes/commands/resetroutecommand',
-  'ai/maps/routes/route',
-  'ai/maps/routes/waypoint'
+  'aeris/maps/routes/commands/resetroutecommand',
+  'aeris/maps/routes/route',
+  'aeris/maps/routes/waypoint'
 ], function(
   jasmine,
   testUtils,

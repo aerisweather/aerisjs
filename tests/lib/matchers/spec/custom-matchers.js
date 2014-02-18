@@ -1,5 +1,5 @@
 require([
-  'ai/util',
+  'aeris/util',
   'testUtils',
   'jasmine',
   'matchers/custom-matchers'

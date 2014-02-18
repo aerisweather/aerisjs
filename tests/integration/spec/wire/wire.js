@@ -1,5 +1,5 @@
 define([
-  'ai/util',
+  'aeris/util',
   'testUtils',
   'wire',
   'tests/integration/spec/wire/mocks/foo',

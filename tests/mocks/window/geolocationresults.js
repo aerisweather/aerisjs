@@ -1,4 +1,4 @@
-define(['ai/util'], function(_) {
+define(['aeris/util'], function(_) {
   var MockGeolocationResults = function (opt_position) {
     var position = _.defaults(opt_position || {}, {
       coords: {},

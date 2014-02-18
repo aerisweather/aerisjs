@@ -4,9 +4,9 @@
 define({
   MapAppBuilderOptions: {
     create: {
-      module: 'ai/classfactory',
+      module: 'aeris/classfactory',
       args: [
-        { module: 'ai/builder/maps/options/mapappbuilderoptions' },
+        { module: 'aeris/builder/maps/options/mapappbuilderoptions' },
         [
           null,             // opt_attrs
           {                 // opt_options

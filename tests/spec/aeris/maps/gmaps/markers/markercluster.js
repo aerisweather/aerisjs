@@ -1,10 +1,10 @@
 define([
-  'ai/util',
+  'aeris/util',
   'sinon',
-  'ai/maps/strategy/markers/markercluster',
-  'ai/collection',
-  'ai/model',
-  'ai/promise'
+  'aeris/maps/strategy/markers/markercluster',
+  'aeris/collection',
+  'aeris/model',
+  'aeris/promise'
 ], function(_, sinon, MarkerClusterStrategy, Collection, Model, Promise) {
   var clock;
   var ASYNC_DELAY = 100;

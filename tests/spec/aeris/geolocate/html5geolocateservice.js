@@ -1,7 +1,7 @@
 define([
-  'ai/util',
-  'ai/geolocate/html5geolocateservice',
-  'ai/geolocate/errors/geolocateserviceerror',
+  'aeris/util',
+  'aeris/geolocate/html5geolocateservice',
+  'aeris/geolocate/errors/geolocateserviceerror',
   'mocks/window/navigator',
   'mocks/window/geolocationresults',
   'mocks/window/geolocationerror'

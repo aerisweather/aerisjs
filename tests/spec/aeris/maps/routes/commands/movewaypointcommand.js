@@ -1,9 +1,9 @@
 define([
   'testUtils',
-  'ai/model',
-  'ai/maps/routes/commands/movewaypointcommand',
-  'ai/maps/routes/waypoint',
-  'ai/maps/routes/route'
+  'aeris/model',
+  'aeris/maps/routes/commands/movewaypointcommand',
+  'aeris/maps/routes/waypoint',
+  'aeris/maps/routes/route'
 ], function(
   testUtil,
   Model,

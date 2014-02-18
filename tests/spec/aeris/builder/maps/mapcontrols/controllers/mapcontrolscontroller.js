@@ -1,9 +1,9 @@
 define([
-  'ai/util',
-  'ai/builder/maps/mapcontrols/controllers/mapcontrolscontroller',
-  'ai/events',
-  'ai/model',
-  'ai/application/controllers/layoutcontroller',
+  'aeris/util',
+  'aeris/builder/maps/mapcontrols/controllers/mapcontrolscontroller',
+  'aeris/events',
+  'aeris/model',
+  'aeris/application/controllers/layoutcontroller',
   'marionette'
 ], function(_, MapControlsController, Events, Model, LayoutController, Marionette) {
 

@@ -1,8 +1,8 @@
 define([
-  'ai/util',
-  'ai/limitedcollection',
-  'ai/collection',
-  'ai/model'
+  'aeris/util',
+  'aeris/limitedcollection',
+  'aeris/collection',
+  'aeris/model'
 ], function(_, LimitedCollection, Collection, Model) {
 
   var PopulatedCollection = function(opt_modelCount, opt_ModelType) {

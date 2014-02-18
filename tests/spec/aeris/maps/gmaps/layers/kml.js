@@ -1,8 +1,8 @@
 define([
-  'ai/util',
+  'aeris/util',
   'sinon',
   'mocks/layer',
-  'ai/maps/strategy/layers/kml',
+  'aeris/maps/strategy/layers/kml',
   'mocks/gmap'
 ], function(_, sinon, MockLayer, KMLStrategy, MockMap) {
 

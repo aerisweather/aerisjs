@@ -1,8 +1,8 @@
 define([
-  'ai/util',
+  'aeris/util',
   'sinon',
   'mocks/layer',
-  'ai/maps/strategy/layers/abstractmaptype'
+  'aeris/maps/strategy/layers/abstractmaptype'
 ], function(_, sinon, MockLayer, AbstractStrategy) {
 
   var google_orig = window.google;

@@ -2,7 +2,7 @@ define({
   modelAttr: {
     someModel: {
       create: {
-        module: 'ai/model',
+        module: 'aeris/model',
         args: [{
           deep: {
             nested: {
@@ -20,6 +20,6 @@ define({
   },
 
   plugins: [
-    'ai/application/plugins/attrresolver'
+    'aeris/application/plugins/attrresolver'
   ]
 })

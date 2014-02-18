@@ -1,7 +1,7 @@
 define([
-  'ai/util',
-  'ai/application/plugins/aerisconfig',
-  'ai/config',
+  'aeris/util',
+  'aeris/application/plugins/aerisconfig',
+  'aeris/config',
   'mocks/aeris/application/plugins/pluginresolver'
 ], function(_, aerisConfigPlugin, aerisConfig, MockPluginResolver) {
 

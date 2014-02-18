@@ -1,6 +1,6 @@
 define([
-  'ai/util',
-  'ai/maps/animations/abstractanimation',
+  'aeris/util',
+  'aeris/maps/animations/abstractanimation',
   'sinon'
 ], function(_, Animation) {
   var sinon = require('sinon');

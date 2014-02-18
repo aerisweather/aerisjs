@@ -1,7 +1,7 @@
 define([
-  'ai/util',
+  'aeris/util',
   'sinon',
-  'ai/maps/strategy/map'
+  'aeris/maps/strategy/map'
 ], function(_, sinon, GMap) {
   function getStubbedMapView() {
     var map = sinon.createStubInstance(google.maps.Map);

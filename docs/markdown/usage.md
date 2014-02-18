@@ -13,7 +13,7 @@ This document is only an introduction to the features of Aeris.js. Check out the
 #### A Note For RequireJS Users
 The examples in this document reference components within the global `aeris` namespace. This is appropriate when loading the library from a CDN. If you are loading components as RequireJS/AMD modules, you can find find modules by matching namespace paths to the aeris library file structure.
 
-For example, [`aeris.maps.layers.Radar`](http://uat.hamweather.net/eschwartz/docs/public#aeris.maps.layers.Radar) can be found at [`ai/maps/layers/radar`](https://github.com/hamweather/aerisjs/blob/master/lib/aeris/maps/layers/aerisradar.js).
+For example, [`aeris.maps.layers.Radar`](http://uat.hamweather.net/eschwartz/docs/public#aeris.maps.layers.Radar) can be found at [`aeris/maps/layers/radar`](https://github.com/hamweather/aerisjs/blob/master/lib/aeris/maps/layers/aerisradar.js).
 
 ## Data and Weather API
 
