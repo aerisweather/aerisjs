@@ -4,8 +4,8 @@ require.config({
     aeris: '../bower_components/aerisjs/src',
 
     // Set the map strategy to use
-    'aeris/maps/strategy': '../bower_components/aerisjs/lib/aeris/maps/gmaps',            // Use Google Maps
-    // 'aeris/maps/strategy': '../bower_components/aerisjs/lib/aeris/maps/openlayers',    // Use OpenLayers
+    'aeris/maps/strategy': '../bower_components/aerisjs/src/maps/gmaps',            // Use Google Maps
+    // 'aeris/maps/strategy': '../bower_components/aerisjs/src/maps/openlayers',    // Use OpenLayers
 
     underscore: '../bower_components/underscore/underscore',
     jquery: '../bower_components/jquery/jquery',

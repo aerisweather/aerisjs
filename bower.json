@@ -3,7 +3,7 @@
   "keywords": ["maps", "weather", "weathernation", "backbone"],
   "version": "0.1.0",
   "homepage": "https://github.com/hamweather/aerisjs",
-  "main": "lib/config",
+  "main": "src",
   "ignore": [
     "deployment/",
     "assets/",

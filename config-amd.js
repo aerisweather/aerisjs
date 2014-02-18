@@ -1,20 +1,22 @@
 require.config({
   paths: {
+    aeris: 'src',
+
     // Vendor libs
-    almond: '../bower_components/almond/almond',
-    backbone: '../bower_components/backbone/backbone',
-    markerclusterer: '../bower_components/gmaps-markerclusterer-plus/index',
-    Handlebars: '../bower_components/handlebars/handlebars',
-    hbars: '../bower_components/hbars/hbars',
-    jquery: '../bower_components/jquery/jquery',
-    marionette: '../bower_components/marionette/lib/backbone.marionette',
-    text: '../bower_components/requirejs-text/text',
-    underscore: '../bower_components/underscore/underscore',
-    async: '../bower_components/requirejs-plugins/src/async',
-    googlemaps: '../bower_components/googlemaps-amd/src/googlemaps',
+    almond: 'bower_components/almond/almond',
+    backbone: 'bower_components/backbone/backbone',
+    markerclusterer: 'bower_components/gmaps-markerclusterer-plus/index',
+    Handlebars: 'bower_components/handlebars/handlebars',
+    hbars: 'bower_components/hbars/hbars',
+    jquery: 'bower_components/jquery/jquery',
+    marionette: 'bower_components/marionette/lib/backbone.marionette',
+    text: 'bower_components/requirejs-text/text',
+    underscore: 'bower_components/underscore/underscore',
+    async: 'bower_components/requirejs-plugins/src/async',
+    googlemaps: 'bower_components/googlemaps-amd/src/googlemaps',
 
     // Wire dependency
-    'wire/builder/rjs': '../bower_components/wire-rjs-builder/builder'
+    'wire/builder/rjs': 'bower_components/wire-rjs-builder/builder'
   },
   packages: [
     // Configure wire packages
@@ -22,17 +24,17 @@ require.config({
     // for an example of using ReqJs with Wire
     {
       name: 'wire',
-      location: '../bower_components/wire',
+      location: 'bower_components/wire',
       main: 'wire'
     },
     {
       name: 'when',
-      location: '../bower_components/when',
+      location: 'bower_components/when',
       main: 'when'
     },
     {
       name: 'meld',
-      location: '../bower_components/meld',
+      location: 'bower_components/meld',
       main: 'meld'
     }
   ],

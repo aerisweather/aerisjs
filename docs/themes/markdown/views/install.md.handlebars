@@ -93,7 +93,7 @@ In order to use Aeris.js AMD modules, you must tell the library where to find it
 require.config({
     paths: {
         // Specify base path of aeris-js library 
-        aeris: 'myApp/vendor/aerisjs/lib/aeris',
+        aeris: 'myApp/vendor/aerisjs/src',
 
         // Core dependencies.
         // Required for all Aeris.js components
@@ -189,10 +189,10 @@ The Aeris.js library allows all of its components to be rendered either by using
 require.config({
     paths: {
         // For Google Maps
-        'aeris/maps/strategy': 'myApp/vendor/aerisjs/lib/aeris/maps/gmaps'
+        'aeris/maps/strategy': 'myApp/vendor/aerisjs/src/maps/gmaps'
 
         // For OpenLayers
-        'aeris/maps/strategy': 'myApp/vendor/aerisjs/lib/aeris/maps/openlayers'
+        'aeris/maps/strategy': 'myApp/vendor/aerisjs/src/maps/openlayers'
     }
 });
 ```
@@ -259,7 +259,7 @@ The only difference from your RequireJS configuration will be the location of yo
 ```javascript
 require.config({
     paths: {
-        aeris: 'bower_components/aerisjs/lib/aeris',
+        aeris: 'bower_components/aerisjs/src',
 
         underscore: 'bower_components/underscore/underscore'
         // etc...

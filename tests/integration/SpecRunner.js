@@ -1,5 +1,5 @@
 require([
-  '../../lib/config',
+  '../../config-amd',
   '../testconfig'
 ], function() {
   require.config({

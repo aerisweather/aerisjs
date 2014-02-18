@@ -1,5 +1,5 @@
 require([
-  '../lib/config',
+  '../config-amd',
   'testconfig'
 ], function() {
   require([
@@ -22,7 +22,7 @@ require([
     jasmine.slow.enable(50);
 
     require([
-      '/tests/lib/domReady.js!',
+      'lib/domReady.js!',
 
       'spec/aeris/model',
       'spec/aeris/collection',
@@ -144,7 +144,7 @@ require([
 
       'spec/mocks/require',
 
-      'tests/integration/spec/wire/wire'
+      'integration/spec/wire/wire'
     ], function() {
 
       // Yes, it's a hack,

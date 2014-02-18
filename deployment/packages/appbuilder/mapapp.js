@@ -2,8 +2,8 @@
   name: 'aeris/builder/maps/mapappbuilder',
   out: '../../../build/packages/mapapp.js',
 
-  mainConfigFile: '../../../lib/config.js',
-  baseUrl: '../../../lib',
+  mainConfigFile: '../../../config-amd.js',
+  baseUrl: '../../../',
 
   paths: {
     'aeris/maps/strategy': 'aeris/maps/gmaps'

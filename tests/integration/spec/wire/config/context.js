@@ -1,7 +1,7 @@
 define({
   foo: {
     create: {
-      module: 'tests/integration/spec/wire/mocks/foo',
+      module: 'integration/spec/wire/mocks/foo',
       isConstructor: true
     }
   }

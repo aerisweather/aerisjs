@@ -2,11 +2,11 @@
   name: 'almond',
   out: '../../../build/packages/gmaps-plus.js',
 
-  mainConfigFile: '../../../lib/config.js',
-  baseUrl: '../../../lib',
+  mainConfigFile: '../../../config-amd.js',
+  baseUrl: '../../../',
 
   paths: {
-    'aeris/maps/strategy': 'aeris/maps/gmaps'
+    'aeris/maps/strategy': 'src/maps/gmaps'
   },
 
   optimize: 'none',

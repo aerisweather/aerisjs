@@ -2,8 +2,8 @@ define([
   'aeris/util',
   'testUtils',
   'wire',
-  'tests/integration/spec/wire/mocks/foo',
-  'wire!tests/integration/spec/wire/config/context'
+  'integration/spec/wire/mocks/foo',
+  'wire!integration/spec/wire/config/context'
 ], function(_, testUtil, wire, Foo, wiredContext) {
 
   describe('Wire API learning tests', function() {
@@ -17,7 +17,7 @@ define([
       wire({
         foo: {
           create: {
-            module: 'tests/integration/spec/wire/mocks/foo',
+            module: 'integration/spec/wire/mocks/foo',
             isConstructor: true
           }
         }

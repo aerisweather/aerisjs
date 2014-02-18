@@ -13,7 +13,7 @@ This document is only an introduction to the features of Aeris.js. Check out the
 #### A Note For RequireJS Users
 The examples in this document reference components within the global `aeris` namespace. This is appropriate when loading the library from a CDN. If you are loading components as RequireJS/AMD modules, you can find find modules by matching namespace paths to the aeris library file structure.
 
-For example, [`aeris.maps.layers.Radar`](http://uat.hamweather.net/eschwartz/docs/public#aeris.maps.layers.Radar) can be found at [`aeris/maps/layers/radar`](https://github.com/hamweather/aerisjs/blob/master/lib/aeris/maps/layers/aerisradar.js).
+For example, [`aeris.maps.layers.Radar`](http://uat.hamweather.net/eschwartz/docs/public#aeris.maps.layers.Radar) can be found at [`aeris/maps/layers/radar`](https://github.com/hamweather/aerisjs/blob/master/src/maps/layers/aerisradar.js).
 
 ## Data and Weather API
 
@@ -280,7 +280,7 @@ new MapApp({
 
 #### Theming the AppBuilder
 
-If you'd like to customize the theme, you can bootstrap off of the default theme, which is written using [Sass](http://sass-lang.com/), a CSS precompiler. You can find the default theme in the repo, located at `lib/aeris/builder/maps/theme`.
+If you'd like to customize the theme, you can bootstrap off of the default theme, which is written using [Sass](http://sass-lang.com/), a CSS precompiler. You can find the default theme in the repo, located at `src/builder/maps/theme`.
 
 We use [Compass](http://compass-style.org/) to compile the the sass stylesheets, which is as easy as running:
 
