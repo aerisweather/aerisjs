@@ -27,7 +27,6 @@
   },
 
   include: [
-    'config-amd',
     'aeris/packages/maps',
     'aeris/packages/gmaps'
   ],
