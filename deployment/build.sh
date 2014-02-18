@@ -17,14 +17,14 @@ main() {
 
 logHeader() {
   logSeparator
-  log "Aeris Interactive build on `date`"
+  log "Aeris.js build on `date`"
   log "using build config: $BUILD_CONFIG"
   logSeparator
 }
 
 logBuildComplete() {
   logSeparator
-  logAndOutput "Aeris Interactive build successfully completed."
+  logAndOutput "Aeris.js build successfully completed."
   logAndOutput "`date`"
   logSeparator
 }

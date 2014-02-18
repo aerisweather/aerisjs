@@ -1,6 +1,6 @@
-# Aeris Interactive Library Build process
+# Aeris.js Library Build process
 
-The Aeris Interactive Library uses the following build tools:
+The Aeris.js Library uses the following build tools:
 
 * r.js optimizer for RequireJS modules
 * Compass stylesheet compiler
