@@ -55,11 +55,6 @@ require.config({
         return jQuery;
       }
     },
-
-    'vendor/backbone.queryparams': {
-      deps: ['underscore', 'backbone'],
-      exports: 'Backbone'
-    },
     'markerclusterer': {
       exports: 'MarkerClusterer',
       init: function() {
