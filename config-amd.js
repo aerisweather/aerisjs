@@ -44,15 +44,6 @@ require.config({
     'underscore': {
       exports: '_'
     },
-    'backbone': {
-      exports: 'Backbone',
-      deps: ['underscore', 'jquery']
-    },
-    'jquery': {
-      init: function() {
-        return jQuery;
-      }
-    },
     'markerclusterer': {
       exports: 'MarkerClusterer',
       init: function() {
