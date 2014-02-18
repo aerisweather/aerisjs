@@ -41,12 +41,5 @@ require.config({
       jasmine: 'tests/lib/jasmine-modified'
     }
   },
-  config: {
-    aeris: {
-      apiId: 'ezHWL0MiLsxwlN2ik8U4c',
-      apiSecret: 'uCDMeSj91lBfIKCmeQkpeZjsAwUUQJHuKesCvqTm',
-      strategy: 'gmaps'
-    }
-  },
   waitSeconds: 3
 });
