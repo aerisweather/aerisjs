@@ -6,7 +6,7 @@
   baseUrl: '../../../',
 
   paths: {
-    'aeris/maps/strategy': 'aeris/maps/gmaps'
+    'aeris/maps/strategy': 'src/maps/gmaps'
   },
 
   optimize: 'none',
@@ -27,7 +27,7 @@
   },
 
   include: [
-    'config',
+    'config-amd',
     'aeris/packages/maps',
     'aeris/packages/gmaps'
   ],
