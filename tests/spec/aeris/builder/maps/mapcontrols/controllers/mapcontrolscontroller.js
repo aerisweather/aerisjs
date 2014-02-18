@@ -4,8 +4,9 @@ define([
   'aeris/events',
   'aeris/model',
   'aeris/application/controllers/layoutcontroller',
+  'jquery',
   'marionette'
-], function(_, MapControlsController, Events, Model, LayoutController, Marionette) {
+], function(_, MapControlsController, Events, Model, LayoutController, $, Marionette) {
 
   var MockBuilderOptions = function(opt_attrs) {
     var attrs = _.defaults(opt_attrs || {}, {
