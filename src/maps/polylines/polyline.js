@@ -174,7 +174,7 @@ define([
       else { throw e; }
     }
 
-    if (unauthorizedStyles.length) {
+    if (unauthorizedStyles.length || !_.isPlainObject(styles)) {
       throw new InvalidArgumentError('Unable to style polyline: invalid style ' +
         'attributes: ' + unauthorizedStyles.join(', ') + '.');
     }
