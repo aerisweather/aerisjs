@@ -53,7 +53,7 @@ define([
           status: new GeocodeServiceResponse({
             code: aerisStatus,
             apiCode: apiStatus,
-            message: 'Succesfully geocoded location: ' + location
+            message: 'Successfully geocoded location: ' + location
           })
         }));
       }
