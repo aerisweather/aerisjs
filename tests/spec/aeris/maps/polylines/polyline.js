@@ -30,14 +30,30 @@ define([
         expect(polyline.get('strokeOpacity')).toEqual(0.8);
       });
 
-      it('should reject non-objects', function() {
-        var setWithStrings = _.partial(setPolylineStyles, 'strokeColor', 'green');
-        var setWithArray = _.partial(setPolylineStyles, ['strokeColor', 'green']);
-        var setWithUndef = _.partial(setPolylineStyles, undefined);
+      describe('should reject non-objects:', function() {
 
-        expect(setWithStrings).toThrowType('InvalidArgumentError');
-        expect(setWithArray).toThrowType('InvalidArgumentError');
-        expect(setWithUndef).toThrowType('InvalidArgumentError');
+        it('string', function() {
+          var setWithStrings = _.partial(setPolylineStyles, 'STRING_STUB_A', 'STRING_STUB_B');
+          expect(function() {
+            setWithStrings();
+          }).toThrowType('InvalidArgumentError');
+        });
+
+        it('array', function() {
+          var ARRAY_STUB = ['ARRAY_STUB_A', 'ARRAY_STUB_B'];
+          var setWithArray = _.partial(setPolylineStyles, ARRAY_STUB);
+          expect(function() {
+            setWithArray();
+          }).toThrowType('InvalidArgumentError');
+        });
+
+        it('undefined', function() {
+          var setWithUndef = _.partial(setPolylineStyles, undefined);
+          expect(function() {
+            setWithUndef();
+          }).toThrowType('InvalidArgumentError');
+        });
+
       });
 
       it('should reject non-style attributes', function() {
