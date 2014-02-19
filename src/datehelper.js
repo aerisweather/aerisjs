@@ -1,4 +1,4 @@
-define(function() {
+define(['aeris/util'], function(_) {
   var MILLISECOND = 1;
   var SECOND = MILLISECOND * 1000;
   var MINUTE = SECOND * 60;
