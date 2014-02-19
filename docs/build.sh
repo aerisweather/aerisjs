@@ -52,7 +52,7 @@ generatePublicDocs() {
   logWhitespace
   logAndOutput "Generating public API docs..."
 
-  node scripts/generatepublicdocs.js ../lib themes/public public/index.html >> $LOG_FILE
+  node scripts/generatepublicdocs.js ../src themes/public public/index.html >> $LOG_FILE
 
   logAndOutput "done."
 }
