@@ -38,7 +38,7 @@ Usage of the Aeris API requires an Aeris API developer account. Visit [hamweathe
 
 **TL;DR**
 ```html
-<script type="text/javascript" src="//js.aerisapi.com/aerisjs.js"></script>
+<script type="text/javascript" src="//js.aerisapi.com/aeris.js"></script>
 <script type="text/javascript">
     var map = new aeris.maps.Map('map-canvas', {
         center: [45, -90],
