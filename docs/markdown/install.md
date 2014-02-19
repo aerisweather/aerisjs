@@ -178,7 +178,7 @@ require.config({
 
 I hear you saying: "Oy, that's a lot of dependencies!" Well yes -- this project rides on the back of giants, and I have no interest in reinventing the wheel. But if you're worried about entering a dependency hell, why not [give Bower a try](#using-bower).
 
-See [the AMD/Bower.js example app](https://github.com/hamweather/aerisjs/tree/master/examples/amd/src/amd-config.js) for a full working RequireJS configuration.
+See [the AMD/Bower.js example app](https://github.com/hamweather/aerisjs/tree/master/examples/amd/src/app.js) for a full working RequireJS configuration.
 
 
 #### Specifying a Map Library
