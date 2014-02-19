@@ -74,7 +74,7 @@ define([
                 expect(mockJSONP.getRequestedUrl()).toBe(aerisUrl);
             });
 
-            aerisService.geocode().done(errSpy);
+            aerisService.geocode().fail(errSpy);
             mockJSONP.resolveWith(getErrorResponse());
 
             expect(errSpy).toHaveBeenCalled();
