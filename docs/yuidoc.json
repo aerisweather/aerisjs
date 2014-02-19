@@ -12,7 +12,7 @@
   ],
   "config": {
     "version": "0.1.1",
-    "cdnPath": "//js.aerisapi.com/aerisjs/v{VERSION}/{PACKAGE}.min.js",
+    "cdnPath": "//js.aerisapi.com/aerisjs/{VERSION}/{PACKAGE}.min.js",
     "cndPathLatest": "//js.aerisapi.com/aerisjs.js",
     "githubUrl": "https://github.com/hamweather/aerisjs",
     "aerisApiUrl": "http://www.hamweather.com/support/documentation/aeris",
