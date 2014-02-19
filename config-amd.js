@@ -41,9 +41,6 @@ require.config({
     }
   ],
   shim: {
-    'underscore': {
-      exports: '_'
-    },
     'markerclusterer': {
       exports: 'MarkerClusterer',
       init: function() {
