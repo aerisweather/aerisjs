@@ -4,9 +4,9 @@ define([
   'aeris/maps/strategy/markers/markercluster',
   'aeris/collection',
   'aeris/model',
-  'aeris/promise'
-], function(_, sinon, MarkerClusterStrategy, Collection, Model, Promise) {
-  var clock;
+  'aeris/promise',
+  'tests/lib/clock'
+], function(_, sinon, MarkerClusterStrategy, Collection, Model, Promise, clock) {
   var ASYNC_DELAY = 100;
 
   var MockMarkerClustererFactory = function() {
@@ -83,7 +83,7 @@ define([
 
 
   beforeEach(function() {
-    clock = sinon.useFakeTimers();
+    clock.useFakeTimers();
   });
 
   afterEach(function() {
