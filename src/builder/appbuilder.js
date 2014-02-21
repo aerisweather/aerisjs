@@ -35,6 +35,11 @@ define([
   var AppBuilder = function(config, builderOptions) {
     this.validateCtorArgs_(config, builderOptions);
 
+    /**
+     * @property options_
+     * @type {aeris.builder.maps.options.AppBuilderOptions}
+     * @private
+     */
     this.options_ = builderOptions;
     this.options_.set(config);
   };
