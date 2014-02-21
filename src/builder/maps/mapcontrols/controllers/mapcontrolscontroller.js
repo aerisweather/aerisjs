@@ -222,3 +222,15 @@ define([
 
   return MapControlsController;
 });
+
+
+/**
+ * Fired when a map controls UI controller
+ * is ready to be rendered in the map controls view.
+ *
+ * @event mapControls:ready
+ * @for aeris.builder.maps.event.EventHub
+ *
+ * @param {aeris.application.controllers.ControllerInterface} controller
+ * @param {string} controlsViewName Name of the controls view.
+ */

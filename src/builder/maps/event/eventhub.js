@@ -24,16 +24,6 @@ define([
    * @param {Backbone.View} view
    */
 
-  /**
-   * A map controls view has been created
-   * and is ready to be rendered.
-   *
-   * @event mapControls:ready
-   *
-   * @param {Backbone.View} controller
-   * @param {string} Name of the controller.
-   */
-
 
   /**
    * A geolocation request has been made.
