@@ -40,7 +40,9 @@
     'Backbone.Model': 'http:/' + '/backbonejs.org/#Model',
     'Backbone.Collection': 'http:/' + '/backbonejs.org/#Collection',
     'google.maps.LatLng': 'https:/' + '/developers.google.com/maps/documentation/javascript/reference#LatLng',
-    'google.maps.LatLngBounds': 'https:/' + '/developers.google.com/maps/documentation/javascript/reference#LatLngBounds'
+    'google.maps.LatLngBounds': 'https:/' + '/developers.google.com/maps/documentation/javascript/reference#LatLngBounds',
+    '$': 'https:/' + '/api.jquery.com/',
+    'jQuery': 'https:/' + '/api.jquery.com/'
   };
 
   var NATIVES_UNCAPITALIZED = {};
