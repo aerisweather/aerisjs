@@ -87,7 +87,7 @@ define([
     },
 
     /**
-     * @method setLimig
+     * @method setLimit
      * @param {number} limit
      */
     setLimit: function(limit) {
