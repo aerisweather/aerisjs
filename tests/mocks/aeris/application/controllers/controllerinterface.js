@@ -10,7 +10,8 @@ define([
   var MockController = function() {
     var stubbedMethods = [
       'render',
-      'close'
+      'close',
+      'setElement'
     ];
 
     _.extend(this, jasmine.createSpyObj('controller', stubbedMethods));

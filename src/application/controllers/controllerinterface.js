@@ -4,8 +4,11 @@ define(function() {
    * @namespace aeris.application.controllers
    * @interface
    * @constructor
+   *
+   * @param {Object} options
+   * @param {HTMLElement|$=} options.el
    */
-  var ControllerInterface = function() {};
+  var ControllerInterface = function(options) {};
 
   /**
    * Render (start up) the controller
@@ -18,6 +21,21 @@ define(function() {
    * @method close 
    */
   ControllerInterface.prototype.close = function() {};
+
+  /**
+   * Close (destroy) the controller
+   * @method close
+   */
+  ControllerInterface.prototype.close = function() {};
+
+
+  /**
+   * See http://backbonejs.org/#View-setElement
+   *
+   * @method setElement
+   * @param {HTMLElement|$} el
+   */
+  ControllerInterface.prototype.setElement = function(el) {};
 
 
   return ControllerInterface;
