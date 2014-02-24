@@ -22,12 +22,6 @@ define(function() {
    */
   ControllerInterface.prototype.close = function() {};
 
-  /**
-   * Close (destroy) the controller
-   * @method close
-   */
-  ControllerInterface.prototype.close = function() {};
-
 
   /**
    * See http://backbonejs.org/#View-setElement
