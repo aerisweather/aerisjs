@@ -6,6 +6,7 @@ define({
     layers: { wire: 'aeris/builder/maps/layers/config/module' },
     infoPanel: { wire: 'aeris/builder/maps/infopanel/config/module'},
     geosearch: { wire: 'aeris/builder/maps/geosearch/config/module' },
-    modal: { wire: 'aeris/builder/maps/modal/config/module' }
+    modal: { wire: 'aeris/builder/maps/modal/config/module' },
+    fullscreen: { wire: 'aeris/builder/maps/fullscreen/config/module' }
   }
 });

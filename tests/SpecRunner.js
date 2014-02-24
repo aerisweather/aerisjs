@@ -62,6 +62,10 @@ require([
       //'spec/aeris/builder/maps/options/mapappbuilderoptions',
       'spec/aeris/builder/maps/core/helpers/renderer',
       'spec/aeris/builder/maps/core/models/state',
+      'spec/aeris/builder/maps/fullscreen/controllers/fullscreenbtncontroller',
+      'spec/aeris/builder/maps/fullscreen/controllers/fullscreencontroller',
+      'spec/aeris/builder/maps/fullscreen/helpers/fullscreenservice',
+      'spec/aeris/builder/maps/fullscreen/modules/fullscreenmodule',
       'spec/aeris/builder/maps/mapcontrols/controllers/mapcontrolscontroller',
 
       'spec/aeris/builder/routes/plugins/travelmode',

@@ -56,7 +56,8 @@ define(
       geolocation: 'geolocateControlsRegion',
       geocode: 'geocodeControlsRegion',
       layers: 'layerControlsRegion',
-      markers: 'markerControlsRegion'
+      markers: 'markerControlsRegion',
+      fullscreen: 'fullscreenControlsRegion'
     },
 
 

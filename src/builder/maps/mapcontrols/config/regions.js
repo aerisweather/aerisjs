@@ -3,6 +3,7 @@ define({
     geolocateControlsRegion: '.geolocateControls',
     geocodeControlsRegion: '.geocodeRegion',
     layerControlsRegion: '.layerControls',
-    markerControlsRegion: '.markerControls'
+    markerControlsRegion: '.markerControls',
+    fullscreenControlsRegion: '.fullscreenControlsRegion'
   }
 })

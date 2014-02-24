@@ -4,6 +4,7 @@ define({
     geocodeControlsRegion: { $ref: 'parentRegions.geocodeControlsRegion' },
     layerControlsRegion: { $ref: 'parentRegions.layerControlsRegion' },
     markerControlsRegion: { $ref: 'parentRegions.markerControlsRegion' },
+    fullscreenControlsRegion: '.fullscreenControlsRegion',
 
     routeBuilderControlsRegion: '.routeBuilderControls'
   },
