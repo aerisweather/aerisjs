@@ -1,8 +1,25 @@
 define([
     'aeris/util',
+    'mocks/aeris/config',
+    'mocks/aeris/jsonp',
     'aeris/geocode/geocodeservicestatus',
     'aeris/geocode/aerisgeocodeservice'
-], function(_, GeocodeServiceStatus, AerisGeocodeService) {
+], function(_, MockConfig, MockJSONP, GeocodeServiceStatus, AerisGeocodeService) {
+
+    var aerisService, mockJSONP;
+
+    beforeEach(function() {
+        mockJSONP = new MockJSONP();
+        aerisService = new AerisGeocodeService({
+            jsonp: mockJSONP
+        });
+
+        MockConfig.stubApiKeys();
+    });
+
+    afterEach(function() {
+       MockConfig.restore();
+    });
 
     function getSuccessResponse() {
         return {

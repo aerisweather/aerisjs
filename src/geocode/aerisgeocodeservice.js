@@ -14,16 +14,14 @@ define([
      */
     var AerisGeocodeService = function(opt_options) {
         var options = _.defaults(opt_options || {}, {
-
+            jsonp: JSONP
         });
-
         this.serviceUrl_ = 'http://api.aerisapi.com/places';
-        this.jsonp_ = JSONP;
+        this.jsonp_ = options.jsonp;
     };
 
     AerisGeocodeService.prototype.geocode = function(location) {
         var promise = new Promise();
-        var uri = this.getAerisUri();
         var query = {
             client_id: AerisConfig.get('apiId'),
             client_secret: AerisConfig.get('apiSecret'),
