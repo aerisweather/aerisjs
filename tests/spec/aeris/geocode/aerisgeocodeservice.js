@@ -5,7 +5,7 @@ define([
 ], function(_, GeocodeServiceStatus, AerisGeocodeService) {
 
     function getSuccessResponse() {
-        return [{
+        return {
             'success': true,
             'error': null,
             'response': {
@@ -34,34 +34,55 @@ define([
                     'isDST': false
                 }
             }
-        }];
+        };
     }
 
     function getErrorResponse() {
-        return [{
+        return {
             'success': false,
             'error': {
                 'code': 'invalid_location',
                 'description': 'The requested location was not found.'
             },
             'response': []
-        }];
+        };
     }
 
     describe('The AerisGeocodeService', function() {
-        var aerisService = new AerisGeocodeService();
-        it('should get proper api keys', function() {
-            console.log('check api keys');
-            var apiKeys = aerisService.checkApiKeys();
-            expect(apiKeys).toBe(true);
+        var location, aerisUrl, callSpy, errSpy;
+
+        beforeEach(function() {
+            location = 'somewhere';
+            aerisUrl = 'http://api.aerisapi.com/places';
         });
+
         it('should query the Aeris places api', function() {
-            spyOn(aerisService, 'geocode').andCallThrough();
-            var geodata = aerisService.geocode('minneapolis,mn');
-            geodata.done(function(res) {
-                console.log(res);
-                expect(res.code).toBe('OK');
+            callSpy = jasmine.createSpy('callSpy').andCallFake(function() {
+                expect(mockJSONP.getRequestedUrl()).toBe(aerisUrl);
             });
+
+            // mock aeris geocode
+            aerisService.geocode().done(callSpy);
+            mockJSONP.resolveWith(getSuccessResponse());
+
+            expect(callSpy).toHaveBeenCalled();
+            expect(callSpy).toHaveBeenCalledWith(getSuccessResponse());
         });
+
+        it('should handle api errors', function() {
+            errSpy = jasmine.createSpy('errSpy').andCallFake(function() {
+                expect(mockJSONP.getRequestedUrl()).toBe(aerisUrl);
+            });
+
+            aerisService.geocode().done(errSpy);
+            mockJSONP.resolveWith(getErrorResponse());
+
+            expect(errSpy).toHaveBeenCalled();
+            expect(errSpy).toHaveBeenCalledWith(getErrorResponse());
+        });
+//
+//        it('should return successful api responses', function() {
+//            throw new Error('success response');
+//        });
     });
 });
