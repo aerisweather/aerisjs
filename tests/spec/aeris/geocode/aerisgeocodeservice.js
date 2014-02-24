@@ -80,9 +80,18 @@ define([
             expect(errSpy).toHaveBeenCalled();
             expect(errSpy).toHaveBeenCalledWith(getErrorResponse());
         });
-//
-//        it('should return successful api responses', function() {
-//            throw new Error('success response');
-//        });
+
+        it('should return successful api responses', function() {
+            callSpy = jasmine.createSpy('callSpy').andCallFake(function() {
+                expect(mockJSONP.getRequestedUrl()).toBe(aerisUrl);
+            });
+
+            // mock aeris geocode
+            aerisService.geocode().done(callSpy);
+            mockJSONP.resolveWith(getSuccessResponse());
+
+            expect(callSpy).toHaveBeenCalled();
+            expect(callSpy).toHaveBeenCalledWith(getSuccessResponse());
+        });
     });
 });
