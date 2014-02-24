@@ -1,7 +1,7 @@
 define([
-    'ai/util',
-    'ai/geocode/geocodeservicestatus',
-    'ai/geocode/aerisgeocodeservice'
+    'aeris/util',
+    'aeris/geocode/geocodeservicestatus',
+    'aeris/geocode/aerisgeocodeservice'
 ], function(_, GeocodeServiceStatus, AerisGeocodeService) {
 
     function getSuccessResponse() {

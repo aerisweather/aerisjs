@@ -1,6 +1,6 @@
 define([
-    'ai/util',
-    'ai/api/endpoint/model/pointdata'
+    'aeris/util',
+    'aeris/api/endpoint/model/pointdata'
 ], function(_, PointData) {
     /**
      * @publicApi

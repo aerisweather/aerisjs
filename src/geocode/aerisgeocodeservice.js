@@ -1,11 +1,11 @@
 define([
-    'ai/util',
-    'ai/config',
-    'ai/jsonp',
-    'ai/maps/strategy/utils',
-    'ai/promise',
-    'ai/geocode/geocodeserviceresponse',
-    'ai/geocode/geocodeservicestatus'
+    'aeris/util',
+    'aeris/config',
+    'aeris/jsonp',
+    'aeris/maps/strategy/utils',
+    'aeris/promise',
+    'aeris/geocode/geocodeserviceresponse',
+    'aeris/geocode/geocodeservicestatus'
 ], function(_, AerisConfig, JSONP, mapUtil, Promise, GeocodeServiceResponse, GeocodeServiceStatus) {
     /**
      * @class aeris.geocode.AerisGeocodeService
