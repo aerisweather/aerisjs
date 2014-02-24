@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Aeris.js - Observations Example</title>
+
+    <link rel="stylesheet" href="../css/example.css"/>
+    <link rel="shortcut icon" type="image/x-icon" href="../weather.ico"/>
+
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false&libraries=geometry"></script>
+    <script type="text/javascript" src="../../build/packages/gmaps-plus.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script type="text/javascript" src="../apikeys.js"></script>
+</head>
+<body>
+
+<input id="place" type="text"/>
+<button id="get-obs"></button>
+
+<div id="obs-info"></div>
+
+<div id="loading">Loading...</div>
+
+</div>
+
+<script type="text/javascript">
+    aeris.config.set({
+        apiId: apiKeys.aeris.id,
+        apiSecret: apiKeys.aeris.secret
+    });
+
+    var obs = new aeris.api.Observation(null, {
+        params: {
+            p: '55415'
+        }
+    });
+
+    // Show a 'loading' prompt whenever requests are
+    // being made to the AerisAPI server.
+    obs.on({
+        'data:request': function() {
+            $('#loading').show();
+        },
+        'data:sync': function() {
+            $('#loading').delay(500).hide();
+        }
+    });
+
+    // Fetch observations data from the Aeris API.
+    obs.fetch().done(function(res) {
+        console.log(res);
+    });
+
+</script>
+</body>
+</html>
