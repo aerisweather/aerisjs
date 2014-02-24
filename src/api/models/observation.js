@@ -1,7 +1,7 @@
 define([
     'aeris/util',
-    'aeris/api/endpoint/model/pointdata'
-], function(_, PointData) {
+    'aeris/api/models/aerisapimodel'
+], function(_, AerisApiModel) {
     /**
      * @publicApi
      * @class Observation

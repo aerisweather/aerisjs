@@ -8,5 +8,6 @@ define([
   'aeris/api/models/fire',
   'aeris/api/models/forecast',
   'aeris/api/models/lightning',
+  'aeris/api/models/observation',
   'aeris/api/models/stormreport'
 ], function() {});
