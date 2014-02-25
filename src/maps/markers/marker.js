@@ -149,5 +149,16 @@ define([
   };
 
 
+  /**
+   * Return the url of the marker icon.
+   *
+   * @method getUrl
+   * @return {string}
+  */
+  Marker.prototype.getUrl = function() {
+    return this.get('url');
+  };
+
+
   return _.expose(Marker, 'aeris.maps.markers.Marker');
 });
