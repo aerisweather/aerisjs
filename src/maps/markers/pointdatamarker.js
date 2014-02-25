@@ -26,7 +26,7 @@ define([
       title: this.lookupTitle_,
       position: this.lookupPosition_,
       type: this.lookupType_
-    })
+    });
 
 
     /**
