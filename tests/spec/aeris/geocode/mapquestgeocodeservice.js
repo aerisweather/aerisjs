@@ -177,7 +177,7 @@ define([
         test.gcs.geocode('someplace').
           fail(failSpy);
 
-        expect(failSpy).toHaveBeenCalled()
+        expect(failSpy).toHaveBeenCalled();
       });
 
       it('should return sucessful api responses', function() {
