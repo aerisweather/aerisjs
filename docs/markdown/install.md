@@ -15,7 +15,7 @@
 For basic usage, Aeris.js can be used from a CDN:
 
 ```html
-<script type="text/javascript" src="//js.aerisapi.com/aerisjs/0.1.1/aeris.min.js"></script>
+<script type="text/javascript" src="//js.aerisapi.com/aerisjs/0.1.2/aeris.min.js"></script>
 ```
 
 #### Available Packages
@@ -26,7 +26,7 @@ There are several hosted versions of the Aeris.js library, each with a varying s
 
     Render weather tile layers and data using [Google Maps](https://developers.google.com/maps/).
 
-    https://js.aerisapi.com/aerisjs/0.1.1/gmaps.min.js
+    https://js.aerisapi.com/aerisjs/0.1.2/gmaps.min.js
 
 * **Weather for OpenLayers**
 
@@ -40,13 +40,13 @@ There are several hosted versions of the Aeris.js library, each with a varying s
 
     A javascript interface for the [Aeris Weather API](http://www.hamweather.com/support/documentation/aeris/).
 
-    https://js.aerisapi.com/aerisjs/0.1.1/api.min.js
+    https://js.aerisapi.com/aerisjs/0.1.2/api.min.js
 
 * **Weather for Google Maps + Geo Services**
 
     Includes additional APIs for [`geolocation`](/docs/public#aeris.geolocate), [`geocoding`](/docs/public#aeris.geocode), and [`directions`](/docs/api/classes/aeris.directions.DirectionsServiceInterface.html).
 
-    https://js.aerisapi.com/aerisjs/0.1.1/gmaps-plus.min.js
+    https://js.aerisapi.com/aerisjs/0.1.2/gmaps-plus.min.js
 
 * **Map AppBuilder**
 
@@ -54,7 +54,7 @@ There are several hosted versions of the Aeris.js library, each with a varying s
 
     *The [`AppBuilder`](/docs/api/classes/aeris.builder.maps.MapAppBuilder.html) component is currently a work in progress. Feel free to play around with it, while we finish up work on this component.*
 
-    https://js.aerisapi.com/aerisjs/0.1.1/mapAppBuilder.min.js
+    https://js.aerisapi.com/aerisjs/0.1.2/mapAppBuilder.min.js
     
 
 
@@ -272,5 +272,5 @@ require.config({
 Of course, you can always just go ahead and download the whole repo and stick it in your application directory. This means you'll have to download and manage all your dependencies yourself, but hey, to each their own.
 
 * [`master` branch](https://github.com/hamweather/aerisjs/archive/master.zip)
-* [v0.1.1 release](https://github.com/hamweather/aerisjs/releases/tag/v0.1.1)
+* [v0.1.2 release](https://github.com/hamweather/aerisjs/releases/tag/v0.1.2)
 * Clone the repo: `git clone https://github.com/hamweather/aerisjs.git`
