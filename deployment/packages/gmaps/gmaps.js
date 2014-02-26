@@ -1,6 +1,6 @@
 ({
   name: 'almond',
-  out: '../../../build/packages/gmaps-plus.js',
+  out: '../../../build/packages/gmaps.js',
 
   mainConfigFile: '../../../config-amd.js',
   baseUrl: '../../../',
@@ -37,12 +37,10 @@
 
   include: [
     'aeris/packages/maps',
-    'aeris/packages/gmaps',
-    'aeris/packages/api',
-    'aeris/packages/geoservice'
+    'aeris/packages/gmaps'
   ],
   wrap: {
     startFile: ['../../frag/almond/start.frag.js'],
-    endFile: ['../../frag/almond/gmaps-plus.end.frag.js']
+    endFile: ['../../frag/almond/gmaps.end.frag.js']
   }
 })
