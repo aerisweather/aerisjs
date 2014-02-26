@@ -115,7 +115,7 @@ define([
     });
 
 
-    describe('getSelectedWaypoints', function() {
+    describe('getSelected', function() {
 
       it('should return a list of selected waypoints', function() {
         var waypoints = [
@@ -148,7 +148,7 @@ define([
     });
 
 
-    describe('getDeselectedWaypoints', function() {
+    describe('getDeselected', function() {
 
       it('should return a list of waypoints which are not selected', function() {
         var waypoints = [
@@ -182,8 +182,6 @@ define([
 
 
     describe('selected waypoints', function() {
-      it('should return selected waypoints', function() {
-      });
 
       it('should select all waypoints', function() {
         var waypoints = [
