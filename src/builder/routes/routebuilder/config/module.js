@@ -32,7 +32,8 @@ define({
       args: [
         {
           routeBuilder: { $ref: 'routeBuilder' },
-          RoutePoint: { $ref: 'RoutePointFactory' }
+          RoutePoint: { $ref: 'RoutePointFactory' },
+          eventHub: { $ref: 'eventHub' }
         }
       ]
     }

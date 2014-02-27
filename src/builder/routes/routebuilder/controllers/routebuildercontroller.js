@@ -9,6 +9,9 @@ define([
    *
    * @param options
    * @param {aeris.maps.gmaps.route.RouteBuilder} options.routeBuilder
+   * @param {Function} options.RoutePoint Constructor for {aeris.maps.routes.Waypoint} to use
+   *                                      when creating new points in a route.
+   * @param {aeris.Events} options.eventHub;
    *
    * @constructor
    */
@@ -17,6 +20,13 @@ define([
     this.isRendered_ = false;
     this.RoutePoint_ = options.RoutePoint;
     this.map_ = null;
+
+    /**
+     * @property eventHub_
+     * @private
+     * @type {aeris.Events}
+    */
+    this.eventHub_ = options.eventHub;
 
     Events.call(this);
   };
@@ -40,8 +50,7 @@ define([
       this.setupMapBindings_();
     }
 
-    this.setupRoutePointBindings_();
-    this.setupRouteBindings_();
+    this.bindMapInteractions_();
 
     this.isRendered_ = true;
   };
@@ -66,21 +75,12 @@ define([
   };
 
 
-  RouteBuilderController.prototype.setupRoutePointBindings_ = function() {
+  RouteBuilderController.prototype.bindMapInteractions_ = function() {
     this.listenTo(this.routeBuilder_, {
       'path:click': this.addRoutePointBefore_,
-      'waypoint:click': function(latLon, routePoint) {
-        routePoint.toggle();
-      },
+      'waypoint:click': this.triggerClickEvent_,
       'waypoint:dragend': this.moveRoutePoint_
     })
-  };
-
-
-  RouteBuilderController.prototype.setupRouteBindings_ = function() {
-    this.listenTo(this.routeBuilder_.getRoute(), {
-      'select': this.selectOnly_
-    });
   };
 
 
@@ -110,12 +110,22 @@ define([
   };
 
 
-  RouteBuilderController.prototype.selectOnly_ = function(routePoint) {
-    var route = this.routeBuilder_.getRoute();
-    routePoint.select();
-    route.deselectAllExcept(routePoint);
+  /**
+   * @method triggerClickEvent_
+   * @private
+   */
+  RouteBuilderController.prototype.triggerClickEvent_ = function(latLon, routepoint) {
+    this.eventHub_.trigger('routepoint:click', latLon, routepoint);
   };
 
 
   return RouteBuilderController;
 });
+/**
+ * @for aeris.builder.maps.event.EventHub
+ */
+/**
+ * @event routepoint:click
+ * @param {Array.<number>} latLon
+ * @param {aeris.maps.routes.Waypoint} routepoint
+*/

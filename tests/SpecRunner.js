@@ -73,6 +73,7 @@ require([
 
       'spec/aeris/builder/routes/plugins/travelmode',
       'spec/aeris/builder/routes/routebuilder/controllers/controlscontroller',
+      'spec/aeris/builder/routes/routebuilder/controllers/routebuildercontroller',
       'spec/aeris/builder/routes/routebuilder/controllers/saveroutecontroller',
 
       'spec/aeris/geocode/mapquestgeocodeservice',
