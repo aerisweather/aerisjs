@@ -117,6 +117,7 @@ define([
 
     });
 
+
     describe('Polyline attribute bindings', function() {
       var polyline, waypoint;
 
@@ -178,73 +179,13 @@ define([
 
     });
 
+
     describe('Events', function() {
       var waypoint, polyline;
 
       beforeEach(function() {
         polyline = new MockPolyline();
         waypoint = new Waypoint(null, { polyline: polyline });
-      });
-
-
-      describe('select', function() {
-        var onSelect;
-
-
-        beforeEach(function() {
-          // Start with deselected waypoint
-          waypoint.set('selected', false);
-
-          onSelect = jasmine.createSpy('onSelect');
-          waypoint.on('select', onSelect);
-        });
-
-
-        it('should be triggered when the \'selected\' attribute is true', function() {
-          waypoint.set('selected', true);
-          expect(onSelect).toHaveBeenCalled();
-        });
-
-        it('should receive the waypoint as a parameter', function() {
-          waypoint.set('selected', true);
-          expect(onSelect).toHaveBeenCalledWithSomeOf(waypoint);
-        });
-
-        it('should not be called if the silent option is used', function() {
-          waypoint.set('selected', true, { silent: true });
-          expect(onSelect).not.toHaveBeenCalled();
-        });
-
-      });
-
-      describe('deselect', function() {
-        var onDeselect;
-
-
-        beforeEach(function() {
-          // Start with selected waypoint
-          waypoint.set('selected', true);
-
-          onDeselect = jasmine.createSpy('onDeselect');
-          waypoint.on('deselect', onDeselect);
-        });
-
-
-        it('should be triggered when the \'selected\' attribute is false', function() {
-          waypoint.set('selected', false);
-          expect(onDeselect).toHaveBeenCalled();
-        });
-
-        it('should receive the waypoint as a parameter', function() {
-          waypoint.set('selected', false);
-          expect(onDeselect).toHaveBeenCalledWithSomeOf(waypoint);
-        });
-
-        it('should not be called if the silent option is used', function() {
-          waypoint.set('selected', false, { silent: true });
-          expect(onDeselect).not.toHaveBeenCalled();
-        });
-
       });
 
 
@@ -374,80 +315,6 @@ define([
 
         expect(wp.getPosition()).toEqual([-45, 90]);
       });
-    });
-
-
-    describe('select', function() {
-
-      it('should not trigger events, if silent option is set', function() {
-        var waypoint = new Waypoint(null, { polyline: new MockPolyline() });
-        var eventListener = jasmine.createSpy('\'select\' event listener');
-
-        waypoint.on('select', eventListener);
-
-        waypoint.select({ silent: true });
-        expect(eventListener).not.toHaveBeenCalled();
-      });
-
-    });
-
-
-    describe('toggleSelect', function() {
-
-      it('should select a deselected waypiont', function() {
-        var waypoint = new Waypoint({
-          selected: false
-        }, { polyline: new MockPolyline() });
-
-        waypoint.toggleSelect();
-
-        expect(waypoint.get('selected')).toEqual(true);
-      });
-
-      it('should deselect a selected waypoint', function() {
-        var waypoint = new Waypoint({
-          selected: true
-        }, { polyline: new MockPolyline() });
-
-        waypoint.toggleSelect();
-
-        expect(waypoint.get('selected')).toEqual(false);
-      });
-
-
-      it('should toggle repeatedly', function() {
-        var waypoint = new Waypoint({
-          selected: true
-        }, { polyline: new MockPolyline() });
-
-        waypoint.toggleSelect();
-        expect(waypoint.get('selected')).toEqual(false);
-
-        waypoint.toggleSelect();
-        expect(waypoint.get('selected')).toEqual(true);
-
-        waypoint.toggleSelect();
-        expect(waypoint.get('selected')).toEqual(false);
-
-        waypoint.toggleSelect();
-        expect(waypoint.get('selected')).toEqual(true);
-      });
-
-    });
-
-
-    describe('isSelected', function() {
-
-      it('should tell you if the waypoint is selected', function() {
-        var waypoint = new Waypoint(null, { polyline: new MockPolyline() });
-
-        waypoint.set('selected', true);
-        expect(waypoint.isSelected()).toEqual(true);
-
-        waypoint.set('selected', false);
-        expect(waypoint.isSelected()).toEqual(false);
-      });
-
     });
 
 

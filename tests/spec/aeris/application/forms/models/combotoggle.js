@@ -2,43 +2,17 @@ define([
   'aeris/util',
   'aeris/application/forms/models/combotoggle',
   'sinon',
-  'aeris/application/forms/models/toggle',
+  'mocks/aeris/toggle',
   'aeris/collection',
   'aeris/model'
-], function(_, ComboToggle, sinon, Toggle, Collection, Model) {
+], function(_, ComboToggle, sinon, BaseMockToggle, Collection, Model) {
 
   var MockToggle = function(opt_attrs) {
-    Model.call(this, opt_attrs, {
+    BaseMockToggle.call(this, opt_attrs, {
       idAttribute: 'name'
     });
   };
-  _.inherits(MockToggle, Toggle);
-
-  MockToggle.prototype.setSelected = function(isSelected) {
-    this.set('selected', isSelected);
-  };
-
-  MockToggle.prototype.select = function() {
-    this.setSelected(true);
-    this.trigger('select');
-  };
-
-  MockToggle.prototype.deselect = function() {
-    this.setSelected(false);
-    this.trigger('deselect');
-  };
-
-  MockToggle.prototype.toggle = function() {
-    var event;
-    this.setSelected(!this.isSelected());
-
-    event = this.isSelected() ? 'select' : 'deselect';
-    this.trigger(event);
-  };
-
-  MockToggle.prototype.isSelected = function() {
-    return this.get('selected');
-  };
+  _.inherits(MockToggle, BaseMockToggle);
 
 
   var MockSelectedToggle = function() {

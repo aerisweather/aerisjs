@@ -70,7 +70,7 @@ define([
     this.listenTo(this.routeBuilder_, {
       'path:click': this.addRoutePointBefore_,
       'waypoint:click': function(latLon, routePoint) {
-        routePoint.toggleSelect();
+        routePoint.toggle();
       },
       'waypoint:dragend': this.moveRoutePoint_
     })

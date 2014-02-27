@@ -1,6 +1,7 @@
 define([
   'aeris/util',
   'aeris/maps/markers/marker',
+  'aeris/togglebehavior',
   'aeris/helpers/validator/pathvalidator',
   'aeris/maps/polylines/polyline',
   'aeris/directions/googledirectionsservice',
@@ -8,7 +9,18 @@ define([
   'aeris/maps/routes/errors/jsonparseerror',
   'aeris/maps/routes/errors/waypointnotinrouteerror',
   'aeris/errors/validationerror'
-], function(_, Marker, PathValidator, Polyline, GoogleDirectionsService, NonstopDirectionsService, JSONParseError, WaypointNotInRouteError, ValidationError) {
+], function(
+  _,
+  Marker,
+  ToggleBehavior,
+  PathValidator,
+  Polyline,
+  GoogleDirectionsService,
+  NonstopDirectionsService,
+  JSONParseError,
+  WaypointNotInRouteError,
+  ValidationError
+) {
   /**
    * A Waypoint is a marker along a route.
    * A waypoint has a path, as well as information
@@ -17,6 +29,8 @@ define([
    * @class Waypoint
    * @namespace aeris.maps.gmaps.route
    * @extends aeris.maps.markers.Marker
+   *
+   * @mixes aeris.ToggleBehavior
    *
    * @constructor
    * @override
@@ -32,8 +46,7 @@ define([
       followDirections: true,
       travelMode: Waypoint.travelMode.WALKING,
       path: [],
-      distance: 0,
-      selected: false
+      distance: 0
     });
     var options = opt_options || {};
 
@@ -75,6 +88,7 @@ define([
 
 
     Marker.call(this, attrs, options);
+    ToggleBehavior.call(this);
 
 
     /**
@@ -86,16 +100,6 @@ define([
      * @param {aeris.maps.gmaps.route.Waypoint}
      */
     /**
-     * @event select
-     * @param {aeris.maps.gmaps.route.Waypoint} waypoint The selected waypoint.
-     * @param {Object} options Options passed to Backbone.Model#set.
-     */
-    /**
-     * @event deselect
-     * @param {aeris.maps.gmaps.route.Waypoint} waypoint The deselected waypoint.
-     * @param {Object} options Options passed to Backbone.Model#set.
-     */
-    /**
      * When a waypoint fails retrieve directions data.
      *
      * @event directions:error
@@ -103,9 +107,9 @@ define([
      */
 
     this.initializePolylineBindings_();
-    this.initializeSelectEvents_();
   };
   _.inherits(Waypoint, Marker);
+  _.extend(Waypoint.prototype, ToggleBehavior.prototype);
 
 
   /**
@@ -122,21 +126,6 @@ define([
     this.listenTo(this.polyline_, {
       'click': function(latLon) {
         this.trigger('path:click', latLon, this);
-      }
-    });
-  };
-
-
-  /**
-   * @private
-   * @method initializeSelectEvents_
-   */
-  Waypoint.prototype.initializeSelectEvents_ = function() {
-    this.listenTo(this, {
-      // Trigger 'select' / 'deselect' events
-      'change:selected': function(model, isSelected, opts) {
-        var topic = isSelected ? 'select' : 'deselect';
-        this.trigger(topic, model, opts);
       }
     });
   };
@@ -196,44 +185,6 @@ define([
    */
   Waypoint.prototype.getDistance = function() {
     return this.get('distance');
-  };
-
-
-  /**
-   * @param {Object} opt_options See Backbone.Model#set options.
-   * @method select
-   */
-  Waypoint.prototype.select = function(opt_options) {
-    this.set({ selected: true }, opt_options);
-  };
-
-
-  /**
-   * @param {Object} opt_options See Backbone.Model#set options.
-   * @method deselect
-   */
-  Waypoint.prototype.deselect = function(opt_options) {
-    this.set({ selected: false }, opt_options);
-  };
-
-
-  /**
-   * @param {Object} opt_options See Backbone.Model#set options.
-   * @method toggleSelect
-   */
-  Waypoint.prototype.toggleSelect = function(opt_options) {
-    var fn = this.isSelected() ? this.deselect : this.select;
-
-    fn.call(this, opt_options);
-  };
-
-
-  /**
-   * @return {Boolean}
-   * @method isSelected
-   */
-  Waypoint.prototype.isSelected = function() {
-    return !!this.get('selected');
   };
 
 
