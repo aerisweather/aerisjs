@@ -4,6 +4,7 @@ define([
   'aeris/api/collections/lightning',
   'aeris/api/collections/stormreports',
 
+  'aeris/api/models/advisory',
   'aeris/api/models/earthquake',
   'aeris/api/models/fire',
   'aeris/api/models/forecast',
