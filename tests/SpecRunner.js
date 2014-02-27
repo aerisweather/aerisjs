@@ -118,6 +118,7 @@ require([
       'spec/aeris/maps/polylines/polyline',
 
       'spec/aeris/maps/markers/pointdatamarker',
+      'spec/aeris/maps/markercollections/markercollection',
       'spec/aeris/maps/markercollections/pointdatamarkers',
 
       'spec/aeris/maps/animations/abstractanimation',

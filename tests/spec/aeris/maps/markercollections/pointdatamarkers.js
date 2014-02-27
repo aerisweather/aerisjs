@@ -42,33 +42,7 @@ define([
 
 
 
-  describe('A PointDataMarkers', function() {
-
-    describe('constructor', function() {
-
-      beforeEach(function() {
-        spyOn(PointDataMarkers.prototype, 'startClustering');
-      });
-
-      it('should start clustering, if the cluster option is set to true', function() {
-        new PointDataMarkers(undefined, {
-          data: new MockDataCollection(),
-          cluster: true
-        });
-
-        expect(PointDataMarkers.prototype.startClustering).toHaveBeenCalled();
-      });
-
-      it('should start clustering, if the cluster option is set to false', function() {
-        new PointDataMarkers(undefined, {
-          data: new MockDataCollection(),
-          cluster: false
-        });
-
-        expect(PointDataMarkers.prototype.startClustering).not.toHaveBeenCalled();
-      });
-
-    });
+  describe('A PointDataMarkers Collection', function() {
 
     describe('data proxy methods', function() {
       var mockData, markers;
