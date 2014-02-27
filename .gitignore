@@ -7,6 +7,9 @@
 bower_components/
 examples/amd/bower_components
 
+# Sandbox
+examples/sandbox/js/app.js
+
 # environment specific files
 examples/apikeys.js
 
