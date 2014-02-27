@@ -46,7 +46,7 @@ define([
   };
 
   /**
-   * Close the info panel view.
+   * Close the region.
    * @method close
    */
   Renderer.prototype.close = function() {
