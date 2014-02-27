@@ -45,6 +45,16 @@ define([
         expect(viewCollection.length).toEqual(2);
       });
 
+      it('should not remove any existing model, if no data is specified', function() {
+        var viewCollection = new ViewCollection([
+          new Model(),
+          new Model(),
+          new Model()
+        ], {});
+
+        expect(viewCollection.length).toEqual(3);
+      });
+
       describe('Event bindings', function() {
 
         it('should add a view model when a data model is added', function() {

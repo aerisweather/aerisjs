@@ -13,8 +13,9 @@ define([
    *
    * @constructor
    * @override
-  */
+   */
   var ViewCollection = function(opt_models, opt_options) {
+    var isDataCollectionProvided = opt_options && opt_options.data;
     var options = _.defaults(opt_options || {}, {
       data: new Collection(),
       model: ViewModel
@@ -44,20 +45,6 @@ define([
 
     Collection.call(this, opt_models, options);
 
-
-    // Bind to data model
-    this.listenTo(this.data_, {
-      add: this.addViewModel_,
-      remove: this.removeViewModel_,
-      reset: this.resetViewModels_
-    });
-
-    // Create view models from any
-    // existing data models.
-    this.resetViewModels_();
-
-    this.proxyDataSyncEvents_();
-
     /**
      * The bound data collection has made an API request.
      *
@@ -73,8 +60,31 @@ define([
      * @param {aeris.ViewCollection} viewCollection
      * @param {Object} responseData Raw API response data
      */
+
+    this.bindToDataCollection_();
+
+    // If no data collection is specified in ctor,
+    // do not touch our models.
+    if (isDataCollectionProvided) {
+      this.updateModelsFromData_();
+    }
   };
   _.inherits(ViewCollection, Collection);
+
+
+  /**
+   * @method bindToDataCollection_
+   * @private
+   */
+  ViewCollection.prototype.bindToDataCollection_ = function() {
+    this.listenTo(this.data_, {
+      add: this.addViewModel_,
+      remove: this.removeViewModel_,
+      reset: this.updateModelsFromData_
+    });
+
+    this.proxyDataSyncEvents_();
+  };
 
 
   /**
@@ -121,7 +131,9 @@ define([
 
     // No ViewModel is associated with
     // this data model.
-    if (!viewModel) { return; }
+    if (!viewModel) {
+      return;
+    }
 
     // Remove the view model
     this.remove(viewModel);
@@ -134,9 +146,9 @@ define([
    * with our data model.
    *
    * @private
-   * @method resetViewModels_
+   * @method updateModelsFromData_
    */
-  ViewCollection.prototype.resetViewModels_ = function() {
+  ViewCollection.prototype.updateModelsFromData_ = function() {
     var viewModels = [];
 
     // Reset the lookup
