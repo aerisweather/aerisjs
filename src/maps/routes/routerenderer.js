@@ -284,8 +284,13 @@ define([
    * @method setStylesForWaypoint_
    */
   RouteRenderer.prototype.setStylesForWaypoint_ = function(waypoint) {
-    var waypointStyles = waypoint.isSelected() ?
-      this.selectedWaypointStyles_ : this.waypointStyles_;
+    var waypointStyles = _.extend({}, this.waypointStyles_, {
+      selectedUrl: this.selectedWaypointStyles_.url,
+      selectedOffsetX: this.selectedWaypointStyles_.offsetX,
+      selectedOffsetY: this.selectedWaypointStyles_.offsetY,
+      clickable: waypoint.isSelected() ? this.selectedWaypointStyles_.clickable : this.waypointStyles_.clickable,
+      draggable: waypoint.isSelected() ? this.selectedWaypointStyles_.draggable : this.waypointStyles_.draggable
+    });
 
     var pathStyles = waypoint.get('followDirections') ?
       this.pathStyles_ : this.offPathStyles_;

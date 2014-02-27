@@ -376,11 +376,11 @@ define([
           waypoint.isSelected.andReturn(true);
           renderer.renderWaypoint(waypoint);
 
-          expect(waypoint.get('url')).toEqual('blueIcon.png');
+          expect(waypoint.get('selectedUrl')).toEqual('blueIcon.png');
           expect(waypoint.get('clickable')).toEqual(true);
           expect(waypoint.get('draggable')).toEqual(false);
-          expect(waypoint.get('offsetX')).toEqual(15);
-          expect(waypoint.get('offsetY')).toEqual(20);
+          expect(waypoint.get('selectedOffsetX')).toEqual(15);
+          expect(waypoint.get('selectedOffsetY')).toEqual(20);
         });
 
         it('should change a waypoint\'s style when it is selected / deselected', function() {
@@ -417,7 +417,7 @@ define([
           waypoint.isSelected.andReturn();
 
           // Should change attrs to waypoint options
-          expect(waypoint.get('url')).toEqual('blueIcon.png');
+          expect(waypoint.get('selectedUrl')).toEqual('blueIcon.png');
           expect(waypoint.get('clickable')).toEqual(true);
           expect(waypoint.get('draggable')).toEqual(false);
         });
