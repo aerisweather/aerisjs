@@ -16,13 +16,14 @@ define({
   // and renders transformed event data
   infoPanelRenderer: {
     create: {
-      module: 'aeris/builder/maps/core/helpers/renderer',
+      module: 'aeris/builder/maps/infopanel/helpers/infopanelrenderer',
       args: [
         {
           region: {
             $ref: 'region!infoPanel',
             layout: { $ref: 'mapAppLayout' }
-          }
+          },
+          eventHub: { $ref: 'eventHub' }
         }
       ]
     },
