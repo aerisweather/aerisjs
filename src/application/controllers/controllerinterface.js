@@ -8,7 +8,14 @@ define(function() {
    * @param {Object} options
    * @param {HTMLElement|$=} options.el
    */
-  var ControllerInterface = function(options) {};
+  var ControllerInterface = function(options) {
+    /**
+     * @event render
+     */
+    /**
+     * @event close
+     */
+  };
 
   /**
    * Render (start up) the controller
