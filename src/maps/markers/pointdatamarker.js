@@ -15,14 +15,15 @@ define([
    * @override
   */
   var PointDataMarker = function(opt_attrs, opt_options) {
-    var options = _.extend({
+    var options = _.defaults(opt_options || {}, {
       iconPath: config.get('path') + 'assets/{name}.png',
       iconLookup: {},
       typeAttribute: ''
-    }, opt_options);
+    });
 
     options.attributeTransforms = _.defaults(options.attributeTransforms || {}, {
       url: this.lookupUrl_,
+      selectedUrl: this.lookupSelectedUrl_,
       title: this.lookupTitle_,
       position: this.lookupPosition_,
       type: this.lookupType_
@@ -48,6 +49,18 @@ define([
      * @property iconPath_
      */
     this.iconPath_ = options.iconPath;
+
+    /**
+     * The path to the icon url,
+     * to use only when the marker is selected.
+     *
+     * Defaults to the iconPath.
+     *
+     * @property selectedIconPath_
+     * @private
+     * @type {string}
+    */
+    this.selectedIconPath_ = options.selectedIconPath || options.iconPath;
 
 
     /**
@@ -126,17 +139,39 @@ define([
    * @method lookupUrl_
    */
   PointDataMarker.prototype.lookupUrl_ = function() {
-    var url;
-    var type = this.getType() || this.lookupType_();
-    var iconName = this.lookupTypeIcon_(type);
+    var iconName = this.getIconNameForType_();
 
     // If no icon name found,
     // don't try to set one.
     if (!iconName) { return this.get('url'); }
 
-    url = this.iconPath_.replace(/\{name\}/, iconName);
+    return this.iconPath_.replace(/\{name\}/, iconName);
+  };
 
-    return url;
+
+  /**
+   * @method lookupSelectedUrl_
+   * @private
+   */
+  PointDataMarker.prototype.lookupSelectedUrl_ = function() {
+    var iconName = this.getIconNameForType_();
+
+    // If no icon name found,
+    // don't try to set one.
+    if (!iconName) { return this.get('selectedUrl'); }
+
+    return this.selectedIconPath_.replace(/\{name\}/, iconName);
+  };
+
+  /**
+   * @method getIconNameForType_
+   * @private
+   * @return {string}
+   */
+  PointDataMarker.prototype.getIconNameForType_ = function() {
+    var type = this.getType() || this.lookupType_();
+
+    return this.lookupTypeIcon_(type);
   };
 
 
