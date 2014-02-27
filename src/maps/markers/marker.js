@@ -6,6 +6,14 @@ define([
   /**
    * A representation of an icon on a map.
    *
+   * @publicApi
+   * @class Marker
+   * @namespace aeris.maps.markers
+   *
+   * @extends aeris.maps.extensions.MapExtensionObject
+   *
+   * @constructor
+   *
    * @param {Object=} opt_attrs
    * @param {Array.<number>} opt_attrs.position The lat/lon position to set the Marker.
    * @param {Boolean=} opt_attrs.clickable Whether the user can click the marker. Default is true.
@@ -14,24 +22,10 @@ define([
    * @param {number=} opt_attrs.width Width of the icon, in pixels.
    * @param {number=} opt_attrs.height Height of the icon, in pixels.
    *
-   * @constructor
-   * @publicApi
-   * @class Marker
-   * @namespace aeris.maps.markers
-   * @extends aeris.maps.extensions.MapExtensionObject
+   * @param {Object=} opt_options
+   * @param {aeris.maps.AbstractStrategy} opt_options.strategy
    */
   var Marker = function(opt_attrs, opt_options) {
-    /**
-     * @event click
-     * @param {Array.<number>} latLon
-     * @param {aeris.maps.markers.Marker} marker
-     */
-    /**
-     * @event dragend
-     * @param {Array.<number>} latLon
-     * @param {aeris.maps.markers.Marker} marker
-     */
-
     var attrs = _.extend({
       /**
        * @attribute position

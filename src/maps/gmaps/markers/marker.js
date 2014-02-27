@@ -142,3 +142,16 @@ define([
 
   return MarkerStrategy;
 });
+/**
+ * @for aeris.maps.markers.Marker
+ */
+/**
+ * @event click
+ * @param {Array.<number>} latLon
+ * @param {aeris.maps.markers.Marker} marker
+ */
+/**
+ * @event dragend
+ * @param {Array.<number>} latLon
+ * @param {aeris.maps.markers.Marker} marker
+ */
