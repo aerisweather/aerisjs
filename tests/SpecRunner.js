@@ -133,6 +133,7 @@ require([
       'spec/aeris/maps/gmaps/layers/tile',
       'spec/aeris/maps/gmaps/layers/kml',
       'spec/aeris/maps/gmaps/layers/maptype/imagemaptype',
+      'spec/aeris/maps/gmaps/markers/marker',
       'spec/aeris/maps/gmaps/markers/markercluster',
 
 

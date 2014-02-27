@@ -1,8 +1,9 @@
 define([
-  'aeris/maps/extensions/mapextensionobject',
   'aeris/util',
+  'aeris/maps/extensions/mapextensionobject',
+  'aeris/togglebehavior',
   'aeris/errors/validationerror'
-], function(MapExtensionObject, _, ValidationError) {
+], function(_, MapExtensionObject, ToggleBehavior, ValidationError) {
   /**
    * A representation of an icon on a map.
    *
@@ -11,6 +12,7 @@ define([
    * @namespace aeris.maps.markers
    *
    * @extends aeris.maps.extensions.MapExtensionObject
+   * @mixes aeris.maps.ToggleBehavior
    *
    * @constructor
    *
@@ -26,7 +28,11 @@ define([
    * @param {aeris.maps.AbstractStrategy} opt_options.strategy
    */
   var Marker = function(opt_attrs, opt_options) {
-    var attrs = _.extend({
+    var options = _.defaults(opt_options || {}, {
+      strategy: 'markers/marker'
+    });
+
+    var attrs = _.defaults(opt_attrs || {}, {
       /**
        * @attribute position
        * @type {Array.<number>}
@@ -77,7 +83,6 @@ define([
        */
       draggable: false,
 
-
       /**
        * Marker title.
        *
@@ -86,15 +91,18 @@ define([
        * @default ''
        */
       title: ''
-    }, opt_attrs);
-
-    var options = _.defaults(opt_options || {}, {
-      strategy: 'markers/marker'
     });
 
+    // Default selected styles to base styles
+    attrs.selectedUrl || (attrs.selectedUrl = attrs.url);
+    attrs.selectedOffsetX || (attrs.selectedOffsetX = attrs.offsetX);
+    attrs.selectedOffsetY || (attrs.selectedOffsetY = attrs.offsetY);
+
     MapExtensionObject.call(this, attrs, options);
+    ToggleBehavior.call(this);
   };
   _.inherits(Marker, MapExtensionObject);
+  _.extend(Marker.prototype, ToggleBehavior.prototype);
 
 
   /**
@@ -151,6 +159,22 @@ define([
   */
   Marker.prototype.getUrl = function() {
     return this.get('url');
+  };
+
+  /**
+   * @method setSelectedUrl
+   * @param {string} selectedUrl
+   */
+  Marker.prototype.setSelectedUrl = function(selectedUrl) {
+    this.set('selectedUrl', selectedUrl, { validate: true });
+  };
+
+  /**
+   * @method getSelectedUrl
+   * @return {string}
+   */
+  Marker.prototype.getSelectedUrl = function() {
+    return this.get('selectedUrl')
   };
 
 

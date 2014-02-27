@@ -10,10 +10,34 @@ define([
    * @class Marker
    * @namespace aeris.maps.gmaps.markers
    * @extends aeris.maps.AbstractStrategy
-   * @param {aeris.maps.markers.Marker} marker
+   *
    * @constructor
+   * @param {aeris.maps.markers.Marker} marker
+   *
+   * @param {Object=} opt_options
+   * @param {google.maps=} opt_options.googlemaps
    */
-  var MarkerStrategy = function(marker) {
+  var MarkerStrategy = function(marker, opt_options) {
+    var options = _.defaults(opt_options || {}, {
+      googlemaps: gmaps
+    });
+
+    /**
+     * @property gmaps_
+     * @private
+     * @type {google.maps}
+    */
+    this.gmaps_ = options.googlemaps;
+
+
+    /**
+     * The marker view-model which
+     * this strategy is in charge of rendering.
+     *
+     * @property marker_
+     * @type {aeris.maps.markers.Marker}
+     * @private
+     */
     this.marker_ = marker;
 
     AbstractStrategy.call(this, this.marker_);
@@ -23,7 +47,9 @@ define([
     this.listenTo(this.marker_, {
       'change:position': this.updatePosition_,
       'change:title': this.updateTitle_,
-      'change:url change:offsetX change:offsetY': this.updateIcon_
+      'change:url change:offsetX change:offsetY': this.updateIcon_,
+      'change:selectedUrl change:selectedOffsetX change:selectedOffsetY': this.updateIcon_,
+      'change:selected': this.updateIcon_
     });
   };
   _.inherits(MarkerStrategy, AbstractStrategy);
@@ -33,7 +59,7 @@ define([
    * @method createView_
    */
   MarkerStrategy.prototype.createView_ = function() {
-    return new gmaps.Marker(this.getViewOptions_());
+    return new this.gmaps_.Marker(this.getViewOptions_());
   };
 
 
@@ -73,7 +99,8 @@ define([
 
   MarkerStrategy.prototype.createIcon_ = function() {
     return {
-      url: this.marker_.get('url'),
+      url: this.marker_.isSelected() ?
+        this.marker_.get('selectedUrl') : this.marker_.get('url'),
       anchor: this.createAnchorPoint_()
     };
   };
@@ -84,10 +111,12 @@ define([
    * @method createAnchorPoint_
    */
   MarkerStrategy.prototype.createAnchorPoint_ = function() {
-    return new gmaps.Point(
-      this.marker_.get('offsetX'),
-      this.marker_.get('offsetY')
-    )
+    var offsetX = this.marker_.isSelected() ?
+      this.marker_.get('selectedOffsetX') : this.marker_.get('offsetX');
+    var offsetY = this.marker_.isSelected() ?
+      this.marker_.get('selectedOffsetY') : this.marker_.get('offsetY');
+
+    return new this.gmaps_.Point(offsetX, offsetY);
   };
 
 
@@ -134,6 +163,10 @@ define([
   };
 
 
+  /**
+   * @method updateIcon_
+   * @private
+   */
   MarkerStrategy.prototype.updateIcon_ = function() {
     var icon = this.createIcon_();
     this.getView().setIcon(icon);
