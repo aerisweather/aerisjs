@@ -162,9 +162,14 @@
       var stormReportName =  marker.getDataAttribute('report.name');
       var stormReportComment = marker.getDataAttribute('report.comments');
 
+      // Render marker data in the info box
+      // and add it to the map
       infoBox.setContent($('<div><strong>' + stormReportName + ': </strong>' + stormReportComment + '</div>')[0]);
       infoBox.setPosition(latLon);
       infoBox.setMap(map);
+
+      // Select the marker
+      stormMarkers.selectOnly(marker);
     });
 
 
