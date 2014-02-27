@@ -34,19 +34,6 @@ define([
 
 
   /**
-   * @method validate
-   */
-  Attribute.prototype.validate = function(attrs) {
-    if (_.isUndefined(attrs.value)) {
-      return new ValidationError('value', attrs.value + ' is not a valid attribute value.');
-    }
-    if (attrs.label && !_.isString(attrs.label)) {
-      return new ValidationError('label', 'label must be string');
-    }
-  };
-
-
-  /**
    * @method normalize_
    */
   Attribute.prototype.normalize_ = function(attrs) {
