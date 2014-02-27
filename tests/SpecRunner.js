@@ -22,8 +22,6 @@ require([
     jasmine.slow.enable(50);
 
     require([
-      'lib/domReady.js!',
-
       'spec/aeris/model',
       'spec/aeris/collection',
       'spec/aeris/limitedcollection',
@@ -69,6 +67,7 @@ require([
       'spec/aeris/builder/maps/fullscreen/controllers/fullscreencontroller',
       'spec/aeris/builder/maps/fullscreen/helpers/fullscreenservice',
       'spec/aeris/builder/maps/fullscreen/modules/fullscreenmodule',
+      'spec/aeris/builder/maps/infopanel/helpers/infopanelrenderer',
       'spec/aeris/builder/maps/mapcontrols/controllers/mapcontrolscontroller',
 
       'spec/aeris/builder/routes/plugins/travelmode',
@@ -156,13 +155,7 @@ require([
 
       'integration/spec/wire/wire'
     ], function() {
-
-      // Yes, it's a hack,
-      // but it's solving some aweful async
-      // loading issues...
-      window.setTimeout(function() {
-        jasmineEnv.execute();
-      }, 500);
+      jasmineEnv.execute();
     });
   });
 }, function(e) {

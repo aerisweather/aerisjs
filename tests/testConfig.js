@@ -4,9 +4,9 @@ require.config({
   //urlArgs: 'cb=' + Math.random(),                   // Cache buster
   paths: {
     jasmine: '../bower_components/jasmine/lib/jasmine-core/jasmine',
+    'jasmine-html': '../bower_components/jasmine/lib/jasmine-core/jasmine-html',
     'jasmine-slow': '../bower_components/jasmine-slow/lib/jasmine-slow',
-    'jasmine-html': '/tests/lib/jasmine-html',
-    async: '/tests/lib/async',
+    async: 'tests/lib/async',
     sinon: '../bower_components/sinon/index',
     spec: 'tests/spec',
     integration: 'tests/integration',
