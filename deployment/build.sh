@@ -37,7 +37,7 @@ compileCompassProjects() {
   while read -r p; do
     if [[ "$p" != *#* ]]; then
       COMPILE_TARGET="../lib/${p/$'\n'/}"
-      COMPILE_CMD="compass compile $COMPILE_TARGET"
+      COMPILE_CMD="compass compile $COMPILE_TARGET --output-style compressed --force"
       COMPILE_ERROR="Failed to compile $COMPILE_TARGET"
 
       log "compiling $COMPILE_TARGET..."
