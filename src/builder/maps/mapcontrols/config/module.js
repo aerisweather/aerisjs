@@ -29,15 +29,15 @@ define(
         args: [{
           eventHub: { $ref: 'eventHub' },
           builderOptions: { $ref: 'builderOptions' },
-          className: 'sideMenu',
-          selectedClass: 'state-open',
-          deselectedClass: 'state-closed',
+          className: 'aeris-sideMenu',
+          selectedClass: 'aeris-state-open',
+          deselectedClass: 'aeris-state-closed',
 
           template: { $ref: 'mapControlsTemplate' },
 
           ui: {
-            mapOptionsToggle: '.mapControls>h1:first-child',
-            mapOptionsContent: '.mapControls'
+            mapOptionsToggle: '.aeris-mapControls>h1:first-child',
+            mapOptionsContent: '.aeris-mapControls'
           },
 
           regions: { $ref: 'mapControlsRegions' },

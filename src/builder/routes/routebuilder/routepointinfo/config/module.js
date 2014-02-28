@@ -23,7 +23,7 @@ define({
           routeBuilder: { $ref: 'routeBuilder' },
           template: { $ref: 'routePointInfoTemplate' },
           ui: {
-            deleteBtn: '.deleteBtn',
+            deleteBtn: '.aeris-deleteBtn',
             closeBtn: 'h1',
             transitionTarget: 'header, section'
           }

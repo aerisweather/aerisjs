@@ -56,8 +56,8 @@ define({
 
           SaveRouteController: { $ref: 'SaveRouteController' },
 
-          openStateClass: 'state-open',
-          closedStateClass: 'state-closed',
+          openStateClass: 'aeris-state-open',
+          closedStateClass: 'aeris-state-closed',
 
           ui: { $ref: 'routeControlsUI' },
 

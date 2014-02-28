@@ -6,9 +6,9 @@ define({
   },
 
   mapAppRegions: {
-    mapCanvas: '.mapCanvasRegion',
-    mapControls: '.mapControlsRegion',
-    infoPanel: '.infoPanelRegion',
+    mapCanvas: '.aeris-mapCanvasRegion',
+    mapControls: '.aeris-mapControlsRegion',
+    infoPanel: '.aeris-infoPanelRegion',
     modal: '.aeris-modalViewRegion'
   },
 

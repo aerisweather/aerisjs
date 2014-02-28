@@ -23,8 +23,8 @@ define([
   var ToggleController = function(options) {
     options = _.defaults(options, {
       template: toggleView,
-      selectedClass: 'selected',
-      deselectedClass: 'deselected',
+      selectedClass: 'aeris-selected',
+      deselectedClass: 'aeris-deselected',
       events: {
         'change input': this.updateModel_
       },

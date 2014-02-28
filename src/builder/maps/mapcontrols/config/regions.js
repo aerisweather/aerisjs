@@ -1,9 +1,9 @@
 define({
   $exports: {
-    geolocateControlsRegion: '.geolocateControls',
-    geocodeControlsRegion: '.geocodeRegion',
-    layerControlsRegion: '.layerControls',
-    markerControlsRegion: '.markerControls',
-    fullscreenControlsRegion: '.fullscreenControlsRegion'
+    geolocateControlsRegion: '.aeris-geolocateControls',
+    geocodeControlsRegion: '.aeris-geocodeRegion',
+    layerControlsRegion: '.aeris-layerControls',
+    markerControlsRegion: '.aeris-markerControls',
+    fullscreenControlsRegion: '.aeris-fullscreenControlsRegion'
   }
 })

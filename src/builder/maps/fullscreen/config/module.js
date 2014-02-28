@@ -45,8 +45,8 @@ define({
   // FullscreenBtnController configuration options
   fullscreenBtnTemplate: { module: 'hbars!aeris/builder/maps/fullscreen/view/fullscreenbutton.html' },
   fullscreenBtnClasses: {
-    fullscreen: 'fullscreen',
-    exitFullscreen: 'exitFullscreen'
+    fullscreen: 'aeris-fullscreen',
+    exitFullscreen: 'aeris-exitFullscreen'
   },
 
   fullscreenService: {

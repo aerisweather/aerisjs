@@ -30,7 +30,7 @@ define({
       module: 'aeris/builder/maps/map/controllers/mapcontroller',
       args: [{
         appState: { $ref: 'appState' },
-        className: 'mapCanvas',
+        className: 'aeris-mapCanvas',
         model: { $ref: 'mapState' }
       }]
     }

@@ -4,9 +4,9 @@ define({
     geocodeControlsRegion: { $ref: 'parentRegions.geocodeControlsRegion' },
     layerControlsRegion: { $ref: 'parentRegions.layerControlsRegion' },
     markerControlsRegion: { $ref: 'parentRegions.markerControlsRegion' },
-    fullscreenControlsRegion: '.fullscreenControlsRegion',
+    fullscreenControlsRegion: '.aeris-fullscreenControlsRegion',
 
-    routeBuilderControlsRegion: '.routeBuilderControls'
+    routeBuilderControlsRegion: '.aeris-routeBuilderControls'
   },
 
   parentRegions: { wire: 'aeris/builder/maps/mapcontrols/config/regions' }
