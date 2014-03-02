@@ -75,6 +75,7 @@ define([
       'add change:position change:followDirections': function(waypoint) {
         this.updatePathsForExistingWaypoint_(waypoint);
       },
+      'reset': this.ensurePathsForAllWaypoints_,
       'change:path': function(waypoint, path) {
         this.movePreviousWaypointToStartOfPath_(waypoint, path);
       },
@@ -316,6 +317,25 @@ define([
     }, this);
 
     return distance;
+  };
+
+
+  /**
+   * Update paths on all waypoint in the route,
+   * unless the waypoint already has a path set.
+   *
+   * @method ensurePathsForAllWaypoints_
+   * @private
+  */
+  Route.prototype.ensurePathsForAllWaypoints_ = function() {
+    this.each(function(waypoint) {
+      var hasPath = waypoint.get('path') && waypoint.get('path').length;
+      var prevWaypoint = this.getPrevious(waypoint);
+
+      if (!hasPath && prevWaypoint) {
+        this.updatePathBetween(prevWaypoint, waypoint);
+      }
+    }, this);
   };
 
 

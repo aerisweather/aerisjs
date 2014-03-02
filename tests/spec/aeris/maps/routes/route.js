@@ -596,6 +596,67 @@ define([
         });
 
       });
+
+      describe('when the route is reset', function() {
+
+        var MockWaypointWithPath = function(opt_path) {
+          var path = opt_path || ['STUB', 'PATH'];
+
+          return new MockWaypoint({
+            path: path
+          });
+        };
+
+        var MockWaypointWithoutPath = function(opt_attrs) {
+          var attrs = _.defaults(opt_attrs || {}, {
+            path: []
+          });
+          return new MockWaypoint(attrs);
+        };
+
+        beforeEach(function() {
+          firstWaypoint = new MockWaypointWithoutPath({
+            id: 'FIRST'
+          });
+          middleWaypoint = new MockWaypointWithoutPath({
+            id: 'MIDDLE'
+          });
+          lastWaypoint = new MockWaypointWithoutPath({
+            id: 'LAST'
+          });
+        });
+
+
+        it('should set any missing waypoint paths', function() {
+          route.reset([
+            firstWaypoint,
+            middleWaypoint,
+            lastWaypoint
+          ]);
+
+          expect(route.updatePathBetween).toHaveBeenCalledWith(firstWaypoint, middleWaypoint);
+          expect(route.updatePathBetween).toHaveBeenCalledWith(middleWaypoint, lastWaypoint);
+        });
+
+        it('should not overwrite any existing waypoint paths', function() {
+          var middleWaypointWithPath = new MockWaypointWithPath();
+          middleWaypointWithPath.id = 'MIDDLE_WITH_PATH';
+
+          route.reset([
+            firstWaypoint,
+            middleWaypointWithPath,
+            lastWaypoint
+          ]);
+
+          expect(route.updatePathBetween).not.toHaveBeenCalledWith(firstWaypoint, middleWaypointWithPath);
+          expect(route.updatePathBetween).toHaveBeenCalledWith(middleWaypointWithPath, lastWaypoint);
+        });
+
+        it('should do nothing if no waypoints are added', function() {
+          route.reset();
+        });
+
+      });
     });
 
 
