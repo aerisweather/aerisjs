@@ -1,28 +1,38 @@
 define([
   'aeris/util',
-  'aeris/model'
-], function(_, Model) {
-  var MockMapObject = function() {
-    var stubbedMethods = [
+  'aeris/model',
+  'mocks/mockfactory'
+], function(_, Model, MockFactory) {
+  var MockMapObject = new MockFactory({
+    methods: [
       'setMap',
       'getMap',
       'hasMap'
-    ];
-    Model.apply(this, arguments);
+    ],
+    inherits: Model
+  });
 
-    _.extend(this, jasmine.createSpyObj('mockMapObject', stubbedMethods));
+  MockMapObject.prototype.setMap = function(map) {
+    if (map === this.get('map')) { return; }
 
-    this.setMap.andCallFake(function(map) {
-      this.set('map', map);
-    });
-    this.getMap.andCallFake(function(map) {
-      return this.get('map');
-    });
-    this.hasMap.andCallFake(function() {
-      return !_.isUndefined(this.get('map'));
-    });
+    this.set('map', map);
+
+    if (_.isNull(map)) {
+      this.trigger('map:remove', this, map);
+    }
+    else {
+      this.trigger('map:set', this, map);
+    }
+    this.trigger('map:change', this, map);
   };
-  _.inherits(MockMapObject, Model);
+
+  MockMapObject.prototype.getMap = function() {
+    return this.get('map');
+  };
+
+  MockMapObject.prototype.hasMap = function() {
+    return !!_.isNull(this.get('map'));
+  };
 
 
   return MockMapObject;
