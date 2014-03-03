@@ -22,6 +22,9 @@ define(['aeris/util'], function(_) {
       options.methods.forEach(function(methodName) {
         spyOn(this, methodName).andCallThrough();
       }, this);
+
+
+      options.constructor.apply(this, arguments);
     }
     if (options.inherits) {
       _.inherits(Mock, options.inherits);
@@ -31,7 +34,6 @@ define(['aeris/util'], function(_) {
       Mock.prototype[methodName] = function() {};
     });
 
-    options.constructor.apply(this, arguments);
 
     return Mock;
   }
