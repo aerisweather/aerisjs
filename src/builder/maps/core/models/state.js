@@ -14,6 +14,7 @@ define([
    * @class State
    * @namespace aeris.builder.maps.core.models
    * @extends aeris.Model
+   * @implements aeris.maps.MapObjectInterface
    *
    * @constructor
    */
@@ -92,6 +93,21 @@ define([
     }, this);
 
     return attrs;
+  };
+
+  /**
+   * @method getMap
+   */
+  State.prototype.getMap = function() {
+    return this.get('map');
+  };
+
+
+  /**
+   * @method setMap
+   */
+  State.prototype.setMap = function(map) {
+    this.set('map', map);
   };
 
 
