@@ -4,13 +4,22 @@ define([
   'aeris/errors/invalidargumenterror'
 ], function(_, Collection, InvalidArgumentError) {
   /**
-   *
+   * A FilteredCollection acts as a subset of some
+   * 'source' collection. It is bound to the models in it's
+   * source collection, though only models which pass a
+   * defined filter will be set on the FilteredCollection.
    *
    * @class FilteredCollection
    * @namespace aeris
    * @extends aeris.Collection
    *
    * @constructor
+   * @override
+   *
+   * @param {Array.<aeris.Model>=} opt_models
+   *
+   * @param {Object=} opt_options
+   * @param {function():Boolean} opt_options.filter The filter to use when binding to the source collection.
    */
   var FilteredCollection = function(opt_models, opt_options) {
     var options = _.defaults(opt_options || {}, {
