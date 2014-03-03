@@ -331,6 +331,26 @@ require([
 
         expect(commandManager.executeCommand).toHaveBeenCalledWith(stubbedCommand);
       });
+      
+      it('should update the waypoint\'s followDirections and travelMode before adding it', function() {
+        routeBuilder.followDirections = 'RB_FOLLOW_DIRECTIONS';
+        routeBuilder.travelMode = 'RB_TRAVEL_MODE';
+        
+        waypoint.set({
+          followDirections: 'WAYPOINT_FOLLOW_DIRECTIONS',
+          travelMode: 'WAYPOINT_TRAVEL_MODE'
+        });
+        
+        AddWaypointCommand.andCallFake(function(route, waypoint) {
+          expect(waypoint.get('followDirections')).toEqual(routeBuilder.followDirections);
+          expect(waypoint.get('travelMode')).toEqual(routeBuilder.travelMode);
+          return new MockCommand();
+        });
+        
+        routeBuilder.addWaypoint(waypoint);
+        
+        expect(AddWaypointCommand).toHaveBeenCalled();
+      });
 
 
       describe('addWaypointAt', function() {
@@ -339,6 +359,26 @@ require([
 
           expect(AddWaypointCommand).toHaveBeenCalledWith(route, waypoint, { at: 7 });
           expect(commandManager.executeCommand).toHaveBeenCalledWith(addWaypointCommand);
+        });
+
+        it('should update the waypoint\'s followDirections and travelMode before adding it', function() {
+          routeBuilder.followDirections = 'RB_FOLLOW_DIRECTIONS';
+          routeBuilder.travelMode = 'RB_TRAVEL_MODE';
+
+          waypoint.set({
+            followDirections: 'WAYPOINT_FOLLOW_DIRECTIONS',
+            travelMode: 'WAYPOINT_TRAVEL_MODE'
+          });
+
+          AddWaypointCommand.andCallFake(function(route, waypoint) {
+            expect(waypoint.get('followDirections')).toEqual(routeBuilder.followDirections);
+            expect(waypoint.get('travelMode')).toEqual(routeBuilder.travelMode);
+            return new MockCommand();
+          });
+
+          routeBuilder.addWaypointAt(waypoint);
+
+          expect(AddWaypointCommand).toHaveBeenCalled();
         });
       });
     });

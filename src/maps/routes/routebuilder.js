@@ -362,6 +362,8 @@ define([
     var options = opt_options || {};
     var command;
 
+    this.updateWaypointInstructions_(waypoint);
+
     if (options.at) {
       return this.addWaypointAt(waypoint, options.at);
     }
@@ -385,6 +387,8 @@ define([
     var commandOptions = {
       at: atIndex
     };
+
+    this.updateWaypointInstructions_(waypoint);
 
     command = new this.AddWaypointCommand_(this.getRoute(), waypoint, commandOptions);
 
