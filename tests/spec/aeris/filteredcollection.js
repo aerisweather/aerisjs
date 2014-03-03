@@ -89,6 +89,19 @@ define([
         expect(filteredCollection.models).toEqual([modelA]);
       });
 
+      it('should set a default filter, which always returns true', function() {
+        var filter;
+        spyOn(FilteredCollection.prototype, 'setFilter').andCallThrough();
+
+        new FilteredCollection(null, {
+          source: sourceCollection
+        });
+
+        filter = FilteredCollection.prototype.setFilter.mostRecentCall.args[0];
+
+        expect(filter()).toEqual(true);
+      });
+
     });
 
     describe('Data binding', function() {

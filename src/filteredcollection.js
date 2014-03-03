@@ -23,15 +23,8 @@ define([
    */
   var FilteredCollection = function(opt_models, opt_options) {
     var options = _.defaults(opt_options || {}, {
-      filter: _.bind(_.identity, this)
+      filter: function() { return true; }
     });
-
-    /**
-     * @property filter_
-     * @private
-     * @type {function(aeris.Model):Boolean}
-    */
-    this.filter_ = options.filter;
 
 
     /**
@@ -44,7 +37,10 @@ define([
 
     Collection.call(this, opt_models, options);
 
+
     this.ensureSourceCollection_();
+
+    this.setFilter(options.filter);
 
     this.updateModelsFromSource_();
     this.bindToSourceCollection_();
@@ -79,7 +75,7 @@ define([
   */
   FilteredCollection.prototype.ensureSourceCollection_ = function() {
     if (!(this.sourceCollection_ instanceof Collection)) {
-      throw new InvalidArgumentError(this.sourceCollection_ + ' is not' +
+      throw new InvalidArgumentError(this.sourceCollection_ + ' is not ' +
         'a valid source for a FilteredCollection');
     }
   };
