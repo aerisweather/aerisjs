@@ -108,5 +108,43 @@ define([
   };
 
 
+  /**
+   * Tests whether a model is passing
+   * an Aeris API filter.
+   *
+   * @method testFilter
+   * @param {string} filter
+   * @return {Boolean}
+   */
+  AerisApiModel.prototype.testFilter = function(filter) {
+    return true;
+  };
+
+
+  /**
+   * Tests whether a model is passing a set
+   * of Aeris API filters.
+   *
+   * @method testFilterCollection
+   * @param {aeris.api.params.collections.FilterCollection} filters
+   * @return {Boolean}
+   */
+  AerisApiModel.prototype.testFilterCollection = function(filters) {
+    return filters.reduce(function(isPassingPreviousFilters, filterModel) {
+      var isFirstFilter = _.isNull(isPassingPreviousFilters);
+
+      var isPassingThisFilter = this.testFilter(filterModel.id);
+      var isPassingBoth = isPassingThisFilter && isPassingPreviousFilters;
+      var isPassingEither = isPassingThisFilter || isPassingPreviousFilters;
+
+      if (isFirstFilter) { return isPassingThisFilter; }
+
+      // If operator is 'AND', model must pass the current filter,
+      // as the previous filters.
+      return filterModel.isAnd() ? isPassingBoth : isPassingEither;
+    }, null, this);
+  };
+
+
   return _.expose(AerisApiModel, 'aeris.api.models.AerisApiModel');
 });
