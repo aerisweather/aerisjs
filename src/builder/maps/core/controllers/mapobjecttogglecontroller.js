@@ -73,15 +73,7 @@ define([
     Backbone.View.call(this, options);
 
 
-    // Bind controller map to appState's map
-    this.listenTo(this.appState_, {
-      'change:map': function(state, map) {
-        this.setMap(map);
-      }
-    });
-    if (!_.isUndefined(this.appState_.get('map'))) {
-      this.setMap(this.appState_.get('map'));
-    }
+
 
 
     // Bind view to state's
@@ -117,6 +109,14 @@ define([
     if (this.model.get('selected')) {
       this.view_.setMap(this.map_);
     }
+
+    // Bind controller map to appState's map
+    this.listenTo(this.appState_, {
+      'change:map': function(state, map) {
+        this.setMap(this.appState_.getMap());
+      }
+    })
+    this.setMap(this.appState_.getMap());
 
     this.trigger('render');
     if (this.onRender) { this.onRender(); }

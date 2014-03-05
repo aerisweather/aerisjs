@@ -37,7 +37,17 @@ define([
 
     // Bind to map view events
     this.listenTo(this, {
-      render: this.bindMapViewEvents_
+      render: function() {
+        this.bindMapViewEvents_();
+
+        this.listenTo(this.view_, 'map:set', function() {
+          this.fetchMarkerData_();
+        });
+        if (this.view_.hasMap()) {
+          this.view_.setBounds(this.view_.getMap().getBounds());
+          this.fetchMarkerData_();
+        }
+      }
     })
   };
   _.inherits(MarkerController, MapObjectToggleController);
@@ -61,17 +71,13 @@ define([
   };
 
 
-  MarkerController.prototype.onRender = function() {
-    if (MapObjectToggleController.prototype.onRender) {
-      MapObjectToggleController.prototype.onRender.apply(this, arguments);
-    }
-
-    this.listenTo(this.view_, 'map:set', this.fetchMarkerData_);
-  };
-
-
-  MarkerController.prototype.fetchMarkerData_ = function() {
-    this.view_.fetchData().
+  /**
+   * @method fetchMarkerData_
+   * @param {Object=} opt_options fetch options
+   * @private
+   */
+  MarkerController.prototype.fetchMarkerData_ = function(opt_options) {
+    this.view_.fetchData(opt_options).
       fail(function(errRes) {
         throw new Error(errRes.description || 'Unable to fetch waypoint data.');
       });
@@ -152,13 +158,9 @@ define([
     this.listenTo(this.map_, {
       'change:bounds': function() {
         this.view_.getParams().setBounds(this.map_.get('bounds'));
-      }
-    });
-
-    // Fetch data when params change
-    this.listenTo(this.view_.getParams(), 'change', function() {
-      if (this.view_.getMap()) {
-        this.view_.fetchData();
+        this.fetchMarkerData_({
+          remove: false
+        });
       }
     });
   };
