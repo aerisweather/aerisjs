@@ -25,7 +25,14 @@ define({
           tagName: 'span',
           mapState: { $ref: 'mapState' },
           eventHub: { $ref: 'eventHub' },
-          geolocateService: { create: 'aeris/geolocate/html5geolocateservice' },
+          geolocateServiceResolver: {
+            create: {
+              module: 'aeris/geolocate/geolocateserviceresolver',
+              args: [{
+                FallbackService: { module: 'aeris/geolocate/freegeoipgeolocateservice' }
+              }]
+            }
+          },
           zoomTo: 8,
 
           template: { $ref: 'geolocateTemplate' },

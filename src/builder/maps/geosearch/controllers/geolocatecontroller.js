@@ -12,9 +12,9 @@ define([
    * @constructor
    * @override
    *
-   * @param {aeris.Model} options.mapState Required.
-   * @param {aeris.Events} options.eventHub_ Required.
-   * @param {aeris.geolocate.AbstractGeolocateService} options.geolocateService Required.
+   * @param {aeris.Model} options.mapState
+   * @param {aeris.Events} options.eventHub
+   * @param {aeris.geolocate.GeolocateServiceResolver} options.geolocateServiceResolver
    * @param {null|number=} options.zoomTo
   */
   var GeolocateController = function(options) {
@@ -52,7 +52,7 @@ define([
      * @private
      * @property geolocateService_
      */
-    this.geolocateService_ = options.geolocateService;
+    this.geolocateService_ = options.geolocateServiceResolver.resolveService();
 
 
     /**
