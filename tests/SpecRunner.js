@@ -26,6 +26,7 @@ require([
       'spec/aeris/collection',
       'spec/aeris/limitedcollection',
       'spec/aeris/filteredcollection',
+      'spec/aeris/subsetcollection',
       'spec/aeris/togglebehavior',
       'spec/aeris/togglecollectionbehavior',
       'spec/aeris/viewmodel',
