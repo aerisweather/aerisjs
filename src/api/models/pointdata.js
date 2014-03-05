@@ -2,8 +2,8 @@ define([
   'aeris/util',
   'aeris/errors/validationerror',
   'aeris/errors/apiresponseerror',
-  'aeris/model'
-], function(_, ValidationError, ApiResponseError, BaseModel) {
+  'aeris/api/models/aerisapimodel'
+], function(_, ValidationError, ApiResponseError, AerisApiModel) {
   /**
    * A base class for data
    * which is tied to a specified
@@ -24,9 +24,9 @@ define([
       validate: true
     }, opt_options);
 
-    BaseModel.call(this, opt_attrs, options);
+    AerisApiModel.call(this, opt_attrs, options);
   };
-  _.inherits(PointData, BaseModel);
+  _.inherits(PointData, AerisApiModel);
 
 
 
