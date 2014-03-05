@@ -1,9 +1,10 @@
 define([
   'aeris/util',
   'aeris/api/collections/pointdatacollection',
+  'aeris/api/collections/aerisapiclientcollection',
   'aeris/api/models/stormreport',
   'aeris/datehelper'
-], function(_, PointDataCollection, StormReport, DateHelper) {
+], function(_, PointDataCollection, AerisApiClientCollection, StormReport, DateHelper) {
   /**
    * A representation of storm report data from the
    * Aeris API 'stormreports' endpoint.
@@ -11,7 +12,7 @@ define([
    * @publicApi
    * @class StormReports
    * @namespace aeris.api.collections
-   * @extends aeris.api.collections.PointDataCollection
+   * @extends aeris.api.collections.AerisApiClientCollection
    *
    * @constructor
    * @override
@@ -25,12 +26,18 @@ define([
       },
       endpoint: 'stormreports',
       action: 'within',
-      model: StormReport
+      model: StormReport,
+      SourceCollectionType: PointDataCollection
     });
-    
-    PointDataCollection.call(this, opt_models, options);
+
+    AerisApiClientCollection.call(this, opt_models, options);
+
+    /**
+     * @property sourceCollection_
+     * @type {aeris.api.collections.PointDataCollection}
+     */
   };
-  _.inherits(StormReports, PointDataCollection)
+  _.inherits(StormReports, AerisApiClientCollection)
   
   
   return _.expose(StormReports, 'aeris.api.collections.StormReports');

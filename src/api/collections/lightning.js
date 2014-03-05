@@ -1,8 +1,9 @@
 define([
   'aeris/util',
   'aeris/api/collections/pointdatacollection',
+  'aeris/api/collections/aerisapiclientcollection',
   'aeris/api/models/lightning'
-], function(_, PointDataCollection, Lightning) {
+], function(_, PointDataCollection, AerisApiClientCollection, Lightning) {
   /**
    * A representation of lighting data from the
    * Aeris API 'lightning' endpoint.
@@ -22,12 +23,13 @@ define([
       },
       model: Lightning,
       endpoint: 'lightning',
-      action: 'within'
+      action: 'within',
+      SourceCollectionType: PointDataCollection
     });
 
-    PointDataCollection.call(this, opt_models, options);
+    AerisApiClientCollection.call(this, opt_models, options);
   };
-  _.inherits(Lightning, PointDataCollection)
+  _.inherits(Lightning, AerisApiClientCollection)
 
 
   return _.expose(Lightning, 'aeris.api.collections.Lightning');

@@ -1,8 +1,9 @@
 define([
   'aeris/util',
   'aeris/api/collections/pointdatacollection',
+  'aeris/api/collections/aerisapiclientcollection',
   'aeris/api/models/fire'
-], function(_, PointDataCollection, Fire) {
+], function(_, PointDataCollection, AerisApiClientCollection, Fire) {
   /**
    * A representation of fire data from the
    * Aeris API 'fires' endpoint.
@@ -26,12 +27,13 @@ define([
       },
       model: Fire,
       endpoint: 'fires',
-      action: 'search'
+      action: 'search',
+      SourceCollectionType: PointDataCollection
     });
 
-    PointDataCollection.call(this, opt_models, options);
+    AerisApiClientCollection.call(this, opt_models, options);
   };
-  _.inherits(Fires, PointDataCollection)
+  _.inherits(Fires, AerisApiClientCollection)
 
 
   return _.expose(Fires, 'aeris.api.collections.Fires');

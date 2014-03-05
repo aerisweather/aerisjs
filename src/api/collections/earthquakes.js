@@ -1,9 +1,10 @@
 define([
   'aeris/util',
   'aeris/api/collections/pointdatacollection',
+  'aeris/api/collections/aerisapiclientcollection',
   'aeris/api/models/earthquake',
   'aeris/datehelper'
-], function(_, PointDataCollection, Earthquake, DateHelper) {
+], function(_, PointDataCollection, AerisApiClientCollection, Earthquake, DateHelper) {
   /**
    * A representation of earthquake data from the
    * Aeris API 'earthquake' endpoint.
@@ -21,7 +22,8 @@ define([
       params: {},
       model: Earthquake,
       endpoint: 'earthquakes',
-      action: 'within'
+      action: 'within',
+      SourceCollectionType: PointDataCollection
     });
 
     _.defaults(options.params, {
@@ -30,9 +32,14 @@ define([
       radius: '3000miles'
     });
 
-    PointDataCollection.call(this, opt_models, options);
+    AerisApiClientCollection.call(this, opt_models, options);
+
+    /**
+     * @property sourceCollection_
+     * @type {aeris.api.collections.PointDataCollection}
+     */
   };
-  _.inherits(Earthquakes, PointDataCollection)
+  _.inherits(Earthquakes, AerisApiClientCollection)
 
 
   return _.expose(Earthquakes, 'aeris.api.collections.Earthquakes');
