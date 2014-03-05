@@ -107,7 +107,7 @@ define([
      * Add a filter to the Aeris API request.
      *
      * @method addFilter
-     * @param {string|Array.<string>} filter
+     * @param {string|Array.<string>|aeris.api.params.models.Filter|aeris.api.params.collections.FilterCollection} filter
      * @param {Object=} opt_options
      * @param {aeris.api.Operator} opt_options.operator
      */
@@ -119,7 +119,7 @@ define([
      * Remove a filter from the Aeris API request.
      *
      * @method removeFilter
-     * @param {string|Array.<string>} filter
+     * @param {string|Array.<string>|aeris.api.params.models.Filter|aeris.api.params.collections.FilterCollection} filter
      * @param {Object=} opt_options
      */
     removeFilter: function(filter, opt_options) {
@@ -130,7 +130,7 @@ define([
      * Reset a filter from the Aeris API request.
      *
      * @method resetFilter
-     * @param {string|Array.<string>=} opt_filter
+     * @param {string|Array.<string>|aeris.api.params.models.Filter|aeris.api.params.collections.FilterCollection} opt_filter
      * @param {Object=} opt_options
      * @param {aeris.api.Operator} opt_options.operator
      */
@@ -274,6 +274,7 @@ define([
      */
     handleRequestError_: function(res) {
       var error = res.error;
+      var errorMsg
 
       if (!error || !error.code || !error.description) {
         errorMsg = 'Unknown error';
