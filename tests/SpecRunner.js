@@ -79,6 +79,7 @@ require([
       'spec/aeris/geocode/googlegeocodeservice',
       'spec/aeris/geolocate/html5geolocateservice',
       'spec/aeris/geolocate/freegeoipgeolocateservice',
+      'spec/aeris/geolocate/geolocateserviceresolver',
 
 
       //'spec/aeris/commands/abstractcommand',
