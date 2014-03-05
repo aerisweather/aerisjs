@@ -34,5 +34,29 @@ define([
   };
 
 
+  /**
+   * @method testFilter
+   */
+  Earthquake.prototype.testFilter = function(filter) {
+    if (filter === 'shallow') {
+      return this.isShallow();
+    }
+
+    return filter === this.getAtPath('report.type');
+  };
+
+
+  /**
+   * Is the earthquake less than 70km deep.
+   *
+   * @method isShallow
+   * @private
+   * @return {Boolean}
+   */
+  Earthquake.prototype.isShallow = function() {
+    return this.getAtPath('report.depthKM') < 70;
+  };
+
+
   return _.expose(Earthquake, 'aeris.api.models.Earthquake');
 });

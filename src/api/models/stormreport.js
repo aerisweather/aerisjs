@@ -42,6 +42,14 @@ define([
   };
 
 
+  /**
+   * @method testFilter
+   */
+  StormReport.prototype.testFilter = function(filter) {
+    return _.contains(this.get('stormtypes'), filter);
+  };
+
+
   return _.expose(StormReport, 'aeris.api.models.StormReport');
 });
 

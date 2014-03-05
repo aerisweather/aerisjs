@@ -94,12 +94,15 @@ require([
 
       'spec/aeris/helpers/validator/pathvalidator',
 
+      'spec/aeris/api/models/earthquake',
       'spec/aeris/api/models/pointdata',
+      'spec/aeris/api/models/stormreport',
       'spec/aeris/api/mixins/aerisapibehavior',
       'spec/aeris/api/params/models/params',
       'spec/aeris/api/params/models/query',
       'spec/aeris/api/models/aerisapimodel',
       'spec/aeris/api/collections/aerisapicollection',
+      'spec/aeris/api/collections/aerisapiclientcollection',
       'spec/aeris/api/params/models/filter',
       'spec/aeris/api/params/collections/filtercollection',
       'spec/aeris/api/params/collections/chainedqueries',
