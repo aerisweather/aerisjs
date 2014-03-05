@@ -36,7 +36,11 @@ define([
       operator: Operator.AND
     }, opt_attrs);
 
-    BaseModel.call(this, attrs, opt_options);
+    var options = _.defaults(opt_options || {}, {
+      idAttribute: 'name'
+    });
+
+    BaseModel.call(this, attrs, options);
 
     // Validate when added to a collection
     this.listenTo(this, 'add', function() { this.isValid() });
@@ -52,6 +56,24 @@ define([
     if ([Operator.AND, Operator.OR].indexOf(attrs.operator) === -1) {
       return new ValidationError('Operator', 'Must be an aeris.api.Operator.');
     }
+  };
+
+
+  /**
+   * @method isOr
+   * @return {Boolean} Filter's operator is 'OR'
+   */
+  Filter.prototype.isOr = function() {
+    return this.get('operator') === Operator.OR;
+  };
+
+
+  /**
+   * @method isAnd
+   * @return {Boolean} Filter's operator is 'AND'
+   */
+  Filter.prototype.isAnd = function() {
+    return this.get('operator') === Operator.AND;
   };
 
 
