@@ -206,44 +206,29 @@ define([
 
 
   /**
-   * Fetches data from the source collection.
-   * If the subset collection already has as many models
-   * as it's limit, no request will be made to the server.
+   * Does the collection have fewer models
+   * than the specified limit?
    *
+   * If no limit is set, this will always
+   * return true.
    *
-   * By only requesting data when the subset is under the limit,
-   * the SubsetCollection is preventing requests which would not
-   * add any models.
+   * @method isUnderLimit
+   * @return {Boolean}
+   */
+  SubsetCollection.prototype.isUnderLimit = function() {
+    return _.isNull(this.limit_) || this.length < this.limit_;
+  };
+
+
+  /**
+   * Fetches data from the underlying source collection.
    *
    * @method fetch
-   * @override
-   *
    * @param {Object=} opt_options
-   * @param {Boolean=} opt_options.force Set to true to force a request.
-   *
-   * @return {aeris.Promise} A promise to fetch source collection data.
-   *                        Resolves with response data
-   *                        If no request is made, promise will resolve with an empty object.
+   * @return {aeris.Promise}
    */
   SubsetCollection.prototype.fetch = function(opt_options) {
-    var promiseToFetch;
-    var isSubsetUnderLimit = _.isNull(this.limit_) || this.length < this.limit_;
-    var options = _.defaults(opt_options || {}, {
-      force: false
-    });
-
-    // If we are under the limit
-    // we want to fetch data to "fill up" our
-    // subset
-    if (isSubsetUnderLimit || options.force) {
-      promiseToFetch = this.sourceCollection_.fetch(opt_options);
-    }
-    else {
-      promiseToFetch = new Promise();
-      promiseToFetch.resolve({});
-    }
-
-    return promiseToFetch;
+    return this.sourceCollection_.fetch(opt_options);
   };
 
 

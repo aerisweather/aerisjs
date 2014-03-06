@@ -170,46 +170,6 @@ define([
   };
 
 
-  /**
-   * Performs a "smart" update of the client collection:
-   * if the client collection already has as many models as
-   * the client limit, no request will be made to the AerisAPI server.
-   *
-   * Use the { force: true } option to override this bevavior.
-   *
-   * Use the { remove: false } options to fetch new data, without removing
-   * existing models from the api collection. You can then use a client filter on the
-   * client collection, but save previous models for future use.
-   *
-   * eg.
-   *
-   *    clientCollection.resetFilter('snow');
-   *    clientCollection.fetch();
-   *    // snow data is added to the collection.
-   *
-   *    //...
-   *
-   *    clientCollection.resetFilter('ice');
-   *    clientCollection.fetch({ remove: false });
-   *    // Ice data is added to the collection,
-   *    // snow data is filtered out (but not destroyed).
-   *
-   *    clientCollection.resetFilter('snow');
-   *    // no server request is necessary
-   *    // because snow data is was saved in the api collection.
-   *
-   * @method fetch
-   * @override
-   *
-   * @param {Object=} opt_options
-   * @param {Boolean=} opt_options.force Set to true to force a request.
-   *
-   * @return {aeris.Promise} A promise to Aeris API collection data.
-   *                        Resolves with response data
-   *                        If no request is made, promise will resolve with an empty object.
-   */
-
-
   // Proxy AerisApi methods
   var aerisApiProxyMethods = [
     'getParams',

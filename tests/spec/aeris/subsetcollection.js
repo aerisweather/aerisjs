@@ -717,152 +717,33 @@ define([
 
 
     describe('fetch', function() {
-      var LIMIT = 10;
-      var promiseToFetchSourceCollection;
 
       beforeEach(function() {
-        subsetCollection.setLimit(LIMIT);
-        promiseToFetchSourceCollection = new Promise();
-
-        spyOn(sourceCollection, 'fetch').
-          andReturn(promiseToFetchSourceCollection);
+        spyOn(sourceCollection, 'fetch');
       });
 
 
-      function itShouldFetchDataFromTheSourceCollection(opt_fetch_options) {
-        it('should fetch data from the source collection', function() {
-          subsetCollection.fetch(opt_fetch_options);
+      it('should fetch data from the source collection', function() {
+        subsetCollection.fetch();
 
-          expect(sourceCollection.fetch).toHaveBeenCalled();
-        });
-
-        it('should return a promise form the source collection\'s fetch method', function() {
-          expect(subsetCollection.fetch(opt_fetch_options)).toEqual(promiseToFetchSourceCollection);
-        });
-
-        it('should resolve the returned promise with source collection response data', function() {
-          var REPONSE_STUB = { STUB: 'REPONSE_STUB' };
-          var promiseToFetch = subsetCollection.fetch(opt_fetch_options);
-          var onResolve = jasmine.createSpy('onResolve');
-          promiseToFetch.done(onResolve);
-
-          promiseToFetchSourceCollection.resolve(REPONSE_STUB);
-
-          expect(onResolve).toHaveBeenCalledWith(REPONSE_STUB);
-        });
-
-        it('should reject the returned promise with source collection error data', function() {
-          var ERROR_RESPONSE_STUB = { STUB: 'ERROR_RESPONSE_STUB' };
-          var promiseToFetch = subsetCollection.fetch(opt_fetch_options);
-          var onFail = jasmine.createSpy('onFail');
-          promiseToFetch.fail(onFail);
-
-          promiseToFetchSourceCollection.reject(ERROR_RESPONSE_STUB);
-
-          expect(onFail).toHaveBeenCalledWith(ERROR_RESPONSE_STUB);
-        });
-      }
-
-
-      describe('when the source collection has more models than the limit', function() {
-
-        beforeEach(function() {
-          sourceCollection.set(new ModelsCount(LIMIT + 5));
-        });
-
-        // The idea being that there is no need to get new data,
-        // as we are already maxed out
-        it('should not fetch the source collection', function() {
-          subsetCollection.fetch();
-
-          expect(sourceCollection.fetch).not.toHaveBeenCalled();
-        });
-        
-        it('should return a promise, which immediately resolves with an empty object', function() {
-          var onResolve = jasmine.createSpy('onResolve');
-          var promiseToFetch = subsetCollection.fetch();
-
-          promiseToFetch.done(onResolve);
-
-          expect(promiseToFetch).toBeInstanceOf(Promise);
-          expect(onResolve).toHaveBeenCalled()
-          expect(onResolve).toHaveBeenCalledWith({});
-        });
-
+        expect(sourceCollection.fetch).toHaveBeenCalled();
       });
 
-      describe('when the source collection is over the limit, but the subset is under', function() {
+      it('should pass options on to the source collection\'s fetch method', function() {
+        var OPTIONS_STUB = { STUB: 'OPTIONS_STUB' };
 
-        beforeEach(function() {
-          var typeACount = LIMIT + 10;
-          var typeBCount = LIMIT - 2;
+        subsetCollection.fetch(OPTIONS_STUB);
 
-          sourceCollection.set(new ModelsCount(typeACount, ModelTypeA));
-          sourceCollection.set(new ModelsCount(typeBCount, ModelTypeB));
-
-          // Subset will be under limit, because
-          // it only has typeB models
-          subsetCollection.setFilter(isTypeB);
-        });
-
-
-        itShouldFetchDataFromTheSourceCollection();
-
+        expect(sourceCollection.fetch).toHaveBeenCalledWith(OPTIONS_STUB);
       });
 
-      describe('when the source collection has fewer models than the limit', function() {
+      it('should return the source collection\'s promise to fetch', function() {
+        var PROMISE_STUB = { STUB: 'PROMISE_STUB' };
+        sourceCollection.fetch.andReturn(PROMISE_STUB);
 
-        beforeEach(function() {
-          sourceCollection.set(new ModelsCount(LIMIT - 2));
-        });
-
-        itShouldFetchDataFromTheSourceCollection();
+        expect(subsetCollection.fetch()).toEqual(PROMISE_STUB);
       });
 
-
-      describe('when no limit is set', function() {
-
-        beforeEach(function() {
-          subsetCollection.removeLimit();
-          sourceCollection.set(new ModelsCount(3));
-        });
-
-
-        itShouldFetchDataFromTheSourceCollection();
-      });
-
-
-      describe('when using the \'force:true\' option', function() {
-
-
-        describe('when the source collection has more models than the limit', function() {
-
-          beforeEach(function() {
-            sourceCollection.set(new ModelsCount(LIMIT + 5));
-          });
-
-
-          itShouldFetchDataFromTheSourceCollection({
-            force: true
-          });
-
-        });
-
-
-        describe('when the source collection has fewer models than the limit', function() {
-
-          beforeEach(function() {
-            sourceCollection.set(new ModelsCount(LIMIT - 2));
-          });
-
-
-          itShouldFetchDataFromTheSourceCollection({
-            force: true
-          });
-
-        });
-
-      })
     });
 
   });
