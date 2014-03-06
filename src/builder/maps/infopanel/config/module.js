@@ -39,4 +39,12 @@ define({
     { module: 'aeris/application/plugins/events' }
   ]
 });
-
+/**
+ * @for aeris.builder.maps.event.EventHub
+ */
+/**
+ * And info panel view is ready to be rendered.
+ *
+ * @event info:view
+ * @param {aeris.application.controllers.ControllerInterface}
+ */
