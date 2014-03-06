@@ -41,11 +41,15 @@ define([
         this.bindMapViewEvents_();
 
         this.listenTo(this.view_, 'map:set', function() {
-          this.fetchMarkerData_();
+          this.fetchMarkerData_({
+            remove: false
+          });
         });
         if (this.view_.hasMap()) {
           this.view_.setBounds(this.view_.getMap().getBounds());
-          this.fetchMarkerData_();
+          this.fetchMarkerData_({
+            remove: false
+          });
         }
       }
     })
