@@ -146,5 +146,21 @@ define([
   };
 
 
+  /**
+   * @method parse
+   */
+  AerisApiModel.prototype.parse = function(res) {
+    if (res.response) {
+      if (_.isArray(res.response)) {
+        return res.response[0] || {};
+      }
+      else {
+        return res.response;
+      }
+    }
+    return res;
+  };
+
+
   return _.expose(AerisApiModel, 'aeris.api.models.AerisApiModel');
 });
