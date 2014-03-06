@@ -80,7 +80,7 @@ define([
       // It's the job of child classes to
       // implement testFilter.
       it('it should return false, by default', function() {
-        expect(apiModel.testFilter()).toEqual(false);
+        expect(apiModel.testFilter()).toEqual(true);
       });
 
     });
