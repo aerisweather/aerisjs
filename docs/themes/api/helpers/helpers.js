@@ -19,7 +19,7 @@
 
   // Register public theme partials
   // under 'public/' prefix.
-  registerPartialsInDir('themes/public/partials', 'public');
+  registerPartialsInDir(path.join(__dirname, '../../public/partials'), 'public');
 
   var helpers = {
     eachNamespace: function(classes, options) {
