@@ -21,6 +21,7 @@
     "apiDocsPath": "/docs/api",
     "publicDocsPath": "/docs/public"
   },
+  "libs": ["aeris"],
   "options": {
     "outdir": "./api",
     "linkNatives": true,
