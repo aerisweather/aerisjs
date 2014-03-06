@@ -59,6 +59,26 @@ define([
 
     this.bindClientFilters_();
     this.updateClientFilters_();
+
+    /**
+     * A request has been made to fetch
+     * data from the Aeris API.
+     *
+     * @event 'request'
+     * @param {aeris.api.mixins.AerisApiBehavior} object Data object making the request
+     * @param {aeris.Promise} promise Promise to fetch data. Resolves with raw data.
+     * @param {Object} requestOptions
+     */
+
+    /**
+     * The AerisAPI has responsed to a request,
+     * and the data object has updated with fetched data.
+     *
+     * @event 'sync'
+     * @param {aeris.api.mixins.AerisApiBehavior} object Data object which made the request.
+     * @param {Object} resp Raw response data from the AerisAPI
+     * @param {Object} requestOptions
+     */
   };
   _.inherits(AerisApiClientCollection, SubsetCollection);
 
@@ -169,6 +189,101 @@ define([
     SubsetCollection.prototype.removeLimit.call(this);
   };
 
+
+
+  /**
+   * Returns the params object
+   * used to fetch collection data.
+   *
+   * @return {aeris.api.params.models.Params}
+   * @method getParams
+   */
+  /**
+   * Updates the requests params
+   * included with API requests.
+   *
+   * @param {string|Object} key Param name. First argument can also
+   *                    be a key: value hash.
+   * @param {*} value Param value.
+   * @method setParams
+   */
+  /**
+   * @method setFrom
+   * @param {Date} from
+   */
+  /**
+   * @method setTo
+   * @param {Date} to
+   */
+  /**
+   * @method setLimit
+   * @param {number} limit
+   */
+  /**
+   * @method setBounds
+   * @param {Array.<Array.<number>>} bounds
+   */
+  /**
+   * Add a filter to the Aeris API request.
+   * Filters will also be applied client-side, if possible.
+   *
+   * @method addFilter
+   * @param {string|Array.<string>|aeris.api.params.models.Filter|aeris.api.params.collections.FilterCollection} filter
+   * @param {Object=} opt_options
+   * @param {aeris.api.Operator} opt_options.operator
+   */
+  /**
+   * Remove a filter from the Aeris API request.
+   * Filters will also be applied client-side, if possible.
+   *
+   * @method removeFilter
+   * @param {string|Array.<string>|aeris.api.params.models.Filter|aeris.api.params.collections.FilterCollection} filter
+   * @param {Object=} opt_options
+   */
+  /**
+   * Reset a filter from the Aeris API request.
+   * Filters will also be applied client-side, if possible.
+   *
+   * @method resetFilter
+   * @param {string|Array.<string>|aeris.api.params.models.Filter|aeris.api.params.collections.FilterCollection} opt_filter
+   * @param {Object=} opt_options
+   * @param {aeris.api.Operator} opt_options.operator
+   */
+  /**
+   * Add a query term to Aeris API request.
+   *
+   * @method addQuery
+   * @param {aeris.api.params.models.Query|Array.<aeris.api.params.models.Query>} query
+   * @param {Object=} opt_options
+   */
+  /**
+   * Remove a query from the Aeris API request
+   *
+   * @method removeQuery
+   * @param {aeris.api.params.models.Query|Array.<aeris.api.params.models.Query>|string|Array.<string>} query model(s), or property (key).
+   * @param {Object=} opt_options
+   */
+  /**
+   * Resets the query for the Aeris API request.
+   *
+   * @method resetQuery
+   * @param {aeris.api.params.models.Query|Array.<aeris.api.params.models.Query>=} opt_query
+   * @param {Object=} opt_options
+   */
+  /**
+   * Returns the query for the Aeris API request.
+   *
+   * @method getQuery
+   * @return {aeris.api.params.collections.ChainedQueries}
+   */
+  /**
+   * Fetch data from the Aeris API.
+   *
+   * @method fetch
+   * @override
+   * @returns {aeris.Promise} Resolves with API response.
+   * @public
+   */
 
   // Proxy AerisApi methods
   var aerisApiProxyMethods = [
