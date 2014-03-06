@@ -23,5 +23,5 @@ define([
   _.inherits(Forecasts, PointDataCollection);
 
 
-  return Forecasts;
+  return _.expose(Forecasts, 'aeris.api.collections.Forecasts');
 });
