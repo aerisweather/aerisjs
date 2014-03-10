@@ -11,7 +11,7 @@ define([
    *
    * @class PointData
    * @namespace aeris.api.models
-   * @extends aeris.Model
+   * @extends aeris.api.models.AerisApiModel
    * @constructor
    */
   var PointData = function(opt_attrs, opt_options) {

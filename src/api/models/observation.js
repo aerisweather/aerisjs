@@ -5,8 +5,8 @@ define([
   /**
    * @publicApi
    * @class Observation
-   * @namespace aeris.api.model
-   * @extends aeris.api.endpoint.model.AerisApiModel
+   * @namespace aeris.api.models
+   * @extends aeris.api.models.AerisApiModel
    *
    * @constructor
    * @override
