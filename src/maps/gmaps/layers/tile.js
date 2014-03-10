@@ -10,7 +10,7 @@ define([
    * @extends aeris.maps.gmaps.layers.AbstractMapTypeStrategy
    *
    * @constructor
-   * @param {aeris.maps.AbstractTile} layer
+   * @param {aeris.maps.layers.AbstractTile} layer
    */
   var TileLayerStrategy = function(layer, opt_options) {
     var options = _.extend({
@@ -47,7 +47,7 @@ define([
 
   /**
    * Proxy events fired by the {google.maps.ImageMapType}
-   * object, so that they fire on the {aeris.maps.AbstractTile} layer.
+   * object, so that they fire on the {aeris.maps.layers.AbstractTile} layer.
    * @private
    * @method proxyViewEvents_
    */

@@ -46,7 +46,7 @@ define([
 
       /**
        * @attribute baseLayer
-       * @type {aeris.maps.AbstractTile}
+       * @type {aeris.maps.layers.AbstractTile}
        */
       baseLayer: new GoogleRoadMap(),
 
