@@ -11,7 +11,7 @@ define([
    * @class AerisApiModel
    * @namespace aeris.api.models
    * @extends aeris.Model
-   * @mixes aeris.api.mixins.AerisApiBehavior
+   * @uses aeris.api.mixins.AerisApiBehavior
    *
    * @constructor
    * @override

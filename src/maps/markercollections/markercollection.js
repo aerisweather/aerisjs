@@ -13,8 +13,8 @@ define([
    * @namespace aeris.maps.markercollections
    * @extends aeris.maps.extensions.MapObjectCollection
    *
-   * @mixes aeris.maps.extensions.StrategyObject
-   * @mixes aeris.ToggleCollectionBehavior
+   * @uses aeris.maps.extensions.StrategyObject
+   * @uses aeris.ToggleCollectionBehavior
    *
    * @constructor
    *

@@ -30,7 +30,7 @@ define([
    * @namespace aeris.maps.gmaps.route
    * @extends aeris.maps.markers.Marker
    *
-   * @mixes aeris.ToggleBehavior
+   * @uses aeris.ToggleBehavior
    *
    * @constructor
    * @override

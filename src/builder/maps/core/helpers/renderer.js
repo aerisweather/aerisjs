@@ -8,7 +8,7 @@ define([
    *
    * @class Renderer
    * @namespace aeris.builder.maps.core
-   * @mixes aeris.Events
+   * @uses aeris.Events
    *
    * @constructor
    *

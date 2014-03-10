@@ -14,7 +14,7 @@ define([
    * @class AerisApiCollection
    * @namespace aeris.api.collections
    * @extends aeris.Collection
-   * @mixes aeris.api.mixins.AerisApiBehavior
+   * @uses aeris.api.mixins.AerisApiBehavior
    *
    *
    * @constructor

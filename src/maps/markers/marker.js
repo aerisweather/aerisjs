@@ -12,7 +12,7 @@ define([
    * @namespace aeris.maps.markers
    *
    * @extends aeris.maps.extensions.MapExtensionObject
-   * @mixes aeris.maps.ToggleBehavior
+   * @uses aeris.maps.ToggleBehavior
    *
    * @constructor
    *

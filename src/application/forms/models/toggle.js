@@ -9,7 +9,7 @@ define([
    * @class Toggle
    * @namespace aeris.application.forms.models
    * @extends aeris.application.forms.models.Attribute
-   * @mixes aeris.ToggleBehavior
+   * @uses aeris.ToggleBehavior
    *
    * @constructor
    * @override

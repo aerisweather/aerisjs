@@ -9,7 +9,7 @@ define([
    * @class CompositeController
    * @namespace aeris.application.controllers
    * @extends Marionette.CompositeView
-   * @mixes aeris.application.controllers.ViewMixin
+   * @uses aeris.application.controllers.ViewMixin
    *
    * @constructor
    * @override

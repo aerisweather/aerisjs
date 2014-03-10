@@ -10,7 +10,7 @@ define([
    * @class ItemController
    * @namespace aeris.application.controllers
    * @extends Marionette.ItemView
-   * @mixes aeris.application.controllers.ViewMixin
+   * @uses aeris.application.controllers.ViewMixin
    * @implements aeris.application.controllers.ControllerInterface
    *
    * @constructor

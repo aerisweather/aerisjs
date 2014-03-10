@@ -25,7 +25,7 @@ define([
    * @class MapExtensionObject
    * @namespace aeris.maps.extensions
    * @extends aeris.ViewModel
-   * @mixes aeris.maps.extensions.StrategyObject
+   * @uses aeris.maps.extensions.StrategyObject
    * @implements aeris.maps.MapObjectInterface
    */
   var MapExtensionObject = function(opt_attrs, opt_options) {

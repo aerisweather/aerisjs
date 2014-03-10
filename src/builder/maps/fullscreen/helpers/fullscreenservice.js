@@ -14,7 +14,7 @@ define([
    * @namespace aeris.builder.maps.fullscreen.helpers
    * @constructor
    * 
-   * @mixes {aeris.Events}
+   * @uses {aeris.Events}
    * 
    * @param {Object=} opt_options
    * @param {HTMLElement=} opt_options.document Client document. 

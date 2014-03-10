@@ -16,7 +16,7 @@ define([
    * @class LayoutController
    * @namespace aeris.application.controllers
    * @extends Marionette.Layout
-   * @mixes aeris.application.controllers.ViewMixin
+   * @uses aeris.application.controllers.ViewMixin
    *
    * @constructor
    * @override

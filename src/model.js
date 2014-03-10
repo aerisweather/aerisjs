@@ -21,7 +21,7 @@ define([
    * @class Model
    * @namespace aeris
    * @extends Backbone.Model
-   * @mixes aeris.Events
+   * @uses aeris.Events
    */
   var Model = function(opt_attrs, opt_options) {
     var options = _.defaults(opt_options || {}, {

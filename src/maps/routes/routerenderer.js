@@ -60,7 +60,7 @@ define([
    *
    * @param {aeris.maps.Map} opt_options.map
    *
-   * @mixes {aeris.Events}
+   * @uses {aeris.Events}
    */
   var RouteRenderer = function(opt_options) {
     var options = _.defaults(opt_options || {}, {

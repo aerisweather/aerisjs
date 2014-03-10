@@ -9,7 +9,7 @@ define(['aeris/util', 'aeris/events'], function(_, Events) {
    * @class AnimationInterface
    * @namespace aeris.maps.animations
    * @interface
-   * @mixes aeris.Events
+   * @uses aeris.Events
    */
   var AnimationInterface = function() {
 

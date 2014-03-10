@@ -7,7 +7,7 @@ define([
    * @class RoutePointInfoModule
    * @namespace aeris.builder.routes.routebuilder.routepointinfo.modules
    * @extends aeris.application.modules.Module
-   * @mixes aeris.Events
+   * @uses aeris.Events
    *
    * @param options
    * @constructor
