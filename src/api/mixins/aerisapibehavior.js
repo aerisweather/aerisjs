@@ -96,7 +96,7 @@ define([
 
     /**
      * @method setBounds
-     * @param {Array.<Array.<number>>} bounds
+     * @param {aeris.maps.Bounds} bounds
      */
     setBounds: function(bounds) {
       this.params_.setBounds(bounds);

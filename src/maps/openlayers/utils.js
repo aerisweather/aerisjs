@@ -10,7 +10,7 @@ define([
     /**
      * @param {Object} evt OpenLayers event object.
      * @param {OpenLayers.Map} map
-     * @return {Array.<number>} Simple lat/lon array.
+     * @return {aeris.maps.LatLng} Simple lat/lon array.
      * @method getLatLonFromEvent
      */
     getLatLonFromEvent: function(evt, map) {

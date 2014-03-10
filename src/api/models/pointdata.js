@@ -17,7 +17,7 @@ define([
   var PointData = function(opt_attrs, opt_options) {
     /**
      * @attribute latLon
-     * @type {Array.<number>}
+     * @type {aeris.maps.LatLng}
      */
 
     var options = _.extend({

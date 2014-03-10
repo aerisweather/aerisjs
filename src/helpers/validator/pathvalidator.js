@@ -11,7 +11,7 @@ define([
    * @constructor
    * @override
    *
-   * @param {Array.<Array.<number>>} path
+   * @param {aeris.maps.Path} path
    */
   var PathValidator = function(path) {
     this.path_ = path;
@@ -22,7 +22,7 @@ define([
 
 
   /**
-   * @param {Array.<Array.<number>>} path
+   * @param {aeris.maps.Path} path
    * @method setPath
    */
   PathValidator.prototype.setPath = function(path) {

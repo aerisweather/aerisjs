@@ -37,7 +37,7 @@ define([
 
 
     /**
-     * @type {Array.<Array.<number>>}
+     * @type {aeris.maps.Path}
      * @property path
      */
     this.path = results.path;

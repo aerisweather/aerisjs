@@ -67,7 +67,7 @@ define([
    * Set the latLon bounds for querying the Aeris API.
    *
    * @method setBounds
-   * @param {Array.<Array.<number>>} bounds
+   * @param {aeris.maps.Bounds} bounds
    */
   /**
    * Add a filter to the Aeris API request.

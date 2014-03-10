@@ -332,7 +332,7 @@ define([
    * coordinates, taking values from the
    * user input fields.
    *
-   * @return {Array.<number>} latLon coords.
+   * @return {aeris.maps.LatLng} latLon coords.
    * @private
    * @method getStartingLatLon_
    */

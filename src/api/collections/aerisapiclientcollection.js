@@ -221,7 +221,7 @@ define([
    */
   /**
    * @method setBounds
-   * @param {Array.<Array.<number>>} bounds
+   * @param {aeris.maps.Bounds} bounds
    */
   /**
    * Add a filter to the Aeris API request.

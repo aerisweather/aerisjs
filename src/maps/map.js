@@ -18,11 +18,11 @@ define([
   var Map = function(el, opt_attrs, opt_options) {
     /**
      * @event click
-     * @param {Array.<number>} latLon
+     * @param {aeris.maps.LatLng} latLon
      */
     /**
      * @event dblclick
-     * @param {Array.<number>} latLon
+     * @param {aeris.maps.LatLng} latLon
      */
     /**
      * When base map tiles are loaded.
@@ -31,7 +31,7 @@ define([
     var attrs = _.extend({
       /**
        * @attribute center
-       * @type {Array.<number>} LatLon coordinate.
+       * @type {aeris.maps.LatLng} LatLon coordinate.
        */
       center: [45, -90],
 
@@ -40,7 +40,7 @@ define([
        * LatLon bounds of the map viewport.
        *
        * @attribute bounds
-       * @type {Array.<Array.<number>>} LatLons of SW and NE corners.
+       * @type {aeris.maps.Bounds} LatLons of SW and NE corners.
        */
       bounds: [[22.43, -135.52], [52.37, -55.016]], // A rough box around the US,
 
@@ -94,7 +94,7 @@ define([
 
   /**
    * @method getBounds
-   * @returns {Array.<Array.<number>>} LatLons of SW and NE corners.
+   * @returns {aeris.maps.Bounds} LatLons of SW and NE corners.
    */
   Map.prototype.getBounds = function() {
     return this.get('bounds');
@@ -112,7 +112,7 @@ define([
 
   /**
    * @method setCenter
-   * @param {Array.<number>} latLon
+   * @param {aeris.maps.LatLng} latLon
    */
   Map.prototype.setCenter = function(latLon) {
     this.set('center', latLon, { validate: true });
@@ -144,7 +144,7 @@ define([
    * This is currently only supported when using Google Maps.
    *
    * @throws {Error} If fitToBounds is not supported by mapping library.
-   * @param {Array.<Array.<number>>} bounds
+   * @param {aeris.maps.Bounds} bounds
    */
   Map.prototype.fitToBounds = function(bounds) {
     if (!this.strategy_) {

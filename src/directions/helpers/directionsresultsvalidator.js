@@ -43,7 +43,7 @@ define([
 
 
   /**
-   * @param {Array.<number>} path
+   * @param {aeris.maps.Path} path
    * @return {aeris.directions.errors.InvalidDirectionsResultsError=}
    * @private
    * @method getPathError_

@@ -17,7 +17,7 @@ define([
    * @constructor
    *
    * @param {Object=} opt_attrs
-   * @param {Array.<number>} opt_attrs.position The lat/lon position to set the Marker.
+   * @param {aeris.maps.LatLng} opt_attrs.position The lat/lon position to set the Marker.
    * @param {Boolean=} opt_attrs.clickable Whether the user can click the marker. Default is true.
    * @param {Boolean=} opt_attrs.draggable Whether the user can drag the marker. Default is true.
    * @param {string=} opt_attrs.url URL to the icon.
@@ -35,7 +35,7 @@ define([
     var attrs = _.defaults(opt_attrs || {}, {
       /**
        * @attribute position
-       * @type {Array.<number>}
+       * @type {aeris.maps.LatLng}
        */
       position: [45, -90],
 
@@ -125,7 +125,7 @@ define([
 
 
   /**
-   * @param {Array.<number>} latLon
+   * @param {aeris.maps.LatLng} latLon
    * @method setPosition
    */
   Marker.prototype.setPosition = function(latLon) {
@@ -134,7 +134,7 @@ define([
 
 
   /**
-   * @return {Array.<number>}
+   * @return {aeris.maps.LatLng}
    * @method getPosition
    */
   Marker.prototype.getPosition = function() {

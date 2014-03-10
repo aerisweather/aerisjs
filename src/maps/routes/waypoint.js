@@ -96,7 +96,7 @@ define([
      */
     /**
      * @event path:click
-     * @param {Array.<number>} latLon
+     * @param {aeris.maps.LatLng} latLon
      * @param {aeris.maps.gmaps.route.Waypoint}
      */
     /**
@@ -325,7 +325,7 @@ define([
 
 
   /**
-   * @param {Array.<number>} pathStartingPosition
+   * @param {aeris.maps.LatLng} pathStartingPosition
    * @returns {aeris.Promise}
    * @method setPathStartsAt
    */

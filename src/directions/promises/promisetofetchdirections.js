@@ -23,7 +23,7 @@ define([
 
 
   /**
-   * @param {Array.<Array.<number>>} path
+   * @param {aeris.maps.Path} path
    * @param {number} distance
    * @param {string} opt_apiCode
    * @method resolveWithPathAndDistance

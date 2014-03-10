@@ -25,7 +25,7 @@ define([
        * An array of latLon coordinates
        *
        * @attribute path
-       * @type {Array.<Array.<number>>}
+       * @type {aeris.maps.Path}
        */
       path: [],
 
@@ -61,7 +61,7 @@ define([
     /**
      * @event click
      *
-     * @param {Array.<number>} latLat Clicked coordinate.
+     * @param {aeris.maps.LatLng} latLat Clicked coordinate.
      * @param {aeris.maps.polylines.Polyline} polyline
      */
 
@@ -86,7 +86,7 @@ define([
 
 
   /**
-   * @param {Array.<Array.<number>>} path
+   * @param {aeris.maps.Path} path
    * @method setPath
    */
   Polyline.prototype.setPath = function(path) {

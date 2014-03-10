@@ -44,8 +44,8 @@ define([
    * @private
    * @static
    *
-   * @param {Array.<number>} latLonA
-   * @param {Array.<number>} latLonB
+   * @param {aeris.maps.LatLng} latLonA
+   * @param {aeris.maps.LatLng} latLonB
    * @returns {number}
    * @method calculateDistanceBetween_
    */

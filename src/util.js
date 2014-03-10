@@ -272,8 +272,8 @@ define([
      * eg.  [45.1234567, -90.1234567]
      * --> [[45, 7, 24.4452], [-90, 7, 24.4452]]
      *
-     * @param {Array.<number>} latLon
-     * @return {Array.<Array.<number>>} Array of North and West coordinates
+     * @param {aeris.maps.LatLng} latLon
+     * @return {aeris.maps.Bounds} Array of North and West coordinates
      *                                  as [degrees, minutes, seconds].
      * @method latLonToDegrees
      */
@@ -294,7 +294,7 @@ define([
      * @param {Array.<Array.<number>>} degrees
      *                                 Array of North and West coordinates
      *                                 as [degrees, minutes, seconds].
-     * @return {Array.<number>} LatLon coordinates as decimals.
+     * @return {aeris.maps.LatLng} LatLon coordinates as decimals.
      * @method degreesToLatLon
      */
     degreesToLatLon: function(degrees) {
@@ -387,7 +387,7 @@ define([
      * Converts a bounds object into
      * a polygon.
      *
-     * @param {Array.<Array.<number>>} bounds
+     * @param {aeris.maps.Bounds} bounds
      * @return {Array.<number>}
      * @method boundsToPolygon
      */

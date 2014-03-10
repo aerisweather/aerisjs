@@ -25,7 +25,7 @@ define(['aeris/util'], function(_) {
     });
 
     /**
-     * @property {Array.<number>} latLon
+     * @property {aeris.maps.LatLng} latLon
      */
 
     /**

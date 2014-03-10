@@ -12,7 +12,7 @@ define([
 
   /**
    * @event marker:click
-   * @param {Array.<number>} latLon Marker location.
+   * @param {aeris.maps.LatLng} latLon Marker location.
    * @param {aeris.maps.markers.PointDataMarker} marker Marker object.
    */
 

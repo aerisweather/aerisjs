@@ -13,7 +13,7 @@ define([
     /**
      * Convert an array of latitude and longitude to Google's Lat/Lng object.
      *
-     * @param {Array.<number>} latLon
+     * @param {aeris.maps.LatLng} latLon
      * @return {google.maps.LatLng}
      * @method arrayToLatLng
      */
@@ -30,7 +30,7 @@ define([
      * to a plain array
      *
      * @param {google.maps.LatLng} latLng
-     * @return {Array.<number>}
+     * @return {aeris.maps.LatLng}
      * @method latLngToArray
      */
     latLngToArray: function(latLng) {
@@ -46,7 +46,7 @@ define([
      * Converts a path array to
      * an array of {google.maps.LatLng} objects.
      *
-     * @param {Array.<Array.<number>>} path
+     * @param {aeris.maps.Path} path
      * @return {Array.<google.maps.LatLng>}
      * @method pathToLatLng
      */
@@ -65,7 +65,7 @@ define([
      * to a plain path array.
      *
      * @param {Array.<google.maps.LatLng>} latLng
-     * @return {Array.<Array.<number>>}
+     * @return {aeris.maps.Path}
      * @method latLngToPath
      */
     latLngToPath: function(latLng) {
@@ -80,7 +80,7 @@ define([
 
     /**
      * @param {google.maps.LatLngBounds} bounds
-     * @return {Array.<Array.<number>>} SW and NE Corner LatLons.
+     * @return {aeris.maps.Bounds} SW and NE Corner LatLons.
      * @method boundsToArray
      */
     boundsToArray: function(bounds) {
@@ -93,7 +93,7 @@ define([
      * Converts an array of SW/NE coordinates
      * to a google LatLngBounds object.
      *
-     * @param {Array.<Array.<number>>} bounds LatLons of SW and NE corners.
+     * @param {aeris.maps.Bounds} bounds LatLons of SW and NE corners.
      * @return {google.maps.LatLngBounds}
      * @method arrayToBounds
      */

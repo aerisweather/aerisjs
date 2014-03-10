@@ -129,7 +129,7 @@ define([
 
   /**
    * @param waypoint
-   * @returns {Array.<Array.<number>>} Array of lat/lon coordinates.
+   * @returns {aeris.maps.Path} Array of lat/lon coordinates.
    * @method getWaypointPathInReverse
    */
   RouteReverser.prototype.getWaypointPathInReverse = function(waypoint) {

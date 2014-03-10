@@ -164,7 +164,7 @@ define([
    * If this.zoomTo_ is set, will also update the
    * zoom level of the map.
    *
-   * @param {Array.<number>} latLon
+   * @param {aeris.maps.LatLng} latLon
    * @private
    * @method setMapLocation_
    */

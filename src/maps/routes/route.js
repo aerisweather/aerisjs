@@ -397,7 +397,7 @@ define([
 
   /**
    * @param {aeris.maps.gmaps.route.Waypoint} waypoint
-   * @param {Array.<Array.<number>>} path
+   * @param {aeris.maps.Path} path
    * @private
    * @method movePreviousWaypointToStartOfPath_
    */
@@ -412,7 +412,7 @@ define([
 
   /**
    * @param {aeris.maps.gmaps.route.Waypoint} waypoint
-   * @param {Array.<Array.<number>>} path
+   * @param {aeris.maps.Path} path
    * @private
    * @method moveWaypointToStartOfPath_
    */

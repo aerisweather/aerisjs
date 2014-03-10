@@ -209,7 +209,7 @@ define([
    * from data model.
    *
    * @protected
-   * @return {Array.<number>}
+   * @return {aeris.maps.LatLng}
    * @method lookupPosition_
    */
   PointDataMarker.prototype.lookupPosition_ = function() {
