@@ -1,7 +1,8 @@
 {
   "name": "Aeris.js",
+  "description": "Aeris.js provides a suite of tools for rendering weather maps and widgets, and using data from  one of the most complete and advanced weather APIs available.",
   "keywords": ["maps", "weather", "weathernation", "backbone"],
-  "version": "0.1.2",
+  "version": "0.1.3",
   "homepage": "https://github.com/hamweather/aerisjs",
   "main": "src",
   "ignore": [
