@@ -1,3 +1,15 @@
+# v0.1.3
+
+* Create API models/collections for all weather-related Aeris API endpoints
+* Refactor Toggle objects, using ToggleBehvaior mixins
+* Waypoint 'selected...' attributes for styling selected waypoints
+* Clean and refactor MapApp controllers
+* Prefix MapApp CSS classes with 'aeris-'
+* Optimize Aeris API requests using the SubsetCollection class and client-side filters
+* Document mixed-in class members
+* Support https Aeris API reqeusts
+
+
 # v0.1.2
 
 * FilteredCollection class, for creating bound subsets of aers.Collection objects.
