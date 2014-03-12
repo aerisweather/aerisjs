@@ -7,7 +7,7 @@ define([
 
   var toHaveStyle = function(styleProp, styleVal) {
     var $el = this.actual;
-    var elStyles = $el.attr('style');
+    var elStyles = $el[0].style.cssText;
     var elName = $el.selector || $el.prop('tagName');
 
     // Match against element style attr (string)
@@ -63,6 +63,8 @@ define([
 
       $el = $('<div></div>').
         attr('style', stylesToString(STYLE_ORIG_STUB));
+
+      spyOn($el, 'css').andCallThrough();
 
       fullscreenController = new FullscreenController({
         el: $el,
@@ -131,9 +133,8 @@ define([
 
           fullscreenController.enterFullscreen();
 
-          _.each(expectedDefaultStyles, function(styleVal, styleProp) {
-            expect(fullscreenController.$el).toHaveStyle(styleProp, styleVal);
-          });
+
+          expect(fullscreenController.$el.css).toHaveBeenCalledWith(expectedDefaultStyles);
         });
 
       });

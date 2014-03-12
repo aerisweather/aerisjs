@@ -55,6 +55,8 @@ define([
         if (!this.callCount) { throw new Error('onrReject was never called'); }
         return this.mostRecentCall.args[0];
       }, onReject);
+
+      stubGlobalNavigator(new MockNavigator());
     });
 
 
