@@ -31,7 +31,7 @@ define([
       endpoint: '',
       action: '',
       params: {},
-      server: 'http://api.aerisapi.com',
+      server: '//api.aerisapi.com',
       jsonp: JSONP
     }, opt_options);
 

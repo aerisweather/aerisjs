@@ -45,7 +45,7 @@ define([
        * @attribute url
        * @type {string}
        */
-      url: 'http://iwx.aerisapi.com/v1.6/wnmapapp/css/assets/markers/earthquake/quake_mini.png',
+      url: '//iwx.aerisapi.com/v1.6/wnmapapp/css/assets/markers/earthquake/quake_mini.png',
 
       /**
        * Pixels between the marker's lat/lon

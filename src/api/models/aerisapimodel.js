@@ -22,7 +22,7 @@ define([
       action: '',
       params: {},
       jsonp: JSONP,
-      server: 'http://api.aerisapi.com'
+      server: '//api.aerisapi.com'
     });
 
 

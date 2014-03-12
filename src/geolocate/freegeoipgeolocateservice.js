@@ -24,7 +24,7 @@ define([
      * @private
      * @property url_
      */
-    this.url_ = 'http://freegeoip.net/json/' + options.ip_address;
+    this.url_ = '//freegeoip.net/json/' + options.ip_address;
 
     /**
      * @type {aeris.JSONP}

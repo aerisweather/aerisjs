@@ -43,7 +43,7 @@ define([
      * @private
      * @property serviceUrl_
      */
-    this.serviceUrl_ = 'http://open.mapquestapi.com/geocoding/v1/address';
+    this.serviceUrl_ = '//open.mapquestapi.com/geocoding/v1/address';
 
 
     /**
