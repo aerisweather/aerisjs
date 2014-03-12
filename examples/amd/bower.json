@@ -5,5 +5,8 @@
     "aerisjs": "../../#master",
     "requirejs": "~2.1.8"
   },
-  "private": true
+  "private": true,
+  "resolutions": {
+    "jquery": "~2.0.3"
+  }
 }

@@ -27,10 +27,6 @@ require.config({
   },
 
   shim: {
-    backbone: {
-      exports: 'Backbone',
-      deps: ['underscore', 'jquery']
-    },
     markerclusterer: {
       exports: 'MarkerClusterer'
     }
