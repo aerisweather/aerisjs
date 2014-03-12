@@ -126,7 +126,7 @@ define([
         var location = 'somewhere over the rainbow';
 
         test.jsonp.get.andCallFake(function(url, data, cb) {
-          expect(url).toEqual('http://open.mapquestapi.com/geocoding/v1/address' +
+          expect(url).toEqual('//open.mapquestapi.com/geocoding/v1/address' +
             '?key=' + test.apiId);
           expect(data).toEqual({
             location: location

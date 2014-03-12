@@ -70,7 +70,7 @@ define([
         var test = testFactory();
 
         test.jsonp.get.andCallFake(function(url, params, cb) {
-          expect(url).toEqual('http://freegeoip.net/json/' + test.ip);
+          expect(url).toEqual('//freegeoip.net/json/' + test.ip);
         });
 
         test.gls.getCurrentPosition();
