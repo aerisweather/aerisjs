@@ -40,7 +40,7 @@ define([
      * @attribute {string} path
      */
     var attrs = _.defaults(opt_attrs || {}, {
-      path: 'http://uat.hamweather.net/eschwartz/'
+      path: '/'
     });
 
     Backbone.Model.call(this, attrs, opt_options);
