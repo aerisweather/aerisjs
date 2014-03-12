@@ -16,10 +16,9 @@
     "cndPathLatest": "//js.aerisapi.com/aerisjs.js",
     "githubUrl": "https://github.com/hamweather/aerisjs",
     "aerisApiUrl": "http://www.hamweather.com/support/documentation/aeris",
-    "demoPath": "http://uat.hamweather.com/eschwartz/examples",
-    "assetPath": "/docs/assets",
-    "apiDocsPath": "/docs/api",
-    "publicDocsPath": "/docs/public"
+    "assetPath": "http://www.hamweather.com/docs/aerisjs/assets/",
+    "apiDocsPath": "http://www.hamweather.com/docs/aerisjs/api",
+    "publicDocsPath": "http://www.hamweather.com/docs/aerisjs"
   },
   "libs": ["aeris"],
   "options": {
