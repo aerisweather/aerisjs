@@ -15,7 +15,7 @@
 For basic usage, Aeris.js can be used from a CDN:
 
 ```html
-<script type="text/javascript" src="//js.aerisapi.com/aerisjs/0.1.2/aeris.min.js"></script>
+<script type="text/javascript" src="//js.aerisapi.com/aerisjs/0.1.3/aeris.min.js"></script>
 ```
 
 #### Available Packages
@@ -26,7 +26,7 @@ There are several hosted versions of the Aeris.js library, each with a varying s
 
     Render weather tile layers and data using [Google Maps](https://developers.google.com/maps/).
 
-    https://js.aerisapi.com/aerisjs/0.1.2/gmaps.min.js
+    https://js.aerisapi.com/aerisjs/0.1.3/gmaps.min.js
 
 * **Weather for OpenLayers**
 
@@ -40,27 +40,27 @@ There are several hosted versions of the Aeris.js library, each with a varying s
 
     A javascript interface for the [Aeris Weather API](http://www.hamweather.com/support/documentation/aeris/).
 
-    https://js.aerisapi.com/aerisjs/0.1.2/api.min.js
+    https://js.aerisapi.com/aerisjs/0.1.3/api.min.js
 
 * **Weather for Google Maps + Geo Services**
 
-    Includes additional APIs for [`geolocation`](/docs/public#aeris.geolocate), [`geocoding`](/docs/public#aeris.geocode), and [`directions`](/docs/api/classes/aeris.directions.DirectionsServiceInterface.html).
+    Includes additional APIs for [`geolocation`](http://www.hamweather.com/docs/aerisjs#aeris.geolocate), [`geocoding`](http://www.hamweather.com/docs/aerisjs#aeris.geocode), and [`directions`](http://www.hamweather.com/docs/aerisjs/api/classes/aeris.directions.DirectionsServiceInterface.html).
 
-    https://js.aerisapi.com/aerisjs/0.1.2/gmaps-plus.min.js
+    https://js.aerisapi.com/aerisjs/0.1.3/gmaps-plus.min.js
 
 * **Map AppBuilder**
 
-    The Aeris [`AppBuilder`](/docs/api/classes/aeris.builder.maps.MapAppBuilder.html) provides a configuration-based interface for easily generating a robust weather mapping application.
+    The Aeris [`AppBuilder`](http://www.hamweather.com/docs/aerisjs/api/classes/aeris.builder.maps.MapAppBuilder.html) provides a configuration-based interface for easily generating a robust weather mapping application.
 
-    *The [`AppBuilder`](/docs/api/classes/aeris.builder.maps.MapAppBuilder.html) component is currently a work in progress. Feel free to play around with it, while we finish up work on this component.*
+    *The [`AppBuilder`](http://www.hamweather.com/docs/aerisjs/api/classes/aeris.builder.maps.MapAppBuilder.html) component is currently a work in progress. Feel free to play around with it, while we finish up work on this component.*
 
-    https://js.aerisapi.com/aerisjs/0.1.2/mapAppBuilder.min.js
+    https://js.aerisapi.com/aerisjs/0.1.3/mapAppBuilder.min.js
     
 
 
 #### Setting API Keys
 
-In order to use weather data from the Aeris API, you must provide an Aeris API client id and secret (visit [hamweather.com](http://www.hamweather.com/products/aeris-api/pricing/) to sign up for a free devleoper account). API keys may be set globally using the [`aeris.config`](/docs/public#aeris.config) object:
+In order to use weather data from the Aeris API, you must provide an Aeris API client id and secret (visit [hamweather.com](http://www.hamweather.com/products/aeris-api/pricing/) to sign up for a free devleoper account). API keys may be set globally using the [`aeris.config`](http://www.hamweather.com/docs/aerisjs#aeris.config) object:
 
 ```javascript
 aeris.config.setApiKey('abcd1234');
@@ -122,7 +122,7 @@ require.config({
 });
 ```
 
-If you are using any of the [`AppBuilder`](/docs/api/classes/aeris.builder.maps.MapAppBuilder.html) components, additional dependencies must be specified:
+If you are using any of the [`AppBuilder`](http://www.hamweather.com/docs/aerisjs/api/classes/aeris.builder.maps.MapAppBuilder.html) components, additional dependencies must be specified:
 
 ```javascript
 require.config({
@@ -199,7 +199,7 @@ require.config({
 
 All of the components of the public API are strategy-agnostic, meaning that they will interface which whatever strategy is provided to them. By setting the `strategy` path to `gmaps` or `openlayers`, Aeris.js components know to request the correct strategy implementation.
 
-Not all functionalities are currently implemented for all map rendering strategies. If there's something you're sorely missing, I encourage you to take a look at how [strategy architecture](/docs/api/classes/aeris.maps.AbstractStrategy.html) is implemented, and then submit a [pull request.](https://github.com/hamweather/aerisjs/pulls)
+Not all functionalities are currently implemented for all map rendering strategies. If there's something you're sorely missing, I encourage you to take a look at how [strategy architecture](http://www.hamweather.com/docs/aerisjs/api/classes/aeris.maps.AbstractStrategy.html) is implemented, and then submit a [pull request.](https://github.com/hamweather/aerisjs/pulls)
 
 Note that CDN pacakges are hard-coded to use a single strategy.
 
@@ -272,5 +272,5 @@ require.config({
 Of course, you can always just go ahead and download the whole repo and stick it in your application directory. This means you'll have to download and manage all your dependencies yourself, but hey, to each their own.
 
 * [`master` branch](https://github.com/hamweather/aerisjs/archive/master.zip)
-* [v0.1.2 release](https://github.com/hamweather/aerisjs/releases/tag/v0.1.2)
+* [v0.1.3 release](https://github.com/hamweather/aerisjs/releases/tag/v0.1.3)
 * Clone the repo: `git clone https://github.com/hamweather/aerisjs.git`
