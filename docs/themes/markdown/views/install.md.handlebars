@@ -3,6 +3,7 @@
 - [From a CDN](#from-a-cdn)
     - [Available Packages](#available-packages)
     - [Setting API Keys](#setting-api-keys)
+    - [Using https](#using-https)
 - [RequireJS / AMD](#requirejs--amd)
     - [Dependencies](#dependencies)
     - [Specifying a Map Library](#specifying-a-map-library)
@@ -65,6 +66,15 @@ In order to use weather data from the Aeris API, you must provide an Aeris API c
 ```javascript
 aeris.config.setApiKey('abcd1234');
 aeris.config.setApiSecret('wxyz6789');
+```
+
+
+### Using https
+
+The Aeris.js library is available from a secure server using the `js-secure` subdomain. For example:
+
+```javascript
+<script type="text/javascript" src="//js-secure.aerisapi.com/aerisjs/{{version}}/aeris.min.js"></script>
 ```
 
 
