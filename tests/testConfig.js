@@ -12,7 +12,7 @@ require.config({
     mocks: 'tests/mocks',
     matchers: 'tests/lib/matchers',
     testErrors: 'tests/errors',
-    testUtils: 'tests/testUtils',
+    testUtils: 'tests/testutils',
     flag: 'tests/flag',
     'aeris/maps/strategy': 'src/maps/gmaps'
   },

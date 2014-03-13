@@ -1,4 +1,4 @@
-define(['aeris/util', 'aeris/errors/AbstractError'], function(_, AbstractError) {
+define(['aeris/util', 'aeris/errors/abstracterror'], function(_, AbstractError) {
   describe('An Error', function() {
     var MyError = function() {
       AbstractError.apply(this, arguments);

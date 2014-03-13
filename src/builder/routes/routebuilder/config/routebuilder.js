@@ -55,6 +55,6 @@ define({
 
   $plugins: [
     { module: 'aeris/builder/routes/plugins/travelmode' },
-    { module: 'aeris/application/plugins/assetPath' }
+    { module: 'aeris/application/plugins/assetpath' }
   ]
 });
