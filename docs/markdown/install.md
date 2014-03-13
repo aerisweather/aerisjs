@@ -16,7 +16,7 @@
 For basic usage, Aeris.js can be used from a CDN:
 
 ```html
-<script type="text/javascript" src="//js.aerisapi.com/aerisjs/0.1.3/aeris.min.js"></script>
+<script type="text/javascript" src="//cdn.aerisjs.com/0.1.3/aeris.min.js"></script>
 ```
 
 #### Available Packages
@@ -27,7 +27,7 @@ There are several hosted versions of the Aeris.js library, each with a varying s
 
     Render weather tile layers and data using [Google Maps](https://developers.google.com/maps/).
 
-    https://js.aerisapi.com/aerisjs/0.1.3/gmaps.min.js
+    https://cdn.aerisjs.com/0.1.3/gmaps.min.js
 
 * **Weather for OpenLayers**
 
@@ -41,13 +41,13 @@ There are several hosted versions of the Aeris.js library, each with a varying s
 
     A javascript interface for the [Aeris Weather API](http://www.hamweather.com/support/documentation/aeris/).
 
-    https://js.aerisapi.com/aerisjs/0.1.3/api.min.js
+    https://cdn.aerisjs.com/0.1.3/api.min.js
 
 * **Weather for Google Maps + Geo Services**
 
     Includes additional APIs for [`geolocation`](http://www.hamweather.com/docs/aerisjs#aeris.geolocate), [`geocoding`](http://www.hamweather.com/docs/aerisjs#aeris.geocode), and [`directions`](http://www.hamweather.com/docs/aerisjs/api/classes/aeris.directions.DirectionsServiceInterface.html).
 
-    https://js.aerisapi.com/aerisjs/0.1.3/gmaps-plus.min.js
+    https://cdn.aerisjs.com/0.1.3/gmaps-plus.min.js
 
 * **Map AppBuilder**
 
@@ -55,7 +55,7 @@ There are several hosted versions of the Aeris.js library, each with a varying s
 
     *The [`AppBuilder`](http://www.hamweather.com/docs/aerisjs/api/classes/aeris.builder.maps.MapAppBuilder.html) component is currently a work in progress. Feel free to play around with it, while we finish up work on this component.*
 
-    https://js.aerisapi.com/aerisjs/0.1.3/mapAppBuilder.min.js
+    https://cdn.aerisjs.com/0.1.3/mapAppBuilder.min.js
     
 
 
