@@ -45,15 +45,15 @@ There are several hosted versions of the Aeris.js library, each with a varying s
 
 * **Weather for Google Maps + Geo Services**
 
-    Includes additional APIs for [`geolocation`](http://www.hamweather.com/docs/aerisjs#aeris.geolocate), [`geocoding`](http://www.hamweather.com/docs/aerisjs#aeris.geocode), and [`directions`](http://www.hamweather.com/docs/aerisjs/api/classes/aeris.directions.DirectionsServiceInterface.html).
+    Includes additional APIs for [`geolocation`](http://docs.aerisjs.com#aeris.geolocate), [`geocoding`](http://docs.aerisjs.com#aeris.geocode), and [`directions`](http://docs.aerisjs.com/api/classes/aeris.directions.DirectionsServiceInterface.html).
 
     https://cdn.aerisjs.com/0.1.3/gmaps-plus.min.js
 
 * **Map AppBuilder**
 
-    The Aeris [`AppBuilder`](http://www.hamweather.com/docs/aerisjs/api/classes/aeris.builder.maps.MapAppBuilder.html) provides a configuration-based interface for easily generating a robust weather mapping application.
+    The Aeris [`AppBuilder`](http://docs.aerisjs.com/api/classes/aeris.builder.maps.MapAppBuilder.html) provides a configuration-based interface for easily generating a robust weather mapping application.
 
-    *The [`AppBuilder`](http://www.hamweather.com/docs/aerisjs/api/classes/aeris.builder.maps.MapAppBuilder.html) component is currently a work in progress. Feel free to play around with it, while we finish up work on this component.*
+    *The [`AppBuilder`](http://docs.aerisjs.com/api/classes/aeris.builder.maps.MapAppBuilder.html) component is currently a work in progress. Feel free to play around with it, while we finish up work on this component.*
 
     https://cdn.aerisjs.com/0.1.3/mapAppBuilder.min.js
     
@@ -61,7 +61,7 @@ There are several hosted versions of the Aeris.js library, each with a varying s
 
 #### Setting API Keys
 
-In order to use weather data from the Aeris API, you must provide an Aeris API client id and secret (visit [hamweather.com](http://www.hamweather.com/products/aeris-api/pricing/) to sign up for a free devleoper account). API keys may be set globally using the [`aeris.config`](http://www.hamweather.com/docs/aerisjs#aeris.config) object:
+In order to use weather data from the Aeris API, you must provide an Aeris API client id and secret (visit [hamweather.com](http://www.hamweather.com/products/aeris-api/pricing/) to sign up for a free devleoper account). API keys may be set globally using the [`aeris.config`](http://docs.aerisjs.com#aeris.config) object:
 
 ```javascript
 aeris.config.setApiKey('abcd1234');
@@ -132,7 +132,7 @@ require.config({
 });
 ```
 
-If you are using any of the [`AppBuilder`](http://www.hamweather.com/docs/aerisjs/api/classes/aeris.builder.maps.MapAppBuilder.html) components, additional dependencies must be specified:
+If you are using any of the [`AppBuilder`](http://docs.aerisjs.com/api/classes/aeris.builder.maps.MapAppBuilder.html) components, additional dependencies must be specified:
 
 ```javascript
 require.config({
@@ -209,7 +209,7 @@ require.config({
 
 All of the components of the public API are strategy-agnostic, meaning that they will interface which whatever strategy is provided to them. By setting the `strategy` path to `gmaps` or `openlayers`, Aeris.js components know to request the correct strategy implementation.
 
-Not all functionalities are currently implemented for all map rendering strategies. If there's something you're sorely missing, I encourage you to take a look at how [strategy architecture](http://www.hamweather.com/docs/aerisjs/api/classes/aeris.maps.AbstractStrategy.html) is implemented, and then submit a [pull request.](https://github.com/hamweather/aerisjs/pulls)
+Not all functionalities are currently implemented for all map rendering strategies. If there's something you're sorely missing, I encourage you to take a look at how [strategy architecture](http://docs.aerisjs.com/api/classes/aeris.maps.AbstractStrategy.html) is implemented, and then submit a [pull request.](https://github.com/hamweather/aerisjs/pulls)
 
 Note that CDN pacakges are hard-coded to use a single strategy.
 

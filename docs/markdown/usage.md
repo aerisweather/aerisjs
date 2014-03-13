@@ -13,11 +13,11 @@ This document is only an introduction to the features of Aeris.js. Check out the
 #### A Note For RequireJS Users
 The examples in this document reference components within the global `aeris` namespace. This is appropriate when loading the library from a CDN. If you are loading components as RequireJS/AMD modules, you can find find modules by matching namespace paths to the aeris library file structure.
 
-For example, [`aeris.maps.layers.Radar`](http://www.hamweather.com/docs/aerisjs#aeris.maps.layers.Radar) can be found at [`aeris/maps/layers/radar`](https://github.com/hamweather/aerisjs/blob/master/src/maps/layers/aerisradar.js).
+For example, [`aeris.maps.layers.Radar`](http://docs.aerisjs.com#aeris.maps.layers.Radar) can be found at [`aeris/maps/layers/radar`](https://github.com/hamweather/aerisjs/blob/master/src/maps/layers/aerisradar.js).
 
 ## Data and Weather API
 
-The Aeris.js `api` library provides a javascript interface for interacting with data from the [Aeris API](http://www.hamweather.com/support/documentation/aeris/endpoints/). Data collection objects accept a [`params`](http://www.hamweather.com/docs/aerisjs/api/classes/aeris.api.params.models.Params.html) object, which is used to query the AerisAPI.
+The Aeris.js `api` library provides a javascript interface for interacting with data from the [Aeris API](http://www.hamweather.com/support/documentation/aeris/endpoints/). Data collection objects accept a [`params`](http://docs.aerisjs.com/api/classes/aeris.api.params.models.Params.html) object, which is used to query the AerisAPI.
 
 ```javascript
 var stormReportCollection = new aeris.api.collections.StormReports(null, {
@@ -44,7 +44,7 @@ var stormReports = new aeris.api.collections.StormReports(null, {
 });
 ```
 
-Data collections are populated via ajax requests, using the `fetch` method, which returns an [`aeris.Promise`](http://www.hamweather.com/docs/aerisjs#aeris.Promise) object.
+Data collections are populated via ajax requests, using the `fetch` method, which returns an [`aeris.Promise`](http://docs.aerisjs.com#aeris.Promise) object.
 
 ```javascript
     stormReports.fetch().
@@ -91,9 +91,9 @@ Data collections are defined for the following [AerisAPI endpoints](http://www.h
 
 | Endpoint | Model | Collection |
 | ----------------- |-------| -----------|
-| `/earthquakes` | [`aeris.api.models.Earthquake`](http://www.hamweather.com/docs/aerisjs#aeris.api.models.Earthquake) | [`aeris.api.collections.Earthquakes`](http://www.hamweather.com/docs/aerisjs#aeris.api.collections.Earthquakes)|
-| `/fires` | [`aeris.api.models.Fire`](http://www.hamweather.com/docs/aerisjs#aeris.api.models.Fire) | [`aeris.api.collections.Fires`](http://www.hamweather.com/docs/aerisjs#aeris.api.collections.Fires) |
-| `/stormreports` | [`aeris.api.models.StormReport`](http://www.hamweather.com/docs/aerisjs#aeris.api.models.StormReport) | [`aeris.api.collections.StormReports`](http://www.hamweather.com/docs/aerisjs#aeris.api.collections.StormReports) |
+| `/earthquakes` | [`aeris.api.models.Earthquake`](http://docs.aerisjs.com#aeris.api.models.Earthquake) | [`aeris.api.collections.Earthquakes`](http://docs.aerisjs.com#aeris.api.collections.Earthquakes)|
+| `/fires` | [`aeris.api.models.Fire`](http://docs.aerisjs.com#aeris.api.models.Fire) | [`aeris.api.collections.Fires`](http://docs.aerisjs.com#aeris.api.collections.Fires) |
+| `/stormreports` | [`aeris.api.models.StormReport`](http://docs.aerisjs.com#aeris.api.models.StormReport) | [`aeris.api.collections.StormReports`](http://docs.aerisjs.com#aeris.api.collections.StormReports) |
 
 
 
@@ -102,7 +102,7 @@ Data collections are defined for the following [AerisAPI endpoints](http://www.h
 
 #### Basic Map Objects
 
-[`Map`](http://www.hamweather.com/docs/aerisjs#aeris.maps.Map) objects are rendered and erased using the `setMap` method.
+[`Map`](http://docs.aerisjs.com#aeris.maps.Map) objects are rendered and erased using the `setMap` method.
 
 ```javascript
 var map = new aeris.maps.Map('map-canvas');
@@ -185,7 +185,7 @@ marker.on({
 
 #### Rendering Map Objects From Weather API Data
 
-[`MarkerCollections`](http://www.hamweather.com/docs/aerisjs#aeris.maps.markercollections) can be used to render Aeris API data.
+[`MarkerCollections`](http://docs.aerisjs.com#aeris.maps.markercollections) can be used to render Aeris API data.
 
 ```javascript
 var earthquakeMarkers = new aeris.maps.markercollections.EarthquakeMarkers();
@@ -246,8 +246,8 @@ $('#findMe').click(function() {
 
 See the reference documentation for more details about geoservices:
 
-* [`Geolocation services`](http://www.hamweather.com/docs/aerisjs#aeris.geolocate)
-* [`Geocode services`](http://www.hamweather.com/docs/aerisjs#aeris.geocode)
+* [`Geolocation services`](http://docs.aerisjs.com#aeris.geolocate)
+* [`Geocode services`](http://docs.aerisjs.com#aeris.geocode)
 
 
 ## AppBuilder
@@ -259,7 +259,7 @@ See the reference documentation for more details about geoservices:
 */
 ```
 
-The Aeris [`AppBuilder`](http://www.hamweather.com/docs/aerisjs/api/classes/aeris.builder.maps.MapAppBuilder.html) is a dead-simple tool for creating a weather map application.
+The Aeris [`AppBuilder`](http://docs.aerisjs.com/api/classes/aeris.builder.maps.MapAppBuilder.html) is a dead-simple tool for creating a weather map application.
 
 ```javascript
 new MapApp({
