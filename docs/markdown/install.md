@@ -16,7 +16,7 @@
 For basic usage, Aeris.js can be used from a CDN:
 
 ```html
-<script type="text/javascript" src="//cdn.aerisjs.com/0.1.3/aeris.min.js"></script>
+<script type="text/javascript" src="//cdn.aerisjs.com/aeris.min.js"></script>
 ```
 
 #### Available Packages
@@ -27,7 +27,7 @@ There are several hosted versions of the Aeris.js library, each with a varying s
 
     Render weather tile layers and data using [Google Maps](https://developers.google.com/maps/).
 
-    https://cdn.aerisjs.com/0.1.3/gmaps.min.js
+    [//cdn.aerisjs.com/gmaps.min.js](//cdn.aerisjs.com/api.min.js)
 
 * **Weather for OpenLayers**
 
@@ -39,15 +39,15 @@ There are several hosted versions of the Aeris.js library, each with a varying s
 
 * **Weather API only**
 
-    A javascript interface for the [Aeris Weather API](http://www.hamweather.com/support/documentation/aeris/).
+    A javascript interface for the [Aeris Weather API](http://www.hamweather.com/support/documentation/aeris).
 
-    https://cdn.aerisjs.com/0.1.3/api.min.js
+    [//cdn.aerisjs.com/api.min.js](//cdn.aerisjs.com/api.min.js)
 
 * **Weather for Google Maps + Geo Services**
 
     Includes additional APIs for [`geolocation`](http://docs.aerisjs.com#aeris.geolocate), [`geocoding`](http://docs.aerisjs.com#aeris.geocode), and [`directions`](http://docs.aerisjs.com/api/classes/aeris.directions.DirectionsServiceInterface.html).
 
-    https://cdn.aerisjs.com/0.1.3/gmaps-plus.min.js
+    [//cdn.aerisjs.com/gmaps-plus.min.js](//cdn.aerisjs.com/gmaps-plus.min.js)
 
 * **Map AppBuilder**
 
@@ -55,7 +55,7 @@ There are several hosted versions of the Aeris.js library, each with a varying s
 
     *The [`AppBuilder`](http://docs.aerisjs.com/api/classes/aeris.builder.maps.MapAppBuilder.html) component is currently a work in progress. Feel free to play around with it, while we finish up work on this component.*
 
-    https://cdn.aerisjs.com/0.1.3/mapAppBuilder.min.js
+    [//cdn.aerisjs.com/mapAppBuilder.min.js](//cdn.aerisjs.com/mapAppBuilder.min.js)
     
 
 
@@ -66,15 +66,6 @@ In order to use weather data from the Aeris API, you must provide an Aeris API c
 ```javascript
 aeris.config.setApiKey('abcd1234');
 aeris.config.setApiSecret('wxyz6789');
-```
-
-
-### Using https
-
-The Aeris.js library is available from a secure server using the `js-secure` subdomain. For example:
-
-```javascript
-<script type="text/javascript" src="//js-secure.aerisapi.com/aerisjs/0.1.3/aeris.min.js"></script>
 ```
 
 

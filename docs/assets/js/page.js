@@ -67,4 +67,10 @@ $(document).ready(function() {
     interactive: true,
     contentAsHTML: true
   });
+
+  // Disabled button
+  $('a.disabled').click(function(evt) {
+    evt.preventDefault();
+    return false;
+  });
 });

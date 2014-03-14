@@ -7,5 +7,14 @@ body .container {
     &:hover {
       text-decoration: none;
     }
+
+    &.disabled {
+      background: #ccc;
+      color: #313131;
+      box-shadow: none;
+
+      position: static; // prevents shifting on hover/active
+      cursor: default;
+    }
   }
 }

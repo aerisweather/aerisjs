@@ -13,9 +13,10 @@
     registerProjectConfig: function(conf) {
       projectConfig = GLOBAL.projectConfig = conf;
     },
+
     getCDNPath: function(opt_packageName) {
       var isMissingConfig = !projectConfig || !projectConfig.cdnPath || !projectConfig.version;
-      var packageName = _.isString(opt_packageName) && opt_packageName.length ?  opt_packageName : 'aeris';
+      var packageName = _.isString(opt_packageName) && opt_packageName.length ? opt_packageName : 'aeris';
 
       if (isMissingConfig) {
         throw new Error('Unable to output CDN path: project config must define cdnPath and version');

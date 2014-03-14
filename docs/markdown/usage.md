@@ -213,7 +213,7 @@ map.on('change:bounds', function() {
 earthquakeMarkers.on('click', function(latLon, marker) {
     var infoBox = new aeris.maps.InfoBox({
         position: latLon,
-        content: myTemplate(marker.getData().toJSON());
+        content: myTemplate(marker.getData().toJSON())
     });
     infoBox.setMap(map);
 });

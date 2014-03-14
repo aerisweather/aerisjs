@@ -2,7 +2,7 @@
   <a href="#"><img id="logo" src="{{assetPath}}/images/aeris_logo.png" alt="Aeris.js"/></a>
 
   <p>
-    The <a href="http://www.hamweather.com/support/documentation/aeris" target="_blank">Aeris Weather API</a> is one of
+    The <a href="{{project.aerisApiUrl}}" target="_blank">Aeris Weather API</a> is one of
     the most complete and advanced weather APIs available and quickly gives you access to many different types of weather
     information.
   </p>
@@ -43,20 +43,20 @@
 
   <table class="downloads">
     <tr>
-      <td><a class="btn" href="//cdn.aerisjs.com/{{version}}/gmaps.min.js">Weather for Google Maps</a></td>
+      <td><a class="btn" href="{{getCDNPath 'gmaps'}}">Weather for Google Maps</a></td>
       <td>Render weather tile layers and data using Google Maps. ~37k gzipped.</td>
     </tr>
     <tr>
-      <td><a class="btn" href="//cdn.aerisjs.com/{{version}}/gmaps-plus.min.js">Weather for Google Maps +</a></td>
+      <td><a class="btn" href="{{getCDNPath 'gmaps-plus'}}">Weather for Google Maps +</a></td>
       <td>Includes additional APIs for geolocation, geocoding, and directions. ~39k gzipped.</td>
     </tr>
     <tr>
-      <td><a class="btn" href="#">Weather for OpenLayers</a></td>
-      <td>Render weather tile layers and data using OpenLayers. (Coming soon!)</td>
+      <td><a class="btn" href="{{getCDNPath 'api'}}">Weather API only</a></td>
+      <td>A javascript interface for the <a target="_blank" href="{{project.aerisApiUrl}}">Aeris Weather API</a>.</td>
     </tr>
     <tr>
-      <td><a class="btn" href="//cdn.aerisjs.com/{{version}}/api.min.js">Weather API only</a></td>
-      <td>A javascript interface for the <a target="_blank" href="http://www.hamweather.com/support/documentation/aeris/">Aeris Weather API</a>.</td>
+      <td><a class="btn disabled" href="#">Weather for OpenLayers</a></td>
+      <td>Render weather tile layers and data using OpenLayers. (Coming soon!)</td>
     </tr>
   </table>
 
@@ -69,22 +69,22 @@
     <code class="example">
 &lt;!-- Weather for Google Maps --&gt;
 &lt;script type="text/javascript"
-        src="//cdn.aerisjs.com/{{version}}/gmaps.min.js"&gt;
+        src="{{getCDNPath 'gmaps'}}"&gt;
 &lt;/script&gt;
 
 &lt;!-- Weather for Google Maps + --&gt;
 &lt;script type="text/javascript"
-        src="//cdn.aerisjs.com/{{version}}/gmaps-plus.min.js"&gt;
+        src="{{getCDNPath 'gmaps-plus'}}"&gt;
 &lt;/script&gt;
 
 &lt;!-- Weather API Only --&gt;
 &lt;script type="text/javascript"
-        src="//cdn.aerisjs.com/{{version}}/api.min.js"&gt;
+        src="{{getCDNPath 'gmaps-plus'}}"&gt;
 &lt;/script&gt;
 
 &lt;!-- Most recent Google Maps + build--&gt;
 &lt;script type="text/javascript"
-        src="//cdn.aerisjs.com/aeris.js"&gt;
+        src="{{getCDNPath 'gmaps-plus'}}"&gt;
 &lt;/script&gt;
     </code>
   </pre>
