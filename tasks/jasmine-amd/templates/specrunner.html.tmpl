@@ -33,14 +33,14 @@
     require([
       '<%=libs.join('\',\n      \'') %>'
       <% if (isPhantom) { %>
-        , 'tasks/vendor/poly/function',
-        , 'tasks/helpers/phantomjsreporter'
+        , 'tasks/jasmine-amd/vendor/poly/function',
+        , 'tasks/jasmine-amd/helpers/phantomjsreporter'
       <% } %>
     ], function() {
       var jasmineEnv = jasmine.getEnv();
 
       <% if (isPhantom) { %>
-        var reporter = new (require('tasks/helpers/phantomjsreporter'))();
+        var reporter = new (require('tasks/jasmine-amd/helpers/phantomjsreporter'))();
       <% }
       else { %>
         var reporter = new jasmine.HtmlReporter();
