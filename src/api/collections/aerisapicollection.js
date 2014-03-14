@@ -21,9 +21,9 @@ define([
    * @param {Object=} opt_models
    *
    * @param {Object=} opt_options
-   * @param {string=} opt_options.endpoint Aeris API endpoint
-   * @param {Object|Model=} opt_options.params Parameters with which to query the Aeris API
-   * @param {string=} opt_options.server The Aeris API server location
+   * @param {string=} opt_options.endpoint Aeris API endpoint.
+   * @param {Object|Model=} opt_options.params Parameters with which to query the Aeris API.
+   * @param {string=} opt_options.server The Aeris API server location.
    * @param {aeris.JSONP=} opt_options.JSONP object used for fetching batch data.
    */
   var AerisApiCollection = function(opt_models, opt_options) {

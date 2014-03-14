@@ -7,8 +7,8 @@ define([
    * Helper class for
    * the listenTo facet.
    *
-   * @param proxy
-   * @param wire
+   * @param {Object} proxy
+   * @param {Wire} wire
    *
    * @constructor
    */
@@ -23,14 +23,14 @@ define([
    * Bind event listeners, as
    * defined in the facet spec.
    *
-   * @returns {when.promise} A promise to resolve all listeners.
+   * @return {when.promise} A promise to resolve all listeners.
    * @method connect
    */
   ListenToFacet.prototype.connect = function() {
     var connectionPromises = [];
 
     _.each(this.spec_, function(eventSpec, targetRef) {
-      connectionPromises.push(this.connectTarget(eventSpec, targetRef))
+      connectionPromises.push(this.connectTarget(eventSpec, targetRef));
     }, this);
 
     return when.all(connectionPromises);
@@ -44,14 +44,14 @@ define([
    *        As: {
    *             eventName: 'opt_transform | handler',
    *              ...
-   *            }
+   *            }.
    *
-   * @param {string} targetRef Reference to target object
-   * @returns {when.promise} Promise to bind target events.
+   * @param {string} targetRef Reference to target object.
+   * @return {when.promise} Promise to bind target events.
    * @method connectTarget
    */
   ListenToFacet.prototype.connectTarget = function(eventSpec, targetRef) {
-    var passThrough = function(args) { return args; }
+    var passThrough = function(args) { return args; };
     var whenTargetResolved = this.wire_.resolveRef(targetRef);
     var connectionPromises = [];
 
@@ -90,7 +90,7 @@ define([
   };
 
   /**
-   * @param {string} transformerSpec As '[opt_ns].transformer'
+   * @param {string} transformerSpec As '[opt_ns].transformer'.
    * @return {when} Promise to resolve with transformer function.
    * @method resolveTransformer
    */
@@ -134,7 +134,7 @@ define([
       var args = _.argsToArray(arguments);
       var tranformedParams = transformer.apply(transformer, args);
       handler.call(this.listener_, tranformedParams);
-    }, this))
+    }, this));
   };
 
 
@@ -146,7 +146,7 @@ define([
    *  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/Trim
    */
   if (!String.prototype.trim) {
-    String.prototype.trim = function () {
+    String.prototype.trim = function() {
       return this.replace(/^\s+|\s+$/g, '');
     };
   }

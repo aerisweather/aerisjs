@@ -93,7 +93,7 @@ define([
    */
   Config.prototype.setApiId = function(apiId) {
     this.set('apiId', apiId, { validate: true });
-  }
+  };
 
   /**
    * @method setApiSecret
@@ -101,7 +101,7 @@ define([
    */
   Config.prototype.setApiSecret = function(apiSecret) {
     this.set('apiId', apiId, { validate: true });
-  }
+  };
 
   // Return a singleton config object,
   // propagated with any data from ReqJS's

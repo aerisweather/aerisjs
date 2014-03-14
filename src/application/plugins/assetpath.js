@@ -9,6 +9,6 @@ define(['aeris/config'], function(aerisConfig) {
           resolver.resolve(path);
         }
       }
-    }
+    };
   }
 });

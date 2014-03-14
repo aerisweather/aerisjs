@@ -77,7 +77,7 @@ define([
    * Note that is is not necessary to wait for all layers
    * to load before starting animations.
    *
-   * @return {aeris.Promise} Promise to load all layers
+   * @return {aeris.Promise} Promise to load all layers.
    * @method loadAnimationLayers
    */
   TileAnimation.prototype.loadAnimationLayers = function() {

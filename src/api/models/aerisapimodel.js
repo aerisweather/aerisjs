@@ -94,14 +94,14 @@ define([
 
 
   /**
-   * @returns {*|string}
+   * @return {*|string}
    * @protected
    */
   AerisApiModel.prototype.getEndpointUrl_ = function() {
     var url = AerisApiBehavior.getEndpointUrl_.call(this);
 
     if (this.id) {
-      url += this.id
+      url += this.id;
     }
 
     return url;

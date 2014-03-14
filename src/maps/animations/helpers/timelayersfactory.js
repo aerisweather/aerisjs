@@ -12,7 +12,7 @@ define([
    * @override
    *
    * @param {aeris.maps.layers.AerisTile} baseLayer
-   * @param {Array.<number>} times Timestamps
+   * @param {Array.<number>} times Timestamps.
    *
    * @param {aeris.maps.animations.options.AnimationOptions=} opt_options
    */
@@ -84,7 +84,7 @@ define([
 
 
   /**
-   * @return {Array.<number>} Timestamps in chronological order
+   * @return {Array.<number>} Timestamps in chronological order.
    * @method getOrderedTimes
    */
   TimeLayersFactory.prototype.getOrderedTimes = function() {
@@ -93,7 +93,7 @@ define([
 
 
   /**
-   * @returns {Object.<number,aeris.maps.layer.AerisTile>} A hash of timestamps to layers.
+   * @return {Object.<number,aeris.maps.layer.AerisTile>} A hash of timestamps to layers.
    * @method createTimeLayers
    */
   TimeLayersFactory.prototype.createTimeLayers = function() {
@@ -210,7 +210,7 @@ define([
   TimeLayersFactory.prototype.sortTimes_ = function() {
     if (this.isSorted_) { return; }
 
-    this.times_ = _.sortBy(this.times_ , function(time) {
+    this.times_ = _.sortBy(this.times_, function(time) {
       return time;
     });
     this.isSorted_ = true;

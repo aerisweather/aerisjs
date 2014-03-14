@@ -68,7 +68,7 @@ define([
  * in the info panel region.
  *
  * @event info:show
- * @param {aeris.application.controller.ControllerInterface} controller The rendered controller
+ * @param {aeris.application.controller.ControllerInterface} controller The rendered controller.
  */
 /**
  * The info panel region has been closed.

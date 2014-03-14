@@ -4,4 +4,4 @@ define([
 
   'aeris/geocode/googlegeocodeservice',
   'aeris/geocode/mapquestgeocodeservice'
-], function() {})
+], function() {});

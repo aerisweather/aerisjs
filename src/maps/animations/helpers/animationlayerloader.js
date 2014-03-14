@@ -42,19 +42,19 @@ define([
 
     /**
      * @event load:progress
-     * @param {number} Progress (1.0 is complete)
+     * @param {number} Progress (1.0 is complete).
      */
     /**
      * @event load:complete
-     * @param {number} Progress (1.0 is complete)
+     * @param {number} Progress (1.0 is complete).
      */
     /**
      * @event load:error
-     * @param {Error}
+     * @param {Error} error
      */
     /**
      * @event load:times
-     * @param {Array.<number>}
+     * @param {Array.<number>} times
      */
 
     Events.call(this);

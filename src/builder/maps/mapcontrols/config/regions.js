@@ -6,4 +6,4 @@ define({
     markerControlsRegion: '.aeris-markerControls',
     fullscreenControlsRegion: '.aeris-fullscreenControlsRegion'
   }
-})
+});

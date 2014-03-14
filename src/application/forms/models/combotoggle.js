@@ -67,7 +67,7 @@ define([
      */
     this.childTogglesAttribute_ = options.childTogglesAttribute;
 
-    attrs[this.childTogglesAttribute_] || (attrs[this.childTogglesAttribute_] = [])
+    attrs[this.childTogglesAttribute_] || (attrs[this.childTogglesAttribute_] = []);
 
 
     Toggle.call(this, attrs, options);
@@ -122,7 +122,7 @@ define([
       'change:selected',
       'change:' + this.childTogglesAttribute_
     ];
-    
+
     this.listenTo(this, events.join(' '), this.updateChildTogglesState_);
   };
 
@@ -132,7 +132,7 @@ define([
    * @method updateChildTogglesState_
    */
   ComboToggle.prototype.updateChildTogglesState_ = function() {
-    var selectMethod = this.isSelected() ? 'select': 'deselect';
+    var selectMethod = this.isSelected() ? 'select' : 'deselect';
     this.invokeAll_(selectMethod);
   };
 
@@ -194,7 +194,6 @@ define([
 
 
   /**
-   * @public
    * @method clearToggles
    */
   ComboToggle.prototype.clearToggles = function() {

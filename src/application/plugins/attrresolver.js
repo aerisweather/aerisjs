@@ -20,10 +20,10 @@ define(function() {
    *
    * deepNestedValue: { $ref: 'attr!someModel.deep.nested.attr' }     // resolves to 'value'
    *
-   * @param pluginPromise
-   * @param refName
-   * @param refObj
-   * @param wire
+   * @param {Promise} pluginPromise
+   * @param {string} refName
+   * @param {Object} refObj
+   * @param {Wire} wire
    */
   function attrResolver(pluginPromise, refName, refObj, wire) {
     var pathParts = refName.split('.');
@@ -35,7 +35,7 @@ define(function() {
       }).
       otherwise(function(e) {
         pluginPromise.reject(e);
-      })
+      });
   }
 
 

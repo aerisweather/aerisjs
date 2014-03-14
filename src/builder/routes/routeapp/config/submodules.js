@@ -12,4 +12,4 @@ define({
 
     routeBuilder: { wire: 'aeris/builder/routes/routebuilder/config/module' }
   }
-})
+});

@@ -84,7 +84,7 @@ define([
       'clusterer:remove': function(clusterer) {
         this.googleEvents_.stopListening(clusterer);
       }
-    })
+    });
   };
   _.inherits(MarkerClusterStrategy, AbstractStrategy);
 
@@ -93,7 +93,7 @@ define([
     // Debounce event handlers.
     // Resolves significant performance issues
     // when data is reset on very large collections (~500+ models)
-    var resetDebounced= _.debounce(function() {
+    var resetDebounced = _.debounce(function() {
       this.resetClusters();
     }, 500);
     var repaintDebounced = _.debounce(function() {
@@ -109,7 +109,7 @@ define([
       reset: resetDebounced,
       'change': repaintDebounced
     });
-  }
+  };
 
 
   /**
@@ -123,7 +123,7 @@ define([
 
     this.addMarkers(this.object_.models);
 
-    return this.view_
+    return this.view_;
   };
 
 
@@ -248,7 +248,7 @@ define([
   MarkerClusterStrategy.prototype.removeMarkers = function(markers) {
     _.each(markers, function(marker) {
       this.removeMarker(marker);
-    }, this)
+    }, this);
   };
 
 
@@ -299,7 +299,7 @@ define([
    * using the object's 'clusterBy' setting.
    *
    * @param {aeris.maps.markers.Marker} marker
-   * @returns {string}
+   * @return {string}
    * @private
    * @method getMarkerGroup_
    */
@@ -373,7 +373,7 @@ define([
    * Get a MarkerClusterer by group name.
    *
    * @param {string} groupName
-   * @returns {MarkerClusterer}
+   * @return {MarkerClusterer}
    * @method getClusterer
    */
   MarkerClusterStrategy.prototype.getClusterer = function(groupName) {

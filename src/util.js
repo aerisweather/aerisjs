@@ -18,7 +18,7 @@ define([
    */
   if (!Array.prototype.indexOf) {
     Array.prototype.indexOf = function(searchElement/*, fromIndex */) {
-      "use strict";
+      'use strict';
       if (this == null) {
         throw new TypeError();
       }
@@ -47,7 +47,7 @@ define([
         }
       }
       return -1;
-    }
+    };
   }
 
   /**
@@ -57,7 +57,7 @@ define([
    *  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/Trim
    */
   if (!String.prototype.trim) {
-    String.prototype.trim = function () {
+    String.prototype.trim = function() {
       return this.replace(/^\s+|\s+$/g, '');
     };
   }
@@ -539,8 +539,8 @@ define([
      *     }
      *   }
      *
-     * @param str
-     * @returns {*}
+     * @param {string} str
+     * @return {*}
      * @method parseObjectValues
      */
     parseObjectValues: function(str) {
@@ -577,8 +577,8 @@ define([
      *
      * Returns a new array.
      *
-     * @param {Array.<*|Object> arrA
-     * @param {Array.<*|Object> arrB
+     * @param {Array.<*|Object>} arrA
+     * @param {Array.<*|Object>} arrB
      * @return {Array.<*|Object>}
      * @method extendArrayObjects
      */
@@ -618,7 +618,7 @@ define([
      * a bad idea, though it can be useful for forcing errors
      * to be thrown in promise callbacks.
      *
-     * @param e
+     * @param {Error} e
      * @method throwUncatchable
      */
     throwUncatchable: function(e) {

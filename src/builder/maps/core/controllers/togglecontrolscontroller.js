@@ -30,7 +30,7 @@ define([
 
     if (!options.eventHub) {
       throw new InvalidArgumentError('Missing eventHub parameter for ' +
-        'ToggleControlsController constructor')
+        'ToggleControlsController constructor');
     }
 
     /**
@@ -45,7 +45,7 @@ define([
 
     if (!options.name) {
       throw new InvalidArgumentError('Missing name parameter for ' +
-        'ToggleControlsController constructor')
+        'ToggleControlsController constructor');
     }
 
 

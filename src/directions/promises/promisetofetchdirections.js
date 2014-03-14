@@ -71,7 +71,7 @@ define([
       code: aerisCode,
       apiCode: apiCode,
       message: message
-    })
+    });
   };
 
   /**

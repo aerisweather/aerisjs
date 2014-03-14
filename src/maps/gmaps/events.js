@@ -37,7 +37,7 @@ define([
    * @param {Object} obj Google maps object.
    * @param {Object.<string,Function>|string} event An events hash, or a topic.
    * @param {Function=} opt_handler If used with an event string, the handler for that topic.
-   *                            If using an event hash, this argument is the ctx
+   *                            If using an event hash, this argument is the ctx.
    * @param {Object=} opt_ctx Context within which to call the handler.
    * @method listenTo
    */

@@ -146,7 +146,7 @@ define([
    * Add a view to the
    * controls view.
    *
-   * @throw {aeris.errors.InvalidArgumentError}
+   * @throws {aeris.errors.InvalidArgumentError}
    *        If no region is associated with the controlsViewName.
    *
    * @param {LayoutController} controller
@@ -155,7 +155,7 @@ define([
    */
   MapControlsController.prototype.renderControlsView = function(controller, controlsViewName) {
     var controlsRegion = this.getControlsRegion(controlsViewName);
-    
+
     if (!controlsRegion) {
       throw new InvalidArgumentError('Unable to render \'' + controlsViewName + '\' ' +
         'controls: No region is defined in which to render the view');
@@ -181,13 +181,13 @@ define([
 
 
   /**
-   * 
-   * @returns {Array}
+   *
+   * @return {Array}
    * @private
    * @method getAllowedControlsViewNames_
    */
   MapControlsController.prototype.getAllowedControlsViewNames_ = function() {
-    var controlsConfig  = this.builderOptions_.get('controls');
+    var controlsConfig = this.builderOptions_.get('controls');
     var list = [];
 
     _.each(controlsConfig, function(isControlActive, controlType) {

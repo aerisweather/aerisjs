@@ -110,7 +110,7 @@ define([
     return {
       miles: this.metersToMilesString_(distanceInMeters),
       km: distanceInKM.toFixed(1)
-    }
+    };
   };
 
 

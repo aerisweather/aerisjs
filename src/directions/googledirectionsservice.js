@@ -45,12 +45,12 @@ define([
   };
 
 
-  /** 
+  /**
    * @override
    *
    * @param {aeris.maps.LatLng} origin
    * @param {aeris.maps.LatLng} destination
-   * 
+   *
    * @param {Object=} opt_options
    * @param {string=} opt_options.travelMode Defaults to 'WALKING'.
    * @method fetchPath
@@ -83,7 +83,7 @@ define([
       origin: mapUtils.arrayToLatLng(origin),
       destination: mapUtils.arrayToLatLng(destination),
       travelMode: gmaps.TravelMode[travelMode]
-    }
+    };
   };
 
 

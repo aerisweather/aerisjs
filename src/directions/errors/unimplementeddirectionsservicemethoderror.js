@@ -14,7 +14,7 @@ define([
       return opt_methodName ?
         errorMsgDefault :
         'Classes implementing the DirectionsServiceInterface' +
-          'must implement a ' + opt_methodName + ' method.'
+          'must implement a ' + opt_methodName + ' method.';
     }
   });
 });

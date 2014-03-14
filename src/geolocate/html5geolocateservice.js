@@ -102,7 +102,7 @@ define([
 
   /**
    * @private
-   * @returns {aeris.geolocate.errors.GeolocateServiceError}
+   * @return {aeris.geolocate.errors.GeolocateServiceError}
    * @method createServiceUnavailableError_
    */
   HTML5GeolocateService.prototype.createServiceUnavailableError_ = function() {

@@ -47,7 +47,7 @@ define(['aeris/util', 'aeris/events'], function(_, Events) {
 
     /**
      * @event load:error
-     * @param {Error}
+     * @param {Error} error
      */
 
     /**
@@ -55,7 +55,7 @@ define(['aeris/util', 'aeris/events'], function(_, Events) {
      * for this animation.
      *
      * @event load:times
-     * @param {Array.<number>} A list of timestamps
+     * @param {Array.<number>} A list of timestamps.
      *                        for which animation frames
      *                        will be created.
      */

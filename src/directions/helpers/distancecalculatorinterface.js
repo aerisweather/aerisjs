@@ -1,12 +1,12 @@
 define(function() {
   /**
    * Calculates the distance between two points.
-   * 
+   *
    * @class DistanceCalculatorInterface
    * @namespace aeris.directions.helpers
    * @static
    * @interface
-   * 
+   *
    * @constructor
    */
   var DistanceCalculatorInterface = function() {};
@@ -22,7 +22,7 @@ define(function() {
    * @method getDistanceBetween
    */
   DistanceCalculatorInterface.getDistanceBetween = function(latLonA, latLonB) {};
-  
-  
+
+
   return DistanceCalculatorInterface;
 });

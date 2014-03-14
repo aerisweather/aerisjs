@@ -15,8 +15,8 @@ define([
    * @param {Object} options
    * @param {aeris.Events} options.eventHub
    * @param {Object} options.fullscreenStyle
-   * @param {string=} options.fullscreenClass CSS class of button to enter fullscreen mode
-   * @param {string=} options.exitFullscreenClass CSS class of button to exit fullscreen mode
+   * @param {string=} options.fullscreenClass CSS class of button to enter fullscreen mode.
+   * @param {string=} options.exitFullscreenClass CSS class of button to exit fullscreen mode.
    *
    *
    * @param {Object} options.ui
@@ -61,8 +61,8 @@ define([
      * @type {string}
     */
     this.exitFullscreenClass_ = options.exitFullscreenClass || 'aeris-exit-fullscreen';
-    
-    
+
+
     /**
      * @property fullscreenService_
      * @private
@@ -144,7 +144,7 @@ define([
    */
   FullscreenBtnController.prototype.updateFullscreenClass_ = function() {
     if (this.isFullscreen_) {
-      this.setExitFullscreenClass_()
+      this.setExitFullscreenClass_();
     }
     else {
       this.setFullscreenClass_();

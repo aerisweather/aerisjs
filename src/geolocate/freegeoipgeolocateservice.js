@@ -11,7 +11,7 @@ define([
    * @namespace aeris.geolocate
    * @implements aeris.geolocate.GeolocateServiceInterface
    * @constructor
-   * 
+   *
    * @param {aeris.geolocate.options.FreeGeoIPServiceOptions} opt_options
    */
   var FreeGeoIPGeolocateService = function(opt_options) {
@@ -78,9 +78,10 @@ define([
       interval: 3000
     }, opt_options);
     var self = this;
+    var NOOP = function() {};
 
-    onSuccess || (onSuccess = function() {});
-    onError || (onError = function() {});
+    onSuccess || (onSuccess = NOOP);
+    onError || (onError = NOOP);
 
     var updatePosition = function() {
       self.getCurrentPosition().

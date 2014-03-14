@@ -8,10 +8,10 @@ define([
    * @class ViewMixin
    * @namespace aeris.application.controllers
    * @extends Marionette.View
-   * 
+   *
    * @param {Object=} opt_options
    * @param {aeris.application.controllers.templatehelperregistrars.TemplateHelperRegistrarInterface=} opt_options.templateHelperRegistrar
-   * 
+   *
    * @constructor
    */
   var ViewMixin = function(opt_options) {
@@ -21,15 +21,15 @@ define([
   };
 
 
-  /** 
+  /**
    * @override
-   * 
+   *
    * @return {Function}
    * @method getTemplate
    */
   ViewMixin.getTemplate = function() {
     var template = Marionette.View.prototype.getTemplate.apply(this, arguments);
-    var helpers = Marionette.getOption(this, "handlebarsHelpers");
+    var helpers = Marionette.getOption(this, 'handlebarsHelpers');
     var templateData, templateBoundToHelpers;
 
     if (!helpers) { return template; }

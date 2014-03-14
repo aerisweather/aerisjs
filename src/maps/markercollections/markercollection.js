@@ -21,12 +21,12 @@ define([
    * @param {Array.<aeris.maps.markers.Marker>=} opt_markers Markers to add to the collection.
    *
    * @param {Object=} opt_options
-   * @param {Function=} opt_options.model Constructor for an {aeris.maps.markers.Marker} object
+   * @param {Function=} opt_options.model Constructor for an {aeris.maps.markers.Marker} object.
    *                                  to use as a model for the collection.
-   * @param {?string|aeris.maps.AbstractStrategy=} opt_options.clusterStrategy Strategy for rendering marker clusters
+   * @param {string|aeris.maps.AbstractStrategy=} opt_options.clusterStrategy Strategy for rendering marker clusters.
    * @param {aeris.maps.markercollections.options.ClusterStyles=} opt_options.clusterStyles
    * @param {Boolean=} opt_options.cluster Whether to cluster markers. Default is true.
-   * @param {?string|aeris.maps.AbstractStrategy=} opt_options.strategy
+   * @param {string|aeris.maps.AbstractStrategy=} opt_options.strategy
   */
   var MarkerCollection = function(opt_markers, opt_options) {
     var options = _.defaults(opt_options || {}, {
@@ -62,7 +62,6 @@ define([
      * Options to pass to the marker cluster strategy.
      *
      * @type {Object}
-     * @public
      * @property clusterOptions
      */
     this.clusterOptions = options.clusterOptions;

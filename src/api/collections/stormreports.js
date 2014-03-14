@@ -37,8 +37,8 @@ define([
      * @type {aeris.api.collections.PointDataCollection}
      */
   };
-  _.inherits(StormReports, AerisApiClientCollection)
-  
-  
+  _.inherits(StormReports, AerisApiClientCollection);
+
+
   return _.expose(StormReports, 'aeris.api.collections.StormReports');
 });

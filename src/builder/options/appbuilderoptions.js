@@ -51,13 +51,13 @@ define([
 
     /**
      * Aeris global configuration object.
-     * 
+     *
      * @type {aeris.Model}
      * @private
      * @property aerisConfig_
      */
     this.aerisConfig_ = aerisConfig;
-    
+
     Model.call(this, opt_attrs, options);
 
     this.listenTo(this, {
@@ -78,8 +78,8 @@ define([
     aerisConfig = this.pick(['apiId', 'apiSecret', 'path']);
     this.aerisConfig_.set(aerisConfig, { validate: true });
   };
-  
-  
+
+
   AppBuilderOptions.prototype.validate = function(attrs) {
     var isApiKeysAlreadySet = !!this.aerisConfig_.get('apiId') && !!this.aerisConfig_.get('apiSecret');
     var isApiKeysConfigured = attrs.apiId && attrs.apiSecret;

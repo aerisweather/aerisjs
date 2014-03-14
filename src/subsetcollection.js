@@ -38,23 +38,23 @@ define([
      * @protected
      */
     this.sourceCollection_ = this.normalizeSourceCollection_(sourceCollection);
-    
-    
+
+
     /**
      * @property limit_
      * @protected
      * @type {?number} If null, no limit is enforced.
     */
     this.limit_ = options.limit;
-    
-    
+
+
     /**
      * @property filter_
      * @private
      * @type {function():Boolean}
     */
     this.filter_ = options.filter;
-    
+
 
     Collection.call(this, this.getFilteredSourceModels_(), options);
 
@@ -70,7 +70,7 @@ define([
    */
   SubsetCollection.prototype.normalizeSourceCollection_ = function(sourceCollection) {
     if (sourceCollection instanceof Collection) {
-      return sourceCollection
+      return sourceCollection;
     }
     if (_.isArray(sourceCollection)) {
       return new Collection(sourceCollection);
@@ -108,8 +108,8 @@ define([
       'add remove reset change sort': this.syncToSourceModel_
     });
   };
-  
-  
+
+
   /**
    * @method syncToSourceModel_
    * @private

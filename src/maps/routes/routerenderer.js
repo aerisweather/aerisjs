@@ -339,7 +339,7 @@ define([
         this.trigger('marker:dragend', latLon, waypoint);
       },
       'path:click': function(latLon) {
-        this.trigger('path:click', latLon, waypoint)
+        this.trigger('path:click', latLon, waypoint);
       }
     });
   };
@@ -416,7 +416,7 @@ define([
   RouteRenderer.prototype.eachWaypoint_ = function(callback) {
     _.each(this.renderedWaypoints_, function(waypoint) {
       callback.call(this, waypoint);
-    }, this)
+    }, this);
   };
 
 

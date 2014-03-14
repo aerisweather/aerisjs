@@ -69,7 +69,7 @@ define([
   /**
    * @throws {aeris.errors.InvalidArgumentError} If transform method does not exist.
    *
-   * @param {string} attrSpec As 'attrName' or 'tranform | attrName'
+   * @param {string} attrSpec As 'attrName' or 'tranform | attrName'.
    * @param {string} topic
    * @private
    * @method bindEventParamAttributes_
@@ -98,7 +98,7 @@ define([
 
       // Expose transformed arguments
       this.set(attr, tranformedParams, { validate: true });
-    })
+    });
   };
 
 

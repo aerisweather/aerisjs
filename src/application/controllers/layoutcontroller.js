@@ -43,7 +43,7 @@ define([
      * @override
      * @property ui
      */
-    this.ui = _.defaults(options.ui, this.ui);;
+    this.ui = _.defaults(options.ui, this.ui);
 
 
     /**

@@ -76,7 +76,7 @@ define([
    * @method syncToModel
    */
   ViewModel.prototype.syncToModel = function() {
-    _.each(this.attributeTransforms_, function(transform, key){
+    _.each(this.attributeTransforms_, function(transform, key) {
       this.set(key, transform.call(this), { validate: true });
     }, this);
   };

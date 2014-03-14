@@ -15,7 +15,7 @@ define([
    * @param {aeris.Model} options.mapState
    * @param {aeris.Events} options.eventHub
    * @param {aeris.geolocate.GeolocateServiceResolver} options.geolocateServiceResolver
-   * @param {null|number=} options.zoomTo
+   * @param {?number=} options.zoomTo
   */
   var GeolocateController = function(options) {
     options = _.defaults(options, {
@@ -63,7 +63,7 @@ define([
      * If set as null, the zoom level
      * will not change.
      *
-     * @type {null|number}
+     * @type {?number}
      * @private
      * @property zoomTo_
      */

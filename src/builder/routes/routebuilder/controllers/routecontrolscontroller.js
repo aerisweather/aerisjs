@@ -176,7 +176,7 @@ define([
    */
   RouteControlsController.prototype.setUIEnabled = function(ui, isEnabled) {
     if (isEnabled) {
-      this.enableUI(ui)
+      this.enableUI(ui);
     }
     else {
       this.disableUI(ui);
@@ -238,7 +238,6 @@ define([
 
 
   /**
-   * @public
    * @method clearRoute
    */
   RouteControlsController.prototype.clearRoute = function() {
@@ -246,7 +245,6 @@ define([
   };
 
   /**
-   * @public
    * @method openSaveRouteForm_
    */
   RouteControlsController.prototype.openSaveRouteForm_ = function() {
@@ -257,7 +255,7 @@ define([
 
 
   /**
-   * @returns {aeris.application.controllers.ControllerInterface}
+   * @return {aeris.application.controllers.ControllerInterface}
    * @private
    * @method createSaveRouteController_
    */
@@ -277,7 +275,6 @@ define([
 
 
   /**
-   * @public
    * @method renderReturnRoute
    */
   RouteControlsController.prototype.renderReturnRoute = function() {

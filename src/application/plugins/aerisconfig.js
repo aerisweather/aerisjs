@@ -26,6 +26,6 @@ define([
           resolver.resolve(aerisConfig.get(refName));
         }
       }
-    }
+    };
   };
 });

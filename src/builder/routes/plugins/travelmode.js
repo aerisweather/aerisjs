@@ -31,6 +31,6 @@ define([
           resolver.resolve(travelMode);
         }
       }
-    }
+    };
   };
 });

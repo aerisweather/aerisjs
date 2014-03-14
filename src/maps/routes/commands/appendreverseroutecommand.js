@@ -18,7 +18,7 @@ define([
    *
    *    A --- B *** C >>> D <<< C *** B --- A
    *
-   * 
+   *
    * @param {aeris.maps.gmaps.route.Route} route
    *
    * @param {Object=} opt_options
@@ -53,7 +53,7 @@ define([
      * @property waypointsOrig_
      */
     this.waypointsOrig_ = null;
-    
+
 
 
     AbstractRouteCommand.apply(this, arguments);
@@ -72,7 +72,7 @@ define([
     this.appendReverseWaypointsToRoute_();
 
     promiseToExecute.resolve();
-    
+
     return promiseToExecute;
   };
 
@@ -88,7 +88,7 @@ define([
     this.clearUndoState_();
 
     promiseToUndo.resolve();
-    
+
     return promiseToUndo;
   };
 

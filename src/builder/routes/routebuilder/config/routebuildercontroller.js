@@ -1,6 +1,6 @@
 define({
   $exports: { $ref: 'routeBuilderController' },
-  
+
   routeBuilderController: {
     create: {
       module: 'aeris/builder/routes/routebuilder/controllers/routebuildercontroller',
@@ -13,7 +13,7 @@ define({
       ]
     }
   },
-  
+
   RoutePoint: {
     module: 'aeris/maps/routes/waypoint'
   }

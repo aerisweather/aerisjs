@@ -8,7 +8,7 @@ define([
    *
    * @class ToggleCollectionBehavior
    * @namespace aeris
-   * @mixin
+   * @extensionfor {aeris.Collection}
    *
    * @constructor
    */

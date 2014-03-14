@@ -50,7 +50,7 @@ define([
      *
      * @event data:request
      * @param {aeris.ViewCollection} viewCollection
-     * @param {aeris.Promise} promiseToSync Resolves with raw API response data
+     * @param {aeris.Promise} promiseToSync Resolves with raw API response data.
      */
     /**
      * The data API has responded to a request, and the view collection's
@@ -58,7 +58,7 @@ define([
      *
      * @event data:sync
      * @param {aeris.ViewCollection} viewCollection
-     * @param {Object} responseData Raw API response data
+     * @param {Object} responseData Raw API response data.
      */
 
     this.bindToDataCollection_();
@@ -187,7 +187,7 @@ define([
 
 
   /**
-   * @returns {aeris.Collection}
+   * @return {aeris.Collection}
    * @method getData
    */
   ViewCollection.prototype.getData = function() {
@@ -196,7 +196,7 @@ define([
 
 
   /**
-   * @param {Object=} opt_options Options to pass to aeris.Model#fetch
+   * @param {Object=} opt_options Options to pass to aeris.Model#fetch.
    * @return {aeris.Promise}
    * @method fetchData
    */

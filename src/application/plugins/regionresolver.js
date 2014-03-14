@@ -44,7 +44,7 @@ define([
       throw new InvalidArugmentErrors('Unable to resolve region: ' +
         layout + ' is not a valid Marionette.Layout instance');
     }
-    if(!(layout[regionName] instanceof Marionette.Region)) {
+    if (!(layout[regionName] instanceof Marionette.Region)) {
       throw new InvalidArugmentErrors('Unable to resolve region: ' +
         ' No region with the name \'' + regionName + '\' exists within' +
         ' the specified layout');

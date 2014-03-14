@@ -31,7 +31,7 @@ define([
 
 
   /**
-   * @overide
+   * @override
    * @method isValid
    */
   PathValidator.prototype.isValid = function() {

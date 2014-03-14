@@ -36,7 +36,7 @@ define([
     helpers = this.helpers_;
 
     wrappedTemplateFn = function(data) {
-      return templateFn(data, { helpers: helpers })
+      return templateFn(data, { helpers: helpers });
     };
 
     return wrappedTemplateFn;
@@ -62,7 +62,7 @@ define([
    */
   HandlebarsTemplateHelperRegistrar.prototype.bindHelpersTo_ = function(ctx) {
     _.each(this.helpers_, function(helperMethod, helperName) {
-      this.helpers_[helperName] =  _.bind(helperMethod, ctx);
+      this.helpers_[helperName] = _.bind(helperMethod, ctx);
     }, this);
   };
 

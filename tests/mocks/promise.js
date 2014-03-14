@@ -18,7 +18,7 @@ define([
    * @param {Object=} opt_options
    * @param {Boolean=} opt_options.resolve Whether to call the `done` callback.
    * @param {Array} opt_options.args Arguments to pass the callbacks.
-   * @param {number} opt_options.delay Delay in ms before calling callback
+   * @param {number} opt_options.delay Delay in ms before calling callback.
    * @return {aeris.Promise} Mock promise object.
    *
    * @constructor

@@ -24,11 +24,11 @@ define([
    * @param {Array.<aeris.Model>=} opt_models
    *
    * @param {Object=} opt_options
-   * @param {string=} opt_options.endpoint Aeris API endpoint
-   * @param {Object|Model=} opt_options.params Parameters with which to query the Aeris API
-   * @param {string=} opt_options.server The Aeris API server location
+   * @param {string=} opt_options.endpoint Aeris API endpoint.
+   * @param {Object|Model=} opt_options.params Parameters with which to query the Aeris API.
+   * @param {string=} opt_options.server The Aeris API server location.
    *
-   * @param {number=} clientLimit Max number of models to retain in the client collection
+   * @param {number=} clientLimit Max number of models to retain in the client collection.
    * @param {function(aeris.api.models.AerisApiModel):Boolean} clientFilter Filter to apply to the client collection.
   */
   var AerisApiClientCollection = function(opt_models, opt_options) {
@@ -65,7 +65,7 @@ define([
      * data from the Aeris API.
      *
      * @event 'request'
-     * @param {aeris.api.mixins.AerisApiBehavior} object Data object making the request
+     * @param {aeris.api.mixins.AerisApiBehavior} object Data object making the request.
      * @param {aeris.Promise} promise Promise to fetch data. Resolves with raw data.
      * @param {Object} requestOptions
      */
@@ -76,7 +76,7 @@ define([
      *
      * @event 'sync'
      * @param {aeris.api.mixins.AerisApiBehavior} object Data object which made the request.
-     * @param {Object} resp Raw response data from the AerisAPI
+     * @param {Object} resp Raw response data from the AerisAPI.
      * @param {Object} requestOptions
      */
   };
@@ -87,8 +87,8 @@ define([
    * @method createSourceCollection_
    * @private
    * @param {Array.<aeris.Model>} opt_models
-   * @param {Object=} options Options to pass to the source collection
-   * @param {function():aeris.api.collections.AerisApiCollection} options.SourceCollectionType source collection constructor
+   * @param {Object=} options Options to pass to the source collection.
+   * @param {function():aeris.api.collections.AerisApiCollection} options.SourceCollectionType source collection constructor.
    */
   AerisApiClientCollection.prototype.createSourceCollection_ = function(opt_models, options) {
     return new options.SourceCollectionType(opt_models, _.pick(options || {}, [
@@ -155,7 +155,7 @@ define([
    *
    * @method setClientFilter
    * @param {function():Boolean} filter
-   * @param {Object=} opt_ctx Filter context
+   * @param {Object=} opt_ctx Filter context.
    */
   AerisApiClientCollection.prototype.setClientFilter = function(filter, opt_ctx) {
     SubsetCollection.prototype.setFilter.call(this, filter, opt_ctx);
@@ -175,7 +175,7 @@ define([
   /**
    * Sets a limit on how many
    *
-   * @param limit
+   * @param {number} limit
    */
   AerisApiClientCollection.prototype.setClientLimit = function(limit) {
     SubsetCollection.prototype.setLimit.call(this, limit);
@@ -202,7 +202,7 @@ define([
    * Updates the requests params
    * included with API requests.
    *
-   * @param {string|Object} key Param name. First argument can also
+   * @param {string|Object} key Param name. First argument can also.
    *                    be a key: value hash.
    * @param {*} value Param value.
    * @method setParams
@@ -281,8 +281,7 @@ define([
    *
    * @method fetch
    * @override
-   * @returns {aeris.Promise} Resolves with API response.
-   * @public
+   * @return {aeris.Promise} Resolves with API response.
    */
 
   // Proxy AerisApi methods
@@ -303,7 +302,7 @@ define([
   _.each(aerisApiProxyMethods, function(methodName) {
     AerisApiClientCollection.prototype[methodName] = function() {
       return this.sourceCollection_[methodName].apply(this.sourceCollection_, arguments);
-    }
+    };
   }, this);
 
 

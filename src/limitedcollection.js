@@ -97,7 +97,7 @@ define([
 
 
   /**
-   * @param {number} count Number of source models to retrieve
+   * @param {number} count Number of source models to retrieve.
    * @return {Array.<aeris.model>}
    * @private
    * @method getSourceModels_

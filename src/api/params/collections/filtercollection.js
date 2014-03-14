@@ -62,7 +62,7 @@ define([
    *
    * @method operatorToString_
    * @param {aeris.api.Operator} operator
-   * @returns {string}
+   * @return {string}
    * @private
    */
   FilterCollection.prototype.operatorToString_ = function(operator) {

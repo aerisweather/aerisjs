@@ -104,7 +104,7 @@ define([
    *
    * @param {number} opt_duration Animation duration, in milliseconds.
    * @param {Function=} opt_cb Callback. Invoked when transition is complete.
-   * @param {Object=} opt_ctx Context for callback
+   * @param {Object=} opt_ctx Context for callback.
    *
    * @chainable
    * @protected
@@ -113,7 +113,7 @@ define([
   ItemController.prototype.transitionIn_ = function(opt_duration, opt_cb, opt_ctx) {
     this.$el.hide();
 
-    this.transitionUsing_('fadeIn', opt_duration, opt_cb, opt_ctx)
+    this.transitionUsing_('fadeIn', opt_duration, opt_cb, opt_ctx);
 
     return this;
   };
@@ -126,7 +126,7 @@ define([
    *
    * @param {number} opt_duration Animation duration, in milliseconds.
    * @param {Function=} opt_cb Callback. Invoked when transition is complete.
-   * @param {Object=} opt_ctx Context for callback
+   * @param {Object=} opt_ctx Context for callback.
    *
    * @chainable
    * @protected
@@ -145,7 +145,7 @@ define([
    * @param {string} method jQuery animation method name.
    * @param {number} opt_duration Animation duration, in milliseconds.
    * @param {Function=} opt_cb Callback. Invoked when transition is complete.
-   * @param {Object=} opt_ctx Context for callback
+   * @param {Object=} opt_ctx Context for callback.
    *
    * @chainable
    * @protected

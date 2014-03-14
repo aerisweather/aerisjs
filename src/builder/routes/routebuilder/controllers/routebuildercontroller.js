@@ -7,11 +7,11 @@ define([
    * @namespace aeris.builder.routes.routebuilder.controllers
    * @implements aeris.application.controllers.ControllerInterface
    *
-   * @param options
+   * @param {Object} options
    * @param {aeris.maps.gmaps.route.RouteBuilder} options.routeBuilder
-   * @param {Function} options.RoutePoint Constructor for {aeris.maps.routes.Waypoint} to use
+   * @param {Function} options.RoutePoint Constructor for {aeris.maps.routes.Waypoint} to use.
    *                                      when creating new points in a route.
-   * @param {aeris.Events} options.eventHub;
+   * @param {aeris.Events} options.eventHub
    *
    * @constructor
    */
@@ -80,7 +80,7 @@ define([
       'path:click': this.addRoutePointBefore_,
       'waypoint:click': this.triggerClickEvent_,
       'waypoint:dragend': this.moveRoutePoint_
-    })
+    });
   };
 
 

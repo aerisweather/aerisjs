@@ -191,7 +191,7 @@ define([
    * Classes extending {aeris.maps.animations.AbstractAnimation}
    * should probably do something more useful here.
    *
-   * @param time
+   * @param {Date} time
    * @method goToTime
    */
   AbstractAnimation.prototype.goToTime = function(time) {

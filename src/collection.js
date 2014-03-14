@@ -52,7 +52,7 @@ define([
     /**
      * When any child model's attribute changes
      * @event change
-     * @param model {aeris.Model}
+     * @param {aeris.Model} model
      */
 
     /**
@@ -60,8 +60,8 @@ define([
      * where [attribute] is the name of the attribute.
      *
      * @event change:[attribute]
-     * @param model {aeris.Model}
-     * @param value {*}
+     * @param {aeris.Model} model
+     * @param {*} value
      */
 
     /**
@@ -69,16 +69,16 @@ define([
      * {aeris.Collection}.
      *
      * @event add
-     * @param model {aeris.Model}
-     * @param collection {aeris.Collection}
+     * @param {aeris.Model} model
+     * @param {aeris.Collection} collection
      */
 
     /**
      * When a model is removed from the {aeris.Collection}.
      *
      * @event remove
-     * @param model {aeris.Model}
-     * @param collection {aeris.Collection}
+     * @param {aeris.Model} model
+     * @param {aeris.Collection} collection
      */
   };
   _.inherits(Collection, Backbone.Collection);
@@ -106,8 +106,6 @@ define([
    * Retrieve a model from the collection
    * by id.
    *
-   * @public
-   * @method get
    * @param {number|string} id
    * @return {aeris.Model}
    */
@@ -116,7 +114,6 @@ define([
    * Retrieve a model from the collection
    * by index.
    *
-   * @public
    * @method at
    * @param {number} index
    * @return {aeris.Model}
@@ -135,10 +132,6 @@ define([
 
     return Backbone.Collection.prototype._prepareModel.call(this, attrs, options);
   };
-
-  /**
-   * @m
-   */
 
 
   return _.expose(Collection, 'aeris.Collection');
@@ -166,7 +159,6 @@ define([
 /**
  * Add models to the collection.
  *
- * @public
  * @method add
  * @param {Array.<Backbone.Model|Object>} models
  */
@@ -174,7 +166,6 @@ define([
 /**
  * Remove models from the collection.
  *
- * @public
  * @method remove
  * @param {Array.<Backbone.Model>} models
  */
@@ -182,7 +173,6 @@ define([
 /**
  * Remove and replace all models in the collection.
  *
- * @public
  * @method reset
  * @param {Array.<Backbone.Model|Object>=} opt_models
  */
@@ -216,7 +206,6 @@ define([
  * The number of models in the collection.
  *
  * @property length
- * @public
  */
 
 /**

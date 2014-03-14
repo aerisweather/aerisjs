@@ -4,11 +4,11 @@ define([
 ], function(_, ViewCollection) {
   /**
    * A collection of {aeris.maps.MapObjectInterface} objects.
-   * 
+   *
    * @class MapObjectCollection
    * @namespace aeris.maps.extensions
    * @extends aeris.ViewCollection
-   * 
+   *
    * @implements aeris.maps.MapObjectInterface
    *
    * @constructor
@@ -68,7 +68,7 @@ define([
 
   /**
    * @override
-   * @returns {boolean}
+   * @return {boolean}
    * @method hasMap
    */
   MapObjectCollection.prototype.hasMap = function() {
@@ -88,8 +88,8 @@ define([
     if (isMapSetEvent) { return; }
 
     ViewCollection.prototype._onModelEvent.apply(this, arguments);
-  }
+  };
 
-  
+
   return MapObjectCollection;
 });

@@ -46,7 +46,7 @@ define([
    *
    * @param {aeris.maps.LatLng} latLonA
    * @param {aeris.maps.LatLng} latLonB
-   * @returns {number}
+   * @return {number}
    * @method calculateDistanceBetween_
    */
   GoogleDistanceCalculator.calculateDistanceBetween_ = function(latLonA, latLonB) {

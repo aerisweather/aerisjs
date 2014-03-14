@@ -39,7 +39,7 @@ define([
      * @type {aeris.api.collections.PointDataCollection}
      */
   };
-  _.inherits(Earthquakes, AerisApiClientCollection)
+  _.inherits(Earthquakes, AerisApiClientCollection);
 
 
   return _.expose(Earthquakes, 'aeris.api.collections.Earthquakes');

@@ -369,7 +369,7 @@ define([
     }
 
     command = new this.AddWaypointCommand_(this.getRoute(), waypoint);
-    return this.executeCommand_(command)
+    return this.executeCommand_(command);
   };
 
 
@@ -407,7 +407,7 @@ define([
    */
   RouteBuilder.prototype.moveWaypoint = function(waypoint, latLon) {
     var command = new this.MoveWaypointCommand_(this.getRoute(), waypoint, latLon);
-    return this.executeCommand_(command)
+    return this.executeCommand_(command);
   };
 
 
@@ -418,7 +418,7 @@ define([
    */
   RouteBuilder.prototype.removeWaypoint = function(waypoint) {
     var command = new this.RemoveWaypointCommand_(this.getRoute(), waypoint);
-    return this.executeCommand_(command)
+    return this.executeCommand_(command);
   };
 
 
@@ -450,7 +450,7 @@ define([
     var command;
 
     command = new this.ResetRouteCommand_(this.getRoute(), opt_waypoints);
-    return this.executeCommand_(command)
+    return this.executeCommand_(command);
   };
 
 
@@ -458,7 +458,7 @@ define([
    * @private
    *
    * @param {aeris.commands.AbstractCommand} command
-   * @returns {aeris.Promise}
+   * @return {aeris.Promise}
    * @method executeCommand_
    */
   RouteBuilder.prototype.executeCommand_ = function(command) {

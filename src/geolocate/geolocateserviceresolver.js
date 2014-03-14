@@ -13,9 +13,9 @@ define([
    *
    * @param {Object=} opt_options
    * @param {function():aeris.geolocate.GeolocateServiceInterface} opt_options.GeolocateService
-   *        Defaults to {aeris.geolocate.HTML5GeolocateService}
+   *        Defaults to {aeris.geolocate.HTML5GeolocateService}.
    * @param {function():aeris.geolocate.GeolocateServiceInterface} opt_options.FallbackGeolocateService
-   *        Defaults to {aeris.geolocate.FreeGeoIPGeolocateService}
+   *        Defaults to {aeris.geolocate.FreeGeoIPGeolocateService}.
    * @param {aeris.geolocate.options.GeolocateServiceOptions} opt_options.geolocateServiceOptions
   */
   var GeolocateServiceResolver = function(opt_options) {
@@ -64,5 +64,5 @@ define([
   };
 
 
-  return GeolocateServiceResolver
+  return GeolocateServiceResolver;
 });

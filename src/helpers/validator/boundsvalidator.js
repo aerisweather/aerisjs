@@ -63,7 +63,7 @@ define([
     }
     catch (err) {
       var areaErrorMessage = 'Unable to calculate bounds area: ' + err.message;
-      validationError = validationError || this.createValidationError_(areaErrorMessage)
+      validationError = validationError || this.createValidationError_(areaErrorMessage);
     }
 
     if (!area || area <= 0) {

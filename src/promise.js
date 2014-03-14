@@ -190,7 +190,7 @@ define([
   /**
    *
    * @return {string} The current state of the promise.
-   *  'pending', 'resolved', or 'rejected'
+   *  'pending', 'resolved', or 'rejected'.
    * @method getState
    */
   Promise.prototype.getState = function() {
@@ -203,7 +203,7 @@ define([
    * Master promise is resolved when all component promises are resolved,
    * or rejected when any single component promise is rejected.
    *
-   * @param {...*} var_args A variable number of promises to wait for or an
+   * @param {...*} var_args A variable number of promises to wait for or an.
    *                        array of promises.
    * @return {aeris.Promise} Master promise.
    * @method when
@@ -221,7 +221,7 @@ define([
     length = promises.length;
 
     var resolvedCount = 0;
-    
+
     _.each(promises, function(promise) {
       if (!(promise instanceof Promise)) {
         throw new InvalidArgumentError('Unable to create master promise: ' +

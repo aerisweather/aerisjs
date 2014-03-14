@@ -111,7 +111,7 @@ define([
    * @param {Object} coord
    * @param {number} zoom
    * @param {HTMLElement} ownerDocument
-   * @returns {HTMLElement}
+   * @return {HTMLElement}
    * @method getTile
    */
   ImageMapType.prototype.getTile = function(coord, zoom, ownerDocument) {
@@ -271,7 +271,7 @@ define([
       this.parentNode_ = this.divs_[0].parentNode.parentNode;
     }
     catch (e) {
-      this.parentNode_  = null;
+      this.parentNode_ = null;
     }
 
     return this.parentNode_;
@@ -329,7 +329,7 @@ define([
   ImageMapType.prototype.setOpacity = function(opacity) {
     if (this.opacity_ === opacity) { return; }
 
-    this.opacity_  = opacity;
+    this.opacity_ = opacity;
 
     _.each(this.divs_, function(div) {
       if (window.getComputedStyle(div).opacity === this.opacity_) { return; }

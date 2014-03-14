@@ -257,7 +257,7 @@ define([
    * @param {Object=} opt_options
    */
   Params.prototype.removeQuery = function(query, opt_options) {
-    this.get('query').remove(query, opt_options)
+    this.get('query').remove(query, opt_options);
   };
 
   /**

@@ -97,13 +97,13 @@ define([
     /**
      * @event path:click
      * @param {aeris.maps.LatLng} latLon
-     * @param {aeris.maps.gmaps.route.Waypoint}
+     * @param {aeris.maps.gmaps.route.Waypoint} waypoint
      */
     /**
      * When a waypoint fails retrieve directions data.
      *
      * @event directions:error
-     * @param {aeris.directions.results.DirectionsResults}
+     * @param {aeris.directions.results.DirectionsResults} directionsResults
      */
 
     this.initializePolylineBindings_();
@@ -189,7 +189,7 @@ define([
 
 
   /**
-   * @returns {Boolean}
+   * @return {Boolean}
    * @method hasPath
    */
   Waypoint.prototype.hasPath = function() {
@@ -289,7 +289,7 @@ define([
    * Triggers a 'reset' event (and DOES NOT trigger a set event)
    *
    * @param {Object|aeris.maps.gmaps.route.Waypoint || Object} obj
-   * @param {Object=} opt_options Same options as Backbone.Model#set
+   * @param {Object=} opt_options Same options as Backbone.Model#set.
    * @method reset
    */
   Waypoint.prototype.reset = function(obj, opt_options) {
@@ -326,7 +326,7 @@ define([
 
   /**
    * @param {aeris.maps.LatLng} pathStartingPosition
-   * @returns {aeris.Promise}
+   * @return {aeris.Promise}
    * @method setPathStartsAt
    */
   Waypoint.prototype.setPathStartsAt = function(pathStartingPosition) {

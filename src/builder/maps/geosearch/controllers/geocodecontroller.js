@@ -16,7 +16,7 @@ define([
    * @param {aeris.Events} options.eventHub Required.
    * @param {aeris.Model} options.mapState Required.
    * @param {aeris.geocode.AbstractGeocodeService} options.geocodeService Required.
-   * @param {null|number=} options.zoomTo
+   * @param {?number=} options.zoomTo
   */
   var GeocodeController = function(options) {
     /**
@@ -58,7 +58,7 @@ define([
      * If set as null, the zoom level
      * will not change.
      *
-     * @type {null|number}
+     * @type {?number}
      * @private
      * @property zoomTo_
      */
@@ -104,7 +104,7 @@ define([
 
 
   /**
-   * @voerride
+   * @override
    * @method onRender
    */
   GeocodeController.prototype.onRender = function() {

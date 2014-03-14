@@ -3,6 +3,7 @@ define([
   'aeris/config',
   'aeris/maps/markers/config/iconlookup'
 ], function(_, config, iconLookup) {
+  var styles = {};
   /**
    * Styles configuration for marker clusters.
    *
@@ -13,7 +14,6 @@ define([
    * @namespace aeris.maps.markercollections.config
    * @static
    */
-  var styles = {};
 
   // Process iconLookup config
   // to create clusters using the
@@ -29,8 +29,8 @@ define([
         textColor: '#ffffff',
         textSize: 13,
         anchorText: [-14, 15]
-      }]
-    })
+      }];
+    });
   });
 
   return _.extend(styles, {

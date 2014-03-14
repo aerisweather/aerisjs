@@ -5,7 +5,7 @@ define([
    * Returns the height of the elements,
    * as though it were displayed with a height of 'auto'.
    *
-   * @returns {number}
+   * @return {number}
    */
   $.prototype.getAutoHeight = function() {
     var $el = this.clone().attr('id', false);

@@ -46,5 +46,5 @@ define({
  * And info panel view is ready to be rendered.
  *
  * @event info:view
- * @param {aeris.application.controllers.ControllerInterface}
+ * @param {aeris.application.controllers.ControllerInterface} infoViewController
  */

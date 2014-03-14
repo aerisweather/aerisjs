@@ -155,7 +155,6 @@ define(['aeris/util', 'backbone'], function(_, Backbone) {
   /**
    * A singleton instance of {aeris.Events}
    * @type {aeris.Events}
-   * @public
    */
   Events.hub = new Events();
 

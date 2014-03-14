@@ -66,5 +66,5 @@ define([
     modelToJSON: function(model) {
       return model.toJSON();
     }
-  }
+  };
 });

@@ -110,7 +110,7 @@ define([
   /**
    * Return waypoints in reverse order and direction.
    *
-   * @returns {Array.<aeris.maps.gmaps.route.Waypoint>}
+   * @return {Array.<aeris.maps.gmaps.route.Waypoint>}
    * @private
    * @method getReverseWaypoints_
    */

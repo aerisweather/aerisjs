@@ -34,7 +34,7 @@ define([
 
       buildPromise.resolve();
     }
-    catch(e) {
+    catch (e) {
       buildPromise.reject(e);
     }
 

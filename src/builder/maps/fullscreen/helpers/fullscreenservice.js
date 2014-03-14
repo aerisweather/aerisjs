@@ -13,30 +13,30 @@ define([
    * @class FullscreenService
    * @namespace aeris.builder.maps.fullscreen.helpers
    * @constructor
-   * 
+   *
    * @uses {aeris.Events}
-   * 
+   *
    * @param {Object=} opt_options
-   * @param {HTMLElement=} opt_options.document Client document. 
+   * @param {HTMLElement=} opt_options.document Client document.
    */
   var FullscreenService = function(opt_options) {
     var options = _.defaults(opt_options || {}, {
       document: root.document
     });
-    
+
     /**
      * @property document_
      * @private
      * @type {HTMLElement}
     */
     this.document_ = options.document;
-    
-    
+
+
     Events.call(this);
 
 
     this.proxyDocumentFullscreenEvents_();
-    
+
     /**
      * @event fullscreen:change
      * @param {Boolean} isFullscreen
@@ -84,7 +84,7 @@ define([
     this.trigger('fullscreen:change', isFullscreen);
     this.trigger(fullscreenEvent);
   };
-  
+
 
   /**
    * @method isFullscreen_
@@ -164,7 +164,7 @@ define([
    */
   FullscreenService.prototype.throwUnsupportedApiError_ = function() {
     throw new FullscreenNotSupportedError('Unable to change fullscreen mode: ' +
-      'the fullscreenAPI is not supported by the this browser.')
+      'the fullscreenAPI is not supported by the this browser.');
   };
 
 

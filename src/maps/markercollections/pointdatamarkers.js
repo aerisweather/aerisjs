@@ -37,7 +37,7 @@ define([
   ], function(methodName) {
     PointDataMarkers.prototype[methodName] = function(var_args) {
       return this.data_[methodName].apply(this.data_, arguments);
-    }
+    };
   });
   /**
    * Return params used to query the Aeris API.

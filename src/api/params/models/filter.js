@@ -61,7 +61,7 @@ define([
 
   /**
    * @method isOr
-   * @return {Boolean} Filter's operator is 'OR'
+   * @return {Boolean} Filter's operator is 'OR'.
    */
   Filter.prototype.isOr = function() {
     return this.get('operator') === Operator.OR;
@@ -70,7 +70,7 @@ define([
 
   /**
    * @method isAnd
-   * @return {Boolean} Filter's operator is 'AND'
+   * @return {Boolean} Filter's operator is 'AND'.
    */
   Filter.prototype.isAnd = function() {
     return this.get('operator') === Operator.AND;

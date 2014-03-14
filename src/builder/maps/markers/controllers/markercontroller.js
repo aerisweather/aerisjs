@@ -52,7 +52,7 @@ define([
           });
         }
       }
-    })
+    });
   };
   _.inherits(MarkerController, MapObjectToggleController);
 
@@ -77,7 +77,7 @@ define([
 
   /**
    * @method fetchMarkerData_
-   * @param {Object=} opt_options fetch options
+   * @param {Object=} opt_options fetch options.
    * @private
    */
   MarkerController.prototype.fetchMarkerData_ = function(opt_options) {

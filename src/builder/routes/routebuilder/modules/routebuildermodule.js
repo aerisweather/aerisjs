@@ -84,7 +84,7 @@ define([
    * @method renderRouteControls_
    */
   RouteBuilderModule.prototype.renderRouteControls_ = function() {
-    this.eventHub_.trigger('mapControls:ready', this.routeControlsController_, 'routeBuilder')
+    this.eventHub_.trigger('mapControls:ready', this.routeControlsController_, 'routeBuilder');
   };
 
 

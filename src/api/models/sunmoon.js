@@ -16,7 +16,7 @@ define([
       endpoint: 'sunmoon',
       params: {}
     });
-    
+
     _.defaults(options.params, {
       p: ':auto'
     });

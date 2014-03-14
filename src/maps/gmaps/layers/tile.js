@@ -15,7 +15,7 @@ define([
   var TileLayerStrategy = function(layer, opt_options) {
     var options = _.extend({
       MapType: ImageMapType
-    }, opt_options)
+    }, opt_options);
 
     this.MapType_ = options.MapType;
 

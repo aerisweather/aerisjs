@@ -71,7 +71,7 @@ define([
     /**
      * When a model's attribute changes
      * @event change
-     * @param model {aeris.Model}
+     * @param {aeris.Model} model
      */
 
     /**
@@ -79,8 +79,8 @@ define([
      * where [attribute] is the name of the attribute.
      *
      * @event change:[attribute]
-     * @param model {aeris.Model}
-     * @param value {*}
+     * @param {aeris.Model} model
+     * @param {*} value
      */
 
     /**
@@ -88,16 +88,16 @@ define([
      * {aeris.Collection}.
      *
      * @event add
-     * @param model {aeris.Model}
-     * @param collection {aeris.Collection}
+     * @param {aeris.Model} model
+     * @param {aeris.Collection} collection
      */
 
     /**
      * When a model is removed from a {aeris.Collection}.
      *
      * @event remove
-     * @param model {aeris.Model}
-     * @param collection {aeris.Collection}
+     * @param {aeris.Model} model
+     * @param {aeris.Collection} collection
      */
 
   };
@@ -121,7 +121,6 @@ define([
   /**
    * Validate the model's attributes.
    *
-   * @public
    * @override
    * @method isValid
    * @throws {aeris.errors.ValidationError}
@@ -136,7 +135,7 @@ define([
    * @method set
    */
   Model.prototype.set = function(key, value, opts) {
-    var config
+    var config;
 
     // Convert args to { key: value } format
     if (_.isString(key)) {
@@ -307,7 +306,6 @@ define([
  */
 
 /**
- * @public
  * @method toJSON
  * @return {Object} A shallow copy of the model's attributes.
  */
@@ -323,7 +321,6 @@ define([
 /**
  * Fetch model data.
  *
- * @public
  * @method fetch
 */
 

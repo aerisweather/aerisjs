@@ -7,7 +7,7 @@ define([
   /**
    * Provides a direct path from point A to point B,
    * without any stops or change in direction in between.
-   * 
+   *
    * @class NonstopDirectionsService
    * @namespace aeris.directions
    * @implements aeris.directions.DirectionsServiceInterface
@@ -81,7 +81,7 @@ define([
   NonstopDirectionsService.prototype.createDirectPathBetween_ = function(origin, destination) {
     return [origin, destination];
   };
-  
-  
+
+
   return _.expose(NonstopDirectionsService, 'aeris.directions.NonstopDirectionsService');
 });

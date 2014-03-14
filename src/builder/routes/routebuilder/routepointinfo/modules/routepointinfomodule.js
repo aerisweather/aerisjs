@@ -9,7 +9,7 @@ define([
    * @extends aeris.application.modules.Module
    * @uses aeris.Events
    *
-   * @param options
+   * @param {Object} options
    * @constructor
    */
   var RoutePointInfoPanelModule = function(options) {

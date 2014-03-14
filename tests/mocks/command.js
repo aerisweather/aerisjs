@@ -30,8 +30,8 @@ define([
   /**
    * A mock implementation of {aeris.AbstractCommand}
    *
-   * @param {Boolean=true} opt_isResolving Whether to resolve execute/undo commands
-   * @param {number=25} opt_timeout Delay before resolving command
+   * @param {Boolean=true} opt_isResolving Whether to resolve execute/undo commands.
+   * @param {number=25} opt_timeout Delay before resolving command.
    * @constructor
    * @extends {aeris.AbstractCommand}
    */

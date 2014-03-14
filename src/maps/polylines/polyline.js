@@ -78,7 +78,7 @@ define([
     // Path
     if (
       !_.isArray(attrs.path) ||
-      (attrs.path.length && !_.isArray(attrs.path[0]))      
+      (attrs.path.length && !_.isArray(attrs.path[0]))
     ) {
       throw new ValidationError('path', attrs.path + ' is not a valid polyline path.');
     }

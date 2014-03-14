@@ -61,8 +61,8 @@ define([
 
     this.listenTo(this, 'reset', function() {
       // Because our waypoints won't do it for us.
-      this.trigger('change:distance')
-    })
+      this.trigger('change:distance');
+    });
   };
 
 
@@ -99,7 +99,7 @@ define([
    * If there's no waypoint at the
    * requested index, returns undefined.
    *
-   * @throw {aeris.maps.gmaps.route.errors.WaypointNotInRouteError}
+   * @throws {aeris.maps.gmaps.route.errors.WaypointNotInRouteError}
    *
    * @param {aeris.maps.gmaps.route.Waypoint} waypoint
    * @param {number} offsetIndex
@@ -210,7 +210,7 @@ define([
 
   Route.prototype.getAllExcept_ = function(exceptWaypoint) {
     return this.reject(function(waypoint) {
-      return waypoint === exceptWaypoint
+      return waypoint === exceptWaypoint;
     });
   };
 

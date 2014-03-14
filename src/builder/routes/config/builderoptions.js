@@ -49,4 +49,4 @@ define({
     { module: 'aeris/builder/routes/plugins/travelmode' },
     { module: 'aeris/application/plugins/assetpath'}
   ]
-})
+});

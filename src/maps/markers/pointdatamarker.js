@@ -106,7 +106,7 @@ define([
   /**
    * Lookup the marker type.
    *
-   * @returns {string}
+   * @return {string}
    * @protected
    * @method lookupType_
    */
@@ -134,7 +134,7 @@ define([
   /**
    * Lookup the icon url.
    *
-   * @returns {string}
+   * @return {string}
    * @protected
    * @method lookupUrl_
    */

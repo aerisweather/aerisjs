@@ -18,7 +18,8 @@ define([
    *
    *
    * @abstract
-   * @aeris.commands.AbstractCommand
+   * @class AbstractCommand
+   * @namespace aeris.commands
    * @constructor
    */
   var AbstractCommand = function() {

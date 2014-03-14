@@ -8,7 +8,7 @@ define([
    *
    * @class ToggleBehavior
    * @namespace aeris
-   * @mixin
+   * @extensionfor {aeris.Model}
    * @constructor
    */
   var ToggleBehavior = function() {
@@ -23,11 +23,11 @@ define([
 
     /**
      * @event select
-     * @param {aeris.Model} model The selected model
+     * @param {aeris.Model} model The selected model.
      */
     /**
      * @event deselect
-     * @param {aeris.Model} model The deselected model
+     * @param {aeris.Model} model The deselected model.
      */
     /**
      * @event change:selected

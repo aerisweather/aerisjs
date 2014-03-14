@@ -16,7 +16,7 @@ define([
      * data from the Aeris API.
      *
      * @event 'request'
-     * @param {aeris.api.mixins.AerisApiBehavior} object Data object making the request
+     * @param {aeris.api.mixins.AerisApiBehavior} object Data object making the request.
      * @param {aeris.Promise} promise Promise to fetch data. Resolves with raw data.
      * @param {Object} requestOptions
      */
@@ -27,7 +27,7 @@ define([
      *
      * @event 'sync'
      * @param {aeris.api.mixins.AerisApiBehavior} object Data object which made the request.
-     * @param {Object} resp Raw response data from the AerisAPI
+     * @param {Object} resp Raw response data from the AerisAPI.
      * @param {Object} requestOptions
      */
 
@@ -57,7 +57,7 @@ define([
      * Updates the requests params
      * included with API requests.
      *
-     * @param {string|Object} key Param name. First argument can also
+     * @param {string|Object} key Param name. First argument can also.
      *                    be a key: value hash.
      * @param {*} value Param value.
      * @method setParams
@@ -245,8 +245,7 @@ define([
      *
      * @method fetch
      * @override
-     * @returns {aeris.Promise} Resolves with API response.
-     * @public
+     * @return {aeris.Promise} Resolves with API response.
      */
 
     /**
@@ -274,7 +273,7 @@ define([
      */
     handleRequestError_: function(res) {
       var error = res.error;
-      var errorMsg
+      var errorMsg;
 
       if (!error || !error.code || !error.description) {
         errorMsg = 'Unknown error';
@@ -293,5 +292,5 @@ define([
     parse: function(res) {
       return res.response ? res.response : res;
     }
-  }
+  };
 });

@@ -15,16 +15,16 @@ define([
   }
 
 
-  return function (pluginOptions) {
+  return function(pluginOptions) {
     return {
       factories: {
-        ClassFactory: function (resolver, componentDef, wire) {
+        ClassFactory: function(resolver, componentDef, wire) {
           var classFactorySpec = convertToCreateFactorySpec(componentDef.options);
 
           wire(classFactorySpec).
             then(resolver.resolve, resolver.reject);
         }
       }
-    }
+    };
   };
 });

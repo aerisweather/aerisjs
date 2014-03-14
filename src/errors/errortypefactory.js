@@ -16,13 +16,13 @@ define([
 
     ErrorType.prototype.setName = function() {
       return config.name;
-    }
+    };
 
     ErrorType.prototype.setMessage = function() {
-      var messageCb = config.message || function(msg) { return msg; }
+      var messageCb = config.message || function(msg) { return msg; };
 
       return messageCb.apply(this, arguments);
-    }
+    };
 
     return ErrorType;
   };

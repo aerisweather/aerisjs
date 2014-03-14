@@ -94,7 +94,7 @@ define([
 
   /**
    * @method getBounds
-   * @returns {aeris.maps.Bounds} LatLons of SW and NE corners.
+   * @return {aeris.maps.Bounds} LatLons of SW and NE corners.
    */
   Map.prototype.getBounds = function() {
     return this.get('bounds');
@@ -103,7 +103,7 @@ define([
 
   /**
    * @method getView
-   * @returns {Object} The view object creating by the mapping library.
+   * @return {Object} The view object creating by the mapping library.
    */
   Map.prototype.getView = function() {
     return this.strategy_.getView();
@@ -130,7 +130,7 @@ define([
 
   /**
    * @method setBaseLayer
-   * @param baseLayer
+   * @param {aeris.maps.layers.AbstractTile} baseLayer
    */
   Map.prototype.setBaseLayer = function(baseLayer) {
     this.set('baseLayer', baseLayer, { validate: true });

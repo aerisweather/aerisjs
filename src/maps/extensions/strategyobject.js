@@ -11,8 +11,8 @@ define([
    * @namespace aeris.maps.extensions
    * @constructor
    *
-   * @param opt_options
-   * @param {?Function|String=} opt_options.strategy
+   * @param {Object=} opt_options
+   * @param {Function|String=} opt_options.strategy
    *        The constructor for a {aeris.maps.AbstractStrategy} object.
    *
    *        OR
@@ -129,8 +129,8 @@ define([
         loadPromise.resolve();
       }, this),
       function(e) {
-        loadPromise.reject(new InvalidArgumentError('Unable to load Strategy module: '
-          + e.message));
+        loadPromise.reject(new InvalidArgumentError('Unable to load Strategy module: ' +
+          e.message));
       });
 
     return loadPromise;

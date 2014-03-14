@@ -310,7 +310,7 @@ define([
    * Retrieve a list of timestamps for which
    * tile images are available on the AerisAPI server.
    *
-   * @return {aeris.Promise} Resolves with arrary of timestamps
+   * @return {aeris.Promise} Resolves with arrary of timestamps.
    * @method loadTileTimes
    */
   AerisTile.prototype.loadTileTimes = function() {

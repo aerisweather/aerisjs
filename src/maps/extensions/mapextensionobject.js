@@ -170,7 +170,6 @@ define([
 
 
   /**
-   * @public
    * @method destroy
    */
   MapExtensionObject.prototype.destroy = function() {

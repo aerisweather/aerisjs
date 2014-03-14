@@ -35,7 +35,7 @@ define([
     var anyError = pathError || statusError || distanceError;
 
     if (anyError) {
-      this.setLastError_(anyError)
+      this.setLastError_(anyError);
     }
 
     return (!anyError);

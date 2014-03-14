@@ -33,7 +33,7 @@ define([
 
     AerisApiClientCollection.call(this, opt_models, options);
   };
-  _.inherits(Fires, AerisApiClientCollection)
+  _.inherits(Fires, AerisApiClientCollection);
 
 
   return _.expose(Fires, 'aeris.api.collections.Fires');

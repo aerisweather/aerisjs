@@ -24,7 +24,7 @@ define(function() {
    * @property limit
    * @type {number} Max number of animation frames to load and render.
    */
-  AnimationOptions.limit
+  AnimationOptions.limit;
 
 
   return AnimationOptions;

@@ -42,7 +42,7 @@ define([
    * route changes directionality, that waypoint need to
    * change which path it's describing.
    *
-   * @param waypoint
+   * @param {aeris.maps.routes.Waypoint} waypoint
    * @return {aeris.maps.gmaps.route.Waypoint} A waypoint with reverse directionality.
    * @method getWaypointInReverse
    */
@@ -106,7 +106,7 @@ define([
    * The path preceding MIDDLE changes to
    * the path which originally preceded LAST
    *
-   * @param waypoint
+   * @param {aeris.maps.gmaps.route.Waypoint} waypoint
    * @return {aeris.maps.gmaps.route.Waypoint}
    * @private
    * @method getMiddleOrFirstWaypointInReverse_
@@ -128,8 +128,8 @@ define([
 
 
   /**
-   * @param waypoint
-   * @returns {aeris.maps.Path} Array of lat/lon coordinates.
+   * @param {aeris.maps.gmaps.route.Waypoint} waypoint
+   * @return {aeris.maps.Path} Array of lat/lon coordinates.
    * @method getWaypointPathInReverse
    */
   RouteReverser.prototype.getWaypointPathInReverse = function(waypoint) {
@@ -170,12 +170,12 @@ define([
   RouteReverser.prototype.cloneWaypointWithAttributes_ = function(waypoint, attrs, opt_shouldValidate) {
     var shouldValidate = _.isUndefined(opt_shouldValidate) ? true : opt_shouldValidate;
 
-    return waypoint.clone(attrs, { validate: shouldValidate });;
+    return waypoint.clone(attrs, { validate: shouldValidate });
   };
 
 
   /**
-   * @throw WaypointNotInRouteError
+   * @throws WaypointNotInRouteError
    * @param {aeris.maps.gmaps.route.Waypoint} waypoint
    * @private
    * @method ensureRouteHasWaypoint_

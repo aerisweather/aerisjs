@@ -174,7 +174,7 @@ define([
    * @return {string}
    */
   Marker.prototype.getSelectedUrl = function() {
-    return this.get('selectedUrl')
+    return this.get('selectedUrl');
   };
 
 

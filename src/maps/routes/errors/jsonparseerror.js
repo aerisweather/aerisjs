@@ -8,7 +8,7 @@ define([
   */
   return new ErrorTypeFactory({
     name: 'JSONParseError',
-    message:function(message) {
+    message: function(message) {
       return 'Unable to parse JSON route: ' + message;
     }
   });

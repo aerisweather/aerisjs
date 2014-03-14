@@ -6,7 +6,7 @@ define(['aeris/util'], function(_) {
    * @param {Object=} opt_options
    * @param {Array.<string>} opt_options.methods List of methods for which to create spies.
    * @param {Function=} opt_options.inherits Parent class.
-   * @param {Function=} opt_options.constructor Constructor method
+   * @param {Function=} opt_options.constructor Constructor method.
    */
   var MockFactory = function(opt_options) {
     var options = _.defaults(opt_options || {}, {

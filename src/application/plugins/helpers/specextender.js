@@ -8,15 +8,15 @@ define([
    * @param {Function} wire
    * @constructor
    */
-  var SpecExtender = function (wire) {
+  var SpecExtender = function(wire) {
     this.wire_ = wire;
   };
 
   /**
    * Extends specs defined in AMD modules.
    *
-   * @param specModuleIds
-   * @returns {Promise} Promise/A+. Resolves with extended spec.
+   * @param {Array.<string>} specModuleIds
+   * @return {Promise} Promise/A+. Resolves with extended spec.
    * @method extendSpecModules
    */
   SpecExtender.prototype.extendSpecModules = function(specModuleIds) {
@@ -26,8 +26,8 @@ define([
 
 
   /**
-   * @param moduleIds
-   * @returns {Promise} Promise/A+. Resolves with array of modules.
+   * @param {Array.<string>} moduleIds
+   * @return {Promise} Promise/A+. Resolves with array of modules.
    * @private
    * @method loadModules_
    */

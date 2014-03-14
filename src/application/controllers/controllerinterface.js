@@ -25,7 +25,7 @@ define(function() {
 
   /**
    * Close (destroy) the controller
-   * @method close 
+   * @method close
    */
   ControllerInterface.prototype.close = function() {};
 

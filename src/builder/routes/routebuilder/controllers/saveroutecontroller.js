@@ -74,7 +74,7 @@ define([
         distance: routeDistanceInMiles.toFixed(1),
         length: route.length
       }
-    }
+    };
   };
 
 
@@ -99,7 +99,7 @@ define([
         this.hideLoading_();
         this.close();
       },
-      'save:error': function (e) {
+      'save:error': function(e) {
         this.handleSaveError_(e);
         this.hideLoading_();
       }
@@ -115,7 +115,7 @@ define([
     this.listenTo(this.routeBuilder_.getRoute(), {
       'all': this.closeErrorMessage_,
       'add remove change:distance': this.renderRouteDetails_
-    })
+    });
   };
 
 
@@ -168,7 +168,7 @@ define([
   /**
    * @private
    */
-  SaveRouteController.prototype.getExportedRoutePoints_  = function() {
+  SaveRouteController.prototype.getExportedRoutePoints_ = function() {
     return this.routeBuilder_.routeToJSON();
   };
 

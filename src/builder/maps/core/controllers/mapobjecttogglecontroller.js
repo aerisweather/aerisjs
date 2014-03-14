@@ -115,7 +115,7 @@ define([
       'change:map': function(state, map) {
         this.setMap(this.appState_.getMap());
       }
-    })
+    });
     this.setMap(this.appState_.getMap());
 
     this.trigger('render');
@@ -135,7 +135,7 @@ define([
     var mapObjectOptions = {};
 
     if (this.data_) {
-      mapObjectOptions.data = this.data_
+      mapObjectOptions.data = this.data_;
     }
 
     return new MapObject(undefined, mapObjectOptions);

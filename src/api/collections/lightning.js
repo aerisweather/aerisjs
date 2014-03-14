@@ -29,7 +29,7 @@ define([
 
     AerisApiClientCollection.call(this, opt_models, options);
   };
-  _.inherits(Lightning, AerisApiClientCollection)
+  _.inherits(Lightning, AerisApiClientCollection);
 
 
   return _.expose(Lightning, 'aeris.api.collections.Lightning');

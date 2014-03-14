@@ -70,5 +70,5 @@ define([
   };
 
 
-  return _.expose(MoveWaypointCommand, 'aeris.maps.gmaps.route.commands.MoveWaypointCommand');;
+  return _.expose(MoveWaypointCommand, 'aeris.maps.gmaps.route.commands.MoveWaypointCommand');
 });

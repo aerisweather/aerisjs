@@ -12,7 +12,7 @@ define([
    *
    * @constructor
    * @override
-   */ 
+   */
   var MarkerToggle = function(opt_attrs, opt_options) {
     /**
      * Filters being applied to the marker.
