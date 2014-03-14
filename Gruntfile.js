@@ -32,8 +32,7 @@ module.exports = function(grunt) {
             'jasmine',
             'jasmine-console',
             'jasmine-html',
-            'matchers/matchers.package',
-            'googlemaps!'
+            'matchers/matchers.package'
           ]
         }
       }

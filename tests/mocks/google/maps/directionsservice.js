@@ -10,15 +10,15 @@ define([
   };
 
   MockDirectionsService.prototype.shouldHaveRequestedWithDestinationLatLon = function(latLon) {
-    var requestLatLon = mapUtil.latLngToArray(this.getRequestDestination());
+    var requestLatLon = this.latLngToArray_(this.getRequestDestination());
 
-    expect(requestLatLon).toEqual(latLon)
+    expect(requestLatLon).toEqual(latLon);
   };
 
   MockDirectionsService.prototype.shouldHaveRequestedWithOriginLatLon = function(latLon) {
-    var requestLatLon = mapUtil.latLngToArray(this.getRequestOrigin());
+    var requestLatLon = this.latLngToArray_(this.getRequestOrigin());
 
-    expect(requestLatLon).toEqual(latLon)
+    expect(requestLatLon).toEqual(latLon);
   };
 
   MockDirectionsService.prototype.shouldHaveRequestedWithOrigin = function(origin) {
@@ -68,6 +68,15 @@ define([
 
   MockDirectionsService.prototype.getRouteArgs_ = function() {
     return this.route.mostRecentCall.args;
+  };
+
+
+  MockDirectionsService.prototype.latLngToArray_ = function(latLng) {
+    if (latLng.lat && latLng.lng) {
+      return [latLng.lat(), latLng.lng()];
+    }
+
+    throw new InvalidArgumentError('Expecting google.maps.LatLng object. Instead got: ' + latLng);
   };
 
 

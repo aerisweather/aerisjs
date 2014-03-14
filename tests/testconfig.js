@@ -14,6 +14,7 @@ require.config({
     testErrors: 'tests/errors',
     testUtils: 'tests/testutils',
     flag: 'tests/flag',
+    googlemaps: 'tests/mocks/googlemaps',
     'aeris/maps/strategy': 'src/maps/gmaps'
   },
   shim: {

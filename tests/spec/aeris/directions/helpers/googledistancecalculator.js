@@ -1,21 +1,18 @@
 define([
   'aeris/util',
-  'aeris/directions/helpers/googledistancecalculator'
-], function(_, GoogleDistanceCalculator) {
+  'aeris/directions/helpers/googledistancecalculator',
+  'googlemaps!'
+], function(_, GoogleDistanceCalculator, mockGoogleMaps) {
+  var root = this;
+  var geometry_orig = root.google.maps.geometry;
+  var LatLng_orig = root.google.maps.LatLng;
 
   describe('A GoogleDistanceCalculator', function() {
-    var google_orig = window.google;
     var STUB_ORIGIN, STUB_DESTINATION, STUB_DISTANCE;
 
-    function defineGoogleMapsNamespace() {
-      window.google = window.google || {};
-      window.google.maps = window.google.maps || {};
-    }
-
     function stubGoogleDistanceCalculatorWith(calculatorStub) {
-      defineGoogleMapsNamespace();
 
-      window.google.maps.geometry = {
+      root.google.maps.geometry = {
         spherical: {
           computeDistanceBetween: calculatorStub
         }
@@ -23,13 +20,12 @@ define([
     }
 
     function stubGoogleLatLngWith(MockLatLng) {
-      defineGoogleMapsNamespace();
-
-      window.google.maps.LatLng = MockLatLng;
+      root.google.maps.LatLng = MockLatLng;
     }
 
     function restoreGoogle() {
-      window.google = google_orig;
+      root.google.maps.LatLng = LatLng_orig;
+      root.google.maps.geometry = geometry_orig;
     }
 
 
@@ -43,6 +39,8 @@ define([
       STUB_ORIGIN = [12, 34];
       STUB_DESTINATION = [56, 78];
       STUB_DISTANCE = 123.456;
+
+      restoreGoogle();
     });
 
 

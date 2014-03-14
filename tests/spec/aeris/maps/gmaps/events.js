@@ -3,8 +3,9 @@ define([
   'aeris/maps/strategy/events'
 ], function(_, GoogleEvents) {
   var gEvent_orig;
+  var root = this;
 
-  google || (google = {});
+  root.google || (google = {});
   google.maps || (google.maps = {});
   google.maps.event || (google.maps.event = {});
 
