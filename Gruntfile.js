@@ -123,4 +123,9 @@ module.exports = function(grunt) {
     'shell:libVersion',
     'shell:docsVersion'
   ]);
+  grunt.registerTask('default', [
+    'version:aeris',
+    'test',
+    'build'
+  ]);
 };
