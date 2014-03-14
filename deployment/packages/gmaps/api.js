@@ -1,6 +1,6 @@
 ({
   name: 'almond',
-  out: '../../../build/packages/api.js',
+  out: '../../../build/cdn.aerisjs.com/api.js',
 
   mainConfigFile: '../../../config-amd.js',
   baseUrl: '../../../',

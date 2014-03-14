@@ -1,6 +1,6 @@
 ({
   name: 'aeris/builder/maps/mapappbuilder',
-  out: '../../../build/packages/mapapp.js',
+  out: '../../../build/cdn.aerisjs.com/mapapp.js',
 
   mainConfigFile: '../../../config-amd.js',
   baseUrl: '../../../',

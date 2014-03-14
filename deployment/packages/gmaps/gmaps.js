@@ -1,6 +1,6 @@
 ({
   name: 'almond',
-  out: '../../../build/packages/gmaps.js',
+  out: '../../../build/cdn.aerisjs.com/gmaps.js',
 
   mainConfigFile: '../../../config-amd.js',
   baseUrl: '../../../',

@@ -71,14 +71,22 @@ generateMarkdownDocs() {
   logAndOutput "Generating markdown docs..."
 
   node scripts/generatemarkdowndocs.js themes/markdown ./markdown >> $LOG_FILE
-
-  logAndOutput "done."
 }
 
+copyGeneratedDocs() {
+  mkdir -p ../build/docs.aerisjs.com
+  mkdir -p ../build/docs.aerisjs.com/api
+  mkdir -p ../build/docs.aerisjs.com/assets
+
+  cp -r public/index.html ../build/docs.aerisjs.com/index.html
+  cp -r api ../build/docs.aerisjs.com
+  cp -r assets ../build/docs.aerisjs.com
+}
 
 logHeader
 compileCompassProjects
 generatePublicDocs
 generateApiDocs
 generateMarkdownDocs
+copyGeneratedDocs
 logBuildComplete
