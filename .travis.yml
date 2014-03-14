@@ -5,10 +5,3 @@ before_script:
 - npm run-script bower
 script:
 - npm run-script build
-deploy:
-  provider: s3
-  access_key_id: eschwartz
-  secret_access_key:
-    secure: Zg2WJZuuW/33UDiMyhvTh/g+7lRohaa98z5y9HBo6al9WSZPTAo34NtMKsVljcdFKGIf0827bJXki1hujYv3purDEl0NIGm6yWL/PWpRkSUlQCklvT8RitSV7feIZMyMNze6P4bL06l2O4FtVr3P0lMAxQ3Al855USVYADSX/Os=
-  bucket: aerisjs
-  local-dir: build
