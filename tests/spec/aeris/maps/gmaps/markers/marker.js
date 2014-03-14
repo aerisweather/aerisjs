@@ -1,6 +1,6 @@
 define([
   'aeris/util',
-  'aeris/maps/gmaps/markers/marker',
+  'aeris/maps/strategy/markers/marker',
   'mocks/aeris/maps/mapobjecttoggle',
   'mocks/google/maps/marker',
   'mocks/google/maps/point'
@@ -10,9 +10,9 @@ define([
     return {
       Marker: MockGoogleMarker,
       Point: MockGooglePoint
-    }
+    };
   };
-  
+
   describe('A MarkerStrategy', function() {
     var markerStrategy, mockMarker, mockGoogleMarker, markerCtorAttrs;
 
@@ -36,9 +36,9 @@ define([
       mockGoogleMarker = markerStrategy.getView();
     });
 
-    
+
     describe('constructor', function() {
-      
+
       it('should create a google Marker', function() {
         expect(mockGoogleMarker).toBeDefined();
         expect(mockGoogleMarker).toBeInstanceOf(MockGoogleMarker);
