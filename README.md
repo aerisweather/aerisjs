@@ -3,7 +3,10 @@ Aeris.js
 
 ##### A javscript library for maps and weather.
 
-[![Build Status](https://secure.travis-ci.org/hamweather/aerisjs.png?branch=master)](http://travis-ci.org/hamweather/aerisjs)
+[![Build Status](https://secure.travis-ci.org/hamweather/aerisjs.png?branch=master)](http://travis-ci.org/hamweather/aerisjs) *master*
+
+[![Build Status](https://secure.travis-ci.org/hamweather/aerisjs.png?branch=dev)](http://travis-ci.org/hamweather/aerisjs)
+ *dev*
 
 # About Aeris.js
 
