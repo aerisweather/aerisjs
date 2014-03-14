@@ -11,18 +11,20 @@
 
 <script type="text/javascript">
 
-  window.onerror = function(msg, url, lineNumber, col, errorObj) {
-    var msg = errorObj && errorObj.stack ?
-      errorObj.stack : [msg, url, lineNumber].join('; ') + '.';
+  <% if (isPhantom) { %>
+    window.onerror = function(msg, url, lineNumber, col, errorObj) {
+      var msg = errorObj && errorObj.stack ?
+        errorObj.stack : [msg, url, lineNumber].join('; ') + '.';
 
-    sendMessage('jasmine.error', msg);
-    return true;
-  };
+      sendMessage('jasmine.error', msg);
+      return true;
+    };
 
-  function sendMessage(topic, message) {
-    var args = [].slice.call(arguments);
-    alert(JSON.stringify(args));
-  };
+    function sendMessage(topic, message) {
+      var args = [].slice.call(arguments);
+      alert(JSON.stringify(args));
+    };
+  <% } %>
 
   require([
     '<%=amdConfig.join('\',\n    \'') %>'
