@@ -296,9 +296,9 @@ define([
         params = new Params(dates);
         json = params.toJSON();
 
-        expect(json.someTime).toEqual(542181601);
-        expect(json.from).toEqual(368859601);
-        expect(json.to).toEqual(1385013601);
+        expect(json.someTime).toBeNear(dates.someTime.getTime() / 1000, 1.0);
+        expect(json.from).toBeNear(dates.from.getTime() / 1000, 1.0);
+        expect(json.to).toBeNear(dates.to.getTime() / 1000, 1.0);
       });
 
       it('should convert the filters attribute to string', function() {
