@@ -1,3 +1,7 @@
+# v0.1.5
+
+* MOD: Grunt / Travis-CI build and deploy configuration
+
 # v0.1.4
 
 * Fix docs to display correct Aeris.js CDN paths
