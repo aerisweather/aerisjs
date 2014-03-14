@@ -62,13 +62,65 @@ module.exports = function(grunt) {
       all: {
         src: 'src/**/*.js'
       }
+    },
+    shell: {
+      removeBuildDir: {
+        command: 'rm -r build'
+      },
+
+      // @TODO: use YUIDoc grunt tasks
+      //    so we're able to configure docs build here.
+      //    (eg, we could build for local testing env, or for prod)
+      generateDocs: {
+        command: '(cd docs; ./build.sh)'
+      },
+
+      // @TODO: use r.js grunt task
+      //    and remove duplicate config
+      //    from r.js config
+      buildLib: {
+        command: '(cd deployment; ./buildAll.sh)'
+      },
+
+      copyAerisJs: {
+        command: [
+          'cp build/cdn.aerisjs.com/gmaps-plus.js build/cdn.aerisjs.com/aeris.js',
+          'cp build/cdn.aerisjs.com/gmaps-plus.min.js build/cdn.aerisjs.com/aeris.min.js'
+        ].join('&&')
+      },
+
+      libVersion: {
+        command: [
+          'mkdir build/cdn.aerisjs.com/<%=pkg.version%>',
+          'cp build/cdn.aerisjs.com/*.js build/cdn.aerisjs.com/<%=pkg.version%>'
+        ].join('&&')
+      },
+
+      docsVersion: {
+        command: [
+          'cp -r build/docs.aerisjs.com/ build/docs-tmp',
+          'mv build/docs-tmp build/docs.aerisjs.com/<%=pkg.version%>'
+        ].join('&&')
+      }
     }
   });
 
   grunt.loadTasks('tasks/jasmine-amd');
   grunt.loadTasks('tasks/version');
-
   grunt.loadNpmTasks('grunt-gjslint');
+  grunt.loadNpmTasks('grunt-shell');
+  grunt.loadNpmTasks('grunt-contrib-copy');
 
-  grunt.registerTask('test', ['jasmine-amd', 'gjslint']);
+  grunt.registerTask('test', [
+    'jasmine-amd',
+    'gjslint'
+  ]);
+  grunt.registerTask('build', [
+    'shell:removeBuildDir',
+    'shell:generateDocs',
+    'shell:buildLib',
+    'shell:copyAerisJs',
+    'shell:libVersion',
+    'shell:docsVersion'
+  ]);
 };
