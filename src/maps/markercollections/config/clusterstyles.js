@@ -34,7 +34,7 @@ define([
   });
 
   return _.extend(styles, {
-    default: _.map(['green', 'grey', 'yellow'], function(color) {
+    defaultStyles: _.map(['green', 'grey', 'yellow'], function(color) {
       return {
         url: config.get('path') + 'assets/marker_' + color + '.png',
         width: 25,
@@ -42,7 +42,7 @@ define([
         textColor: '#ffffff',
         textSize: 13,
         anchorText: [-14, 15]
-      }
+      };
     })
   });
 });

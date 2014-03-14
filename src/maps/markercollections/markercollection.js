@@ -40,7 +40,7 @@ define([
 
     // Set default styles
     options.clusterStyles = _.defaults(options.clusterStyles, {
-      default: clusterStyles.default
+      defaultStyles: clusterStyles.defaultStyles
     });
 
     /**
@@ -98,12 +98,12 @@ define([
    * cluster styles for the specified
    * cluster group.
    *
-   * @param {string=} opt_group Defaults to 'default.'
-   * @returns {Object} Cluster styles object.
+   * @param {string=} opt_group Defaults to 'defaultStyles.'.
+   * @return {Object} Cluster styles object.
    * @method getClusterStyle
    */
   MarkerCollection.prototype.getClusterStyle = function(opt_group) {
-    var styles = this.clusterStyles_[opt_group] || this.clusterStyles_['default'];
+    var styles = this.clusterStyles_[opt_group] || this.clusterStyles_['defaultStyles'];
 
     return styles.slice(0);
   };
@@ -162,13 +162,13 @@ define([
  *
  *    // Default styles for markers which do not implement
  *    // a getType method.
- *    default: [
+ *    defaultStyles: [ ... ]
  *
  *  }
  *
  * In order for markers to be clustered by type, each marker must
  * implement a `getType` method. Otherwise, markers will be styled using the
- * `default` styles.
+ * `defaultStyles` styles.
  *
  * See http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclustererplus/docs/reference.html
  *  "class ClusterIconStyle" for acceptable style options.
