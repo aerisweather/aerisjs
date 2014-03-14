@@ -30,4 +30,7 @@ docs/public/
 docs/api/
 docs/assets/css/
 
+# Generated SpecRunner
+tests/specrunner.html
+
 aeris-riderx/

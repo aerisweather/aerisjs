@@ -1,12 +1,12 @@
 require.config({
   baseUrl: '../',
-
   //urlArgs: 'cb=' + Math.random(),                   // Cache buster
   paths: {
-    jasmine: '../bower_components/jasmine/lib/jasmine-core/jasmine',
-    'jasmine-html': '../bower_components/jasmine/lib/jasmine-core/jasmine-html',
-    'jasmine-slow': '../bower_components/jasmine-slow/lib/jasmine-slow',
-    sinon: '../bower_components/sinon/index',
+    jasmine: 'bower_components/jasmine/lib/jasmine-core/jasmine',
+    'jasmine-console': 'tests/lib/jasmine-console',
+    'jasmine-html': 'bower_components/jasmine/lib/jasmine-core/jasmine-html',
+    'jasmine-slow': 'bower_components/jasmine-slow/lib/jasmine-slow',
+    sinon: 'bower_components/sinon/index',
     spec: 'tests/spec',
     integration: 'tests/integration',
     mocks: 'tests/mocks',
@@ -25,6 +25,10 @@ require.config({
       exports: 'jasmine'
     },
     'jasmine-slow': {
+      deps: ['jasmine'],
+      exports: 'jasmine'
+    },
+    'jasmine-console': {
       deps: ['jasmine'],
       exports: 'jasmine'
     },

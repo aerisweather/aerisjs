@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Jasmine Spec Runner</title>
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.png"/>
+  <link rel="stylesheet" type="text/css" href="../bower_components/jasmine/lib/jasmine-core/jasmine.css">
+  <script src="../bower_components/requirejs/require.js"></script>
+
+</head>
+<body>
+
+<script type="text/javascript">
+
+  window.onerror = function(msg, url, lineNumber, col, errorObj) {
+    var msg = errorObj && errorObj.stack ?
+      errorObj.stack : [msg, url, lineNumber].join('; ') + '.';
+
+    sendMessage('jasmine.error', msg);
+    return true;
+  };
+
+  function sendMessage(topic, message) {
+    var args = [].slice.call(arguments);
+    alert(JSON.stringify(args));
+  };
+
+  require([
+    '<%=amdConfig.join('\',\n    \'') %>'
+  ], function() {
+
+    require([
+      '<%=libs.join('\',\n      \'') %>'
+      <% if (isPhantom) { %>
+        , 'tasks/vendor/poly/function',
+        , 'tasks/helpers/phantomjsreporter'
+      <% } %>
+    ], function() {
+      var jasmineEnv = jasmine.getEnv();
+
+      <% if (isPhantom) { %>
+        var reporter = new (require('tasks/helpers/phantomjsreporter'))();
+      <% }
+      else { %>
+        var reporter = new jasmine.HtmlReporter();
+      <% } %>
+
+
+      jasmineEnv.addReporter(reporter);
+
+      if (reporter.specFilter) {
+        jasmineEnv.specFilter = function(spec) {
+            return reporter.specFilter(spec);
+          };
+      }
+
+      require([
+        '<%=specs.join('\',\n        \'')%>'
+      ], function() {
+        jasmineEnv.execute();
+      });
+    });
+  });
+</script>
+</body>
+</html>

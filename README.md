@@ -3,6 +3,8 @@ Aeris.js
 
 ##### A javscript library for maps and weather.
 
+[![Build Status](https://secure.travis-ci.org/hamweather/aerisjs.png?branch=master)](http://travis-ci.org/hamweather/aerisjs)
+
 # About Aeris.js
 
 The [Aeris Weather API](http://www.hamweather.com/support/documentation/aeris/) is one of the most complete and advanced weather APIs available and quickly gives you access to many different types of weather information. 
