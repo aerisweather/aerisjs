@@ -12,12 +12,12 @@
   ],
   "config": {
     "version": "0.1.3",
-    "cdnPath": "//js.aerisapi.com/aerisjs/{VERSION}/{PACKAGE}.min.js",
+    "cdnPath": "//cdn.aerisjs.com/{VERSION}/{PACKAGE}.min.js",
     "githubUrl": "https://github.com/hamweather/aerisjs",
     "aerisApiUrl": "http://www.hamweather.com/support/documentation/aeris",
-    "assetPath": "http://www.hamweather.com/docs/aerisjs/assets/",
-    "apiDocsPath": "http://www.hamweather.com/docs/aerisjs/api",
-    "publicDocsPath": "http://www.hamweather.com/docs/aerisjs"
+    "assetPath": "http://docs.aerisjs.com/assets/",
+    "apiDocsPath": "http://docs.aerisjs.com/api",
+    "publicDocsPath": "http://docs.aerisjs.com"
   },
   "libs": ["aeris"],
   "options": {

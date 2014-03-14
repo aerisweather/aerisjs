@@ -32,7 +32,7 @@ Includes many breaking changes to v0.1.0, including major restructuring of the p
 * Numerous other small fixes and refactorings
 
 **Available from our CDN:**
-http://js.aerisapi.com/aeris.js
+http://cdn.aerisjs.com/aeris.js
 
 Documentation is available at http://hamweather.com/docs/aerisjs
 
