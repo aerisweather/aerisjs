@@ -1,5 +1,16 @@
 language: node_js
 node_js:
-  - "0.11"
+- '0.11'
 before_script:
-  - npm run-script bower
+- npm run-script bower
+deploy:
+  provider: s3
+  access_key_id: eschwartz
+  secret_access_key:
+    secure: Zg2WJZuuW/33UDiMyhvTh/g+7lRohaa98z5y9HBo6al9WSZPTAo34NtMKsVljcdFKGIf0827bJXki1hujYv3purDEl0NIGm6yWL/PWpRkSUlQCklvT8RitSV7feIZMyMNze6P4bL06l2O4FtVr3P0lMAxQ3Al855USVYADSX/Os=
+  bucket: aerisjs
+  skip_cleanup: true
+  local-dir: build
+  on:
+    repo: hamweather/aerisjs
+    branch: Feature/travis-deploy
