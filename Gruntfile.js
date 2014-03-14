@@ -37,6 +37,18 @@ module.exports = function(grunt) {
         }
       }
     },
+    version: {
+      aeris: {
+        src: [
+          'package.json',
+          'bower.json',
+          'docs/yuidoc.json'
+        ],
+        options: {
+          version: '<%=pkg.version %>'
+        }
+      }
+    },
     gjslint: {
       options: {
         flags: [
@@ -54,6 +66,7 @@ module.exports = function(grunt) {
   });
 
   grunt.loadTasks('tasks/jasmine-amd');
+  grunt.loadTasks('tasks/version');
 
   grunt.loadNpmTasks('grunt-gjslint');
 
