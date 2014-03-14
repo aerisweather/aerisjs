@@ -1,3 +1,12 @@
+# v0.1.4
+
+* Fix docs to display correct Aeris.js CDN paths
+* Allow use https for accessing Aeris API
+* Create Grunt / Travis-CI environment
+  with task runners for jasmine/phantomjs testing
+  and the closure linter.
+* Fix CDN asset path
+
 # v0.1.3
 
 * Create API models/collections for all weather-related Aeris API endpoints
