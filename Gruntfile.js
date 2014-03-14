@@ -101,6 +101,13 @@ module.exports = function(grunt) {
           'cp -r build/docs.aerisjs.com/ build/docs-tmp',
           'mv build/docs-tmp build/docs.aerisjs.com/<%=pkg.version%>'
         ].join('&&')
+      },
+
+      deployS3: {
+        command: [
+          'aws s3 cp build/cdn.aerisjs.com s3://aerisjs-cdn --recursive',
+          'aws s3 cp build/docs.aerisjs.com s3://aerisjs-docs --recursive'
+        ].join('&&')
       }
     }
   });
@@ -122,6 +129,12 @@ module.exports = function(grunt) {
     'shell:copyAerisJs',
     'shell:libVersion',
     'shell:docsVersion'
+  ]);
+  grunt.registerTask('deploy', [
+    'version:aeris',
+    'test',
+    'build',
+    'deploy'
   ]);
   grunt.registerTask('default', [
     'version:aeris',
