@@ -12,7 +12,7 @@ define([
    */
   var FireMarker = function(opt_attrs, opt_options) {
     var attrs = _.extend({
-      url: config.get('path') + 'assets/map_fire_marker.png'
+      url: config.get('assetPath') + 'map_fire_marker.png'
     }, opt_attrs);
 
     PointDataMarker.call(this, attrs, opt_options);

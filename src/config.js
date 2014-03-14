@@ -37,10 +37,11 @@ define([
      */
     /**
      * Base url
-     * @attribute {string} path
+     * @attribute assetPath
+     * @type {string}
      */
     var attrs = _.defaults(opt_attrs || {}, {
-      path: '/'
+      assetPath: '//cdn.aerisjs.com/assets/'
     });
 
     Backbone.Model.call(this, attrs, opt_options);

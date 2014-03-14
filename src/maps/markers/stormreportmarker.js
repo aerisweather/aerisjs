@@ -13,7 +13,7 @@ define([
    */
   var StormReportMarker = function(opt_attrs, opt_options) {
     var attrs = _.extend({
-      url: config.get('path') + 'assets/marker_yellow.png'
+      url: config.get('assetPath') + 'marker_yellow.png'
     }, opt_attrs);
 
     var options = _.extend({

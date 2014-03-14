@@ -186,14 +186,14 @@ define([
   RouteRenderer.prototype.getDefaultStyleOptions_ = function() {
     var defaults = {
       waypoint: {
-        url: config.get('path') + 'assets/marker_grey.png',
+        url: config.get('assetPath') + 'marker_grey.png',
         clickable: true,
         draggable: true,
         offsetX: 0,
         offsetY: 0
       },
       selectedWaypoint: {
-        url: config.get('path') + 'assets/marker_yellow.png'
+        url: config.get('assetPath') + 'marker_yellow.png'
       },
       path: {
         strokeColor: '#36648b',

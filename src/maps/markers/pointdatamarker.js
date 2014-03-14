@@ -16,7 +16,7 @@ define([
   */
   var PointDataMarker = function(opt_attrs, opt_options) {
     var options = _.defaults(opt_options || {}, {
-      iconPath: config.get('path') + 'assets/{name}.png',
+      iconPath: config.get('assetPath') + '{name}.png',
       iconLookup: {},
       typeAttribute: ''
     });

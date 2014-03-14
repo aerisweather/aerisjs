@@ -2,7 +2,7 @@ aeris.MapBuilder = function(buildConfig) {
   require.config({
     config: {
       'aeris/config': {
-        path: buildConfig.path,
+        assetPath: buildConfig.assetPath,
         apiId: buildConfig.apiId,
         apiSecret: buildConfig.apiSecret
       }

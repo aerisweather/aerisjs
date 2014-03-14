@@ -23,7 +23,7 @@ define([
 
     _.each(catIconLookup, function(icon, type) {
       styles[cat][type] = [{
-        url: config.get('path') + 'assets/' + icon + '.png',
+        url: config.get('assetPath') + icon + '.png',
         width: 25,
         height: 25,
         textColor: '#ffffff',
@@ -36,7 +36,7 @@ define([
   return _.extend(styles, {
     defaultStyles: _.map(['green', 'grey', 'yellow'], function(color) {
       return {
-        url: config.get('path') + 'assets/marker_' + color + '.png',
+        url: config.get('assetPath') + 'marker_' + color + '.png',
         width: 25,
         height: 25,
         textColor: '#ffffff',

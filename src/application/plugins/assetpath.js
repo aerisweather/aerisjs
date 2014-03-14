@@ -3,8 +3,7 @@ define(['aeris/config'], function(aerisConfig) {
     return {
       resolvers: {
         assetPath: function(resolver, refName, refObj, wire) {
-          var assetsBasePath = aerisConfig.get('path') + 'assets/';
-          var path = assetsBasePath + refName;
+          var path = aerisConfig.get('assetPath') + refName;
 
           resolver.resolve(path);
         }

@@ -13,7 +13,7 @@ define([
    */
   var EarthquakeMarker = function(opt_attrs, opt_options) {
     var attrs = _.extend({
-      url: config.get('path') + 'assets/quake_minor.png'
+      url: config.get('assetPath') + 'quake_minor.png'
     }, opt_attrs);
 
     var options = _.extend({
