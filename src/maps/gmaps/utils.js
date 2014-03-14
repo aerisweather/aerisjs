@@ -3,13 +3,7 @@ define([
   'aeris/errors/invalidargumenterror',
   'googlemaps!'
 ], function(_, InvalidArgumentError, gmaps) {
-
-
-
-  _.provide('aeris.maps.gmaps.utils');
-
-
-  return aeris.maps.gmaps.utils = {
+  return {
     /**
      * Convert an array of latitude and longitude to Google's Lat/Lng object.
      *
