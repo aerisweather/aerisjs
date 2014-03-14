@@ -4,7 +4,7 @@ node_js:
 before_script:
 - npm run-script bower
 script:
-- npm grunt
+- npm run-script build
 deploy:
   provider: s3
   access_key_id: eschwartz
