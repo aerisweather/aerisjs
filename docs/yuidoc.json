@@ -15,7 +15,7 @@
     "cdnPath": "//cdn.aerisjs.com/{PACKAGE}.min.js",
     "githubUrl": "https://github.com/hamweather/aerisjs",
     "aerisApiUrl": "http://www.hamweather.com/support/documentation/aeris",
-    "assetPath": "http://docs.aerisjs.com/assets/",
+    "assetPath": "http://docs.aerisjs.com/assets",
     "apiDocsPath": "http://docs.aerisjs.com/api",
     "publicDocsPath": "http://docs.aerisjs.com"
   },
