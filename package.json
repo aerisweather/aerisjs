@@ -12,7 +12,8 @@
   "scripts": {
     "test": "./node_modules/grunt-cli/bin/grunt test --verbose",
     "bower": "./node_modules/bower/bin/bower install && ./node_modules/bower/bin/bower update",
-    "build": "./node_modules/grunt-cli/bin/grunt --verbose"
+    "build": "./node_modules/grunt-cli/bin/grunt --verbose",
+    "deploy": "./node_modules/grunt-cli/bin/grunt deploy --verbose"
   },
   "repository": {
     "type": "git",

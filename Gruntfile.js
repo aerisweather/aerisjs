@@ -106,7 +106,7 @@ module.exports = function(grunt) {
       deployS3: {
         command: [
           'aws s3 cp build/cdn.aerisjs.com s3://aerisjs-cdn --recursive',
-          'aws s3 cp build/docs.aerisjs.com s3://aerisjs-docs --recursive'
+          'aws s3 cp build/docs.aerisjs.com s3://aerisjs-docs.com --recursive'
         ].join('&&')
       }
     }
@@ -134,7 +134,7 @@ module.exports = function(grunt) {
     'version:aeris',
     'test',
     'build',
-    'deploy'
+    'shell:deployS3'
   ]);
   grunt.registerTask('default', [
     'version:aeris',

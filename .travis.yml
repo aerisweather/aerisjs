@@ -1,7 +1,13 @@
 language: node_js
 node_js:
-- "0.11"
+- '0.11'
+before_install:
+- pip install awscli
 before_script:
 - npm run-script bower
 script:
-- npm run-script build
+- npm run-script deploy
+env:
+  matrix:
+  - secure: GllkoAdYRImWsOpjdJ9qHlT//9TAL3t4Y3IN/1KkVsH6OHiSN/0QhpjcTr3Nt3/A6ZjrhY8957Ng48Sf/bdqwESKBOOUpyVgibPhNHd+EkldQRP1w4k47DP5e/g6Bwv6+DurY4dIwQ+DEv27X5CUHCHVWnXrH7wWvAUyzSHlWH4=
+  - secure: REiYZU5NdHowBDGPyOf6DFFUxqC/kb7NjwxaE5VB1fMwOUmCckrikTbgh3auosIccuw1InhWQsnuxTy0xtWAujrH2M6pq57JjGzgRY1G/HNN/NkfIzu+synC+bb6ipjj73lCyDtY0fPGOxq0X1uhg4W6LIXuBg6t5mDM63m/asM=
