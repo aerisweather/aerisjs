@@ -2,6 +2,10 @@ module.exports = function(grunt) {
 
   // Project configuration.
   grunt.initConfig({
+    buildDirs: {
+      lib: 'build/cdn.aerisjs.com',
+      docs: 'build/docs.aerisjs.com'
+    },
     pkg: grunt.file.readJSON('package.json'),
     'jasmine-amd': {
       aeris: {
@@ -69,7 +73,11 @@ module.exports = function(grunt) {
       },
 
       removeBuildDir: {
-        command: 'rm -r build'
+        command: 'rm -r build',
+        options: {
+          // Should not fail if build dir does not exist
+          failOnError: false
+        }
       },
 
       // @TODO: use YUIDoc grunt tasks
@@ -88,29 +96,29 @@ module.exports = function(grunt) {
 
       copyAerisJs: {
         command: [
-          'cp build/cdn.aerisjs.com/gmaps-plus.js build/cdn.aerisjs.com/aeris.js',
-          'cp build/cdn.aerisjs.com/gmaps-plus.min.js build/cdn.aerisjs.com/aeris.min.js'
+          'cp <%=buildDirs.lib %>/gmaps-plus.js <%=buildDirs.lib %>/aeris.js',
+          'cp <%=buildDirs.lib %>/gmaps-plus.min.js <%=buildDirs.lib %>/aeris.min.js'
         ].join('&&')
       },
 
-      libVersion: {
+      copyLibToVersionDir: {
         command: [
-          'mkdir build/cdn.aerisjs.com/<%=pkg.version%>',
-          'cp build/cdn.aerisjs.com/*.js build/cdn.aerisjs.com/<%=pkg.version%>'
+          'mkdir <%=buildDirs.lib %>/<%=pkg.version%>',
+          'cp <%=buildDirs.lib %>/*.js <%=buildDirs.lib %>/<%=pkg.version%>'
         ].join('&&')
       },
 
-      docsVersion: {
+      copyDocsToVersionDir: {
         command: [
-          'cp -r build/docs.aerisjs.com/ build/docs-tmp',
-          'mv build/docs-tmp build/docs.aerisjs.com/<%=pkg.version%>'
+          'cp -r <%=buildDirs.docs %>/ build/docs-tmp',
+          'mv build/docs-tmp <%=buildDirs.docs %>/<%=pkg.version%>'
         ].join('&&')
       },
 
       deployS3: {
         command: [
-          'aws s3 cp build/cdn.aerisjs.com s3://aerisjs-cdn --recursive',
-          'aws s3 cp build/docs.aerisjs.com s3://aerisjs-docs --recursive'
+          'aws s3 cp <%=buildDirs.lib %> s3://aerisjs-cdn --recursive',
+          'aws s3 cp <%=buildDirs.docs %> s3://aerisjs-docs --recursive'
         ].join('&&')
       }
     }
