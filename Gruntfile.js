@@ -197,13 +197,6 @@ module.exports = function(grunt) {
         command: '(cd docs; ../node_modules/.bin/yuidoc -c yuidoc.json;)'
       },
 
-      // @TODO: use r.js grunt task
-      //    and remove duplicate config
-      //    from r.js config
-      buildLib: {
-        command: '(cd deployment; ./buildAll.sh)'
-      },
-
       copyAerisJs: {
         command: [
           'cp <%=buildDirs.lib %>/gmaps-plus.js <%=buildDirs.lib %>/aeris.js',
