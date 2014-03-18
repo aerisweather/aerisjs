@@ -127,7 +127,6 @@ module.exports = function(grunt) {
     'gjslint'
   ]);
   grunt.registerTask('build', [
-    'shell:removeBuildDir',
     'shell:generateDocs',
     'shell:buildLib',
     'shell:copyAerisJs',
