@@ -190,11 +190,25 @@ module.exports = function(grunt) {
       //    so we're able to configure docs build here.
       //    (eg, we could build for local testing env, or for prod)
       generateDocs: {
-        command: '(cd docs; ./build.sh)'
-      },
+        command: [
+          // Create out dirs
+          'mkdir -p ../<%=buildDirs.docs%>/public',
+          'mkdir -p ../<%=buildDirs.docs%>/api',
 
-      yuidoc: {
-        command: '(cd docs; ../node_modules/.bin/yuidoc -c yuidoc.json;)'
+          // Generate public docs (using node script / handlebars)
+          'node scripts/generatepublicdocs.js ../src themes/public ../<%=buildDirs.docs%>/public/index.html',
+
+          // Generate api docs (using yuidoc)
+          '../node_modules/.bin/yuidoc -c yuidoc.json -o ../<%=buildDirs.docs%>/api',
+
+          // Geneate *.md docs (using node script / handlebars)
+          'node scripts/generatemarkdowndocs.js themes/markdown ./markdown'
+        ].join('&&'),
+        options: {
+          execOptions: {
+            cwd: 'docs'
+          }
+        }
       },
 
       copyAerisJs: {
@@ -258,7 +272,7 @@ module.exports = function(grunt) {
     'build'
   ]);
   grunt.registerTask('travis', [
-    'requirejs',
-    'shell:yuidoc'
+    'version:aeris',
+    'build'
   ]);
 };
