@@ -1,4 +1,7 @@
 module.exports = function(grunt) {
+  var _ = require('underscore');
+  var createRjsConfig = require('./deployment/scripts/createrjsconfig');
+  var mapAppRjsConfig = require('./deployment/config/mapappbuilder');
 
   // Project configuration.
   grunt.initConfig({
@@ -67,6 +70,85 @@ module.exports = function(grunt) {
         src: 'src/**/*.js'
       }
     },
+    requirejs: {
+      api: {
+        options: createRjsConfig('api', {
+          packages: [
+            'aeris/packages/api'
+          ],
+          outDir: '<%=buildDirs.lib %>'
+        })
+      },
+      'api.min': {
+        options: createRjsConfig('api', {
+          packages: [
+            'aeris/packages/api'
+          ],
+          outDir: '<%=buildDirs.lib %>',
+          minify: true
+        })
+      },
+
+      gmaps: {
+        options: createRjsConfig('gmaps', {
+          packages: [
+            'aeris/packages/maps',
+            'aeris/packages/gmaps'
+          ],
+          outDir: '<%=buildDirs.lib %>',
+          strategy: 'gmaps'
+        })
+      },
+      'gmaps.min': {
+        options: createRjsConfig('gmaps', {
+          packages: [
+            'aeris/packages/maps',
+            'aeris/packages/gmaps'
+          ],
+          outDir: '<%=buildDirs.lib %>',
+          minify: true,
+          strategy: 'gmaps'
+        })
+      },
+
+      'gmaps-plus': {
+        options: createRjsConfig('gmaps-plus', {
+          packages: [
+            'aeris/packages/maps',
+            'aeris/packages/gmaps',
+            'aeris/packages/api',
+            'aeris/packages/geoservice'
+          ],
+          strategy: 'gmaps',
+          outDir: '<%=buildDirs.lib %>'
+        })
+      },
+      'gmaps-plus.min': {
+        options: createRjsConfig('gmaps-plus', {
+          packages: [
+            'aeris/packages/maps',
+            'aeris/packages/gmaps',
+            'aeris/packages/api',
+            'aeris/packages/geoservice'
+          ],
+          strategy: 'gmaps',
+          outDir: '<%=buildDirs.lib %>',
+          minify: true
+        })
+      },
+
+      mapApp: {
+        options: _.extend({}, mapAppRjsConfig, {
+          out: '<%=buildDirs.lib %>/mapapp.js'
+        })
+      },
+      'mapApp.min': {
+        options: _.extend({}, mapAppRjsConfig, {
+          out: '<%=buildDirs.lib %>/mapapp.min.js',
+          optimize: 'uglify2'
+        })
+      }
+    },
     shell: {
       options: {
         failOnError: true
@@ -129,17 +211,19 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-gjslint');
   grunt.loadNpmTasks('grunt-shell');
   grunt.loadNpmTasks('grunt-contrib-copy');
+  grunt.loadNpmTasks('grunt-contrib-requirejs');
 
   grunt.registerTask('test', [
     'jasmine-amd',
     'gjslint'
   ]);
   grunt.registerTask('build', [
+    'shell:removeBuildDir',
+    'requirejs',
     'shell:generateDocs',
-    'shell:buildLib',
     'shell:copyAerisJs',
-    'shell:libVersion',
-    'shell:docsVersion'
+    'shell:copyLibToVersionDir',
+    'shell:copyDocsToVersionDir'
   ]);
   grunt.registerTask('deploy', [
     'version:aeris',
