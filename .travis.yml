@@ -1,13 +1,19 @@
 language: node_js
 node_js:
 - '0.11'
-before_install:
-- pip install awscli
+install:
+- npm install
+- sudo pip install awscli
 before_script:
 - npm run-script bower
 script:
-- npm run-script deploy
+- npm run-script build
 env:
-  matrix:
-  - secure: GllkoAdYRImWsOpjdJ9qHlT//9TAL3t4Y3IN/1KkVsH6OHiSN/0QhpjcTr3Nt3/A6ZjrhY8957Ng48Sf/bdqwESKBOOUpyVgibPhNHd+EkldQRP1w4k47DP5e/g6Bwv6+DurY4dIwQ+DEv27X5CUHCHVWnXrH7wWvAUyzSHlWH4=
-  - secure: REiYZU5NdHowBDGPyOf6DFFUxqC/kb7NjwxaE5VB1fMwOUmCckrikTbgh3auosIccuw1InhWQsnuxTy0xtWAujrH2M6pq57JjGzgRY1G/HNN/NkfIzu+synC+bb6ipjj73lCyDtY0fPGOxq0X1uhg4W6LIXuBg6t5mDM63m/asM=
+  global:
+    secure: XtHn8ijC15oQD0RfT+ppsi1n/jVrES0LuBpo7K0nS/1vHO9NajZBoTP8X6mB+Cc2OwvE6tXEJ2YFZZ28GAGQH+NQW9L7IxXvooAvjrtugxFNKsVeU2Llu8UcLmWZ/5YpkwEPTOMN/yBg8vYoa6Pkb0zlK/aKgY6EqgiXu7k098s=
+after_success:
+  - if [[ "$TRAVIS_BRANCH" != "master" ]]; then echo "Deployments are only done for the master branch. Current branch is $TRAVIS_BRANCH"; exit 0; fi
+  - echo $TRAVIS_BRANCH
+  - echo "Deploying build $TRAVIS_BUILD_NUMBER"
+  - aws s3 cp build/cdn.aerisjs.com s3://aerisjs-cdn --recursive
+  - aws s3 cp build/docs.aerisjs.com s3://aerisjs-docs --recursive
