@@ -192,11 +192,10 @@ module.exports = function(grunt) {
       generateDocs: {
         command: [
           // Create out dirs
-          'mkdir -p ../<%=buildDirs.docs%>/public',
           'mkdir -p ../<%=buildDirs.docs%>/api',
 
           // Generate public docs (using node script / handlebars)
-          'node scripts/generatepublicdocs.js ../src themes/public ../<%=buildDirs.docs%>/public/index.html',
+          'node scripts/generatepublicdocs.js ../src themes/public ../<%=buildDirs.docs%>/index.html',
 
           // Generate api docs (using yuidoc)
           '../node_modules/.bin/yuidoc -c yuidoc.json -o ../<%=buildDirs.docs%>/api',
