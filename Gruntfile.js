@@ -149,6 +149,30 @@ module.exports = function(grunt) {
         })
       }
     },
+    compass: {
+      'api-docs': {
+        options: {
+          cssDir: 'docs/assets/css',
+          sassDir: 'docs/themes/api/scss',
+          imagesDir: 'docs/assets/images',
+          fontsDir: 'docs/assets/fonts',
+          javascriptsDir: 'docs/assets/js',
+          relativeAssets: true,
+          importPath: 'docs/themes/public/scss',
+          force: true
+        }
+      },
+      'public-docs': {
+        options: {
+          cssDir: 'docs/assets/css',
+          sassDir: 'docs/themes/public/scss',
+          imagesDir: 'docs/assets/images',
+          fontsDir: 'docs/assets/fonts',
+          javascriptsDir: 'docs/assets/js',
+          relativeAssets: true
+        }
+      }
+    },
     shell: {
       options: {
         failOnError: true
@@ -212,6 +236,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-shell');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-requirejs');
+  grunt.loadNpmTasks('grunt-contrib-compass');
 
   grunt.registerTask('test', [
     'jasmine-amd',
