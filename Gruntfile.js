@@ -64,6 +64,10 @@ module.exports = function(grunt) {
       }
     },
     shell: {
+      options: {
+        failOnError: true
+      },
+
       removeBuildDir: {
         command: 'rm -r build'
       },
