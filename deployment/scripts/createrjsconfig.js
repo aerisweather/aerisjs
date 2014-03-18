@@ -2,7 +2,7 @@ var _ = require('underscore');
 var path = require('path');
 var baseConfig = require('../config/base-lib');
 var fs = require('fs');
-var Handlebars = require('Handlebars');
+var Handlebars = require('handlebars');
 
 
 var ConfigBuilder = function(packageName, opt_options) {

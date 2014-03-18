@@ -237,6 +237,6 @@ module.exports = function(grunt) {
     'build'
   ]);
   grunt.registerTask('travis', [
-    'requirejs:api'
+    'requirejs'
   ]);
 };
