@@ -193,6 +193,10 @@ module.exports = function(grunt) {
         command: '(cd docs; ./build.sh)'
       },
 
+      yuidoc: {
+        command: '(cd docs; ../node_modules/.bin/yuidoc -c yuidoc.json;)'
+      },
+
       // @TODO: use r.js grunt task
       //    and remove duplicate config
       //    from r.js config
@@ -262,6 +266,7 @@ module.exports = function(grunt) {
     'build'
   ]);
   grunt.registerTask('travis', [
-    'requirejs'
+    'requirejs',
+    'shell:yuidoc'
   ]);
 };
