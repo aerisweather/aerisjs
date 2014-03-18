@@ -7,7 +7,7 @@ install:
 before_script:
 - npm run-script bower
 script:
-- npm run-script build
+- npm run-script travis
 env:
   global:
     secure: XtHn8ijC15oQD0RfT+ppsi1n/jVrES0LuBpo7K0nS/1vHO9NajZBoTP8X6mB+Cc2OwvE6tXEJ2YFZZ28GAGQH+NQW9L7IxXvooAvjrtugxFNKsVeU2Llu8UcLmWZ/5YpkwEPTOMN/yBg8vYoa6Pkb0zlK/aKgY6EqgiXu7k098s=
