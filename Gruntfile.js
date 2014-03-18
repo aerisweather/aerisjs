@@ -6,8 +6,8 @@ module.exports = function(grunt) {
   // Project configuration.
   grunt.initConfig({
     buildDirs: {
-      lib: 'build/cdn.aerisjs.com',
-      docs: 'build/docs.aerisjs.com'
+      lib: 'build/lib',
+      docs: 'build/docs'
     },
     pkg: grunt.file.readJSON('package.json'),
     'jasmine-amd': {

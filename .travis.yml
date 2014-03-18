@@ -15,4 +15,4 @@ env:
 after_success:
   - if [[ "$TRAVIS_BRANCH" != "master" ]]; then echo "Deployments are only done for the master branch. Current branch is $TRAVIS_BRANCH"; exit 0; fi
   - echo "Deploying build $TRAVIS_BUILD_NUMBER"
-  - aws s3 cp build/cdn.aerisjs.com s3://aerisjs-cdn --recursive
+  - aws s3 cp build/lib s3://aerisjs-cdn --recursive
