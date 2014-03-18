@@ -4,7 +4,7 @@ node_js:
 install:
 - npm install
 - sudo pip install awscli
-- gem update --system && gem install compass
+- gem install compass
 before_script:
 - npm run-script bower
 script:
