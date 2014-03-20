@@ -75,6 +75,7 @@ define([
       /**
        * The minimum zoom level provided by the tile renderer.
        *
+       * @attribute minZoom
        * @type {number}
        * @default 0
        */
@@ -84,6 +85,7 @@ define([
       /**
        * The maximum zoom level provided by the tile renderer.
        *
+       * @attribute maxZoom
        * @type {number}
        * @default 22
        */
