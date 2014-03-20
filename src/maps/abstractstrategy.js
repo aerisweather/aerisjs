@@ -161,7 +161,6 @@ define([
   /**
    * Create a view instance.
    *
-   * @type {Object}
    * @protected
    * @abstract
    * @return {Object} View instance.
