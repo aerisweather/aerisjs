@@ -14,7 +14,9 @@ module.exports = {
             handleFail('PhantomJS unable to load url: ' + url);
           },
           'fail.timeout': _.partial(handleFail, 'PhantomJS timed out.'),
-          'console': log,
+          'console': function(msg) {
+            grunt.log.warn('CONSOLE: ' + msg);
+          },
           'jasmine.error': function(msg) {
             handleFail(msg);
           },
