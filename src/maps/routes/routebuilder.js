@@ -191,17 +191,17 @@ define([
 
     /**
      * @event waypoint:click
-     * @param {aeris.maps.LatLng} latLon
+     * @param {aeris.maps.LatLon} latLon
      * @param {aeris.maps.gmaps.route.Waypoint} marker
      */
     /**
      * @event waypoint:dragend
-     * @param {aeris.maps.LatLng} latLon
+     * @param {aeris.maps.LatLon} latLon
      * @param {aeris.maps.gmaps.route.Waypoint} marker
      */
     /**
      * @event path:click
-     * @param {aeris.maps.LatLng} latLon
+     * @param {aeris.maps.LatLon} latLon
      * @param {aeris.maps.gmaps.route.Waypoint} marker
      *        Waypoint whose path was clicked.
      */
@@ -400,7 +400,7 @@ define([
    * Change the position of a waypoint.
    *
    * @param {aeris.maps.gmaps.route.Waypoint} waypoint
-   * @param {aeris.maps.LatLng} latLon
+   * @param {aeris.maps.LatLon} latLon
    *
    * @return {aeris.Promise}
    * @method moveWaypoint

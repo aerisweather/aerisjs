@@ -18,11 +18,11 @@ define([
   var Map = function(el, opt_attrs, opt_options) {
     /**
      * @event click
-     * @param {aeris.maps.LatLng} latLon
+     * @param {aeris.maps.LatLon} latLon
      */
     /**
      * @event dblclick
-     * @param {aeris.maps.LatLng} latLon
+     * @param {aeris.maps.LatLon} latLon
      */
     /**
      * When base map tiles are loaded.
@@ -31,7 +31,7 @@ define([
     var attrs = _.extend({
       /**
        * @attribute center
-       * @type {aeris.maps.LatLng} LatLon coordinate.
+       * @type {aeris.maps.LatLon} LatLon coordinate.
        */
       center: [45, -90],
 
@@ -112,7 +112,7 @@ define([
 
   /**
    * @method setCenter
-   * @param {aeris.maps.LatLng} latLon
+   * @param {aeris.maps.LatLon} latLon
    */
   Map.prototype.setCenter = function(latLon) {
     this.set('center', latLon, { validate: true });

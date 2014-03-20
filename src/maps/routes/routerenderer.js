@@ -127,17 +127,17 @@ define([
 
     /**
      * @event marker:click
-     * @param {aeris.maps.LatLng} latLon
+     * @param {aeris.maps.LatLon} latLon
      * @param {aeris.maps.gmaps.route.Waypoint} waypoint
      */
     /**
      * @event marker:dragend
-     * @param {aeris.maps.LatLng} latLon
+     * @param {aeris.maps.LatLon} latLon
      * @param {aeris.maps.gmaps.route.Waypoint} waypoint
      */
     /**
      * @event path:click
-     * @param {aeris.maps.LatLng} latLon
+     * @param {aeris.maps.LatLon} latLon
      * @param {aeris.maps.gmaps.route.Waypoint} waypoint
      *        The waypoint to which the path belongs
      *        (at the end of the path).

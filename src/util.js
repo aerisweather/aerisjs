@@ -272,7 +272,7 @@ define([
      * eg.  [45.1234567, -90.1234567]
      * --> [[45, 7, 24.4452], [-90, 7, 24.4452]]
      *
-     * @param {aeris.maps.LatLng} latLon
+     * @param {aeris.maps.LatLon} latLon
      * @return {aeris.maps.Bounds} Array of North and West coordinates
      *                                  as [degrees, minutes, seconds].
      * @method latLonToDegrees
@@ -294,7 +294,7 @@ define([
      * @param {Array.<Array.<number>>} degrees
      *                                 Array of North and West coordinates
      *                                 as [degrees, minutes, seconds].
-     * @return {aeris.maps.LatLng} LatLon coordinates as decimals.
+     * @return {aeris.maps.LatLon} LatLon coordinates as decimals.
      * @method degreesToLatLon
      */
     degreesToLatLon: function(degrees) {

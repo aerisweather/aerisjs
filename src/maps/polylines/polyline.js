@@ -61,7 +61,7 @@ define([
     /**
      * @event click
      *
-     * @param {aeris.maps.LatLng} latLat Clicked coordinate.
+     * @param {aeris.maps.LatLon} latLat Clicked coordinate.
      * @param {aeris.maps.polylines.Polyline} polyline
      */
 

@@ -23,7 +23,7 @@ define([
        * The lat/lon position to place the info box.
        *
        * @attribute position
-       * @type {aeris.maps.LatLng}
+       * @type {aeris.maps.LatLon}
        */
       position: [45, -90],
 
@@ -61,7 +61,7 @@ define([
    * Set the lat/lon location of the InfoBox
    * on the map.
    *
-   * @param {aeris.maps.LatLng} position
+   * @param {aeris.maps.LatLon} position
    * @method setPosition
    */
   InfoBox.prototype.setPosition = function(position) {

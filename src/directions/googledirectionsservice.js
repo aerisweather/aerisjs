@@ -48,8 +48,8 @@ define([
   /**
    * @override
    *
-   * @param {aeris.maps.LatLng} origin
-   * @param {aeris.maps.LatLng} destination
+   * @param {aeris.maps.LatLon} origin
+   * @param {aeris.maps.LatLon} destination
    *
    * @param {Object=} opt_options
    * @param {string=} opt_options.travelMode Defaults to 'WALKING'.
@@ -71,8 +71,8 @@ define([
 
 
   /**
-   * @param {aeris.maps.LatLng} origin
-   * @param {aeris.maps.LatLng} destination
+   * @param {aeris.maps.LatLon} origin
+   * @param {aeris.maps.LatLon} destination
    * @param {string} travelMode
    * @return {google.maps.DirectionsRequest}
    * @private

@@ -15,8 +15,8 @@ define(function() {
   /**
    * Fetch directions data between two latLon coordinates.
    *
-   * @param {aeris.maps.LatLng} origin
-   * @param {aeris.maps.LatLng} destination
+   * @param {aeris.maps.LatLon} origin
+   * @param {aeris.maps.LatLon} destination
    * @param {Object=} opt_options
    *
    * @return {aeris.directions.promises.PromiseToFetchDirections}

@@ -180,11 +180,11 @@ define([
  */
 /**
  * @event click
- * @param {aeris.maps.LatLng} latLon
+ * @param {aeris.maps.LatLon} latLon
  * @param {aeris.maps.markers.Marker} marker
  */
 /**
  * @event dragend
- * @param {aeris.maps.LatLng} latLon
+ * @param {aeris.maps.LatLon} latLon
  * @param {aeris.maps.markers.Marker} marker
  */

@@ -14,7 +14,7 @@ define([
      * Transforms 'marker:click' event,
      * where the second param is the marker object.
      *
-     * @param {aeris.maps.LatLng} latLon
+     * @param {aeris.maps.LatLon} latLon
      * @param {aeris.maps.markers.Marker} marker
      * @return {Array.<aeris.Model>} Data associated with the marker.
      * @method markerClick
@@ -28,7 +28,7 @@ define([
      * Transforms a click event on
      * a view model into JSON data.
      *
-     * @param {aeris.maps.LatLng} latLon
+     * @param {aeris.maps.LatLon} latLon
      * @param {aeris.ViewModel} viewModel
      * @return {Object}
      * @method clickToJSON

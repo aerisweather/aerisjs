@@ -1,5 +1,5 @@
 /**
- * {Array.<aeris.maps.LatLng>}
+ * {Array.<aeris.maps.LatLon>}
  *
  * Bounds of an area on a map,
  * defined by its southwest and northeast
@@ -8,5 +8,5 @@
  * @class Bounds
  * @namespace aeris.maps
  * @static
- * @type {Array.<aeris.maps.LatLng>}
+ * @type {Array.<aeris.maps.LatLon>}
  */

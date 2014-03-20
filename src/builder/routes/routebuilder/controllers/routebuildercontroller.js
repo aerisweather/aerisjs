@@ -126,6 +126,6 @@ define([
  */
 /**
  * @event routepoint:click
- * @param {aeris.maps.LatLng} latLon
+ * @param {aeris.maps.LatLon} latLon
  * @param {aeris.maps.routes.Waypoint} routepoint
 */

@@ -7,7 +7,7 @@ define([
     /**
      * Convert an array of latitude and longitude to Google's Lat/Lng object.
      *
-     * @param {aeris.maps.LatLng} latLon
+     * @param {aeris.maps.LatLon} latLon
      * @return {google.maps.LatLng}
      * @method arrayToLatLng
      */
@@ -24,7 +24,7 @@ define([
      * to a plain array
      *
      * @param {google.maps.LatLng} latLng
-     * @return {aeris.maps.LatLng}
+     * @return {aeris.maps.LatLon}
      * @method latLngToArray
      */
     latLngToArray: function(latLng) {

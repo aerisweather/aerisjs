@@ -15,8 +15,8 @@ define(function() {
   /**
    * @static
    *
-   * @param {aeris.maps.LatLng} latLonA
-   * @param {aeris.maps.LatLng} latLonB
+   * @param {aeris.maps.LatLon} latLonA
+   * @param {aeris.maps.LatLon} latLonB
    *
    * @return {number} Distance in meters between the two latLons.
    * @method getDistanceBetween

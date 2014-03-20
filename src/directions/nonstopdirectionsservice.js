@@ -72,8 +72,8 @@ define([
 
 
   /**
-   * @param {aeris.maps.LatLng} origin
-   * @param {aeris.maps.LatLng} destination
+   * @param {aeris.maps.LatLon} origin
+   * @param {aeris.maps.LatLon} destination
    * @return {aeris.maps.Path}
    * @private
    * @method createDirectPathBetween_
