@@ -17,6 +17,7 @@ module.exports = function(grunt) {
       preserveSpecRunner: true,
       outDir: 'tests'
     });
+    var target = this.target;
     var tempFiles = [];
     var specRunnerPath = path.join(options.outDir, 'specrunner-tmp.html');
 
@@ -54,7 +55,7 @@ module.exports = function(grunt) {
       destroyTempFiles();
 
       if (options.preserveSpecRunner) {
-        grunt.file.write(path.join(options.outDir, 'specrunner.html'), generatePreservedSpecRunner());
+        grunt.file.write(path.join(options.outDir, 'specrunner-' + target + '.html'), generatePreservedSpecRunner());
       }
     }
 
