@@ -6,7 +6,7 @@ module.exports = function(grunt) {
   var when = require('when');
   var fn = require('when/function');
 
-  grunt.registerMultiTask('jasmine-amd', 'Run jasmine specs within AMD modules', function() {
+  grunt.registerMultiTask('jasmine-amd', 'Run jasmine specs within AMD modules', function(opt_specs) {
     var done = this.async();
     var options = this.options({
       specRunnerTemplate: __dirname + '/templates/specrunner.html.tmpl',
@@ -20,6 +20,13 @@ module.exports = function(grunt) {
     var tempFiles = [];
     var specRunnerPath = path.join(options.outDir, 'specrunner-tmp.html');
 
+    // Use specs argument, if provided
+    if (opt_specs) {
+      options.specs = opt_specs.split(',');
+
+      // Do not exclude any specs, if specs argument is passed
+      options.exclude = [];
+    }
 
     fn.call(setup).
       then(run).
@@ -32,6 +39,10 @@ module.exports = function(grunt) {
 
 
     function setup() {
+      var specs = grunt.file.expand(options.specs);
+      var excludedSpecs = grunt.file.expand(options.exclude);
+      grunt.verbose.write('Running specs: ' + JSON.stringify(specs, null, 2) + '\n');
+      grunt.verbose.write('Excluding specs: ' + JSON.stringify(excludedSpecs, null, 2) + '\n');
       createTempFile(specRunnerPath, generateSpecRunner(options));
     }
 
