@@ -3,6 +3,29 @@ module.exports = function(grunt) {
   var createRjsConfig = require('./deployment/scripts/createrjsconfig');
   var mapAppRjsConfig = require('./deployment/config/mapappbuilder');
 
+  var notSpecs = [
+    'tests/spec/**/mocks/*.js',
+    'tests/spec/**/context.js',
+    'tests/spec/**/fixtures/*.js',
+    'tests/spec/**/config/**/*.js',
+    'tests/spec/integration/helpers/**/*.js'
+  ];
+  var failingSpecs = [
+    'tests/spec/aeris/commands/abstractcommand.js',
+    'tests/spec/aeris/commands/commandmanager.js',
+    'tests/spec/aeris/builder/maps/options/mapappbuilderoptions.js',
+    'tests/spec/aeris/builder/maps/map/controllers/mapcontroller.js'
+  ];
+  var allSpecs = [
+    'tests/spec/**/*.js'
+  ];
+  var gmapsSpecs = [
+    'tests/spec/**/gmaps/**/*.js'
+  ];
+  var leafletSpecs = [
+    'tests/spec/**/leaflet/**/*.js'
+  ];
+
   // Project configuration.
   grunt.initConfig({
     buildDirs: {
@@ -16,40 +39,34 @@ module.exports = function(grunt) {
           '../config-amd',
           'testconfig'
         ],
-
+        specs: allSpecs,
         libs: [
           'jasmine',
           'jasmine-console',
           'jasmine-html',
           'matchers/matchers.package'
         ],
-        exclude: [
-          // Non-specs
-          'tests/spec/**/mocks/*.js',
-          'tests/spec/**/context.js',
-          'tests/spec/**/fixtures/*.js',
-          'tests/spec/**/config/**/*.js',
-          'tests/spec/integration/helpers/**/*.js',
-
-          // Failing tests
-          'tests/spec/aeris/commands/abstractcommand.js',
-          'tests/spec/aeris/commands/commandmanager.js',
-          'tests/spec/aeris/builder/maps/options/mapappbuilderoptions.js',
-          'tests/spec/aeris/builder/maps/map/controllers/mapcontroller.js'
-        ]
+        exclude: notSpecs.concat(failingSpecs)
       },
-      all: {
+      core: {
         options: {
-          specs: [
-            'tests/spec/**/*.js'
-          ]
+          exclude: notSpecs.
+            concat(failingSpecs).
+            concat(gmapsSpecs).
+            concat(leafletSpecs),
+          strategy: 'gmaps'
+        }   // default strategy
+      },
+      gmaps: {
+        options: {
+          specs: gmapsSpecs,
+          strategy: 'gmaps'
         }
       },
-      integration: {
+      leaflet: {
         options: {
-          specs: [
-            'tests/spec/integration/**/*.js'
-          ]
+          specs: leafletSpecs,
+          strategy: 'leaflet'
         }
       }
     },

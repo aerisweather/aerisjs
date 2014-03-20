@@ -15,8 +15,7 @@ require.config({
     testUtils: 'tests/testutils',
     flag: 'tests/flag',
     googlemaps: 'tests/mocks/googlemaps',
-    leaflet: 'tests/lib/leaflet',
-    'aeris/maps/strategy': 'src/maps/gmaps'
+    leaflet: 'tests/lib/leaflet'
   },
   shim: {
     jasmine: {
