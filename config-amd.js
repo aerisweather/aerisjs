@@ -16,6 +16,7 @@ require.config({
     underscore: 'bower_components/underscore/underscore',
     async: 'bower_components/requirejs-plugins/src/async',
     googlemaps: 'bower_components/googlemaps-amd/src/googlemaps',
+    leaflet: '//cdn.leafletjs.com/leaflet-0.7.2/leaflet',
 
     // Wire dependency
     'wire/builder/rjs': 'bower_components/wire-rjs-builder/builder'
