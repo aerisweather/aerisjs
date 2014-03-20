@@ -39,11 +39,6 @@ define([
    *                              {aeris.maps.Map} object as the
    *                              first argument.
    *
-   * @property {aeris.maps.layers.GoogleMapType}
-   *                              map.baseLayer
-   *                              Base layer constructor.
-   *                              Defaults to {aeris.maps.layers.GoogleRoadMap}.
-   *
    * @property {number=}          map.zoom
    *                              Zoom level of map. Default is 12.
    *

@@ -2,8 +2,9 @@ define([
   'aeris/util',
   'aeris/maps/strategy/utils',
   'aeris/maps/strategy/abstractstrategy',
+  'aeris/maps/layers/googleroadmap',
   'googlemaps!'
-], function(_, mapUtil, AbstractStrategy, gmaps) {
+], function(_, mapUtil, AbstractStrategy, GoogleRoadMap, gmaps) {
   /**
    * A strategy for rendering a Google Maps map.
    *
@@ -21,8 +22,7 @@ define([
     // Sycn map view with map object.
     this.listenTo(this.object_, {
       'change:center': this.setCenter_,
-      'change:zoom': this.setZoom_,
-      'change:baseLayer': this.setBaseLayer_
+      'change:zoom': this.setZoom_
     }, this);
 
 
@@ -61,9 +61,6 @@ define([
       center: mapUtil.arrayToLatLng(this.object_.get('center')),
       zoom: this.object_.get('zoom')
     });
-
-    // set the base layer
-    this.setBaseLayer_();
 
     return view;
   };
@@ -119,16 +116,6 @@ define([
   GoogleMapStrategy.prototype.setZoom_ = function() {
     var zoom = this.object_.get('zoom');
     this.getView().setZoom(zoom);
-  };
-
-
-  /**
-   * @private
-   * @method setBaseLayer_
-   */
-  GoogleMapStrategy.prototype.setBaseLayer_ = function() {
-    var baseLayer = this.object_.get('baseLayer');
-    baseLayer.setMap(this.object_);
   };
 
 

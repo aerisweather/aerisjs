@@ -7,7 +7,6 @@ define([
     this.options = _.extend({
       center: [45, -90],
       zoom: 4,
-      baseLayer: { foo: 'bar' },
       state: new Model()
     }, opt_options);
 

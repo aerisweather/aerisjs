@@ -41,14 +41,9 @@ define([
        *
        * @attribute bounds
        * @type {aeris.maps.Bounds} LatLons of SW and NE corners.
+       * @default A rough box around the US
        */
-      bounds: [[22.43, -135.52], [52.37, -55.016]], // A rough box around the US,
-
-      /**
-       * @attribute baseLayer
-       * @type {aeris.maps.layers.AbstractTile}
-       */
-      baseLayer: new GoogleRoadMap(),
+      bounds: [[22.43, -135.52], [52.37, -55.016]],
 
       /**
        * @attribute zoom
@@ -70,9 +65,6 @@ define([
       validate: true
     }, opt_options);
 
-
-    attrs.baseLayer.setMap(this);
-
     Events.call(this);
     MapExtensionObject.call(this, attrs, options);
   };
@@ -93,8 +85,16 @@ define([
   };
 
   /**
+   * @method setBounds
+   * @param {aeris.maps.Bounds} bounds
+   */
+  Map.prototype.setBounds = function(bounds) {
+    this.set('bounds', bounds, { validate: true });
+  };
+
+  /**
    * @method getBounds
-   * @return {aeris.maps.Bounds} LatLons of SW and NE corners.
+   * @return {aeris.maps.Bounds}
    */
   Map.prototype.getBounds = function() {
     return this.get('bounds');
@@ -109,13 +109,20 @@ define([
     return this.strategy_.getView();
   };
 
-
   /**
    * @method setCenter
-   * @param {aeris.maps.LatLon} latLon
+   * @param {aeris.maps.LatLon} center
    */
-  Map.prototype.setCenter = function(latLon) {
-    this.set('center', latLon, { validate: true });
+  Map.prototype.setCenter = function(center) {
+    this.set('center', center, { validate: true });
+  };
+
+  /**
+   * @method getCenter
+   * @return {aeris.maps.LatLon}
+   */
+  Map.prototype.getCenter = function() {
+    return this.get('center');
   };
 
 
@@ -127,13 +134,12 @@ define([
     this.set('zoom', zoom, { validate: true });
   };
 
-
   /**
-   * @method setBaseLayer
-   * @param {aeris.maps.layers.AbstractTile} baseLayer
+   * @method getZoom
+   * @return {number}
    */
-  Map.prototype.setBaseLayer = function(baseLayer) {
-    this.set('baseLayer', baseLayer, { validate: true });
+  Map.prototype.getZoom = function() {
+    return this.get('zoom');
   };
 
 
@@ -147,8 +153,8 @@ define([
    * @param {aeris.maps.Bounds} bounds
    */
   Map.prototype.fitToBounds = function(bounds) {
-    if (!this.strategy_) {
-      throw Error('Unable to fit to bounds: Map strategy is not yet defined');
+    if (!this.strategy_ || !this.strategy_.fitToBounds) {
+      throw Error('Unable to fit to bounds: no fitToBounds strategy has been implemented');
     }
 
     this.strategy_.fitToBounds(bounds);
