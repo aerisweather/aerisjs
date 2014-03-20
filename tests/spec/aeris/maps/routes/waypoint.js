@@ -6,7 +6,8 @@ define([
   'aeris/collection',
   'mocks/mapobject',
   'mocks/waypoint',
-  'mocks/aeris/directions/directionsservice'
+  'mocks/aeris/directions/directionsservice',
+  'matchers/route-matchers'
 ], function(
   _,
   Promise,

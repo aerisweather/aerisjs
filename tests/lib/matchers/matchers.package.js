@@ -10,6 +10,5 @@ require.config({
 });
 require([
   'matchers/custom-matchers',
-  'matchers/route-matchers',
   'matchers/jasmine-context'
 ]);
