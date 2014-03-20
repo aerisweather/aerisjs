@@ -26,6 +26,11 @@
     };
   <% } %>
 
+  require.config({
+    paths: {
+      'aeris/maps/strategy': 'src/maps/<%=strategy%>'
+    }
+  });
   require([
     '<%=amdConfig.join('\',\n    \'') %>'
   ], function() {

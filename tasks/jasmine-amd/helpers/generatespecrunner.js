@@ -11,7 +11,8 @@ module.exports = {
         amdConfig: options.amdConfig,
         libs: options.libs,
         specs: getSpecPaths(),
-        isPhantom: true
+        isPhantom: true,
+        strategy: options.strategy
       });
 
       return grunt.template.process(template, {
