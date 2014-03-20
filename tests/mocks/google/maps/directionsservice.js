@@ -1,6 +1,4 @@
-define([
-  'aeris/maps/strategy/utils'
-], function(mapUtil) {
+define(function() {
   var MockDirectionsService = function() {
     var stubbedMethods = [
       'route'
