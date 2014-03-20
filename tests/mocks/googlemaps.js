@@ -8,6 +8,7 @@ define([
   var root = this;
 
   var mockGoogleMaps = {
+    // Mock googlemaps! AMD loader
     load: function(name, parentRequire, onload) {
       onload(mockGoogleMaps);
     },
@@ -18,33 +19,33 @@ define([
     TravelMode: require('mocks/google/maps/travelmode'),
     DirectionsService: require('mocks/google/maps/directionsservice'),
 
-    Size: function() {},
-
-    MapTypeId: {
-      HYBRID: 'HYBRID',
-      ROADMAP: 'ROADMAP',
-      SATELLITE: 'SATELLITE',
-      TERRAIN: 'TERRAIN'
+    event: {
+      addListener: function() {},
+      removeListener: function() {}
     },
 
-    Geocoder: function() {},
 
-    GeocoderStatus: {
-      ERROR: 'ERROR',
-      INVALID_REQUEST: 'INVALID_REQUEST',
-      OK: 'OK',
-      OVER_QUERY_LIMIT: 'OVER_QUERY_LIMIT',
-      REQUEST_DENIED: 'REQUEST_DENIED',
-      UNKNOWN_ERROR: 'UNKNOWN_ERROR',
-      ZERO_RESULTS: 'ZERO_RESULTS'
+    Geocoder: function() {
+    },
+
+    Polyline: function() {
+    },
+
+    Size: function() {
     },
 
     ImageMapType: function() {
     },
 
-    KmlLayer: function() {},
+    KmlLayer: function() {
+    },
 
-    Map: function() {},
+    Map: function() {
+    },
+
+    GeocodeService: function() {
+    },
+
 
     DirectionsStatus: {
       INVALID_REQUEST: 'INVALID_REQUEST',
@@ -57,8 +58,23 @@ define([
       ZERO_RESULTS: 'ZERO_RESULTS'
     },
 
+    MapTypeId: {
+      HYBRID: 'HYBRID',
+      ROADMAP: 'ROADMAP',
+      SATELLITE: 'SATELLITE',
+      TERRAIN: 'TERRAIN'
+    },
 
-    GeocodeService: function() {}
+
+    GeocoderStatus: {
+      ERROR: 'ERROR',
+      INVALID_REQUEST: 'INVALID_REQUEST',
+      OK: 'OK',
+      OVER_QUERY_LIMIT: 'OVER_QUERY_LIMIT',
+      REQUEST_DENIED: 'REQUEST_DENIED',
+      UNKNOWN_ERROR: 'UNKNOWN_ERROR',
+      ZERO_RESULTS: 'ZERO_RESULTS'
+    }
   };
 
   root.google = {
