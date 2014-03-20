@@ -8,7 +8,7 @@ define([
    * A strategy for rendering a Google Maps map.
    *
    * @param {aeris.maps.Map} mapObject
-   * @class MapStrategy
+   * @class Map
    * @namespace aeris.maps.gmaps
    * @extends aeris.maps.gmaps.AbstractStrategy
    * @constructor
