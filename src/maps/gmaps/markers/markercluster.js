@@ -89,6 +89,10 @@ define([
   _.inherits(MarkerClusterStrategy, AbstractStrategy);
 
 
+  /**
+   * @method bindToMarkerCollection_
+   * @private
+   */
   MarkerClusterStrategy.prototype.bindToMarkerCollection_ = function() {
     // Debounce event handlers.
     // Resolves significant performance issues
