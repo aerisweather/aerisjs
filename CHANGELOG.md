@@ -1,3 +1,17 @@
+# 0.2.0
+
+* ADD: Partial for Leaflet maps: map, tile layers, markers
+       Still no support for: markercollections, polylines, infoboxes
+* FIX: Add missing node packages to package.json
+* FIX: Add assets to build path
+* MOD: Allow attributeTransforms to be set directly on a ViewModel prototype
+* MOD: Expose aeris.maps.markerscollections.MarkerCollection
+* MOD: Update examples to use aeris.js from CDN
+* MOD: Fix travis to autodeploy on hamweather/master
+* MOD: Reconfigure and refactor grunt build tasks
+* MOD: Minor YUIDoc annotation changes
+
+
 # v0.1.5
 
 * MOD: Grunt / Travis-CI build and deploy configuration
