@@ -243,6 +243,10 @@ module.exports = function(grunt) {
         ].join('&&')
       },
 
+      copyAssets: {
+        command: 'cp -r assets <%=buildDirs.lib %>'
+      },
+
       copyLibToVersionDir: {
         command: [
           'mkdir <%=buildDirs.lib %>/<%=pkg.version%>',
@@ -281,6 +285,7 @@ module.exports = function(grunt) {
   grunt.registerTask('build', [
     'shell:removeBuildDir',
     'requirejs',
+    'shell:copyAssets',
     'shell:generateDocs',
     'shell:copyAerisJs',
     'shell:copyLibToVersionDir',
