@@ -142,7 +142,7 @@ define([
   };
 
 
-  return MarkerCollection;
+  return _.expose(MarkerCollection, 'aeris.maps.markercollections.MarkerCollection');
 });
 /**
  * Style setting for marker clusters,
