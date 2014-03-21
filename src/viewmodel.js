@@ -23,7 +23,7 @@ define([
   var ViewModel = function(opt_attrs, opt_options) {
     var options = _.defaults(opt_options || {}, {
       data: new Model(),
-      attributeTransforms: {}
+      attributeTransforms: this.attributeTransforms
     });
 
 
