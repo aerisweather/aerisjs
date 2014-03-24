@@ -8,7 +8,7 @@ require.config({
     markerclusterer: 'bower_components/gmaps-markerclusterer-plus/index',
     Handlebars: 'bower_components/handlebars/handlebars',
     hbars: 'bower_components/hbars/hbars',
-    jquery: 'bower_components/jquery/jquery',
+    jquery: 'bower_components/jquery/dist/jquery',
     'backbone.babysitter': 'bower_components/backbone.babysitter/lib/amd/backbone.babysitter',
     'backbone.wreqr': 'bower_components/backbone.wreqr/lib/amd/backbone.wreqr',
     marionette: 'bower_components/marionette/lib/core/amd/backbone.marionette',
