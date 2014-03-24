@@ -2,7 +2,7 @@ language: node_js
 node_js:
 - '0.11'
 install:
-- npm install --verbose --fetch-retries 5
+- npm install --fetch-retries 5
 - sudo pip install awscli
 - gem install compass
 before_script:
