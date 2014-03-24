@@ -263,8 +263,8 @@ module.exports = function(grunt) {
 
       deployS3: {
         command: [
-          'aws s3 cp <%=buildDirs.lib %> s3://aerisjs-cdn --recursive',
-          'aws s3 cp <%=buildDirs.docs %> s3://aerisjs-docs --recursive'
+          'aws s3 cp <%=buildDirs.lib %> s3://aerisjs-cdn --recursive --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers',
+          'aws s3 cp <%=buildDirs.docs %> s3://aerisjs-docs --recursive --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers'
         ].join('&&')
       }
     }
