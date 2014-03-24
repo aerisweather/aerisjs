@@ -1,3 +1,11 @@
+# 0.2.1
+
+* FIX: Set jQuery dependency version to v1.8.0+, so consumers
+       do not need to resolver bower version conflict with
+       Backbone.Marionette.
+       Note that Aeris.js still supports v2.0+
+* MOD: Fixes to travis config
+
 # 0.2.0
 
 * ADD: Partial for Leaflet maps: map, tile layers, markers
