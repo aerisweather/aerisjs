@@ -17,3 +17,5 @@ after_success:
   - echo "Deploying build $TRAVIS_BUILD_NUMBER"
   - aws s3 cp build/lib s3://cdn.aerisjs.com --recursive --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers
   - aws s3 cp build/docs s3://docs.aerisjs.com --recursive --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers
+after_failure:
+  - "cat /home/travis/build/hamweather/aerisjs/npm-debug.log"
