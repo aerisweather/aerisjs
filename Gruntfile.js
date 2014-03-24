@@ -293,8 +293,6 @@ module.exports = function(grunt) {
   ]);
   grunt.registerTask('deploy', [
     'version:aeris',
-    'test',
-    'build',
     'shell:deployS3'
   ]);
   grunt.registerTask('default', [
