@@ -49,7 +49,6 @@ define([
     var options = _.defaults(opt_options || {}, {
       model: Marker,
       clusterStrategy: 'markers/markercluster',
-      clusterOptions: {},
       clusterStyles: {},
       cluster: true,
       strategy: null
@@ -73,15 +72,6 @@ define([
      * @type {aeris.maps.AbstractStrategy}
     */
     this.clusterStrategy_ = options.clusterStrategy;
-
-
-    /**
-     * Options to pass to the marker cluster strategy.
-     *
-     * @type {Object}
-     * @property clusterOptions
-     */
-    this.clusterOptions = options.clusterOptions;
 
 
     /**
