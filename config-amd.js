@@ -2,24 +2,28 @@ require.config({
   paths: {
     aeris: 'src',
 
-    // Vendor libs
-    almond: 'bower_components/almond/almond',
+    // Core library dependencies
+    underscore: 'bower_components/underscore/underscore',
     backbone: 'bower_components/backbone/backbone',
-    'gmaps-markerclusterer-plus': 'bower_components/gmaps-markerclusterer-plus/index',
-    Handlebars: 'bower_components/handlebars/handlebars',
-    hbars: 'bower_components/hbars/hbars',
+
+    // MapBuilder dependencides
     jquery: 'bower_components/jquery/dist/jquery',
     'backbone.babysitter': 'bower_components/backbone.babysitter/lib/amd/backbone.babysitter',
     'backbone.wreqr': 'bower_components/backbone.wreqr/lib/amd/backbone.wreqr',
     marionette: 'bower_components/marionette/lib/core/amd/backbone.marionette',
+    Handlebars: 'bower_components/handlebars/handlebars',
+    hbars: 'bower_components/hbars/hbars',
     text: 'bower_components/requirejs-text/text',
-    underscore: 'bower_components/underscore/underscore',
-    async: 'bower_components/requirejs-plugins/src/async',
+    'wire/builder/rjs': 'bower_components/wire-rjs-builder/builder',
+
+    // Map strategies
     googlemaps: 'bower_components/googlemaps-amd/src/googlemaps',
+    async: 'bower_components/requirejs-plugins/src/async',
+    'gmaps-markerclusterer-plus': 'bower_components/gmaps-markerclusterer-plus/index',
     leaflet: '//cdn.leafletjs.com/leaflet-0.7.2/leaflet',
 
-    // Wire dependency
-    'wire/builder/rjs': 'bower_components/wire-rjs-builder/builder'
+    // Build-only dependency
+    almond: 'bower_components/almond/almond'
   },
   packages: [
     // Configure wire packages
