@@ -139,7 +139,7 @@ While Aeris.js is in beta, we are using a major version of 0.x.x, and are not en
 
 ### Grunt Task Runner
 
-![Grunt Build Process Diagram](docs/images/build_grunt.png)
+![Grunt Build Process Diagram](images/build_grunt.png)
 
 The build process consists of a series of *tasks* which must be run in order to prepare the Aeris.js library for deployment. These tasks include:
 
@@ -193,7 +193,7 @@ $ grunt build
 
 ### Travis-CI
 
-![Travis CI Build Process Diagram](docs/images/build_travis.png)
+![Travis CI Build Process Diagram](images/build_travis.png)
 
 [Travis-CI](http://docs.travis-ci.com/) allows us to further automate the build process, by registering [git hooks](http://githooks.com/) on the [Aeris.js github repo](https://github.com/hamweather/aerisjs). A git hook is simply a script which is run any time something happens within a git repository. In our case, Travis CI registers a hook to run a build script whenever a commit is pushed to the Aeris.js Github repo.
 
