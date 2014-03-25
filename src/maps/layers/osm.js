@@ -1,7 +1,8 @@
 define([
   'aeris/util',
-  'aeris/maps/layers/abstracttile'
-], function(_, BaseTile) {
+  'aeris/maps/layers/abstracttile',
+  'aeris/maps/strategy/layers/osm'
+], function(_, BaseTile, OSMStrategy) {
 
   /**
    * Representation of OpenStreetMaps layer.
@@ -14,7 +15,7 @@ define([
    */
   var OSM = function(opt_attrs, opt_options) {
     var options = _.extend({
-      strategy: 'layers/osm'
+      strategy: OSMStrategy
     }, opt_options);
 
     var attrs = _.extend({
