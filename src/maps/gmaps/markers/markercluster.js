@@ -308,12 +308,10 @@ define([
    * @method getMarkerGroup_
    */
   MarkerClusterStrategy.prototype.getMarkerGroup_ = function(marker) {
-    var doesMarkerHaveType = marker.getType && marker.getType();
-
     // Use the marker's type to separate clusters.
     // If no marker type is defined,
     // use a single default cluster name
-    return doesMarkerHaveType ? marker.getType() : MarkerClusterStrategy.SINGLE_CLUSTER_GROUPNAME;
+    return marker.getType() || MarkerClusterStrategy.SINGLE_CLUSTER_GROUPNAME;
   };
 
 

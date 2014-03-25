@@ -95,8 +95,12 @@ define([
 
 
   /**
-   * @return {string}
+   * The type category of this marker.
+   * Generally, corresponds to a data filter.
+   *
+   * @override
    * @method getType
+   * @return {string}
    */
   PointDataMarker.prototype.getType = function() {
     return this.get('type');

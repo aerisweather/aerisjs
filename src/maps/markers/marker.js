@@ -239,5 +239,19 @@ define([
   };
 
 
+  /**
+   * This method method may be overriden to return
+   * an arbitrary "type" category for the marker.
+   * Used by MarkerClusterer strategies to split up
+   * a single MarkerColection into several cluster sets.
+   *
+   * @method getType
+   * @return {?string}
+   */
+  Marker.prototype.getType = function() {
+    return null;
+  };
+
+
   return _.expose(Marker, 'aeris.maps.markers.Marker');
 });
