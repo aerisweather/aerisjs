@@ -283,6 +283,7 @@ module.exports = function(grunt) {
     'gjslint'
   ]);
   grunt.registerTask('build', [
+    'test',
     'shell:removeBuildDir',
     'requirejs',
     'shell:copyAssets',
@@ -293,12 +294,10 @@ module.exports = function(grunt) {
   ]);
   grunt.registerTask('deploy', [
     'version:aeris',
-    'test',
     'build',
     'shell:deployS3'
   ]);
   grunt.registerTask('default', [
-    'test',
     'build'
   ]);
   grunt.registerTask('travis', [
