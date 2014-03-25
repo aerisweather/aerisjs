@@ -7,26 +7,26 @@ define([
    * Strategy for rendering a tile layer
    * using Leaflet.
    *
-   * @class TileLayerStrategy
+   * @class Tile
    * @namespace aeris.maps.leaflet.layers
    * @extends aeris.maps.strategy.AbstractStrategy
    *
    * @constructor
    */
-  var TileLayerStrategy = function(mapObject) {
+  var Tile = function(mapObject) {
     AbstractStrategy.call(this, mapObject);
 
     this.proxyLoadEvents_();
     this.bindLayerAttributes_();
   };
-  _.inherits(TileLayerStrategy, AbstractStrategy);
+  _.inherits(Tile, AbstractStrategy);
 
 
   /**
    * @method createView_
    * @private
    */
-  TileLayerStrategy.prototype.createView_ = function() {
+  Tile.prototype.createView_ = function() {
     var tileLayer = new Leaflet.TileLayer(this.getTileUrl_(), {
       subdomains: this.object_.get('subdomains'),
       minZoom: this.object_.get('minZoom'),
@@ -43,7 +43,7 @@ define([
   /**
    * @method setMap
    */
-  TileLayerStrategy.prototype.setMap = function(map) {
+  Tile.prototype.setMap = function(map) {
     AbstractStrategy.prototype.setMap.call(this, map);
 
     this.view_.addTo(map.getView());
@@ -53,7 +53,7 @@ define([
   /**
    * @method beforeRemove
    */
-  TileLayerStrategy.prototype.beforeRemove_ = function() {
+  Tile.prototype.beforeRemove_ = function() {
     this.mapView_.removeLayer(this.view_);
   };
 
@@ -66,7 +66,7 @@ define([
    * @private
    * @return {string}
    */
-  TileLayerStrategy.prototype.getTileUrl_ = function() {
+  Tile.prototype.getTileUrl_ = function() {
     return this.object_.getUrl().
       replace('{d}', '{s}');
   };
@@ -77,7 +77,7 @@ define([
    * @private
    * @return {string}
    */
-  TileLayerStrategy.prototype.getOSMAttribution_ = function() {
+  Tile.prototype.getOSMAttribution_ = function() {
     return '<a href="http://www.openstreetmap.org/copyright" target="_blank">' +
       '&copy OpenStreetMap contributors' +
       '</a>';
@@ -88,7 +88,7 @@ define([
    * @method proxyLoadEvents_
    * @private
    */
-  TileLayerStrategy.prototype.proxyLoadEvents_ = function() {
+  Tile.prototype.proxyLoadEvents_ = function() {
     var mapLoadResetEvents = {
       moveend: function() {
         this.object_.trigger('load:reset');
@@ -126,7 +126,7 @@ define([
    * @method bindLayerAttributes_
    * @private
    */
-  TileLayerStrategy.prototype.bindLayerAttributes_ = function() {
+  Tile.prototype.bindLayerAttributes_ = function() {
     this.listenTo(this.object_, {
       'change:opacity': function() {
         this.view_.setOpacity(this.object_.get('opacity'));
@@ -138,5 +138,5 @@ define([
   };
 
 
-  return TileLayerStrategy;
+  return Tile;
 });
