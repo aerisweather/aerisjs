@@ -12,9 +12,17 @@
   "main": "src",
   "ignore": [
     "deployment/",
+    "tasks/",
+    "examples/",
+    "bower_components/",
+    "node_modules/",
+    "docs/",
     "assets/",
     "tests/",
-    ".gitignore"
+    ".gitignore",
+    ".travis.yml",
+    "Gruntfile.js",
+    "README.md"
   ],
   "dependencies": {
     "underscore": "~1.6.0",
