@@ -286,6 +286,7 @@ module.exports = function(grunt) {
     'test',
     'shell:removeBuildDir',
     'requirejs',
+    'compass',
     'shell:copyAssets',
     'shell:generateDocs',
     'shell:copyAerisJs',
