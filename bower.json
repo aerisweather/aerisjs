@@ -36,7 +36,9 @@
     "gmaps-markerclusterer-plus": "http://google-maps-utility-library-v3.googlecode.com/svn/tags/markerclustererplus/2.1.1/src/markerclusterer.js",
     "wire": "~0.10.5",
     "wire-rjs-builder": "https://github.com/pieter-vanderwerff/wire-rjs-builder.git",
-    "googlemaps-amd": "~1.0.0"
+    "googlemaps-amd": "~1.0.0",
+    "leaflet.markercluster": "~0.4.0",
+    "leaflet": "~0.7.2"
   },
   "devDependencies": {
     "almond": "~0.2.9",

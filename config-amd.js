@@ -20,7 +20,8 @@ require.config({
     googlemaps: 'bower_components/googlemaps-amd/src/googlemaps',
     async: 'bower_components/requirejs-plugins/src/async',
     'gmaps-markerclusterer-plus': 'bower_components/gmaps-markerclusterer-plus/index',
-    leaflet: '//cdn.leafletjs.com/leaflet-0.7.2/leaflet'
+    leaflet: '//cdn.leafletjs.com/leaflet-0.7.2/leaflet',
+    'leaflet-markercluster': 'bower_components/leaflet.markercluster/dist/leaflet.markercluster-src'
   },
   packages: [
     // Configure wire packages
@@ -48,6 +49,13 @@ require.config({
       init: function() {
         // Hack for lib not explicity assigned to global scope.
         return MarkerClusterer;
+      }
+    },
+    'leaflet-markercluster': {
+      deps: ['leaflet'],
+      exports: 'L.MarkerClusterGroup',
+      init: function() {
+        return L.MarkerClusterGroup;
       }
     },
     'Handlebars': {
