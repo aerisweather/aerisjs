@@ -30,7 +30,7 @@ Most of these tasks are automated using [Grunt](http://gruntjs.com/) and [Travis
 
 Build tasks are automated using the [Grunt](http://gruntjs.com/) javascript task runner. To use grunt, you will need to have [Node.js installed](http://nodejs.org/download/) on your system.
 
-A number Node.js packages are used to assist in the build process. These dependencies are defined in [package.json](package.json), and can be installed using:
+A number Node.js packages are used to assist in the build process. These dependencies are defined in [package.json](../package.json), and can be installed using:
 
 ```
 $ sudo npm install
@@ -65,8 +65,8 @@ Note that only repo administrators may run deployments.
 
 1. **Merge** any commits you wish to include in the release into `master`.
 1. **Checkout** a local branch off of master called `Release/vX.x.x`. See [*Choosing a Version Number*](#choosing-a-version-number) for guidelines on versioning your release.
-1. Update the **version** number in [`package.json`](package.json)
-1. Update the [**changelog**](CHANGELOG.md) file with a summary of changes since the last release.
+1. Update the **version** number in [`package.json`](../package.json)
+1. Update the [**changelog**](../CHANGELOG.md) file with a summary of changes since the last release.
 1. **Build** the library using `$ grunt build`. Fix any failed specs or build errors before continuing.
 1. **Commit** your changes
 1. **Merge** your `Release/vX.x.x` branch into `master`, and checkout master
@@ -82,7 +82,7 @@ See [Understanding the Build Process](#understanding-the-build-process) for more
 
 ## Custom Builds
 
-The Aeris.js build process creates a number of different build packages, which each include a different subset of Aeris.js library features. Custom builds can be added to the [Grunt configuration](https://travis-ci.org/hamweather/aerisjs).
+The Aeris.js build process creates a number of different build packages, which each include a different subset of Aeris.js library features. Custom builds can be configured from the [Gruntfile.js](../Grunfile.js) Grunt configuration.
 
 Here is an example build config:
 
@@ -150,7 +150,7 @@ The build process consists of a series of *tasks* which must be run in order to 
 * Running unit **tests** and code quality tools
 * Updating the library **version** number
 
-Rather than running all of these tasks by hand for every build, we use the [Grunt](http://gruntjs.com/) task runner to configure the build process. Grunt tasks are defined in [Gruntfile.js](Gruntfile.js). This sample shows a Grunt  configuration to compile the API documentation stylesheet:
+Rather than running all of these tasks by hand for every build, we use the [Grunt](http://gruntjs.com/) task runner to configure the build process. Grunt tasks are defined in [Gruntfile.js](../Gruntfile.js). This sample shows a Grunt  configuration to compile the API documentation stylesheet:
 
 ```javascript
 grunt.initConfig({
@@ -198,7 +198,7 @@ $ grunt build
 [Travis-CI](http://docs.travis-ci.com/) allows us to further automate the build process, by registering [git hooks](http://githooks.com/) on the [Aeris.js github repo](https://github.com/hamweather/aerisjs). A git hook is simply a script which is run any time something happens within a git repository. In our case, Travis CI registers a hook to run a build script whenever a commit is pushed to the Aeris.js Github repo.
 
 
-The build script run by Travis-CI is configured in [.travis.yml](.travis.yml). Our configuration tells Travis to:
+The build script run by Travis-CI is configured in [.travis.yml](../.travis.yml). Our configuration tells Travis to:
 
 * Spin up a virtual machine running Node.js
 * Install node packages (including Grunt, and other build tools)
@@ -207,7 +207,7 @@ The build script run by Travis-CI is configured in [.travis.yml](.travis.yml). O
 * Deploy files in the `build/` directory (if we're on the master branch, only)
 
 
-The [.travis.yml](.travis.yml) configruation allows us to run commands at various points in the [build process lifecycle](http://docs.travis-ci.com/user/build-lifecycle/).
+The [.travis.yml](../.travis.yml) configruation allows us to run commands at various points in the [build process lifecycle](http://docs.travis-ci.com/user/build-lifecycle/).
 
 ```
 # .travis.yml
@@ -220,7 +220,7 @@ script:
 - npm run-script travis
 ```
 
-The above configuration tells travis to install node packages, then install bower packages, then run the npm `travis` script (Which in turn runs a grunt task. You can find npm script definitions in [package.json](package.json) under "scripts").
+The above configuration tells travis to install node packages, then install bower packages, then run the npm `travis` script (Which in turn runs a grunt task. You can find npm script definitions in [package.json](../package.json) under "scripts").
 
 If all of our build scripts pass, Travis-CI will deploy to an AWS S3 bucket. Credentials for the AWS cli are stored in an encrypted environment variable, which can only be used with the hamweather/aerisjs repo:
 
