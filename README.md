@@ -36,8 +36,8 @@ Usage of the Aeris API requires an Aeris API developer account. Visit [hamweathe
 
 # Documentation
 
-* [Installing Aeris.js](docs/markdown/install.md)
-* [Basic usage](docs/markdown/usage.md)
+* [Installing Aeris.js](docs/install.md)
+* [Basic usage](docs/usage.md)
 
 ----------
 

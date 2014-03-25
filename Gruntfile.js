@@ -227,7 +227,7 @@ module.exports = function(grunt) {
           '../node_modules/.bin/yuidoc -c yuidoc.json -o ../<%=buildDirs.docs%>/api',
 
           // Geneate *.md docs (using node script / handlebars)
-          'node scripts/generatemarkdowndocs.js themes/markdown ./markdown'
+          'node scripts/generatemarkdowndocs.js themes/markdown ./'
         ].join('&&'),
         options: {
           execOptions: {
