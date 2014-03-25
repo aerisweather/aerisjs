@@ -1,7 +1,7 @@
 var fs = require('fs');
 
 module.exports = {
-  name: 'almond',
+  name: 'bower_components/almond/almond',
 
   mainConfigFile: 'config-amd.js',
 
