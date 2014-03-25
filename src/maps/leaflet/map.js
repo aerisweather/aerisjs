@@ -49,23 +49,11 @@ define([
   LeafletMapStrategy.prototype.createView_ = function() {
     var map = new Leaflet.Map(this.object_.get('el'));
 
-    // Set default "base" layer
-    this.addLayer_(new OSMLayer());
+    // Add a baseLayer to the map.
+    var baseLayer = new OSMLayer();
+    baseLayer.getView().addTo(map);
 
     return map;
-  };
-
-
-  /**
-   * @method addLayer_
-   * @private
-   * @param {aeris.maps.layers.Layer} layer
-   */
-  LeafletMapStrategy.prototype.addLayer_ = function(layer) {
-    layer.requestView().
-      done(function() {
-        layer.setMap(this.object_);
-      }, this);
   };
 
 
