@@ -1,7 +1,7 @@
 define([
   'aeris/util',
   'aeris/maps/strategy/abstractstrategy',
-  'markerclusterer',
+  'gmaps-markerclusterer-plus',
   'aeris/maps/strategy/utils'
 ], function(_, AbstractStrategy, MarkerClusterer, mapUtil) {
   /**

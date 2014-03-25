@@ -114,7 +114,7 @@ require.config({
         // Must use exact version 2.1.1
         // (v2.1.2 includes a breaking change. Go figure.)
         // http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclustererplus/docs/reference.html
-        markerclusterer: 'mapApp/lib/vendor/markerclusterer'
+        'gmaps-markerclusterer-plus': 'mapApp/lib/vendor/gmaps-markerclusterer-plus'
     },
     shim: {
         // Shim configuration may be required.

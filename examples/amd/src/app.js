@@ -14,7 +14,7 @@ require.config({
     googlemaps: '../bower_components/googlemaps-amd/src/googlemaps',
     async: '../bower_components/requirejs-plugins/src/async',
 
-    markerclusterer: '../bower_components/gmaps-markerclusterer-plus/index'
+    'gmaps-markerclusterer-plus': '../bower_components/gmaps-markerclusterer-plus/index'
   },
 
   config: {
@@ -27,7 +27,7 @@ require.config({
   },
 
   shim: {
-    markerclusterer: {
+    'gmaps-markerclusterer-plus': {
       exports: 'MarkerClusterer'
     }
   }

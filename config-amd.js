@@ -5,7 +5,7 @@ require.config({
     // Vendor libs
     almond: 'bower_components/almond/almond',
     backbone: 'bower_components/backbone/backbone',
-    markerclusterer: 'bower_components/gmaps-markerclusterer-plus/index',
+    'gmaps-markerclusterer-plus': 'bower_components/gmaps-markerclusterer-plus/index',
     Handlebars: 'bower_components/handlebars/handlebars',
     hbars: 'bower_components/hbars/hbars',
     jquery: 'bower_components/jquery/dist/jquery',
@@ -42,7 +42,7 @@ require.config({
     }
   ],
   shim: {
-    'markerclusterer': {
+    'gmaps-markerclusterer-plus': {
       exports: 'MarkerClusterer',
       init: function() {
         // Hack for lib not explicity assigned to global scope.
