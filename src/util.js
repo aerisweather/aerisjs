@@ -430,7 +430,7 @@ define([
      * @method path
      */
     path: function(pathStr, opt_scope) {
-      var parts;
+      var parts, scope;
 
       if (!_.isString(pathStr) || !pathStr.length) {
         return undefined;
