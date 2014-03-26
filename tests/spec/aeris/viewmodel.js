@@ -3,24 +3,28 @@ define([
   'aeris/viewmodel',
   'aeris/model'
 ], function(_, ViewModel, Model) {
-  
+
   describe('A ViewModel', function() {
-    
+
     describe('constructor', function() {
-      
+
       describe('transforms', function() {
-        
+
         it('should apply transforms when data attributes change', function() {
           var dataModel = new Model();
           var viewModel = new ViewModel(undefined, {
             data: dataModel,
             attributeTransforms: {
               km: function() {
-                if (!this.getDataAttribute('miles')) { return this.get('km'); }
+                if (!this.getDataAttribute('miles')) {
+                  return this.get('km');
+                }
                 return this.getDataAttribute('miles') * 1.609344;
               },
               shouted: function() {
-                if (!this.getDataAttribute('spoken')) { return this.get('shouted'); }
+                if (!this.getDataAttribute('spoken')) {
+                  return this.get('shouted');
+                }
                 return this.getDataAttribute('spoken').toUpperCase();
               }
             }
@@ -41,11 +45,15 @@ define([
             data: dataModel,
             attributeTransforms: {
               km: function() {
-                if (!this.getDataAttribute('miles')) { return this.get('km'); }
+                if (!this.getDataAttribute('miles')) {
+                  return this.get('km');
+                }
                 return this.getDataAttribute('miles') * 1.609344;
               },
               shouted: function() {
-                if (!this.getDataAttribute('spoken')) { return this.get('shouted'); }
+                if (!this.getDataAttribute('spoken')) {
+                  return this.get('shouted');
+                }
                 return this.getDataAttribute('spoken').toUpperCase();
               }
             }
@@ -66,9 +74,9 @@ define([
           dataModel.set('leagues', 10000);
           expect(viewModel.get('nauticalMiles')).toEqual(50);
         });
-        
+
       });
-      
+
     });
 
     describe('destroy', function() {
@@ -119,7 +127,7 @@ define([
       });
 
     });
-    
+
   });
-  
+
 });
