@@ -3,9 +3,8 @@ define([
   'aeris/events',
   'aeris/errors/validationerror',
   'aeris/maps/extensions/mapextensionobject',
-  'aeris/maps/strategy/map',
-  'aeris/maps/layers/googleroadmap'
-], function(_, Events, ValidationError, MapExtensionObject, MapStrategy, GoogleRoadMap) {
+  'aeris/maps/strategy/map'
+], function(_, Events, ValidationError, MapExtensionObject, MapStrategy) {
   /**
    * An Aeris {aeris.maps.Map} is the base object on which all other map objects live. Any {aeris.maps.MapObjectInterface} object can be added to a map using the `setMap` method:
    *
