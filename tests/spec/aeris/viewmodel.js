@@ -128,6 +128,51 @@ define([
 
     });
 
+    describe('getDataAttribute', function() {
+      var dataModel, viewModel;
+
+      beforeEach(function() {
+        dataModel = new Model();
+        viewModel = new ViewModel(null, {
+          data: dataModel
+        });
+      });
+
+
+      it('should return shallow nested data attributes', function() {
+        dataModel.set('foo', 'bar');
+
+        expect(viewModel.getDataAttribute('foo')).toEqual('bar');
+      });
+
+      it('should return deep nested data attribtues', function() {
+        dataModel.set({
+          deep: {
+            nested: {
+              attribute: 'value'
+            }
+          }
+        });
+
+        expect(viewModel.getDataAttribute('deep.nested.attribute')).toEqual('value');
+      });
+
+      it('should return undefined if deep nested attributes are not defined', function() {
+        expect(viewModel.getDataAttribute('not.a.defined.attribute')).toBeUndefined();
+      });
+
+      it('should throw an error if passed undefined', function() {
+        expect(function() {
+          viewModel.getDataAttribute(undefined);
+        }).toThrowType('InvalidArgumentError');
+      });
+
+      it('should return undefined is passed an empty string', function() {
+        expect(viewModel.getDataAttribute('')).toBeUndefined();
+      });
+
+    });
+
   });
 
 });

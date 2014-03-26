@@ -1,7 +1,8 @@
 define([
   'aeris/util',
-  'aeris/model'
-], function(_, Model) {
+  'aeris/model',
+  'aeris/errors/invalidargumenterror'
+], function(_, Model, InvalidArgumentError) {
   /**
    * A representation of a data model, which has been
    * reshaped into a form expected by a view.
@@ -18,7 +19,7 @@ define([
    * @param {Object=} opt_attrs
    * @param {Object=} opt_options
    *
-   * @param {aeris.Model=} opt_options.data Data model.
+   * @param {Backbone.Model=} opt_options.data Data model.
   */
   var ViewModel = function(opt_attrs, opt_options) {
     var options = _.defaults(opt_options || {}, {
@@ -100,7 +101,17 @@ define([
    * @method getDataAttribute
    */
   ViewModel.prototype.getDataAttribute = function(path) {
-    return this.getData().getAtPath(path);
+    var pathParts, baseDataAttr, nestedAttrsPath;
+
+    if (_.isUndefined(path)) {
+      throw new InvalidArgumentError('Unable to get data attribute ' + path);
+    }
+
+    pathParts = path.split('.');
+    baseDataAttr = this.data_.get(pathParts[0]);
+    nestedAttrsPath = pathParts.slice(1).join('.');
+
+    return nestedAttrsPath ? _.path(nestedAttrsPath, baseDataAttr) : baseDataAttr;
   };
 
 
