@@ -1,3 +1,16 @@
+# 0.3.0
+
+No breaking changes
+
+* ADD: Marker and MarkerCollection added to publicApi
+* MOD: Update build documentation, and move to docs/build.md
+* MOD: Move *.md docs to docs/ dir (from docs/markdown)
+* MOD: Update documentation
+* MOD: ViewModel/Collection accepts Backbone.Model/Collection
+       as data source (instead of requiring more specific aeris.Model/Collection)
+
+See git history for a full change list.
+
 # 0.2.1
 
 * FIX: Set jQuery dependency version to v1.8.0+, so consumers
