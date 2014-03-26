@@ -2,8 +2,9 @@ define([
   'aeris/util',
   'aeris/maps/extensions/mapextensionobject',
   'aeris/togglebehavior',
-  'aeris/errors/validationerror'
-], function(_, MapExtensionObject, ToggleBehavior, ValidationError) {
+  'aeris/errors/validationerror',
+  'aeris/maps/strategy/markers/marker'
+], function(_, MapExtensionObject, ToggleBehavior, ValidationError, MarkerStrategy) {
   /**
    * A marked location on a map.
    *
@@ -90,7 +91,7 @@ define([
    */
   var Marker = function(opt_attrs, opt_options) {
     var options = _.defaults(opt_options || {}, {
-      strategy: 'markers/marker'
+      strategy: MarkerStrategy
     });
 
     var attrs = _.defaults(opt_attrs || {}, {
