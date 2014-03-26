@@ -8,7 +8,7 @@ define([
   /**
    * An Aeris {aeris.maps.Map} is the base object on which all other map objects live. Any {aeris.maps.MapObjectInterface} object can be added to a map using the `setMap` method:
    *
-   * <code>
+   * <code class="example">
    *   var map = new aeris.maps.Map('map-canvas-id');
    *   mapObject.setMap(map);  // adds the object to the map
    *   mapobject.setMap(null); // removes the object from the map
