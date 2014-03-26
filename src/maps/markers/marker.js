@@ -5,7 +5,67 @@ define([
   'aeris/errors/validationerror'
 ], function(_, MapExtensionObject, ToggleBehavior, ValidationError) {
   /**
-   * A representation of an icon on a map.
+   * A marked location on a map.
+   *
+   * A Marker is a type of {aeris.ViewModel}, which means that it can bind its attributes to a data model ({aeris.Model} or {Backbone.Model}). This allows you to easily bind data from an API to a marker, or {aeris.maps.markercollections.MarkerCollection}.
+   *
+   * For example, say you have a data model called `Place`, which receives data from an API like so:
+   *
+   * <code class="example">
+   *    var place = new Place();
+   *    place.fetch();
+   *    //...
+   *    place.toJSON === {
+   *      id: 1,
+   *      description: 'Joe\'s bar and grill.',
+   *      category: 'restaurant',
+   *      location: {
+   *        lat: 45.23,
+   *        long: -90.87
+   *      }
+   *    }
+   * </code>
+   *
+   * You can now bind a {aeris.maps.Marker} to the place data:
+   *
+   * <code class="example">
+   *    var placeMarker = new aeris.maps.Marker(null, {
+   *      data: place,
+   *
+   *      // Use attribute transforms to translate raw data
+   *      // into marker attributes.
+   *      // Any changes to the Place model will be reflected
+   *      // in the placeMarker, using these attributeTransforms.
+   *      attributeTransforms: {
+   *
+   *        // Format position as [lat, lon]
+   *        position: function() {
+   *          return [
+   *            this.getDataAttribute('location.lat'),
+   *            this.getDataAttribute('location.long')
+   *          ];
+   *        },
+   *
+   *        // Use data description as marker title
+   *        title: function() {
+   *          return this.getDataAttribute('description');
+   *        },
+   *
+   *        // Choose a icon url based on the
+   *        // data category
+   *        url: function() {
+   *          var category = this.getDataAttribute('category');
+   *
+   *          if (category === 'restaurant') {
+   *            return 'restaurant_icon.png';
+   *          }
+   *          else {
+   *            return 'some_other_place_icon.png'
+   *          }
+   *        }
+   *      }
+   *    });
+   * </code>
    *
    * @publicApi
    * @class Marker
@@ -13,6 +73,7 @@ define([
    *
    * @extends aeris.maps.extensions.MapExtensionObject
    * @uses aeris.maps.ToggleBehavior
+   * @publicApi
    *
    * @constructor
    *

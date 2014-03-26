@@ -7,11 +7,28 @@ define([
   'aeris/maps/markercollections/config/clusterstyles'
 ], function(_, MapObjectCollection, ToggleCollectionBehavior, StrategyObject, Marker, clusterStyles) {
   /**
-   * A collection of {aeris.maps.markers.Marker} object.
+   * A collection of {aeris.maps.markers.Marker} objects.
+   *
+   * By default, marker collections are rendered using a clustering strategy (eg MarkerClustererPlus for google maps).
+   *
+   * A MarkerCollection is a type of {aeris.ViewCollection}, which means that it can bind its attributes to a data collection ({aeris.Collection} or {Backbone.Collection}). Any changes, additions, or deletions to the bound data collection will be reflected in the marker collection.
+   *
+   * See {aeris.maps.markers.Marker} documentation for more information on transforming raw data into marker attributes. Note that `attributeTransforms` can be set directly on the MarkerCollection object using the `modelOptions` option:
+   *
+   * <code class="example">
+   *    var markers = new aeris.maps.markercollections.MarkerCollection(null, {
+   *      modelOptions: {
+   *        attributeTransforms: {
+   *          // ...
+   *        }
+   *      }
+   *    });
+   * </code>
    *
    * @class MarkerCollection
    * @namespace aeris.maps.markercollections
    * @extends aeris.maps.extensions.MapObjectCollection
+   * @publicApi
    *
    * @uses aeris.maps.extensions.StrategyObject
    * @uses aeris.ToggleCollectionBehavior
