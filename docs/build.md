@@ -65,7 +65,7 @@ Note that only repo administrators may run deployments.
 
 1. **Merge** any commits you wish to include in the release into `master`.
 1. **Checkout** a local branch off of master called `Release/vX.x.x`. See [*Choosing a Version Number*](#choosing-a-version-number) for guidelines on versioning your release.
-1. Update the **version** number in [`package.json`](../package.json)
+1. Update the **version** number in [`package.json`](../package.json) (or use the `$ grunt version:aeris:X.x.x` command)
 1. Update the [**changelog**](../CHANGELOG.md) file with a summary of changes since the last release.
 1. **Build** the library using `$ grunt build`. Fix any failed specs or build errors before continuing.
 1. **Commit** your changes
