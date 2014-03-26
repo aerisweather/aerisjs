@@ -223,11 +223,11 @@ module.exports = function(grunt) {
           // Generate public docs (using node script / handlebars)
           'node scripts/generatepublicdocs.js ../src themes/public ../<%=buildDirs.docs%>/index.html',
 
-          // Generate api docs (using yuidoc)
-          '../node_modules/.bin/yuidoc -c yuidoc.json -o ../<%=buildDirs.docs%>/api',
-
           // Geneate *.md docs (using node script / handlebars)
-          'node scripts/generatemarkdowndocs.js themes/markdown ./'
+          'node scripts/generatemarkdowndocs.js themes/markdown ./',
+
+          // Generate api docs (using yuidoc)
+          '../node_modules/.bin/yuidoc -c yuidoc.json -o ../<%=buildDirs.docs%>/api'
         ].join('&&'),
         options: {
           execOptions: {
