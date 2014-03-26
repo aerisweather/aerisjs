@@ -339,6 +339,10 @@ define([
         expect(_.path(NaN)).toBeUndefined();
       });
 
+      it('should return undefined if passed an empty string', function() {
+        expect(_.path('')).toBeUndefined();
+      });
+
     });
 
     describe('isNumeric', function() {
