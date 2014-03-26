@@ -7,12 +7,30 @@ define([
   'aeris/maps/layers/googleroadmap'
 ], function(_, Events, ValidationError, MapExtensionObject, MapStrategy, GoogleRoadMap) {
   /**
+   * An Aeris {aeris.maps.Map} is the base object on which all other map objects live. Any {aeris.maps.MapObjectInterface} object can be added to a map using the `setMap` method:
+   *
+   * <code>
+   *   var map = new aeris.maps.Map('map-canvas-id');
+   *   mapObject.setMap(map);  // adds the object to the map
+   *   mapobject.setMap(null); // removes the object from the map
+   * </code>
+   *
+   * {aeris.maps.markers.Marker} and {aeris.maps.layers.AerisRadar} are examples of {aeris.maps.MapObjectInterface} objects which can be set to a map.
+   *
    * @publicApi
    * @class Map
    * @namespace aeris.maps
    * @extends aeris.maps.extensions.MapExtensionObject
+   * @override
    *
    * @param {HTMLElement|string} el Map canvas element, by reference or id.
+   *
+   * @param {Object=} opt_attrs Attributes to set on the map on initialization
+   * @param {aeris.maps.LatLon=} opt_attrs.center
+   * @param {number=} opt_attrs.zoom
+   *
+   * @param {Object=} opt_options
+   *
    * @constructor
    */
   var Map = function(el, opt_attrs, opt_options) {
