@@ -1,3 +1,9 @@
+# 0.3.1
+
+No breaking changes
+
+* MOD: Update aeris.maps.Map documentation, and fix param docs
+
 # 0.3.0
 
 No breaking changes
