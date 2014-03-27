@@ -1,8 +1,9 @@
 define([
   'aeris/util',
+  'aeris/util/parseobjectvalues',
   'vendor/querystring',
   'backbone'
-], function(_, queryString, Backbone) {
+], function(_, parseObjectValues, queryString, Backbone) {
   /**
    * An application router, which syncs itself
    * to a aeris.builder.maps.core.models.State model.
@@ -97,7 +98,7 @@ define([
 
     // Convert strings to primitive objects
     // eg. 'true' --> true
-    stateParams = _.parseObjectValues(stateParams);
+    stateParams = parseObjectValues(stateParams);
 
     return stateParams;
   };
