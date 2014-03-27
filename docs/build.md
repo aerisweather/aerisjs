@@ -6,6 +6,7 @@
 * [Deploying Aeris.js](#deploying-aerisjs-a-step-by-step-guide)
 * [Custom Builds](#custom-builds)
 * [Choosing a Version Number](#choosing-a-version-number)
+  * [Aeris.js Beta Versioning Policy](#aerisjs-beta-versioning-policy)
 * [Understanding the Build Process](#understanding-the-build-process)
   * [Grunt Task Runner](#grunt-task-runner)
   * [Travis-CI](#travis-ci)
@@ -131,7 +132,12 @@ Aeris.js follows [semver](http://semver.org/) semantic versioning. It's worth re
 * A **minor version** bump (v1.0.0 --> v1.1.0) should be made for any significant additions to the library. This would include new features and functionality.
 * A **patch** bump (v1.0.0 --> v1.0.1) can be used whenever there are minor changes to code which do not change the library interface (eg. bug fixes).
 
-While Aeris.js is in beta, we are using a major version of 0.x.x, and are not enforcing major version bumps for interface-breaking changes.
+### Aeris.js Beta Versioning Policy
+
+While Aeris.js is in beta, we are using a major version of 0.x.x, and are not enforcing major version bumps for interface-breaking changes. Instead, the following versioning policiy will be used:
+
+* A **minor version** bump (v0.1.0 --> v0.2.0) indicates a breaking change to the library.
+* A **patch** bump (v0.1.0 --> v0.1.1) indicates new features and/or minor changes and bug fixes. See the [changelog](../CHANGELOG.md) for specifics.
 
 
 
