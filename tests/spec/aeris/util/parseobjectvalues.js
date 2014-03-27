@@ -1,6 +1,6 @@
 define([
   'aeris/util',
-  'aeris/util/parseObjectValues'
+  'aeris/util/parseobjectvalues'
 ], function(_, parseObjectValues) {
 
   describe('parseObjectValues', function() {
