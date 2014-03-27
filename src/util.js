@@ -312,21 +312,12 @@ define([
      * @method average
      */
     average: function(arr) {
-      var sum = 0;
-      var error = new Error('Average method requires an array of numbers');
+      var numbers = _.isArray(arr) ? arr : util.argsToArray(arguments);
+      var sum = numbers.reduce(function(sum, num) {
+        return sum + num;
+      }, 0);
 
-      if (!_.isArray(arr)) {
-        throw error;
-      }
-
-      _.each(arr, function(n) {
-        if (!_.isNumber(n)) {
-          throw error;
-        }
-        sum += n;
-      });
-
-      return sum / arr.length;
+      return sum / numbers.length;
     },
 
 

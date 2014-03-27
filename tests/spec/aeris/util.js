@@ -139,35 +139,27 @@ define([
     });
 
     describe('average', function() {
-      it('should return the average of an array of numbers', function() {
-        var arr = [
+      var numbers;
+
+      beforeEach(function() {
+        numbers = [
           5,
           10,
           15,
           25,
           30
         ];
-
-        expect(_.average(arr)).toEqual(17);
       });
 
-      it('should reject non-arrays, or arrays which contain non-numbers', function() {
-        var nonArrays = [
-          'foo',
-          null,
-          12345,
-          new Date(),
-          [
-            'foo',
-            17,
-            32
-          ]
-        ];
 
-        _.each(nonArrays, function(bad) {
-          expect(_.bind(_.average, _, bad)).toThrow();
-        });
+      it('should return the average of an array of numbers', function() {
+        expect(_.average(numbers)).toEqual(17);
       });
+
+      it('should return the average of multiple number arguments', function() {
+        expect(_.average.apply(_, numbers)).toEqual(17);
+      });
+
     });
 
     describe('delay', function() {
