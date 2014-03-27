@@ -362,7 +362,7 @@ define([
      * @method interval
      */
     interval: function(fn, wait, opt_ctx, var_args) {
-      args = Array.prototype.slice.call(arguments, 3);
+      var args = Array.prototype.slice.call(arguments, 3);
       if (opt_ctx) {
         fn = _.bind.apply(_, [fn, opt_ctx].concat(args));
       }
