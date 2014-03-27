@@ -115,6 +115,10 @@ require.config({
         // (v2.1.2 includes a breaking change. Go figure.)
         // http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclustererplus/docs/reference.html
         'gmaps-markerclusterer-plus': 'mapApp/lib/vendor/gmaps-markerclusterer-plus'
+
+        // Only required for marker collections rendered with Leaflet
+        // See https://github.com/Leaflet/Leaflet.markercluster
+        'leaflet-markercluster': 'mapApp/lib/vendor/leaflet.markercluster'
     },
     shim: {
         // Shim configuration may be required.
