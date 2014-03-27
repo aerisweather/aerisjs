@@ -5,8 +5,9 @@ define([
   'aeris/maps/routes/waypoint',
   'sinon',
   'aeris/util',
+  'aeris/util/latlonutil',
   'testUtils'
-], function(ControlsController, RouteBuilder, Route, Waypoint, sinon, _, testUtils) {
+], function(ControlsController, RouteBuilder, Route, Waypoint, sinon, _, latLonUtil, testUtils) {
 
   function getStubbedOptions(opt_options) {
     var options = _.extend({
@@ -28,7 +29,7 @@ define([
         [45, 17, 23],
         [-90, 21, 13]
       ];
-      var latLon = _.degreesToLatLon(degrees);
+      var latLon = latLonUtil.degreesToLatLon(degrees);
 
       function createValueSpy(val) {
         return {
@@ -38,7 +39,7 @@ define([
 
       function getStubbedUI() {
         var latLon = testUtils.getRandomLatLon();
-        var degrees = _.latLonToDegrees(latLon);
+        var degrees = latLonUtil.latLonToDegrees(latLon);
         
         return {
           ui: {

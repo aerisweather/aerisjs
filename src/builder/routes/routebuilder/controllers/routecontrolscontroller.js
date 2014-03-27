@@ -1,10 +1,11 @@
 define([
   'aeris/util',
   'aeris/errors/invalidargumenterror',
+  'aeris/util/latlonutil',
   'jquery',
   'aeris/application/controllers/layoutcontroller',
   'aeris/maps/routes/waypoint'
-], function(_, InvalidArgumentError, $, LayoutController, Waypoint) {
+], function(_, InvalidArgumentError, latLonUtil, $, LayoutController, Waypoint) {
   /**
    *
    * @class RouteControlsController
@@ -348,7 +349,7 @@ define([
       getVal(this.ui.lonMin),
       getVal(this.ui.lonSec)
     ];
-    return _.degreesToLatLon([degreesLat, degreesLon]);
+    return latLonUtil.degreesToLatLon([degreesLat, degreesLon]);
   };
 
 
@@ -362,7 +363,7 @@ define([
     var degrees;
 
     if (firstWaypoint) {
-      degrees = _.latLonToDegrees(firstWaypoint.getPosition());
+      degrees = latLonUtil.latLonToDegrees(firstWaypoint.getPosition());
       this.ui.latDeg.val(degrees[0][0].toFixed(0));
       this.ui.latMin.val(degrees[0][1].toFixed(0));
       this.ui.latSec.val(degrees[0][2].toFixed(0));
