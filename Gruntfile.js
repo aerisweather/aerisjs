@@ -159,6 +159,56 @@ module.exports = function(grunt) {
         })
       },
 
+      'leaflet': {
+        options: createRjsConfig('leaflet', {
+          packages: [
+            'aeris/packages/leaflet'
+          ],
+          strategy: 'leaflet',
+          outDir: '<%=buildDirs.lib %>'
+        })
+      },
+      'leaflet.min': {
+        options: createRjsConfig('leaflet', {
+          packages: [
+            'aeris/packages/leaflet'
+          ],
+          strategy: 'leaflet',
+          outDir: '<%=buildDirs.lib %>',
+          minify: true
+        })
+      },
+
+      'leaflet-plus': {
+        options: createRjsConfig('leaflet-plus', {
+          packages: [
+            'aeris/packages/leaflet',
+            'aeris/packages/api',
+
+            'aeris/geolocate/freegeoipgeolocateservice',
+            'aeris/geolocate/html5geolocateservice',
+            'aeris/geocode/mapquestgeocodeservice'
+          ],
+          strategy: 'leaflet',
+          outDir: '<%=buildDirs.lib %>'
+        })
+      },
+      'leaflet-plus.min': {
+        options: createRjsConfig('leaflet-plus', {
+          packages: [
+            'aeris/packages/leaflet',
+            'aeris/packages/api',
+
+            'aeris/geolocate/freegeoipgeolocateservice',
+            'aeris/geolocate/html5geolocateservice',
+            'aeris/geocode/mapquestgeocodeservice'
+          ],
+          strategy: 'leaflet',
+          outDir: '<%=buildDirs.lib %>',
+          minify: true
+        })
+      },
+
       mapApp: {
         options: _.extend({}, mapAppRjsConfig, {
           out: '<%=buildDirs.lib %>/mapapp.js'
