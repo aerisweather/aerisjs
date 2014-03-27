@@ -19,7 +19,15 @@ var ConfigBuilder = function(packageName, opt_options) {
     endWrapperTemplate: fs.readFileSync(__dirname + '/templates/end.js.frag.hbs', { encoding: 'utf8' })
   });
 
-  this.config_ = _.clone(this.options_.baseConfig);
+  this.config_ = this.getConfigClone_(this.options_.baseConfig);
+};
+
+// A sort of deep clone of an r.js config object
+ConfigBuilder.prototype.getConfigClone_ = function(config) {
+  var clone = _.clone(config);
+  clone.paths = _.clone(clone.paths);
+
+  return clone;
 };
 
 ConfigBuilder.prototype.build = function() {
@@ -43,7 +51,7 @@ ConfigBuilder.prototype.setOptimize_ = function() {
 };
 
 ConfigBuilder.prototype.setStrategy_ = function() {
-  this.config_.paths = _.extend(this.config_.paths || {}, {
+  this.config_.paths = _.extend({}, this.config_.paths || {}, {
     'aeris/maps/strategy': 'src/maps/' + this.options_.strategy
   });
 };

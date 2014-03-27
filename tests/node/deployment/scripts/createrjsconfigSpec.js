@@ -1,3 +1,5 @@
+// Note: this spec can be run using jasmine-node
+
 var createRjsConfig = require('../../../../deployment/scripts/createrjsconfig');
 
 describe('createRjsConfig', function() {
@@ -13,6 +15,22 @@ describe('createRjsConfig', function() {
     expect(createRjsConfig(PACKAGE_NAME_STUB, {
       baseConfig: STUB_BASE_CONFIG
     }).foo).toEqual('bar');
+  });
+
+  it('should not override original deep nested path properties because of strategy option', function() {
+    var STRATEGY_ORIG = 'STRATEGY_ORIG';
+    var STUB_BASE_CONFIG = {
+      path: {
+        'aeris/maps/strategy': STRATEGY_ORIG
+      }
+    };
+
+    createRjsConfig(PACKAGE_NAME_STUB, {
+      baseConfig: STUB_BASE_CONFIG,
+      strategy: 'new_strategy'
+    });
+
+    expect(STUB_BASE_CONFIG.path['aeris/maps/strategy']).toEqual(STRATEGY_ORIG);
   });
 
   it('should not overwrite the original base config', function() {
