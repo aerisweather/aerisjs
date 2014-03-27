@@ -109,31 +109,6 @@ define([
 
     });
 
-    describe('delay', function() {
-      var clock, fn;
-
-      beforeEach(function() {
-        clock = sinon.useFakeTimers();
-        fn = jasmine.createSpy('fn');
-      });
-
-      afterEach(function() {
-        clock.restore();
-      });
-
-      it('should call the function in a given context', function() {
-        var ctx = { foo: 'bar' };
-        var wait = 200;
-
-        _.delay(fn, wait, ctx, 'yo', 'hey');
-
-        expect(fn).not.toHaveBeenCalled();
-
-        clock.tick(210);
-        expect(fn).toHaveBeenCalledInTheContextOf(ctx);
-        expect(fn).toHaveBeenCalledWith('yo', 'hey');
-      });
-    });
 
     describe('interval', function() {
       var clock, fn;
@@ -168,26 +143,6 @@ define([
       });
     });
 
-
-    describe('boundsToPolygon', function() {
-
-      it('should convert a bounds object to a polygon object', function() {
-        var SOUTH = 100;
-        var WEST = 200;
-        var NORTH = 300;
-        var EAST = 400;
-        var bounds = [[SOUTH, WEST], [NORTH, EAST]];
-
-        expect(_.boundsToPolygon(bounds)).toEqual([NORTH, WEST, SOUTH, EAST]);
-      });
-
-      it('should not modify the original object', function() {
-        var bounds = [[52.37, -135.52], [22.43, -55.016]];
-        _.boundsToPolygon(bounds);
-        expect(bounds).toEqual([[52.37, -135.52], [22.43, -55.016]]);
-      });
-
-    });
 
     describe('path', function() {
 
@@ -314,128 +269,6 @@ define([
 
     });
 
-    
-    describe('extendArrayObjects', function() {
-      
-      it('should require arrays as arguments', function() {
-        expect(function() {
-          _.extendArrayObjects('foo', []);
-        }).toThrow();
-        expect(function() {
-          _.extendArrayObjects([], 'foo');
-        }).toThrow();
-      });
-
-      it('should replace itemB with itemA, if one or both are not object', function() {
-        var arrA = [
-          { foo: 'bar' },
-          'arrA'
-        ];
-        var arrB = [
-          'arrB',
-          { hello: 'world' }
-        ];
-        expect(_.extendArrayObjects(arrA, arrB)).toEqual(['arrB', { hello: 'world' }]);
-      });
-
-      it('should add items from arrB, if arrA is shorter in length', function() {
-        var arrA = [
-          'a',
-          'b',
-          'c'
-        ];
-        var arrB = [
-          1,
-          2,
-          3,
-          4,
-          5
-        ];
-        expect(_.extendArrayObjects(arrA, arrB)).toEqual([
-          1,
-          2,
-          3,
-          4,
-          5
-        ]);
-      });
-
-      it('should extend items, if both are objects', function() {
-        var arrA = [
-          {
-            foo: 'bar',
-            hello: 'world'
-          },
-          {
-            yaz: 'shazaam'
-          }
-        ];
-        var arrB = [
-          {
-            hello: 'universe',
-            yipee: 'kayo-kayai'
-          },
-          {
-            yowza: 'wazaam'
-          }
-        ];
-
-        expect(_.extendArrayObjects(arrA, arrB)).toEqual([
-          {
-            foo: 'bar',
-            hello: 'universe',
-            yipee: 'kayo-kayai'
-          },
-          {
-            yaz: 'shazaam',
-            yowza: 'wazaam'
-          }
-        ]);
-      });
-
-      it('should not change the original arrays', function() {
-        var arrA = [
-          {
-            foo: 'bar',
-            hello: 'world'
-          },
-          {
-            yaz: 'shazaam'
-          }
-        ];
-        var arrB = [
-          {
-            hello: 'universe',
-            yipee: 'kayo-kayai'
-          },
-          {
-            yowza: 'wazaam'
-          }
-        ];
-        _.extendArrayObjects(arrA, arrB);
-
-        expect(arrA).toEqual([
-          {
-            foo: 'bar',
-            hello: 'world'
-          },
-          {
-            yaz: 'shazaam'
-          }
-        ]);
-
-        expect(arrB).toEqual([
-          {
-            hello: 'universe',
-            yipee: 'kayo-kayai'
-          },
-          {
-            yowza: 'wazaam'
-          }
-        ]);
-      });
-      
-    });
 
     describe('inherits', function() {
       var Parent, Child, GrandChild;

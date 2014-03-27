@@ -167,7 +167,7 @@ define([
       if (!this.object_.getMap()) {
         _.invoke(this.getAllMarkers_(), 'setMap', null);
       }
-    }, this);
+    }.bind(this));
   };
 
 

@@ -2,15 +2,6 @@ define([
   'underscore'
 ], function(_) {
 
-
-
-  /**
-   * Value identifying a non-implemented feature.
-   *
-   * @type {string}
-   */
-  var NOT_IMPLEMENTED = 'NOT_IMPLEMENTED';
-
   /**
    * Aeris library utilities.
    *
@@ -20,94 +11,11 @@ define([
    */
   var util = {
     /**
-     * Use for abstract-like / interface-like definitions of a method or class
-     * that may or many not be required for implementation. Used for feature
-     * detection.
-     * @method notImplemented
-     */
-    notImplemented: function(feature, description) {
-      return NOT_IMPLEMENTED;
-    },
-
-
-    /**
-     * Determine if a feature is provided.
-     *
-     * @param {string} feature
-     * @return {boolean}
-     * @method can
-     */
-    can: function(feature) {
-      var pass = true;
-      var featSplit = feature.split('.');
-      var context = aeris;
-      var length = featSplit.length;
-      for (var fi in featSplit) {
-        var feat = featSplit[fi];
-        if (context[feat]) {
-          context = context[feat];
-        } else if (parseInt(fi) + 1 == length && context.prototype) {
-          context = context.prototype[feat];
-        } else {
-          context = undefined;
-        }
-        if (context == NOT_IMPLEMENTED || typeof context === 'undefined') {
-          pass = false;
-          break;
-        }
-      }
-      return pass;
-    },
-
-
-    /**
-     * Console support for logging of javascript properties and aeris features.
-     *
-     * @const
-     */
-    console: {
-
-      /**
-       * Enabled state of aeris.console methods.
-       *
-       * @type {boolean}
-       */
-      enabled: true,
-
-
-      /**
-       * Log a pretty output of a given feature.
-       *
-       * @param {string} feature
-       * @return {undefined}
-       * @method can
-       */
-      can: function(feature) {
-        this.console.log(
-          'Can ' + feature + '? ',
-          this.can(feature) ? 'Yes' : 'No'
-        );
-      }
-    },
-
-
-    /**
-     * Uppercase the first letter in a string.
-     *
-     * @param {string} string
-     * @return {string}
-     * @method ucfirst
-     */
-    ucfirst: function(string) {
-      return string.charAt(0).toUpperCase() + string.slice(1);
-    },
-
-
-    /**
      * Representation of an abstract method that needs overriding.
      * @method abstractMethod
      */
-    abstractMethod: function() {},
+    abstractMethod: function() {
+    },
 
 
     /**
@@ -121,10 +29,12 @@ define([
       function TempCtor() {
         this.__Parent = ParentCtor;
       }
+
       TempCtor.prototype = ParentCtor.prototype;
       ChildCtor.prototype = new TempCtor();
       ChildCtor.prototype.constructor = ChildCtor;
     },
+
 
     /**
      * Expose a variable at the provided path under the
@@ -168,6 +78,7 @@ define([
       return this.expose({}, path, false);
     },
 
+
     /**
      * Returns the average of an array
      * of numbers.
@@ -184,25 +95,6 @@ define([
       return sum / numbers.length;
     },
 
-
-    /**
-     * Extends _.delay to allow for
-     * an optional context.
-     *
-     * @param {Function} fn
-     * @param {number} wait
-     * @param {Object} opt_ctx
-     * @param {*} var_args Arguments to pass to the function.
-     * @method delay
-     */
-    delay: function(fn, wait, opt_ctx, var_args) {
-      args = Array.prototype.slice.call(arguments, 3);
-      if (opt_ctx) {
-        fn = _.bind.apply(_, [fn, opt_ctx].concat(args));
-      }
-
-      window.setTimeout(fn, wait);
-    },
 
     /**
      * Similar to window.setInterval,
@@ -235,26 +127,6 @@ define([
      */
     argsToArray: function(args) {
       return Array.prototype.slice.call(args, 0);
-    },
-
-
-    /**
-     * Converts a bounds object into
-     * a polygon.
-     *
-     * @param {aeris.maps.Bounds} bounds
-     * @return {Array.<number>}
-     * @method boundsToPolygon
-     */
-    boundsToPolygon: function(bounds) {
-      var sw = bounds[0];
-      var ne = bounds[1];
-      var south = sw[0];
-      var west = sw[1];
-      var north = ne[0];
-      var east = ne[1];
-
-      return [north, west, south, east];
     },
 
 
@@ -301,6 +173,7 @@ define([
       }, scope);
     },
 
+
     /**
      * A loose test for number-like objects.
      *
@@ -339,133 +212,6 @@ define([
 
 
     /**
-     * Parse end-leaf values of deep nested objects,
-     * replacing string'ed objects to their
-     * primitive values.
-     *
-     * Useful for processing inputs that are serialized
-     * only as strings (eg. forms, querystring routes).
-     *
-     * eg. {
-     *     num: '18.5',
-     *     arr: [
-     *       'true',
-     *       {
-     *         obj: {
-     *           boolFalse: 'false',
-     *           nums: ['16.5', 82, '19.001']
-     *         }
-     *       }
-     *     ],
-     *     obj: {
-     *       str: 'str',
-     *       boolTrue: 'true',
-     *       boolTrueReal: true,
-     *       nums: {
-     *         numsA: [22, '15'],
-     *         numsB: [18, {
-     *           num: '-96.15'
-     *         }]
-     *       }
-     *     }
-     *   }
-     * becomes:
-     * {
-     *     num: 18.5,
-     *     arr: [
-     *       true,
-     *       {
-     *         obj: {
-     *           boolFalse: false,
-     *           nums: [16.5, 82, 19.001]
-     *         }
-     *       }
-     *     ],
-     *     obj: {
-     *       str: 'str',
-     *       boolTrue: true,
-     *       boolTrueReal: true,
-     *       nums: {
-     *         numsA: [22, 15],
-     *         numsB: [18, {
-     *           num: -96.15
-     *         }]
-     *       }
-     *     }
-     *   }
-     *
-     * @param {string} str
-     * @return {*}
-     * @method parseObjectValues
-     */
-    parseObjectValues: function(str) {
-      var arr, obj;
-
-      if (_.isArray(str)) {
-        arr = str.slice(0);
-        // Parse all array values recursively
-        return _.map(arr, this.parseObjectValues, this);
-      }
-      if (_.isObject(str)) {
-        obj = _.clone(str);
-        // Parse all object values recursively.
-        _.each(str, function(val, key) {
-          str[key] = this.parseObjectValues(val);
-        }, this);
-        return str;
-      }
-
-      if (str === 'NaN') { return NaN; }
-      if (str === 'undefined') { return undefined; }
-      if (str === 'null') { return null; }
-      if (str === 'true') { return true; }
-      if (str === 'false') { return false; }
-      if (_.isNumeric(str)) { return parseFloat(str); }
-
-      return str;
-    },
-
-
-    /**
-     * Extend objects belonging to one array
-     * with objects from another array.
-     *
-     * Returns a new array.
-     *
-     * @param {Array.<*|Object>} arrA
-     * @param {Array.<*|Object>} arrB
-     * @return {Array.<*|Object>}
-     * @method extendArrayObjects
-     */
-    extendArrayObjects: function(arrA, arrB) {
-      var extendedArr;
-
-      if (!_.isArray(arrA) || !_.isArray(arrB)) {
-        throw Error('Unable to extend array objects: invalid array');
-      }
-
-      extendedArr = arrA.slice(0);
-
-      _.each(arrB, function(itemB, n) {
-        var itemA = arrA[n];
-
-        // We're not dealing with objects,
-        // or the corresponding arrA item
-        // doesn't exist.
-        // --> use item from arrB
-        if (!_.isObject(itemA) || !_.isObject(itemB)) {
-          extendedArr[n] = itemB;
-          return;
-        }
-
-        extendedArr[n] = _.extend({}, itemA, itemB);
-      });
-
-      return extendedArr;
-    },
-
-
-    /**
      * Throw an 'uncatchable' error.
      *
      * The error is 'uncatchable' because it is thrown
@@ -477,7 +223,9 @@ define([
      * @method throwUncatchable
      */
     throwUncatchable: function(e) {
-      _.defer(function() { throw e; });
+      _.defer(function() {
+        throw e;
+      });
     }
   };
 

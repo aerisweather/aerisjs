@@ -175,7 +175,7 @@ define([
     _.delay(function() {
       this.goToTime(this.from_);
       this.start();
-    }, this.endDelay_, this);
+    }.bind(this), this.endDelay_);
   };
 
 

@@ -37,7 +37,7 @@ define([
       andCallFake(function() {
         var promise = new Promise();
 
-        _.delay(promise.resolve, ASYNC_DELAY, promise, markerView);
+        _.delay(promise.resolve.bind(promise), ASYNC_DELAY, markerView);
 
         return promise;
       });

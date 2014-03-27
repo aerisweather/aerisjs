@@ -162,7 +162,7 @@ define([
     // Marionette onRender/onClose transition behavior.
     _.defer(function() {
       this.$el[method](duration, _.bind(cb, ctx));
-    }, this);
+    }.bind(this));
 
     return this;
   };

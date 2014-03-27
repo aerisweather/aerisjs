@@ -350,7 +350,7 @@ define([
       if (promise.getState() === 'pending') {
         promise.reject(new TimeoutError(message));
       }
-    }, timeout, this);
+    }.bind(this), timeout);
   };
 
 
