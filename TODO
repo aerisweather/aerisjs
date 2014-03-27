@@ -1,0 +1,6 @@
+Todo:
+
+- Test event binding behavior (integration)
+- Bulk add/remove/reset methods (see console.warn)
+- Proxy events (eg 'click')
+- Test setMap & setMap(null)
