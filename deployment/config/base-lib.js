@@ -6,7 +6,8 @@ module.exports = {
   mainConfigFile: 'config-amd.js',
 
   paths: {
-    'aeris/maps/strategy': 'src/maps/gmaps'
+    'aeris/maps/strategy': 'src/maps/gmaps',
+    'leaflet': 'src/maps/leaflet/leaflet-amd'
   },
 
   optimize: 'none',
