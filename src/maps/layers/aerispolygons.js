@@ -16,7 +16,7 @@ define([
    */
   var AerisPolygons = function(opt_attrs, opt_options) {
     var options = _.extend({
-      strategy: 'layers/aerispolygons'
+      strategy: Strategy
     }, opt_options);
 
     var attrs = _.extend({
