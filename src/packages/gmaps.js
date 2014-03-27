@@ -1,4 +1,5 @@
 define([
+  'aeris/packages/maps',
   'aeris/maps/strategy/infobox',
   'aeris/maps/strategy/map',
   'aeris/maps/strategy/markers/marker',

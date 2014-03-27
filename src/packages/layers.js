@@ -2,25 +2,8 @@
  * Defines a package of map layers.
  */
 define([
-  'aeris/maps/layers/advisories',
-  'aeris/maps/layers/advisorieskml',
-  'aeris/maps/layers/chlorophyll',
+  'aeris/packages/layers/tilelayers',
+  'aeris/packages/layers/googlelayers',
   'aeris/maps/layers/convectivehazards',
-  'aeris/maps/layers/dewpoints',
-  'aeris/maps/layers/heatindex',
-  'aeris/maps/layers/humidity',
-  'aeris/maps/layers/radar',
-  'aeris/maps/layers/satellite',
-  'aeris/maps/layers/satelliteglobal',
-  'aeris/maps/layers/satellitevisible',
-  'aeris/maps/layers/seasurfacetemps',
-  'aeris/maps/layers/snowdepth',
-  'aeris/maps/layers/temps',
-  'aeris/maps/layers/windchill',
-  'aeris/maps/layers/winds',
-  'aeris/maps/layers/googlehybrid',
-  'aeris/maps/layers/googleroadmap',
-  'aeris/maps/layers/googlesatellite',
-  'aeris/maps/layers/googleterrain',
-  'aeris/maps/layers/osm'
+  'aeris/maps/layers/advisorieskml'
 ], function() {});

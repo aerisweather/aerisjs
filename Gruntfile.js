@@ -118,7 +118,6 @@ module.exports = function(grunt) {
       gmaps: {
         options: createRjsConfig('gmaps', {
           packages: [
-            'aeris/packages/maps',
             'aeris/packages/gmaps'
           ],
           outDir: '<%=buildDirs.lib %>',
@@ -128,7 +127,6 @@ module.exports = function(grunt) {
       'gmaps.min': {
         options: createRjsConfig('gmaps', {
           packages: [
-            'aeris/packages/maps',
             'aeris/packages/gmaps'
           ],
           outDir: '<%=buildDirs.lib %>',
@@ -140,7 +138,6 @@ module.exports = function(grunt) {
       'gmaps-plus': {
         options: createRjsConfig('gmaps-plus', {
           packages: [
-            'aeris/packages/maps',
             'aeris/packages/gmaps',
             'aeris/packages/api',
             'aeris/packages/geoservice'
@@ -152,7 +149,6 @@ module.exports = function(grunt) {
       'gmaps-plus.min': {
         options: createRjsConfig('gmaps-plus', {
           packages: [
-            'aeris/packages/maps',
             'aeris/packages/gmaps',
             'aeris/packages/api',
             'aeris/packages/geoservice'
