@@ -244,6 +244,10 @@ define([
 
     this.proxyMouseEventsForCluster_(cluster);
 
+    if (this.mapView_) {
+      cluster.addTo(this.mapView_);
+    }
+
     return cluster;
   };
 

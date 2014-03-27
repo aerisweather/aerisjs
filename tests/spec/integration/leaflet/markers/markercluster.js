@@ -199,6 +199,56 @@ define([
 
     });
 
+    describe('when a single marker is added with a type', function() {
+      var TYPE_STUB = 'TYPE_STUB';
+
+      beforeEach(function() {
+        markerCollection.setMap(map);
+        markerCollection.add(getMarkers(1, SW, { type: TYPE_STUB }));
+      });
+
+      it('should render the marker', function() {
+        layersReadyFlag.then(function() {
+          expect(findMarkers().length).toEqual(1);
+        });
+      });
+
+    });
+
+    describe('when a group of markers are added with a type', function() {
+      var TYPE_STUB = 'TYPE_STUB';
+
+      beforeEach(function() {
+        markerCollection.setMap(map);
+        markerCollection.add(getMarkers(5, SW, { type: TYPE_STUB }));
+      });
+
+      it('should render a cluster element', function() {
+        layersReadyFlag.then(function() {
+          expect(findClusters().length).toEqual(1);
+        });
+      });
+
+    });
+
+    describe('when nearby groups of markers with different types are added', function() {
+      var TYPE_A_STUB = 'TYPE_A_STUB', TYPE_B_STUB = 'TYPE_B_STUB';
+
+      beforeEach(function() {
+        markerCollection.setMap(map);
+        markerCollection.add(getMarkers(5, SW, { type: TYPE_A_STUB }));
+        markerCollection.add(getMarkers(5, SW, { type: TYPE_B_STUB }));
+      });
+
+
+      it('should render a cluster element for each marker type', function() {
+        layersReadyFlag.then(function() {
+          expect(findClusters().length).toEqual(2);
+        });
+      });
+
+    });
+
     describe('when a marker is removed', function() {
 
       beforeEach(function() {
@@ -505,7 +555,8 @@ define([
     }
 
 
-    function getMarkers(count, opt_basePos) {
+    function getMarkers(count, opt_basePos, opt_options) {
+      var options = opt_options || {};
       var positions = [];
       var basePos = opt_basePos || NW;
 
@@ -517,10 +568,16 @@ define([
       });
 
       return positions.map(function(pos) {
-        return new Marker({
+        var marker = new Marker({
           position: pos,
           url: MARKER_URL
         });
+
+        if (options.type) {
+          marker.getType = _.constant(options.type);
+        }
+
+        return marker;
       });
     }
 
