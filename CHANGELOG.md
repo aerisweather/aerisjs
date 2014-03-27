@@ -1,3 +1,11 @@
+# 0.3.2
+
+* ADD: Leaflet support for MarkerCollections
+       using the L.MarkerCluster plugin
+* MOD: Refactor and clean up utility library
+* MOD: Changes to AMD path aliases
+* MOD: Minor documentation changes
+
 # 0.3.1
 
 No breaking changes
