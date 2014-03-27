@@ -1,3 +1,7 @@
+# 0.3.3
+
+* FIX: Fix casing in AMD path (causing Travis build to break)
+
 # 0.3.2
 
 * ADD: Leaflet support for MarkerCollections
