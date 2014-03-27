@@ -393,20 +393,20 @@ define([
    * @method proxyClustererEvents_
    */
   MarkerClusterStrategy.prototype.proxyClustererEvents_ = function(clusterer) {
-    var triggerMouseEvent = _.bind(function(topic, cluster) {
+    var triggerClusterMouseEvent = _.bind(function(topic, cluster) {
       var latLon = mapUtil.latLngToArray(cluster.getCenter());
       this.object_.trigger('cluster:' + topic, latLon);
     }, this);
 
     this.googleEvents_.listenTo(clusterer, {
       click: function(cluster) {
-        triggerMouseEvent('click', cluster);
+        triggerClusterMouseEvent('click', cluster);
       },
       mouseout: function(cluster) {
-        triggerMouseEvent('mouseout', cluster);
+        triggerClusterMouseEvent('mouseout', cluster);
       },
       mouseover: function(cluster) {
-        triggerMouseEvent('mouseover', cluster);
+        triggerClusterMouseEvent('mouseover', cluster);
       }
     });
   };
@@ -439,3 +439,22 @@ define([
 
   return MarkerClusterStrategy;
 });
+/**
+ * @for aeris.maps.markercollections.MarkerCollection
+ */
+/**
+ * @event cluster:click
+ * @param {aeris.maps.LatLon} latLon
+ */
+/**
+ * When the mouse enters a cluster.
+ *
+ * @event cluster:mouseover
+ * @param {aeris.maps.LatLon} latLon
+ */
+/**
+ * When the mouse exits a cluster.
+ *
+ * @event cluster:mouseout
+ * @param {aeris.maps.LatLon} latLon
+ */
