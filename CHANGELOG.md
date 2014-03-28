@@ -1,3 +1,11 @@
+# 0.3.4
+
+* ADD: Leaflet build package
+* FIX: Fix Leaflet library AMD path in build
+* MOD: Reorganize AMD package definitions
+
+See git history for a full change list
+
 # 0.3.3
 
 * FIX: Fix casing in AMD path (causing Travis build to break)
