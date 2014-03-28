@@ -1,3 +1,7 @@
+# 0.3.5
+
+* MOD: CDN library packages are gzip'd before deployment
+
 # 0.3.4
 
 * ADD: Leaflet build package

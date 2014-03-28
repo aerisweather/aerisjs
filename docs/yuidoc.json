@@ -1,7 +1,7 @@
 {
   "name": "Aeris.js",
   "description": "A javscript library for maps and weather.",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "url": "http://aerisjs.com",
   "logo": "themes/public/images/aeris_logo.png",
   "helpers": [
@@ -11,7 +11,7 @@
     "themes/api/helpers/helpers.js"
   ],
   "config": {
-    "version": "0.3.4",
+    "version": "0.3.5",
     "cdnPath": "//cdn.aerisjs.com/{PACKAGE}.min.js",
     "githubUrl": "https://github.com/hamweather/aerisjs",
     "aerisApiUrl": "http://www.hamweather.com/support/documentation/aeris",
