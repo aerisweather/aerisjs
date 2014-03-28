@@ -405,6 +405,7 @@ module.exports = function(grunt) {
   grunt.registerTask('travis', [
     'version:aeris',
     'build',
+    'buildDemo',
     'gzip'
   ]);
 };
