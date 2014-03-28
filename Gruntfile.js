@@ -318,25 +318,30 @@ module.exports = function(grunt) {
     compress: {
       lib: {
         expand: true,
-        src: ['**/*.min.js'],
+        src: ['**/*'],
         dest: '<%=buildDirs.lib %>',
         cwd: '<%=buildDirs.lib %>',
-        ext: '.min.js',
         options: {
           mode: 'gzip',
           level: 9
         }
-      },
-      'assets-png': {
+      }
+    },
+
+    copy: {
+      'without-gzip-extension': {
         expand: true,
-        src: ['**/*.png'],
-        dest: '<%=buildDirs.lib %>/assets',
-        cwd: '<%=buildDirs.lib %>/assets',
-        ext: '.png',
-        options: {
-          mode: 'gzip',
-          level: 9
-        }
+        src: ['**/*.gz'],
+        ext: '',
+        extDot: 'last',
+        dest: '<%=buildDirs.lib %>',
+        cwd: '<%=buildDirs.lib %>'
+      }
+    },
+
+    clean: {
+      'remove-gzip-files': {
+        src: ['build/**/*.gz']
       }
     }
   });
@@ -346,6 +351,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-gjslint');
   grunt.loadNpmTasks('grunt-shell');
   grunt.loadNpmTasks('grunt-contrib-copy');
+  grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-requirejs');
   grunt.loadNpmTasks('grunt-contrib-compass');
   grunt.loadNpmTasks('grunt-contrib-compress');
@@ -373,9 +379,14 @@ module.exports = function(grunt) {
   grunt.registerTask('default', [
     'build'
   ]);
+  grunt.registerTask('gzip', [
+    'compress',
+    'copy:without-gzip-extension',
+    'clean:remove-gzip-files'
+  ]);
   grunt.registerTask('travis', [
     'version:aeris',
     'build',
-    'compress'
+    'gzip'
   ]);
 };

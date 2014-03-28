@@ -16,6 +16,6 @@ after_success:
   - if [[ "$TRAVIS_BRANCH" != "master" ]]; then echo "Deployments are only done for the master branch. Current branch is $TRAVIS_BRANCH"; exit 0; fi
   - echo "Deploying build $TRAVIS_BUILD_NUMBER"
   - aws s3 cp build/lib s3://cdn.aerisjs.com --recursive --content-encoding gzip
-  - aws s3 cp build/docs s3://docs.aerisjs.com --recursive --content-encoding gzip
+  - aws s3 cp build/docs s3://docs.aerisjs.com --recursive
 after_failure:
   - "cat /home/travis/build/hamweather/aerisjs/npm-debug.log"
