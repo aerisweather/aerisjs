@@ -30,7 +30,8 @@ module.exports = function(grunt) {
   grunt.initConfig({
     buildDirs: {
       lib: 'build/lib',
-      docs: 'build/docs'
+      docs: 'build/docs',
+      demo: 'build/demo'
     },
     pkg: grunt.file.readJSON('package.json'),
     'jasmine-amd': {
@@ -336,6 +337,19 @@ module.exports = function(grunt) {
         extDot: 'last',
         dest: '<%=buildDirs.lib %>',
         cwd: '<%=buildDirs.lib %>'
+      },
+      demo: {
+        expand: true,
+        src: ['**/*', '!apikeys.*'],
+        dest: '<%=buildDirs.demo %>',
+        cwd: 'examples/'
+      },
+      'demo-api-keys': {
+        expand: true,
+        src: 'apikeys.demo.js',
+        dest: '<%=buildDirs.demo %>',
+        ext: '.js',
+        cwd: 'examples/'
       }
     },
 
@@ -370,6 +384,10 @@ module.exports = function(grunt) {
     'shell:copyAerisJs',
     'shell:copyLibToVersionDir',
     'shell:copyDocsToVersionDir'
+  ]);
+  grunt.registerTask('buildDemo', [
+    'copy:demo',
+    'copy:demo-api-keys'
   ]);
   grunt.registerTask('deploy', [
     'version:aeris',
