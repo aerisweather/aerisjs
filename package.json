@@ -47,6 +47,7 @@
     "yuidocjs": "~0.3.49",
     "grunt-contrib-requirejs": "~0.4.3",
     "jasmine-node": "~1.14.2",
-    "grunt-contrib-compass": "~0.7.2"
+    "grunt-contrib-compass": "~0.7.2",
+    "grunt-contrib-compress": "~0.7.0"
   }
 }

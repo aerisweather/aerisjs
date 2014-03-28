@@ -313,6 +313,31 @@ module.exports = function(grunt) {
           'aws s3 cp <%=buildDirs.docs %> s3://aerisjs-docs --recursive'
         ].join('&&')
       }
+    },
+
+    compress: {
+      lib: {
+        expand: true,
+        src: ['**/*.min.js'],
+        dest: '<%=buildDirs.lib %>',
+        cwd: '<%=buildDirs.lib %>',
+        ext: '.min.js',
+        options: {
+          mode: 'gzip',
+          level: 9
+        }
+      },
+      'assets-png': {
+        expand: true,
+        src: ['**/*.png'],
+        dest: '<%=buildDirs.lib %>/assets',
+        cwd: '<%=buildDirs.lib %>/assets',
+        ext: '.png',
+        options: {
+          mode: 'gzip',
+          level: 9
+        }
+      }
     }
   });
 
@@ -323,6 +348,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-requirejs');
   grunt.loadNpmTasks('grunt-contrib-compass');
+  grunt.loadNpmTasks('grunt-contrib-compress');
 
   grunt.registerTask('test', [
     'jasmine-amd',
@@ -349,6 +375,7 @@ module.exports = function(grunt) {
   ]);
   grunt.registerTask('travis', [
     'version:aeris',
-    'build'
+    'build',
+    'compress'
   ]);
 };
