@@ -74,6 +74,29 @@ define([
 
 
   /**
+   * @method createCluster_
+   * @private
+   * @param {string} type
+   * @return {L.MarkerClusterGroup}
+   */
+  MarkerCluster.prototype.createCluster_ = function(type) {
+    var cluster = new MarkerClusterGroup({
+      iconCreateFunction: function(cluster) {
+        return this.createIconForCluster_(cluster, type);
+      }.bind(this)
+    });
+
+    this.proxyMouseEventsForCluster_(cluster);
+
+    if (this.mapView_) {
+      cluster.addTo(this.mapView_);
+    }
+
+    return cluster;
+  };
+
+
+  /**
    * @method createIconForCluster_
    * @private
    *
@@ -226,29 +249,6 @@ define([
     if (!this.view_[type]) {
       this.view_[type] = this.createCluster_(type);
     }
-  };
-
-
-  /**
-   * @method createCluster_
-   * @private
-   * @param {string} type
-   * @return {L.MarkerClusterGroup}
-   */
-  MarkerCluster.prototype.createCluster_ = function(type) {
-    var cluster = new MarkerClusterGroup({
-      iconCreateFunction: function(cluster) {
-        return this.createIconForCluster_(cluster, type);
-      }.bind(this)
-    });
-
-    this.proxyMouseEventsForCluster_(cluster);
-
-    if (this.mapView_) {
-      cluster.addTo(this.mapView_);
-    }
-
-    return cluster;
   };
 
 
