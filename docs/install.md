@@ -277,5 +277,5 @@ require.config({
 Of course, you can always just go ahead and download the whole repo and stick it in your application directory. This means you'll have to download and manage all your dependencies yourself, but hey, to each their own.
 
 * [`master` branch](https://github.com/hamweather/aerisjs/archive/master.zip)
-* [v0.3.3 release](https://github.com/hamweather/aerisjs/releases/tag/v0.3.3)
+* [Version releases](https://github.com/hamweather/aerisjs/releases)
 * Clone the repo: `git clone https://github.com/hamweather/aerisjs.git`
