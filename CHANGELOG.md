@@ -1,3 +1,7 @@
+# 0.3.6
+
+* FIX: Fix grunt 'gzip' task (was breaking CDN lib)
+
 # 0.3.5
 
 * MOD: CDN library packages are gzip'd before deployment
