@@ -60,7 +60,10 @@ define([
        * @type {aeris.maps.Bounds} LatLons of SW and NE corners.
        * @default A rough box around the US
        */
-      bounds: [[22.43, -135.52], [52.37, -55.016]],
+      bounds: [
+        [22.43, -135.52],
+        [52.37, -55.016]
+      ],
 
       /**
        * @attribute zoom
