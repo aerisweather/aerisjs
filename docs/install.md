@@ -23,11 +23,17 @@ For basic usage, Aeris.js can be used from a CDN:
 
 There are several hosted versions of the Aeris.js library, each with a varying set of features.
 
+* **Aeris.js**
+
+    The default library includes all of the Aeris.js features, excluding the Map AppBuilder. Google Maps is used as the default mapping library.
+
+    [//cdn.aerisjs.com/aeris.min.js](//cdn.aerisjs.com/aeris.min.js)
+
 * **Weather for Google Maps**
 
     Render weather tile layers and data using [Google Maps](https://developers.google.com/maps/).
 
-    [//cdn.aerisjs.com/gmaps.min.js](//cdn.aerisjs.com/api.min.js)
+    [//cdn.aerisjs.com/gmaps.min.js](//cdn.aerisjs.com/gmaps.min.js)
 
 * **Weather for OpenLayers**
 
