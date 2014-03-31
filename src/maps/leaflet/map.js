@@ -47,7 +47,15 @@ define([
    * @return {L.Map}
    */
   LeafletMapStrategy.prototype.createView_ = function() {
-    var map = new Leaflet.Map(this.object_.get('el'));
+    var map;
+    var el = this.object_.getElement();
+
+    // Use predefined map view
+    if (el instanceof Leaflet.Map) {
+      return el;
+    }
+
+    map = new Leaflet.Map(el);
 
     // Add a baseLayer to the map.
     var baseLayer = new OSMLayer();

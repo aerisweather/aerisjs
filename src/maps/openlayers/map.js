@@ -39,7 +39,14 @@ define([
 
 
   OpenLayersMapStrategy.prototype.createView_ = function() {
-    return new OpenLayers.Map(this.object_.get('el'), {
+    var el = this.object_.getElement();
+
+    // Accept predefined OpenLayers map view
+    if (el instanceof OpenLayers.Map) {
+      return el;
+    }
+
+    return new OpenLayers.Map(this.object_.getElement(), {
       center: mapUtil.arrayToLonLat(this.object_.get('center'))
     });
   };

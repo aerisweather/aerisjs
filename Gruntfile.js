@@ -25,6 +25,9 @@ module.exports = function(grunt) {
   var leafletSpecs = [
     'tests/spec/**/leaflet/**/*.js'
   ];
+  var openLayersSpecs = [
+    'tests/spec/**/openlayers/**/*.js'
+  ];
 
   // Project configuration.
   grunt.initConfig({
@@ -54,7 +57,8 @@ module.exports = function(grunt) {
           exclude: notSpecs.
             concat(failingSpecs).
             concat(gmapsSpecs).
-            concat(leafletSpecs),
+            concat(leafletSpecs).
+            concat(openLayersSpecs),
           strategy: 'gmaps'
         }   // default strategy
       },
@@ -62,6 +66,12 @@ module.exports = function(grunt) {
         options: {
           specs: gmapsSpecs,
           strategy: 'gmaps'
+        }
+      },
+      openlayers: {
+        options: {
+          specs: openLayersSpecs,
+          strategy: 'openlayers'
         }
       },
       leaflet: {

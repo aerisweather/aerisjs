@@ -31,6 +31,7 @@ define([
    * @param {Object=} opt_options
    *
    * @constructor
+   * @throws {aeris.errors.ValidationError} If no element is supplied.
    */
   var Map = function(el, opt_attrs, opt_options) {
     /**
@@ -69,21 +70,23 @@ define([
        * @attribute zoom
        * @type {number}
        */
-      zoom: 4,
-
-      /**
-       * Map-Canvas.
-       *
-       * @attribute el
-       * @type {string|HTMLElement}
-       */
-      el: el
+      zoom: 4
     }, opt_attrs);
 
     var options = _.extend({
       strategy: MapStrategy,
       validate: true
     }, opt_options);
+
+    /**
+     * @property mapEl_
+     * @private
+     * @type {string|HTMLElement|{}} Map element be also be a reference to a pre-existing map view
+     */
+    this.mapEl_ = this.normalizeElement_(el);
+
+    this.validateElementExists_(this.mapEl_);
+
 
     Events.call(this);
     MapExtensionObject.call(this, attrs, options);
@@ -98,9 +101,6 @@ define([
     }
     if (!_.isNumber(attrs.zoom)) {
       return new ValidationError('zoom', attrs.zoom + ' is not a valid zoom level');
-    }
-    if (!_.isString(attrs.el) && !_.isElement(attrs.el)) {
-      return new ValidationError('el', attrs.el + ' is not a valid map canvas element or id');
     }
   };
 
@@ -178,6 +178,38 @@ define([
     }
 
     this.strategy_.fitToBounds(bounds);
+  };
+
+
+  /**
+   * @method normalizeElement_
+   * @private
+   * @param {string|HTMLElement} el Element, or element id.
+   * @return {HTMLElement}
+   */
+  Map.prototype.normalizeElement_ = function(el) {
+    return _.isString(el) ? document.getElementById(el) : el;
+  };
+
+
+  /**
+   * @throws {aeris.errors.ValidationError}
+   * @method validateElementExists_
+   * @private
+   */
+  Map.prototype.validateElementExists_ = function(el) {
+    if (!el) {
+      throw new ValidationError('el', el + ' is not a valid map canvas element or id');
+    }
+  };
+
+
+  /**
+   * @method getElement
+   * @return {HTMLElement} The map canvas element
+   */
+  Map.prototype.getElement = function() {
+    return this.mapEl_;
   };
 
 

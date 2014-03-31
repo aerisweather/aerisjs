@@ -41,6 +41,14 @@ define([
         expect(mapCanvas.childElementCount).toBeGreaterThan(0);
       });
 
+      it('should accept a Leaflet map as the element', function() {
+        var mapCanvas = new MapCanvas();
+        var leafletMap = new Leaflet.Map(mapCanvas);
+        var aerisMap = new Map(leafletMap);
+
+        expect(aerisMap.getView()).toEqual(leafletMap);
+      });
+
       describe('the created Leaflet map', function() {
 
         describe('should have the correct properties:', function() {

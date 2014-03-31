@@ -48,12 +48,13 @@ define([
    * @method createView_
    */
   GoogleMapStrategy.prototype.createView_ = function() {
-    var el = this.object_.get('el');
+    var el = this.object_.getElement();
     var view;
 
-    // Convert el as id.
-    if (_.isString(el)) {
-      el = document.getElementById(this.object_.get('el'));
+    // Accept a predefined google.maps.Map
+    // object
+    if (el instanceof gmaps.Map) {
+      return el;
     }
 
     gmaps.visualRefresh = true;
