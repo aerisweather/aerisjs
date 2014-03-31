@@ -10,7 +10,6 @@ define([
 
   describe('Maps with Leaflet', function() {
     var leafletMap, aerisMap;
-    var MAP_CANVAS_ID = 'MAP_CANVAS_ID';
     var mapCanvas;
 
 
@@ -19,7 +18,7 @@ define([
     }
 
     beforeEach(function() {
-      mapCanvas = new MapCanvas(MAP_CANVAS_ID);
+      mapCanvas = new MapCanvas();
     });
     afterEach(function() {
       mapCanvas.remove();
@@ -27,9 +26,7 @@ define([
 
 
     beforeEach(function() {
-      aerisMap = new Map(MAP_CANVAS_ID, {
-        baseLayer: null
-      });
+      aerisMap = new Map(mapCanvas.id);
       leafletMap = aerisMap.getView();
     });
 
