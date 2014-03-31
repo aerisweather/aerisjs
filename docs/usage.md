@@ -4,20 +4,51 @@ Basic Usage
 This document is only an introduction to the features of Aeris.js. Check out the reference API for more complete documentation.
 
 - [Demos](#demos)
-- [Overview of Features](#data-and-weather-api)
+- [Supported Mapping Libraries](#supported-mapping-libraries)
+- [Overview of Features](#overview-of-features)
     - [Data and Weather API](#data-and-weather-api)
     - [Maps](#maps)
     - [Geoservices](#geoservices)
     - [AppBuilder](#appbuilder)
+- [Integrating with Existing Applications](#integrating-with-existing-applications)
 
 #### A Note For RequireJS Users
 The examples in this document reference components within the global `aeris` namespace. This is appropriate when loading the library from a CDN. If you are loading components as RequireJS/AMD modules, you can find find modules by matching namespace paths to the aeris library file structure.
 
 For example, [`aeris.maps.layers.Radar`](http://docs.aerisjs.com#aeris.maps.layers.Radar) can be found at [`aeris/maps/layers/radar`](https://github.com/hamweather/aerisjs/blob/master/src/maps/layers/aerisradar.js).
 
+
 ## Demos
 
 In the interest of providing clear and concise demonstration code, not all of the examples in this document can run as-is. If you would like to see full working examples of Aeris.js code, visit our [Demos](demo.md) page.
+
+
+## Supported Mapping Libraries
+
+Aeris.js works with existing mapping libraries to render maps and map overlays. Currently three mapping libraries are supported:
+
+* [Google Maps](https://developers.google.com/maps/)
+* [Leaflet](http://leafletjs.com/)
+* [OpenLayers](http://openlayers.org/)
+
+The mapping library you choose is based on [which CDN package you are working with](install.md##from-a-cdn), or, if you're using AMD, by your [RequireJS configuration](install.md#specifying-a-map-library).
+
+There is currently some variation in feature support between the mapping library. The following is a list of supported features for each library.
+
+
+                                       | Google Maps | Leaflet | OpenLayers
+-------                                | ----------- | ------- | ----------
+**Maps**                               | ✓           | ✓       | ✓
+**Markers**                            | ✓           | ✓       | ✓
+**Marker Clusters**                    | ✓           | ✓       |
+**Info Boxes**                         | ✓           |         | ✓
+**Tile Layers**                        | ✓           | ✓       | ✓
+**Google Map Base Layers**             | ✓           |         | ✓
+**KML Layers**                         | ✓           |         |
+**Polygons** (eg. convective layers)   | ✓           |         |
+**KML Layers**                         | ✓           |         |
+**Polylines**                          | ✓           |         |
+
 
 
 ## Data and Weather API
@@ -294,3 +325,48 @@ compass compile
 ```
 
 from the theme directory.
+
+
+## Integrating with Existing Applications
+
+It is possible to use Aeris.js with existing map-based applications, without having to refactor all of your current code to use `aeris` objects. Simply pass in your map object to `aeris.maps.Map`:
+
+```javascript
+var myGoogleMap = new google.maps.Map(mapCanvas);
+
+// Do some really amazing stuff with your google map
+// ...
+
+
+// Creat an Aeris "wrapper" around your google map
+var myAerisMap = new aeris.maps.Map(myGoogleMap);
+
+// Add a rdar layer to your map
+var radar = new aeris.maps.layers.Radar();
+radar.setMap(myAerisMap);
+```
+
+This will work with any mapping library supported by Aeris.js. See [Supported Mapping Libraries](#supported-mapping-libraries) for a full list.
+
+
+You can also access the core map from your Aeris map using the `getView` method. This is useful if you want to integrate map-library-specific code with your Aeris.js code.
+
+```javascript
+var myAerisMap = new aeris.maps.Map('map-canvas');
+
+// Do some really amazing stuff with your Aeris.js map
+// ...
+
+// Grab your Leaflet map object
+// (assuming we're using the aeris-leaflet.js package)
+var leafletMap = myAerisMap.getView();
+
+// Create an awesome marker
+var prettyCoolIcon = L.AwesomeMarkers.icon({
+icon: 'globe',
+markerColor: 'blue'
+});
+new L.Marker([45, -90], {
+icon: prettyCoolIcon
+}).addTo(leafletMap);
+```
