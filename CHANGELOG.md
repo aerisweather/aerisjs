@@ -1,3 +1,14 @@
+# 0.3.7
+
+* MOD: Remove Leaflet from bower dependencies.
+       Leaflet bower package is not consumable.
+       Use CDN instead.
+* FIX: Fix config.setApiSecret
+* FIX: Fix AMD demo
+* MOD: Add links to demo site and jsFiddle
+       to docs. Create demo site /index.html page
+
+
 # 0.3.6
 
 * FIX: Fix grunt 'gzip' task (was breaking CDN lib)
