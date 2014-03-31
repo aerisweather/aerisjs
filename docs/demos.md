@@ -14,3 +14,8 @@ You can sign up for a free Aeris API developer account at [hamweather.com](http:
 * [Tile Layers (single layer)](http://demo.aerisjs.com/layers/single.html)
 * [Tile Layers (mutliple)](http://demo.aerisjs.com/layers/multi.html)
 * [MarkerCollection](http://demo.aerisjs.com/markercollections/index.html)
+
+
+## jsFiddle
+
+You can play with the Aeris.js library using our [jsFiddle sandbox](http://jsfiddle.net/zCr2f/3/).

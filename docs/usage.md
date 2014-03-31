@@ -3,8 +3,8 @@ Basic Usage
 
 This document is only an introduction to the features of Aeris.js. Check out the reference API for more complete documentation.
 
-
-- [Overview of Features](#overview-of-features)
+- [Demos](#demos)
+- [Overview of Features](#data-and-weather-api)
     - [Data and Weather API](#data-and-weather-api)
     - [Maps](#maps)
     - [Geoservices](#geoservices)
@@ -14,6 +14,11 @@ This document is only an introduction to the features of Aeris.js. Check out the
 The examples in this document reference components within the global `aeris` namespace. This is appropriate when loading the library from a CDN. If you are loading components as RequireJS/AMD modules, you can find find modules by matching namespace paths to the aeris library file structure.
 
 For example, [`aeris.maps.layers.Radar`](http://docs.aerisjs.com#aeris.maps.layers.Radar) can be found at [`aeris/maps/layers/radar`](https://github.com/hamweather/aerisjs/blob/master/src/maps/layers/aerisradar.js).
+
+## Demos
+
+In the interest of providing clear and concise demonstration code, not all of the examples in this document can run as-is. If you would like to see full working examples of Aeris.js code, visit our [Demos](demo.md) page.
+
 
 ## Data and Weather API
 
