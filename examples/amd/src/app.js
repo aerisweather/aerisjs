@@ -8,7 +8,7 @@ require.config({
     // 'aeris/maps/strategy': '../bower_components/aerisjs/src/maps/openlayers',    // Use OpenLayers
 
     underscore: '../bower_components/underscore/underscore',
-    jquery: '../bower_components/jquery/jquery',
+    jquery: '../bower_components/jquery/dist/jquery',
     backbone: '../bower_components/backbone/backbone',
 
     googlemaps: '../bower_components/googlemaps-amd/src/googlemaps',
