@@ -81,8 +81,11 @@ define([
       },
 
       idle: function() {
+        var aerisBounds;
         var gBounds = this.getView().getBounds();
-        var aerisBounds = mapUtil.boundsToArray(gBounds);
+
+        if (!gBounds) { return; }
+        aerisBounds = mapUtil.boundsToArray(gBounds);
         this.object_.set('bounds', aerisBounds, { validate: true });
       },
 
