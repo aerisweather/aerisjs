@@ -3,7 +3,7 @@ Basic Usage
 
 This document is only an introduction to the features of Aeris.js. Check out the reference API for more complete documentation.
 
-
+- [Demos](#demos)
 - [Overview of Features](#overview-of-features)
     - [Data and Weather API](#data-and-weather-api)
     - [Maps](#maps)
@@ -14,6 +14,40 @@ This document is only an introduction to the features of Aeris.js. Check out the
 The examples in this document reference components within the global `aeris` namespace. This is appropriate when loading the library from a CDN. If you are loading components as RequireJS/AMD modules, you can find find modules by matching namespace paths to the aeris library file structure.
 
 For example, {{publicDocLink 'aeris.maps.layers.Radar'}} can be found at [`aeris/maps/layers/radar`](https://github.com/hamweather/aerisjs/blob/master/src/maps/layers/aerisradar.js).
+
+
+## Demos
+
+In the interest of providing clear and concise demonstration code, not all of the examples in this document can run as-is. If you would like to see full working examples of Aeris.js code, visit our [Demos](demo.md) page.
+
+
+## Supported Mapping Libraries
+
+Aeris.js works with existing mapping libraries to render maps and map overlays. Currently three mapping libraries are supported:
+
+* [Google Maps](https://developers.google.com/maps/)
+* [Leaflet](http://leafletjs.com/)
+* [OpenLayers](http://openlayers.org/)
+
+The mapping library you choose is based on [which CDN package you are working with](install.md##from-a-cdn), or, if you're using AMD, by your [RequireJS configuration](install.md#specifying-a-map-library).
+
+There is currently some variation in feature support between the mapping library. The following is a list of supported features for each library.
+
+
+                                       | Google Maps | Leaflet | OpenLayers
+-------                                | ----------- | ------- | ----------
+**Maps**                               | ✓           | ✓       | ✓
+**Markers**                            | ✓           | ✓       | ✓
+**Marker Clusters**                    | ✓           | ✓       |
+**Info Boxes**                         | ✓           |         | ✓
+**Tile Layers**                        | ✓           | ✓       | ✓
+**Google Map Base Layers**             | ✓           |         | ✓
+**KML Layers**                         | ✓           |         |
+**Polygons** (eg. convective layers)   | ✓           |         |
+**KML Layers**                         | ✓           |         |
+**Polylines**                          | ✓           |         |
+
+
 
 ## Data and Weather API
 
