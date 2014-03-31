@@ -37,8 +37,7 @@
     "wire": "~0.10.5",
     "wire-rjs-builder": "https://github.com/pieter-vanderwerff/wire-rjs-builder.git",
     "googlemaps-amd": "~1.0.0",
-    "leaflet.markercluster": "~0.4.0",
-    "leaflet": "~0.7.2"
+    "leaflet.markercluster": "~0.4.0"
   },
   "devDependencies": {
     "almond": "~0.2.9",
