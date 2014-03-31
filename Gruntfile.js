@@ -313,6 +313,15 @@ module.exports = function(grunt) {
           'aws s3 cp <%=buildDirs.lib %> s3://aerisjs-cdn --recursive',
           'aws s3 cp <%=buildDirs.docs %> s3://aerisjs-docs --recursive'
         ].join('&&')
+      },
+
+      'bower-example': {
+        command: 'bower update',
+        options: {
+          execOptions: {
+            cwd: 'examples/amd'
+          }
+        }
       }
     },
 
@@ -386,6 +395,7 @@ module.exports = function(grunt) {
     'shell:copyDocsToVersionDir'
   ]);
   grunt.registerTask('buildDemo', [
+    'shell:bower-example',
     'copy:demo',
     'copy:demo-api-keys'
   ]);
