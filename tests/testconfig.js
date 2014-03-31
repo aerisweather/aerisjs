@@ -15,7 +15,8 @@ require.config({
     testUtils: 'tests/testutils',
     flag: 'tests/flag',
     googlemaps: 'tests/mocks/googlemaps',
-    leaflet: 'tests/lib/leaflet'
+    leaflet: 'tests/lib/leaflet',
+    openlayers: 'tests/lib/openlayers'
   },
   shim: {
     jasmine: {
@@ -35,11 +36,17 @@ require.config({
     },
     'sinon': {
       exports: 'sinon'
+    },
+    'openlayers': {
+      exports: 'OpenLayers'
     }
   },
   map: {
     'tests/lib/jasmine-modified': {
       jasmine: 'jasmine'
+    },
+    'tests/spec/integration/gmaps': {
+      googlemaps: 'bower_components/googlemaps-amd/src/googlemaps'
     },
     '*': {
       jasmine: 'tests/lib/jasmine-modified'
