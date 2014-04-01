@@ -1,3 +1,12 @@
+# 0.3.8
+
+* ADD: Improve ability to integrate with existing mapping applications
+       see [Integrating with Existing Applications](docs/usage.md#integrating-with-existing-applications)
+* MOD: Move jasmine-amd grunt task to its own repo
+  at [hamweather/grunt-jasmine-legacy](https://github.com/hamweather/grunt-jasmine-legacy)
+* MOD: Update demo docs
+
+
 # 0.3.7
 
 * MOD: Remove Leaflet from bower dependencies.
