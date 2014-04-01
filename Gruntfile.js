@@ -37,9 +37,9 @@ module.exports = function(grunt) {
       demo: 'build/demo'
     },
     pkg: grunt.file.readJSON('package.json'),
-    'jasmine-amd': {
+    'jasmine-legacy': {
       options: {
-        amdConfig: [
+        amdConfigModules: [
           '../config-amd',
           'testconfig'
         ],
@@ -59,25 +59,41 @@ module.exports = function(grunt) {
             concat(gmapsSpecs).
             concat(leafletSpecs).
             concat(openLayersSpecs),
-          strategy: 'gmaps'
+          amdConfig: {
+            paths: {
+              'aeris/maps/strategy': 'src/maps/gmaps'
+            }
+          }
         }   // default strategy
       },
       gmaps: {
         options: {
           specs: gmapsSpecs,
-          strategy: 'gmaps'
+          amdConfig: {
+            paths: {
+              'aeris/maps/strategy': 'src/maps/gmaps'
+            }
+          }
         }
       },
       openlayers: {
         options: {
           specs: openLayersSpecs,
-          strategy: 'openlayers'
+          amdConfig: {
+            paths: {
+              'aeris/maps/strategy': 'src/maps/openlayers'
+            }
+          }
         }
       },
       leaflet: {
         options: {
           specs: leafletSpecs,
-          strategy: 'leaflet'
+          amdConfig: {
+            paths: {
+              'aeris/maps/strategy': 'src/maps/leaflet'
+            }
+          }
         }
       }
     },
@@ -379,8 +395,8 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.loadTasks('tasks/jasmine-amd');
   grunt.loadTasks('tasks/version');
+  grunt.loadNpmTasks('grunt-jasmine-legacy');
   grunt.loadNpmTasks('grunt-gjslint');
   grunt.loadNpmTasks('grunt-shell');
   grunt.loadNpmTasks('grunt-contrib-copy');
@@ -390,7 +406,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-compress');
 
   grunt.registerTask('test', [
-    'jasmine-amd',
+    'jasmine-legacy',
     'gjslint'
   ]);
   grunt.registerTask('build', [
