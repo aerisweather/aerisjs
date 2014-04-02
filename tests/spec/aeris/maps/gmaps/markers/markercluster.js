@@ -47,7 +47,7 @@ define([
   _.inherits(MockMarker, Model);
 
 
-  var MockObject = function(opt_models, opt_options) {
+  var MockMarkerCollection = function(opt_models, opt_options) {
     var options = _.defaults(opt_options || {}, {
       map: new MockMap(),
       model: MockMarker
@@ -66,9 +66,11 @@ define([
         return { url: groupName.toUpperCase() + '_ICON' };
       });
 
+    this.getClusterOptions = jasmine.createSpy('getClusterOptions').andReturn({});
+
     Collection.call(this, opt_models, options);
   };
-  _.inherits(MockObject, Collection);
+  _.inherits(MockMarkerCollection, Collection);
 
 
 
@@ -99,7 +101,7 @@ define([
       describe('createView', function() {
 
         it('should add all of the object\'s markers', function() {
-          var obj = new MockObject([
+          var obj = new MockMarkerCollection([
             { data: { report: { type: 'rain' } } },
             { data: { report: { type: 'snow' } } },
             { data: { report: { type: 'rain' } } },
@@ -113,6 +115,22 @@ define([
           expect(MarkerClusterStrategy.prototype.addMarkers).toHaveBeenCalledWith(obj.models);
         });
 
+        it('should pass on clusterOptions from the marker object', function() {
+          var clustererCtorOptions;
+          var markerCollection = new MockMarkerCollection([new MockMarker()]);
+          var MockMarkerClusterer = MockMarkerClustererFactory();
+          markerCollection.getClusterOptions.andReturn({
+            foo: 'bar'
+          });
+
+          new MarkerClusterStrategy(markerCollection, {
+            MarkerClusterer: MockMarkerClusterer
+          });
+
+          clustererCtorOptions = MockMarkerClusterer.mostRecentCall.args[2];
+          expect(clustererCtorOptions.foo).toEqual('bar');
+        });
+
       });
 
 
@@ -120,7 +138,7 @@ define([
         var obj, strategy;
 
         beforeEach(function() {
-          obj = new MockObject();
+          obj = new MockMarkerCollection();
           strategy = new MarkerClusterStrategy(obj, {
             MarkerClusterer: MockMarkerClustererFactory()
           });
@@ -216,7 +234,7 @@ define([
     describe('addMarker', function() {
 
       it('should add the marker to its group\'s clusterer, creating a new clusterer if necessary', function() {
-        var obj = new MockObject();
+        var obj = new MockMarkerCollection();
         var MarkerClusterer = MockMarkerClustererFactory();
         var markers = [
           new MockMarker(undefined, { type: 'snow' }),
@@ -252,7 +270,7 @@ define([
 
       it('should group together markers which do not define a type', function() {
         var newMarker;
-        var obj = new MockObject();
+        var obj = new MockMarkerCollection();
         var MarkerClusterer = MockMarkerClustererFactory();
         var markers = [
           new MockMarker(undefined, { type: 'snow' }),
@@ -288,7 +306,7 @@ define([
       });
 
       it('should trigger \'clusterer:create\' \'clusterer:add\' events', function() {
-        var obj = new MockObject();
+        var obj = new MockMarkerCollection();
         var markers = [
           new MockMarker(undefined, { type: 'snow' }),
           new MockMarker(undefined, { type: 'snow' }),
@@ -319,7 +337,7 @@ define([
     describe('setMap', function() {
 
       it('should set the specified map on all MarkerClusterer objects', function() {
-        var obj = new MockObject();
+        var obj = new MockMarkerCollection();
         var strategy = new MarkerClusterStrategy(obj, {
           MarkerClusterer: MockMarkerClustererFactory()
         });
@@ -349,7 +367,7 @@ define([
     describe('remove', function() {
 
       it('should set all MarkerClusterer objects\' maps to  null', function() {
-        var obj = new MockObject();
+        var obj = new MockMarkerCollection();
         var strategy = new MarkerClusterStrategy(obj, {
           MarkerClusterer: MockMarkerClustererFactory()
         });
@@ -378,7 +396,7 @@ define([
     describe('addMarkers', function() {
 
       it('should add all the markers in the array', function() {
-        var obj = new MockObject();
+        var obj = new MockMarkerCollection();
         var strategy = new MarkerClusterStrategy(obj, { MarkerClusterer: MockMarkerClustererFactory() });
         var markers = ['marker_0', 'marker_1', 'marker_2'];
 
@@ -398,7 +416,7 @@ define([
 
     describe('removeMarker', function() {
       it('should remove a marker from the matching clusterer', function() {
-        var strategy = new MarkerClusterStrategy(new MockObject(), {
+        var strategy = new MarkerClusterStrategy(new MockMarkerCollection(), {
           MarkerClusterer: MockMarkerClustererFactory()
         });
         var markers = [
@@ -429,7 +447,7 @@ define([
 
     describe('clearClusters', function() {
       it('should clear markers from all clusterer objects', function() {
-        var strategy = new MarkerClusterStrategy(new MockObject(), {
+        var strategy = new MarkerClusterStrategy(new MockMarkerCollection(), {
           MarkerClusterer: MockMarkerClustererFactory()
         });
         var markers = [
@@ -456,7 +474,7 @@ define([
       });
 
       it('should trigger a \'clusterer:remove\' event for each clusterer', function() {
-        var strategy = new MarkerClusterStrategy(new MockObject(), {
+        var strategy = new MarkerClusterStrategy(new MockMarkerCollection(), {
           MarkerClusterer: MockMarkerClustererFactory()
         });
         var markers = [
@@ -485,7 +503,7 @@ define([
     describe('resetClusters', function() {
 
       it('should remove and re-add all markers', function() {
-        var obj = new MockObject([
+        var obj = new MockMarkerCollection([
           new MockMarker(undefined, { type: 'rain'}),
           new MockMarker(undefined, { type: 'snow'}),
           new MockMarker(undefined, { type: 'rain'}),
@@ -510,7 +528,7 @@ define([
     describe('repaint', function() {
 
       it('should repaint all MarkerClusterer objects', function() {
-        var obj = new MockObject();
+        var obj = new MockMarkerCollection();
         var strategy = new MarkerClusterStrategy(obj, {
           MarkerClusterer: MockMarkerClustererFactory()
         });
@@ -539,7 +557,7 @@ define([
     describe('destroy', function() {
 
       it('should clear clusters', function() {
-        var obj = new MockObject();
+        var obj = new MockMarkerCollection();
         var strategy = new MarkerClusterStrategy(obj, {
           MarkerClusterer: MockMarkerClustererFactory()
         });

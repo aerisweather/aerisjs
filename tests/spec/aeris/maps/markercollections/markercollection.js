@@ -29,6 +29,27 @@ define([
 
     });
 
+
+    describe('getClusterOptions', function() {
+      var STUB_CLUSTER_OPTIONS, markerCollection;
+
+      beforeEach(function() {
+        STUB_CLUSTER_OPTIONS = {
+          foo: 'bar',
+          faz: 'baz'
+        };
+        markerCollection = new MarkerCollection(null, {
+          clusterOptions: STUB_CLUSTER_OPTIONS
+        });
+      });
+
+
+      it('should return the clusterOptions provided in the constructor', function() {
+        expect(markerCollection.getClusterOptions()).toEqual(STUB_CLUSTER_OPTIONS);
+      });
+
+    });
+
   });
 
 });
