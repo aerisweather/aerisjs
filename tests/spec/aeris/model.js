@@ -114,8 +114,8 @@ define([
       });
 
     });
-    
-    
+
+
     describe('getAtPath', function() {
 
       it('should resolve a deep path', function() {
@@ -140,7 +140,7 @@ define([
 
         expect(model.getAtPath('foo')).toEqual('bar');
       });
-      
+
       it('should return undefined if the path cannot be resolved', function() {
         var model = new Model({
           deepObj: {
@@ -198,7 +198,7 @@ define([
           }).toThrowType('TypeError');
         });
       });
-      
+
     });
 
 
@@ -248,7 +248,7 @@ define([
 
           ChildModel.andCallFake(function(attrs, options) {
             expect(attrs.attrA).toEqual(ATTR_A_CHANGED);
-          })
+          });
 
           model.clone();
           expect(ChildModel).toHaveBeenCalled();
@@ -258,7 +258,7 @@ define([
           var attrsOrig = {
             attrA: 'ATTR_A',
             attrB: 'ATTR_B'
-          }
+          };
           var optsOrig = {
             optA: 'OPT_A',
             optB: 'OPT_B',

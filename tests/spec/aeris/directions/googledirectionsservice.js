@@ -27,7 +27,7 @@ define([
       directionsService = new GoogleDirectionsService({
         PromiseToFetchDirections: MockPromiseToFetchDirections,
         directionsServiceApi: mockDirectionsApi
-      })
+      });
     });
 
 

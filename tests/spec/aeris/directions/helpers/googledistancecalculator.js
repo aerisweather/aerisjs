@@ -130,7 +130,7 @@ define([
           try {
             GoogleDistanceCalculator.getDistanceBetween(STUB_ORIGIN, STUB_DESTINATION);
           }
-          catch(e) {
+          catch (e) {
             thrownMessage = e.message;
           }
 

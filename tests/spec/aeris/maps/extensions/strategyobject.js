@@ -18,10 +18,10 @@ define([
   function errBack(e) {
     throw e;
   }
-  
-  
+
+
   describe('A StrategyObject', function() {
-    
+
     describe('constructor', function() {
 
       it('should set a strategy', function() {
@@ -56,7 +56,7 @@ define([
           strategy: null
         });
       });
-      
+
     });
 
 
@@ -185,7 +185,7 @@ define([
       });
 
     });
-    
+
   });
-  
+
 });

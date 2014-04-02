@@ -37,7 +37,7 @@ define([
       else {
         setAttribute_orig.call(this.img_, attr, value);
       }
-    }, this)
+    }, this);
 
     this.img_.getAttribute = _.bind(function(attr) {
       if (attr === 'src') {
@@ -58,8 +58,8 @@ define([
 
     return secondLevelParent;
   }
-  
-  
+
+
 
 
 
@@ -94,12 +94,12 @@ define([
         };
         var mapType = new ImageMapType(options);
 
-        expect(mapType.alt).toEqual(options.alt)
-        expect(mapType.minZoom).toEqual(options.minZoom)
-        expect(mapType.maxZoom).toEqual(options.maxZoom)
-        expect(mapType.projection).toEqual(options.projection)
-        expect(mapType.radius).toEqual(options.radius)
-        expect(mapType.tileSize).toEqual(options.tileSize)
+        expect(mapType.alt).toEqual(options.alt);
+        expect(mapType.minZoom).toEqual(options.minZoom);
+        expect(mapType.maxZoom).toEqual(options.maxZoom);
+        expect(mapType.projection).toEqual(options.projection);
+        expect(mapType.radius).toEqual(options.radius);
+        expect(mapType.tileSize).toEqual(options.tileSize);
       });
 
     });
@@ -208,7 +208,7 @@ define([
           var img;
 
           beforeEach(function() {
-            img = $(tile).find('img')[0]
+            img = $(tile).find('img')[0];
           });
 
           it('should request a tile source from the getTileUrl param', function() {

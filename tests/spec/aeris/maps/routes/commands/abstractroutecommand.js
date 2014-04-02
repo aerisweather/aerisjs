@@ -11,7 +11,7 @@ define([
     var ConcreteRouteCommand = function(route, opt_isResolving, opt_timeout) {
       AbstractRouteCommand.call(this, route);
 
-      this.isResolving_ = opt_isResolving  === undefined ? true : opt_isResolving;
+      this.isResolving_ = opt_isResolving === undefined ? true : opt_isResolving;
       this.timeout_ = opt_timeout === undefined ? 25 : opt_timeout;
 
       // -1 --> never executed
@@ -56,7 +56,7 @@ define([
     };
 
 
-    it('should require a route', function () {
+    it('should require a route', function() {
       expect(function() {
         new ConcreteRouteCommand(null);
       }).toThrowType('InvalidArgumentError');

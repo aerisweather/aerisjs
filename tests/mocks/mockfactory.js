@@ -25,7 +25,7 @@ define(['aeris/util'], function(_) {
 
 
       options.constructor.apply(this, arguments);
-    }
+    };
     if (options.inherits) {
       _.inherits(Mock, options.inherits);
     }
@@ -36,8 +36,8 @@ define(['aeris/util'], function(_) {
 
 
     return Mock;
-  }
+  };
 
 
   return MockFactory;
-})
+});

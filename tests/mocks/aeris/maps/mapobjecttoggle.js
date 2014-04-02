@@ -41,7 +41,7 @@ define([
    * @return {aeris.maps.Map}
    */
   MockMapObjectToggle.prototype.getMap = function() {
-    return this.get('map')
+    return this.get('map');
   };
 
 

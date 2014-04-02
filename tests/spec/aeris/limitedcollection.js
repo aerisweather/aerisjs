@@ -22,12 +22,12 @@ define([
 
     return models;
   };
-  
+
 
   describe('A LimitedCollection', function() {
     var SOURCE_COUNT = 30, LIMIT = 10;
     var sourceCollection, limitedCollection;
-    
+
     beforeEach(function() {
       sourceCollection = new PopulatedCollection(SOURCE_COUNT);
       limitedCollection = new LimitedCollection(null, {
@@ -42,7 +42,7 @@ define([
         else {
           return this.length === sourceCollection.length;
         }
-      }
+      };
 
       limitedCollection.isLimitedVersionOfSource = function() {
         var hasSameModelsAsSource = this.reduce(function(runningValue, model) {
@@ -59,45 +59,45 @@ define([
     function shouldBeLimitedVersionOfSource() {
       expect(limitedCollection.isLimitedVersionOfSource()).toEqual(true);
     }
-    
-    
+
+
     describe('constructor', function() {
-      
+
       it('should add the first LIMIT number of models from the source collection', shouldBeLimitedVersionOfSource);
-      
+
     });
-    
+
     describe('Bindings to source collection', function() {
-      
+
       describe('when a source collection adds a model', function() {
-        
+
         describe('outside of the limit', function() {
 
           beforeEach(function() {
             sourceCollection.add(new Model(), { at: LIMIT + 1 });
           });
 
-          
+
           it('should be a limited version of the source collection', shouldBeLimitedVersionOfSource);
-          
+
         });
-        
+
         describe('inside of the limit', function() {
 
           beforeEach(function() {
             sourceCollection.addInsideLimit = function() {
               this.add(new Model(), { at: LIMIT - 2 });
-            }
+            };
           });
 
-          
+
           it('should add the model to the limited collection', function() {
             sourceCollection.addInsideLimit();
             shouldBeLimitedVersionOfSource();
           });
-          
+
         });
-        
+
       });
 
       describe('when a source collection adds multiple models', function() {
@@ -127,7 +127,7 @@ define([
         describe('straddling the limit', function() {
 
           beforeEach(function() {
-            sourceCollection.add(addedModels, { at: LIMIT - COUNT + 2 })
+            sourceCollection.add(addedModels, { at: LIMIT - COUNT + 2 });
           });
 
           it('should be a limited version of the source collection', shouldBeLimitedVersionOfSource);
@@ -143,7 +143,7 @@ define([
           sourceCollection.removeAt = function(index) {
             var modelAtIndex = this.at(index);
             sourceCollection.remove(modelAtIndex);
-          }
+          };
         });
 
 
@@ -260,9 +260,9 @@ define([
         });
 
       });
-      
+
     });
-    
+
   });
 
 });

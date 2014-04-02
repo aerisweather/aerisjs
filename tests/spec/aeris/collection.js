@@ -57,7 +57,7 @@ define([
                 array: 'of models'
               }
             }
-          })
+          });
         }).toThrowType('InvalidArgumentError');
 
         new Collection([new Model(), new Model()]);

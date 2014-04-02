@@ -99,7 +99,7 @@ define([
         it('should reject with a message', function() {
           promise.rejectBecauseNoResults(API_CODE_STUB);
 
-          shouldHaveRejectedWithStatusMessage()
+          shouldHaveRejectedWithStatusMessage();
         });
 
       });
@@ -122,7 +122,7 @@ define([
         it('should reject with a message', function() {
           promise.rejectBecauseApiError(API_CODE_STUB);
 
-          shouldHaveRejectedWithStatusMessage()
+          shouldHaveRejectedWithStatusMessage();
         });
 
       });
@@ -143,7 +143,7 @@ define([
         it('should reject with the API_ERROR code', function() {
           promise.rejectUsingErrorObject(STUB_ERROR);
 
-          shouldHaveRejectedWithStatusProp('code', DirectionsResultsStatus.API_ERROR)
+          shouldHaveRejectedWithStatusProp('code', DirectionsResultsStatus.API_ERROR);
         });
 
         it('should reject without an apiCode', function() {

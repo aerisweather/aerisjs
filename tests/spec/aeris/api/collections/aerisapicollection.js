@@ -9,7 +9,7 @@ define([
 
   var MockParams = function() {
     Model.apply(this, arguments);
-  }
+  };
 
   _.inherits(MockParams, Model);
 
@@ -23,7 +23,7 @@ define([
   var MockFailResponse = function() {
     return {
       success: false
-    }
+    };
   };
 
 
@@ -31,10 +31,10 @@ define([
     return {
       success: true,
       error: {
-        code: "warn_no_data",
-        description: "No data was returned for the request."
+        code: 'warn_no_data',
+        description: 'No data was returned for the request.'
       }
-    }
+    };
   };
 
 
@@ -144,7 +144,7 @@ define([
 
       it('should trigger a request event', function() {
         var onRequest = jasmine.createSpy('onRequest');
-        var REQUEST_OPTIONS_STUB = { STUB:'REQUEST_OPTIONS_STUB' };
+        var REQUEST_OPTIONS_STUB = { STUB: 'REQUEST_OPTIONS_STUB' };
         apiCollection.on('request', onRequest);
 
         onRequest.andCallFake(function(collection, promise) {
@@ -232,7 +232,7 @@ define([
           }).toThrowType('APIResponseError');
         });
 
-      })
+      });
     });
 
   });

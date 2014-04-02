@@ -216,7 +216,7 @@ define([
 
         _.each(waypoints, function(wp) {
           expect(wp.get('url')).toEqual('newUrl.png');
-        })
+        });
       });
 
       it('should not affect previously set styles', function() {
@@ -501,7 +501,7 @@ define([
             strokeColor: 'red',
             strokeWeight: 5,
             strokeOpacity: 0.95
-          }
+          };
           renderer.setStyles({
             path: pathStyles,
             offPath: offPathStyles

@@ -69,7 +69,7 @@ define([
 
       beforeEach(function() {
         REMOVED_AT = 1;
-        route = new MockRoute([new MockWaypoint(), new MockWaypoint()])
+        route = new MockRoute([new MockWaypoint(), new MockWaypoint()]);
         removedWaypoint = new MockWaypoint();
 
         route.add(removedWaypoint, { at: REMOVED_AT });

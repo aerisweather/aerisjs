@@ -27,15 +27,15 @@ define([
 
   MockLayer.prototype.setMap = function(map) {
     this.set('map', map);
-  }
+  };
 
   MockLayer.prototype.getMap = function() {
     return this.get('map');
-  }
+  };
 
   MockLayer.prototype.isLoaded = function() {
     return true;
-  }
+  };
 
   MockLayer.prototype.setOpacity = function(opacity) {
     this.set('opacity', opacity);
@@ -43,11 +43,11 @@ define([
 
   MockLayer.prototype.getOpacity = function() {
     return this.get('opacity');
-  }
+  };
 
   MockLayer.prototype.stop = function() {
     return this;
-  }
+  };
 
   MockLayer.prototype.show = function() {
     this.setOpacity(1);
@@ -218,7 +218,7 @@ define([
 
       beforeEach(function() {
         animation.loadAnimationLayers();
-        
+
         spyOn(animation, 'goToTime').andCallThrough();
       });
 
@@ -228,10 +228,10 @@ define([
         it('should go to the next time', function() {
           resolveLayerLoader();
           animation.goToTime(times[0]);
-          
+
           animation.next();
           expect(animation.getCurrentTime()).toEqual(times[1]);
-          
+
           animation.next();
           expect(animation.getCurrentTime()).toEqual(times[2]);
         });
@@ -251,7 +251,7 @@ define([
           resolveLayerLoader();
 
           animation.goToTime(_.last(times));
-          
+
           animation.next();
           expect(animation.getCurrentTime()).toEqual(times[0]);
         });
@@ -338,7 +338,7 @@ define([
 
               return _.isEqual(shownTimes, [time]);
             }
-          })
+          });
         });
 
 
@@ -371,7 +371,7 @@ define([
           animation.goToTime(9999);
           expect(timeLayers).toBeShowingLayerForTime(30);
         });
-        
+
         it('should set the current time to the specified time', function() {
           animation.goToTime(0);
           expect(animation.getCurrentTime()).toEqual(0);
@@ -569,8 +569,8 @@ define([
       });
 
     });
-    
-    
+
+
     describe('getCurrentTime', function() {
 
       it('should return the current time', function() {

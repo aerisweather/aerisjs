@@ -22,7 +22,7 @@ define([
       directionsService = new NonstopDirectionsService({
         distanceCalculator: MockDistanceCalculator,
         PromiseToFetchDirections: MockPromiseToFetchDirections
-      })
+      });
     });
 
 
@@ -57,7 +57,7 @@ define([
 
           MockDistanceCalculator.getDistanceBetween.andCallFake(function() {
             throw STUB_ERROR;
-          })
+          });
         });
 
 

@@ -1,5 +1,5 @@
 define(['aeris/util'], function(_) {
-  var MockGeolocationResults = function (opt_position) {
+  var MockGeolocationResults = function(opt_position) {
     var position = _.defaults(opt_position || {}, {
       coords: {},
       timestamp: new Date().getTime()

@@ -20,7 +20,7 @@ define([
 
     return model;
   };
-  
+
   var TypeModel_A = _.partial(TypeModelFactory, Types.TYPE_A);
   var TypeModel_B = _.partial(TypeModelFactory, Types.TYPE_B);
   var TypeModel_C = _.partial(TypeModelFactory, Types.TYPE_C);
@@ -28,17 +28,17 @@ define([
   var isTypeFilter = function(type, model) {
     return model.get('type') === type;
   };
-  
+
   var isType_A = _.partial(isTypeFilter, Types.TYPE_A);
   var isType_B = _.partial(isTypeFilter, Types.TYPE_B);
   var isType_C = _.partial(isTypeFilter, Types.TYPE_C);
 
-  
+
 
   describe('A FilteredCollection', function() {
     var sourceCollection, filteredCollection;
     var modelA, modelB, modelC;
-    
+
     beforeEach(function() {
       sourceCollection = new Collection();
       filteredCollection = new FilteredCollection(null, {
@@ -49,7 +49,7 @@ define([
       modelB = new TypeModel_B;
       modelC = new TypeModel_C;
     });
-    
+
 
     describe('constructor', function() {
 
@@ -70,16 +70,16 @@ define([
           modelA, modelB, modelC
         ];
         sourceCollection.add(SOURCE_MODELS);
-       
+
         filteredCollection = new FilteredCollection(null, {
           source: sourceCollection
         });
-        
+
         expect(filteredCollection.models).toEqual(SOURCE_MODELS);
       });
 
       it('should add source collection\'s models (with filter)', function() {
-        sourceCollection.add([ modelA, modelB, modelC ]);
+        sourceCollection.add([modelA, modelB, modelC]);
 
         filteredCollection = new FilteredCollection(null, {
           source: sourceCollection,
@@ -109,7 +109,7 @@ define([
       it('should add models added to source collection', function() {
         sourceCollection.add([modelA, modelB]);
 
-        expect(filteredCollection.models).toEqual([modelA, modelB])
+        expect(filteredCollection.models).toEqual([modelA, modelB]);
       });
 
       it('should reset models reset on source collection', function() {
@@ -142,12 +142,12 @@ define([
 
         expect(filteredCollection.get(ID_STUB) === sourceCollection.get(ID_STUB)).toEqual(true);
       });
-      
+
     });
 
 
     describe('setFilter', function() {
-      
+
       it('should update models from the source collection, using the filter', function() {
         sourceCollection.add([modelA, modelB, modelC]);
 
@@ -172,7 +172,7 @@ define([
 
         expect(filteredCollection.models).toEqual([modelB]);
       });
-      
+
       it('should use the set filter when adding new models from the source collection', function() {
         var modelA_2 = new TypeModel_A();
         filteredCollection.setFilter(isType_A);
@@ -199,7 +199,7 @@ define([
 
         expect(filter).toHaveBeenCalled();
       });
-      
+
     });
 
   });

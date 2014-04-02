@@ -81,10 +81,10 @@ define([
         });
 
       });
-      
+
     });
-    
-    
+
+
     describe('ViewModel binding', function() {
 
       describe('When marker is selected/deselected', function() {
@@ -92,7 +92,7 @@ define([
         it('should set the url or selectedUrl accordingly', function() {
           mockMarker.select();
           expect(mockGoogleMarker.getIconUrl()).toEqual(mockMarker.get('selectedUrl'));
-          
+
           mockMarker.deselect();
           expect(mockGoogleMarker.getIconUrl()).toEqual(mockMarker.get('url'));
         });
@@ -108,10 +108,10 @@ define([
         });
 
       });
-      
+
     });
-    
-    
+
+
   });
-  
+
 });

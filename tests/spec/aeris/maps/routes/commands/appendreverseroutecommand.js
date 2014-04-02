@@ -35,7 +35,7 @@ define([
     ];
     _.extend(this, jasmine.createSpyObj('MockWaypoint', methods));
   };
-  _.inherits(MockWaypoint, Waypoint)
+  _.inherits(MockWaypoint, Waypoint);
 
 
   var MockRouteReverser = function() {
@@ -145,7 +145,7 @@ define([
         command.undo();
         expect(route.set).toHaveBeenCalledWith([
           wpA, wpB, wpC
-        ])
+        ]);
       });
 
       it('should do nothing if the route had no waypoints before execution', function() {

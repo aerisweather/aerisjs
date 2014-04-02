@@ -17,7 +17,7 @@ define([
     var options = _.extend({}, this.options_, opt_options);
 
     return new MockLayer(attrs, options);
-  }
+  };
 
   function sortChronologically(times) {
     return _.sortBy(times, function(time) {
@@ -28,7 +28,7 @@ define([
   function normalizeTimes(times) {
     return times.map(function(t) {
       return parseFloat(t);
-    })
+    });
   }
 
   describe('A TimeLayersFactory', function() {
@@ -44,7 +44,7 @@ define([
 
           return _.isEqual(prepareTimes(timesA), prepareTimes(timesB));
         }
-      })
+      });
     });
 
 
@@ -68,7 +68,7 @@ define([
         var durations = [];
 
         if (!performance || !performance.now) {
-          console.warn('Unable to run TimeLayersFactory performance test: performance.now() unavailable.')
+          console.warn('Unable to run TimeLayersFactory performance test: performance.now() unavailable.');
         }
 
         // Restore clone spy, to prevent spy behavior from slowing us down
@@ -130,7 +130,7 @@ define([
       describe('time bounds options', function() {
 
         beforeEach(function() {
-          times = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+          times = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
         });
 
 

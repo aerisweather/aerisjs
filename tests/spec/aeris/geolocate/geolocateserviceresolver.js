@@ -15,12 +15,12 @@ define([
 
   describe('A GeolocateServiceResolver', function() {
     var STUB_OPTIONS = { STUB: 'OPTIONS'};
-    
+
     beforeEach(function() {
       MockSupportedGeolocateService.calledWithOptions = null;
-      MockUnsupportedGeolocateService.calledWithOptions = null;      
+      MockUnsupportedGeolocateService.calledWithOptions = null;
     });
-    
+
 
     describe('resolveService', function() {
 

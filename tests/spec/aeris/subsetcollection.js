@@ -40,7 +40,7 @@ define([
    * Creates models with a 'type' attribute.
    *
    * @param {string} type
-   * @returns {Model}
+   * @return {Model}
    * @constructor
    */
   var ModelTypeFactory = function(type) {
@@ -175,11 +175,11 @@ define([
             function() {
               return 'Expected subset collection not to enforce filter and limit. Subset colleciton ' +
                 'models: ' + jasmine.pp(subsetCollection.models);
-            }
+            };
 
           return _.isEqual(subsetCollection.models, filteredAndLimitedSourceModels);
         }
-      })
+      });
     });
 
 
@@ -266,12 +266,12 @@ define([
         });
 
         it('models are added at an index straddling the limit', function() {
-          sourceCollection.add(new ModelsCount(limit + 5))
+          sourceCollection.add(new ModelsCount(limit + 5));
           sourceCollection.add(new ModelsCount(5), { at: 8 });
         });
 
         it('models are added to the source at an index inside the limit', function() {
-          sourceCollection.add(new ModelsCount(limit + 5))
+          sourceCollection.add(new ModelsCount(limit + 5));
           sourceCollection.add(new ModelsCount(3), { at: 1 });
         });
 
@@ -464,7 +464,7 @@ define([
         });
 
       });
-      
+
       it('should not reference the source collection\'s models array', function() {
         sourceCollection.add(modelTypesABC);
 
@@ -510,7 +510,7 @@ define([
         });
 
       });
-      
+
 
       describe('error', function() {
         var onError, RESP_STUB = 'RESP_STUB';

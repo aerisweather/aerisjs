@@ -26,7 +26,7 @@ define([
     mockMethods.forEach(function(methodName) {
       spyOn(this, methodName).andCallThrough();
     }, this);
-  }
+  };
   _.inherits(MockMap, Map);
   _.extend(MockMap.prototype, Events.prototype);
   _.extend(MockMap.prototype, MockMapObject.prototype);
@@ -39,7 +39,7 @@ define([
 
 
   MockMap.prototype.geBounds = function() {
-    return [['S_BOUND_STUB', 'W_BOUND_STUB'], ['N_BOUND_STUB', 'E_BOUND_STUB']]
+    return [['S_BOUND_STUB', 'W_BOUND_STUB'], ['N_BOUND_STUB', 'E_BOUND_STUB']];
   };
 
 

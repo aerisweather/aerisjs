@@ -41,7 +41,7 @@ define([
       defineGoogleDirectionsStatus();
 
       STUB_DISTANCE = 1234.56;
-      STUB_PATH = [new MockLatLng(), new MockLatLng(), new MockLatLng()]
+      STUB_PATH = [new MockLatLng(), new MockLatLng(), new MockLatLng()];
       STUB_ROUTES = [{
         overview_path: STUB_PATH,
         legs: [{
@@ -61,7 +61,7 @@ define([
 
       STUB_RESPONSE_NO_RESULTS = {
         routes: []
-      }
+      };
     });
 
 
@@ -73,7 +73,7 @@ define([
     describe('settleUsingResponse', function() {
 
       beforeEach(function() {
-        spyOn(promise, 'resolveUsingResponse')
+        spyOn(promise, 'resolveUsingResponse');
       });
 
 
@@ -116,7 +116,7 @@ define([
       }
 
       function shouldResolveWithPath(expectedPath) {
-        expect(getResolvedPath()).toEqual(expectedPath)
+        expect(getResolvedPath()).toEqual(expectedPath);
       }
       function shouldResolveWithDistance(expectedDistance) {
         expect(getResolvedDistance()).toEqual(expectedDistance);
@@ -143,7 +143,7 @@ define([
 
         shouldResolveWithStatus(google.maps.DirectionsStatus.OK);
       });
-      
+
     });
 
   });

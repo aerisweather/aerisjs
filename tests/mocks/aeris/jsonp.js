@@ -1,7 +1,7 @@
 define(function() {
   var MockJSONP = function() {
     this.get = jasmine.createSpy('get');
-  }
+  };
 
   MockJSONP.prototype.getRequestedUrl = function() {
     return this.getGetArgAt_(0);
@@ -28,7 +28,7 @@ define(function() {
     var cb;
 
     if (this.get.callCount) {
-      cb = this.getRequestedCallback()
+      cb = this.getRequestedCallback();
       cb(res);
     }
 

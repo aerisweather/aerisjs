@@ -96,7 +96,7 @@ define([
       beforeEach(function() {
         fooModule = 'FOO_MODULE_STUB';
         barModule = 'BAR_MODULE_STUB';
-        mockRequire.define('foo', function(){ return fooModule; });
+        mockRequire.define('foo', function() { return fooModule; });
         mockRequire.define('bar', function() { return barModule; });
 
         callback = jasmine.createSpy('callback');

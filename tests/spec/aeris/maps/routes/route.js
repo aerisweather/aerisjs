@@ -391,9 +391,9 @@ define([
           it('should update the path between the added waypoint and the second waypoint in the route', function() {
             expect(route.updatePathBetween).toHaveBeenCalledWith(firstWaypoint, middleWaypoint);
           });
-          
+
         });
-        
+
         describe('is moved', function() {
 
           beforeEach(function() {
@@ -405,9 +405,9 @@ define([
           it('should update the path between the added waypoint and the second waypoint in the route', function() {
             expect(route.updatePathBetween).toHaveBeenCalledWith(firstWaypoint, middleWaypoint);
           });
-          
+
         });
-        
+
         describe('is removed', function() {
           var newFirstWaypoint;
 
@@ -417,21 +417,21 @@ define([
 
             newFirstWaypoint = route.first();
           });
-          
+
           it('should set an empty path on the (new) first waypoint', function() {
             expect(newFirstWaypoint.get('path')).toEqual([]);
           });
-          
+
           it('should set a distance of zero on the (new) first waypoint', function() {
             expect(newFirstWaypoint.get('distance')).toEqual(0);
           });
-          
+
         });
       });
-        
+
 
       describe('when a waypoint at the middle of the route', function() {
-        
+
         describe('is added', function() {
 
           beforeEach(function() {
@@ -442,13 +442,13 @@ define([
           it('should update the path to the previous waypoint', function() {
             expect(route.updatePathBetween).toHaveBeenCalledWith(firstWaypoint, middleWaypoint);
           });
-          
+
           it('should update the path to the next waypoint', function() {
             expect(route.updatePathBetween).toHaveBeenCalledWith(middleWaypoint, lastWaypoint);
           });
-          
+
         });
-        
+
         describe('is moved', function() {
 
           beforeEach(function() {
@@ -461,12 +461,12 @@ define([
           });
 
           it('should update the path to the next waypoint', function() {
-            expect(route.updatePathBetween).toHaveBeenCalledWith(middleWaypoint, lastWaypoint)
+            expect(route.updatePathBetween).toHaveBeenCalledWith(middleWaypoint, lastWaypoint);
           });
 
-          
+
         });
-        
+
         describe('is removed', function() {
 
           beforeEach(function() {
@@ -474,30 +474,30 @@ define([
             route.remove(middleWaypoint);
           });
 
-          
+
           it('should update the path between the surrounding waypoints', function() {
             expect(route.updatePathBetween).toHaveBeenCalledWith(firstWaypoint, lastWaypoint);
           });
-          
+
         });
       });
-        
+
 
       describe('when a waypoint at the end of the route', function() {
-        
+
         describe('is added', function() {
 
           beforeEach(function() {
             route.prepareWithWaypoints([firstWaypoint, middleWaypoint]);
             route.add(lastWaypoint);
           });
-          
+
           it('should update the path to the previous waypoint', function() {
             expect(route.updatePathBetween).toHaveBeenCalledWith(middleWaypoint, lastWaypoint);
           });
-          
+
         });
-        
+
         describe('is moved', function() {
 
           beforeEach(function() {
@@ -508,9 +508,9 @@ define([
           it('should update the path to the previous waypoint', function() {
             expect(route.updatePathBetween).toHaveBeenCalledWith(middleWaypoint, lastWaypoint);
           });
-          
+
         });
-        
+
         describe('is removed', function() {
           var newLastWaypont;
 
@@ -520,15 +520,15 @@ define([
 
             newLastWaypont = route.last();
           });
-          
+
           it('should not update any paths', function() {
             expect(route.updatePathBetween).not.toHaveBeenCalled();
           });
-          
+
         });
-        
+
       });
-        
+
 
       describe('when the only waypoint in a route', function() {
         var onlyWaypoint;
@@ -536,7 +536,7 @@ define([
         beforeEach(function() {
           onlyWaypoint = new MockWaypoint();
         });
-        
+
         describe('is added', function() {
 
           beforeEach(function() {
@@ -546,9 +546,9 @@ define([
           it('should not update any paths', function() {
             expect(route.updatePathBetween).not.toHaveBeenCalled();
           });
-          
+
         });
-        
+
         describe('is moved', function() {
 
           beforeEach(function() {
@@ -559,9 +559,9 @@ define([
           it('should not update any paths', function() {
             expect(route.updatePathBetween).not.toHaveBeenCalled();
           });
-          
+
         });
-        
+
         describe('is removed', function() {
 
           beforeEach(function() {
@@ -572,9 +572,9 @@ define([
           it('should not update any paths', function() {
             expect(route.updatePathBetween).not.toHaveBeenCalled();
           });
-          
+
         });
-        
+
       });
 
 

@@ -209,7 +209,7 @@ define([
         it('should trigger a mouseout event on the object when a markercluster is mouse-out\'d', function() {
         });*/
 
-      })
+      });
 
     });
 
@@ -249,7 +249,7 @@ define([
         expect(strategy.getView().rain).toBeInstanceOf(MarkerClusterer);
         expect(strategy.getView().snow).toBeInstanceOf(MarkerClusterer);
       });
-      
+
       it('should group together markers which do not define a type', function() {
         var newMarker;
         var obj = new MockObject();
@@ -284,7 +284,7 @@ define([
         strategy.addMarker(newMarker);
         clock.tick(ASYNC_DELAY);
         expect(strategy.getView()[MarkerClusterStrategy.SINGLE_CLUSTER_GROUPNAME].addMarker).
-          toHaveBeenCalledWith(newMarker.getView())
+          toHaveBeenCalledWith(newMarker.getView());
       });
 
       it('should trigger \'clusterer:create\' \'clusterer:add\' events', function() {
@@ -398,8 +398,8 @@ define([
 
     describe('removeMarker', function() {
       it('should remove a marker from the matching clusterer', function() {
-        var strategy = new MarkerClusterStrategy(new MockObject(), { 
-          MarkerClusterer: MockMarkerClustererFactory() 
+        var strategy = new MarkerClusterStrategy(new MockObject(), {
+          MarkerClusterer: MockMarkerClustererFactory()
         });
         var markers = [
           new MockMarker(undefined, { type: 'rain'}),
@@ -428,7 +428,7 @@ define([
 
 
     describe('clearClusters', function() {
-      it ('should clear markers from all clusterer objects', function() {
+      it('should clear markers from all clusterer objects', function() {
         var strategy = new MarkerClusterStrategy(new MockObject(), {
           MarkerClusterer: MockMarkerClustererFactory()
         });

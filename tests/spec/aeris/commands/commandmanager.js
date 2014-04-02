@@ -77,7 +77,7 @@ define([
           promise = manager.redo().done(function() {
             expect(promise).toBeInstanceOf(Promise);
             expect(command.execute.callCount).toEqual(2);
-            
+
             testUtils.setFlag();
           });
         });

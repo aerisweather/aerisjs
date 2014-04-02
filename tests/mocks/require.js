@@ -90,7 +90,7 @@ define([
 
 
   /**
-   * @returns {Array.<string>}
+   * @return {Array.<string>}
    * @private
    */
   MockRequire.prototype.getDefinedModuleIds_ = function() {
@@ -184,7 +184,7 @@ define([
    * Restore the original require object.
    */
   MockRequire.prototype.restore = function() {
-    global.require =  this.requireOrig_;
+    global.require = this.requireOrig_;
     global.define = this.defineOrig_;
   };
 

@@ -5,7 +5,7 @@ define([
   'mocks/window/navigator',
   'mocks/window/geolocationresults',
   'mocks/window/geolocationerror'
-], function (_, HTML5GeolocateService, GeolocateServiceError, MockNavigator, MockGeolocationResults, MockGeolocationError) {
+], function(_, HTML5GeolocateService, GeolocateServiceError, MockNavigator, MockGeolocationResults, MockGeolocationError) {
   var root = this;
   var navigator_orig = root.navigator;
 
@@ -17,7 +17,7 @@ define([
   }
 
 
-  describe('The HTML5 Geolocation Service', function () {
+  describe('The HTML5 Geolocation Service', function() {
     var geolocator, navigator, position;
     var onResolve, onReject;
     var NAVIGATOR_OPTIONS = {
@@ -28,7 +28,7 @@ define([
     var LAT_STUB = 12.345;
     var LON_STUB = 54.321;
 
-    beforeEach(function () {
+    beforeEach(function() {
       var geolocatorOptions;
       navigator = new MockNavigator();
       geolocatorOptions = _.extend({}, NAVIGATOR_OPTIONS, {
@@ -66,16 +66,16 @@ define([
 
 
 
-    describe('getCurrentPosition', function () {
+    describe('getCurrentPosition', function() {
 
-      it('should request the users current position from the navigator', function () {
+      it('should request the users current position from the navigator', function() {
         geolocator.getCurrentPosition();
 
         expect(navigator.geolocation.getCurrentPosition).toHaveBeenCalled();
         expect(navigator.geolocation.getCurrentPosition.getOptions()).toEqual(NAVIGATOR_OPTIONS);
       });
 
-      it('should resolve with the users current position', function () {
+      it('should resolve with the users current position', function() {
         geolocator.getCurrentPosition().done(onResolve);
         navigator.geolocation.getCurrentPosition.resolve(position);
 
@@ -83,7 +83,7 @@ define([
         expect(onResolve.getPosition().latLon).toEqual([LAT_STUB, LON_STUB]);
       });
 
-      it('should handle errors from the HTML5 geolocator', function () {
+      it('should handle errors from the HTML5 geolocator', function() {
         geolocator.getCurrentPosition().fail(onReject);
         navigator.geolocation.getCurrentPosition.reject(new MockGeolocationError());
 
@@ -91,7 +91,7 @@ define([
         expect(onReject.getError().name).toEqual('GeolocateServiceError');
       });
 
-      it('should reject the request if HTML5 geolocation is not available', function () {
+      it('should reject the request if HTML5 geolocation is not available', function() {
         stubGlobalNavigator(null);
 
         geolocator.getCurrentPosition().fail(onReject);
@@ -102,15 +102,15 @@ define([
       });
     });
 
-    describe('watchPostion', function () {
-      it('should use the HTML5 geolocation API', function () {
+    describe('watchPostion', function() {
+      it('should use the HTML5 geolocation API', function() {
         geolocator.watchPosition();
 
         expect(navigator.geolocation.watchPosition).toHaveBeenCalled();
         expect(navigator.geolocation.watchPosition.getOptions()).toEqual(NAVIGATOR_OPTIONS);
       });
 
-      it('should return the user\'s location', function () {
+      it('should return the user\'s location', function() {
         geolocator.watchPosition(onResolve);
         navigator.geolocation.watchPosition.resolve(position);
 
@@ -118,7 +118,7 @@ define([
         expect(onResolve.getPosition().latLon).toEqual([LAT_STUB, LON_STUB]);
       });
 
-      it('should return the user\'s location multiple times', function () {
+      it('should return the user\'s location multiple times', function() {
         var COUNT = 3;
         geolocator.watchPosition(onResolve);
 
@@ -129,7 +129,7 @@ define([
         expect(onResolve.callCount).toEqual(COUNT);
       });
 
-      it('should handle errors', function () {
+      it('should handle errors', function() {
         geolocator.watchPosition(null, onReject);
         navigator.geolocation.watchPosition.reject(new MockGeolocationError());
 
@@ -147,8 +147,8 @@ define([
       });
     });
 
-    describe('clearWatch', function () {
-      it('should stop watching for changes in position', function () {
+    describe('clearWatch', function() {
+      it('should stop watching for changes in position', function() {
         var WATCH_ID_STUB = 12345;
         navigator.geolocation.watchPosition.andReturn(WATCH_ID_STUB);
         geolocator.watchPosition();
@@ -159,14 +159,14 @@ define([
       });
     });
 
-    describe('isSupported', function () {
-      it('should return true if HTML5 geolocation is supported', function () {
+    describe('isSupported', function() {
+      it('should return true if HTML5 geolocation is supported', function() {
         stubGlobalNavigator(new MockNavigator());
 
         expect(HTML5GeolocateService.isSupported()).toEqual(true);
       });
 
-      it('should return false if HTML5 geolocation is not supported', function () {
+      it('should return false if HTML5 geolocation is not supported', function() {
         stubGlobalNavigator(null);
 
         expect(HTML5GeolocateService.isSupported()).toEqual(false);
@@ -174,5 +174,4 @@ define([
     });
 
   });
-})
-;
+});

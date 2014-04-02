@@ -142,20 +142,20 @@ define([
       });
 
     });
-    
-    
+
+
     describe('getView', function() {
       var VIEW_STUB;
 
       var MockStrategy = function() {
-      }
+      };
 
       MockStrategy.prototype.getView = function() {
         return VIEW_STUB;
       };
 
       beforeEach(function() {
-        VIEW_STUB = { view: 'stub' }
+        VIEW_STUB = { view: 'stub' };
       });
 
 
@@ -177,10 +177,10 @@ define([
           object.getView();
         }).toThrow();
       });
-      
+
     });
-    
-    
+
+
     describe('requestView', function() {
       var view;
 
@@ -202,7 +202,7 @@ define([
         view = { id: _.uniqueId('StubView_') };
       });
 
-      
+
       it('should immediately resolve with the strategy\'s view, if a strategy is set', function() {
         var obj = new MapExtensionObject();
         var onResolved = jasmine.createSpy('onResolved');
@@ -218,7 +218,7 @@ define([
 
         expect(onResolved).toHaveBeenCalled();
       });
-      
+
       it('should resolve with a strategy\'s view, once the strategy is loaded', function() {
         var obj = new MapExtensionObject();
         var onResolved = jasmine.createSpy('onResolved');
@@ -236,7 +236,7 @@ define([
 
         expect(onResolved).toHaveBeenCalled();
       });
-      
+
     });
 
   });

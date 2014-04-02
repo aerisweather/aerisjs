@@ -39,7 +39,7 @@ define(['aeris/util', 'aeris/model'], function(_, Model) {
 
   MockMarker.prototype.getIconOffsetX = function() {
     return this.get('icon').anchor.x;
-  }
+  };
 
   MockMarker.prototype.getIconOffsetY = function() {
     return this.get('icon').anchor.y;
@@ -59,7 +59,7 @@ define(['aeris/util', 'aeris/model'], function(_, Model) {
    * @return {Object}
    */
   MockMarker.prototype.getIcon = function() {
-    return this.get('icon')
+    return this.get('icon');
   };
 
   /**
@@ -75,7 +75,7 @@ define(['aeris/util', 'aeris/model'], function(_, Model) {
    * @return {google.maps.Map}
    */
   MockMarker.prototype.getMap = function() {
-    return this.get('map')
+    return this.get('map');
   };
 
   /**
@@ -91,7 +91,7 @@ define(['aeris/util', 'aeris/model'], function(_, Model) {
    * @return {google.maps.LatLng}
    */
   MockMarker.prototype.getPosition = function() {
-    return this.get('position')
+    return this.get('position');
   };
 
   /**
@@ -107,7 +107,7 @@ define(['aeris/util', 'aeris/model'], function(_, Model) {
    * @return {string}
    */
   MockMarker.prototype.getTitle = function() {
-    return this.get('title')
+    return this.get('title');
   };
 
 
