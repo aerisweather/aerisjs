@@ -20,7 +20,6 @@ define([
   };
 
 
-
   var MockMarker = function(opt_attrs, opt_options) {
     var options = _.defaults(opt_options || {}, {
       type: undefined
@@ -73,7 +72,6 @@ define([
   _.inherits(MockMarkerCollection, Collection);
 
 
-
   var MockMap = function() {
     this.getView = jasmine.createSpy('Map#getView').
       andReturn(_.uniqueId('MapView_'));
@@ -83,7 +81,6 @@ define([
   _.inherits(MockMap, Model);
 
 
-
   beforeEach(function() {
     clock.useFakeTimers();
   });
@@ -91,7 +88,6 @@ define([
   afterEach(function() {
     clock.restore();
   });
-
 
 
   describe('A MarkerClustererStrategy', function() {
@@ -219,13 +215,13 @@ define([
 
         // Not sure how to test these...
         /*it('should trigger a click event on the object when a marker cluster is clicked', function() {
-        });
+         });
 
-        it('should trigger a mouseover event on the object when a markercluster is mouse-over\'d', function() {
-        });
+         it('should trigger a mouseover event on the object when a markercluster is mouse-over\'d', function() {
+         });
 
-        it('should trigger a mouseout event on the object when a markercluster is mouse-out\'d', function() {
-        });*/
+         it('should trigger a mouseout event on the object when a markercluster is mouse-out\'d', function() {
+         });*/
 
       });
 
