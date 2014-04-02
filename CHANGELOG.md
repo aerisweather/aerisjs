@@ -1,3 +1,10 @@
+# 0.3.9
+
+* FIX: Markers for google maps properly set clickable/draggable attributes
+* FIX: Marker clusters for google maps accept 'clusterOptions' object
+       from aeris.maps.markercollections.MarkerCollection constructor.
+* MOD: Commit bower and node deps to repo
+
 # 0.3.8
 
 * ADD: Improve ability to integrate with existing mapping applications
