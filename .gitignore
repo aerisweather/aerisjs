@@ -28,4 +28,7 @@ docs/assets/css/
 tests/specrunner.html
 tests/specrunner-*.html
 
+# Nested libraries
+# (for dev environment, only)
 aeris-riderx/
+aeris-interactive-maps/

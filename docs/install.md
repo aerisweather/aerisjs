@@ -54,14 +54,6 @@ There are several hosted versions of the Aeris.js library, each with a varying s
     Includes additional APIs for [`geolocation`](http://docs.aerisjs.com#aeris.geolocate), [`geocoding`](http://docs.aerisjs.com#aeris.geocode), and [`directions`](http://docs.aerisjs.com/api/classes/aeris.directions.DirectionsServiceInterface.html).
 
     [//cdn.aerisjs.com/gmaps-plus.min.js](//cdn.aerisjs.com/gmaps-plus.min.js)
-
-* **Map AppBuilder**
-
-    The Aeris [`AppBuilder`](http://docs.aerisjs.com/api/classes/aeris.builder.maps.MapAppBuilder.html) provides a configuration-based interface for easily generating a robust weather mapping application.
-
-    *The [`AppBuilder`](http://docs.aerisjs.com/api/classes/aeris.builder.maps.MapAppBuilder.html) component is currently a work in progress. Feel free to play around with it, while we finish up work on this component.*
-
-    [//cdn.aerisjs.com/mapAppBuilder.min.js](//cdn.aerisjs.com/mapAppBuilder.min.js)
     
 
 
@@ -132,62 +124,6 @@ require.config({
     }
 });
 ```
-
-If you are using any of the [`AppBuilder`](http://docs.aerisjs.com/api/classes/aeris.builder.maps.MapAppBuilder.html) components, additional dependencies must be specified:
-
-```javascript
-require.config({
-    paths: {
-        // MarionetteJS is used to power much of the AppBuilder view structure
-        marionette: 'myapp/vendor/backbone.marionette',
-        jquery: 'myapp/vendor/jquery',
-
-        // Templating engine
-        Handlebars: 'myapp/vendor/handlebars',
-
-        // Handlebars AMD loader plugin
-        hbars: 'myapp/vendor/hbars',
-
-        // Text AMD loader plugin
-        text: 'myapp/vendor/text',
-
-        // Must be specified in order to use the r.js optimizer
-        // with WireJS.
-        // See https://github.com/pieter-vanderwerff/wire-rjs-builder
-        'wire/builder/rjs': 'myapp/vendor/rjsbuilder'
-    },
-    // WireJS is a dependency injection / IoC framework
-    // used configure and initialize the map application.
-    // See https://github.com/cujojs/wire
-    packages: [
-        {
-            name: 'wire',
-            location: 'myapp/vendor/wire',
-            main: 'wire'
-        },
-        {
-            // Promise/A+ implementation
-            // Dependency for WireJS
-            // See https://github.com/cujojs/when
-            name: 'when',
-            location: 'myapp/vendor/when',
-            main: 'when'
-        },
-        {
-            // AOP for Javascript
-            // Dependency for WireJS
-            name: 'meld',
-            location: 'myapp/vendor/meld',
-            main: 'meld'
-        }
-    ],
-    shim: {
-        // Don't forget your shim config!
-    }
-});
-```
-
-I hear you saying: "Oy, that's a lot of dependencies!" Well yes -- this project rides on the back of giants, and I have no interest in reinventing the wheel. But if you're worried about entering a dependency hell, why not [give Bower a try](#using-bower).
 
 See [the AMD/Bower.js example app](https://github.com/hamweather/aerisjs/tree/master/examples/amd/src/app.js) for a full working RequireJS configuration.
 

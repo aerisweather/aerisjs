@@ -1,7 +1,6 @@
 module.exports = function(grunt) {
   var _ = require('underscore');
   var createRjsConfig = require('./deployment/scripts/createrjsconfig');
-  var mapAppRjsConfig = require('./deployment/config/mapappbuilder');
 
   var notSpecs = [
     'tests/spec/**/mocks/*.js',
@@ -12,9 +11,7 @@ module.exports = function(grunt) {
   ];
   var failingSpecs = [
     'tests/spec/aeris/commands/abstractcommand.js',
-    'tests/spec/aeris/commands/commandmanager.js',
-    'tests/spec/aeris/builder/maps/options/mapappbuilderoptions.js',
-    'tests/spec/aeris/builder/maps/map/controllers/mapcontroller.js'
+    'tests/spec/aeris/commands/commandmanager.js'
   ];
   var allSpecs = [
     'tests/spec/**/*.js'
@@ -233,18 +230,6 @@ module.exports = function(grunt) {
           strategy: 'leaflet',
           outDir: '<%=buildDirs.lib %>',
           minify: true
-        })
-      },
-
-      mapApp: {
-        options: _.extend({}, mapAppRjsConfig, {
-          out: '<%=buildDirs.lib %>/mapapp.js'
-        })
-      },
-      'mapApp.min': {
-        options: _.extend({}, mapAppRjsConfig, {
-          out: '<%=buildDirs.lib %>/mapapp.min.js',
-          optimize: 'uglify2'
         })
       }
     },

@@ -286,46 +286,6 @@ See the reference documentation for more details about geoservices:
 * [`Geocode services`](http://docs.aerisjs.com#aeris.geocode)
 
 
-## AppBuilder
-
-```javascript
-/**
- * The Aeris.js AppBuilder is still very much a work in progress.
- * Feel free to play around with it while we finish up this feature.
-*/
-```
-
-The Aeris [`AppBuilder`](http://docs.aerisjs.com/api/classes/aeris.builder.maps.MapAppBuilder.html) is a dead-simple tool for creating a weather map application.
-
-```javascript
-new MapApp({
-    el: 'myMapApp',      // ID of application container element
-    apiKey: 'MY_AERIS_CLIENT_ID',
-    apiSecret: 'MY_AERIS_CLIENT_SECRET',
-    layers: [
-        'Radar',
-        'Satellite'
-    ],
-    markers: [
-        'EarthquakeMarkers',
-        'StormReportMarkers'
-    ]
-});
-```
-
-
-#### Theming the AppBuilder
-
-If you'd like to customize the theme, you can bootstrap off of the default theme, which is written using [Sass](http://sass-lang.com/), a CSS precompiler. You can find the default theme in the repo, located at `src/builder/maps/theme`.
-
-We use [Compass](http://compass-style.org/) to compile the the sass stylesheets, which is as easy as running:
-
-```
-compass compile
-```
-
-from the theme directory.
-
 
 ## Integrating with Existing Applications
 
