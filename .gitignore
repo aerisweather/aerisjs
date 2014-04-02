@@ -4,9 +4,6 @@
 .DS_STORE
 *.log
 
-bower_components/
-examples/amd/bower_components
-
 # Sandbox
 examples/sandbox/
 
@@ -21,9 +18,6 @@ examples/apikeys.js
 !**/themes/**/styleguide/**/*.css
 
 build/
-
-# node
-**/node_modules/
 
 # Generated YUIDoc documentation
 docs/public/
