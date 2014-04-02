@@ -2,7 +2,12 @@ define(['aeris/util', 'aeris/model'], function(_, Model) {
   var root = this;
   var Marker_orig = _.path('google.maps.Marker', root);
 
-  var MockMarker = function(options) {
+  /**
+   * @class MockGoogleMarker
+   * @param {Object=} options
+   * @constructor
+   */
+  var MockGoogleMarker = function(options) {
     var stubMethods = [
       'setMap',
       'setPosition',
@@ -18,30 +23,30 @@ define(['aeris/util', 'aeris/model'], function(_, Model) {
 
     Model.call(this, options);
   };
-  _.inherits(MockMarker, Model);
+  _.inherits(MockGoogleMarker, Model);
 
-  MockMarker.useMockMarker = function() {
-    _.expose(MockMarker, 'google.maps.Marker');
+  MockGoogleMarker.useMockMarker = function() {
+    _.expose(MockGoogleMarker, 'google.maps.Marker');
   };
 
-  MockMarker.restore = function() {
+  MockGoogleMarker.restore = function() {
     _.expose(Marker_orig, 'google.maps.Marker');
   };
 
 
-  MockMarker.prototype.getCtorOptions = function() {
+  MockGoogleMarker.prototype.getCtorOptions = function() {
     return this.ctorOptions_;
   };
 
-  MockMarker.prototype.getIconUrl = function() {
+  MockGoogleMarker.prototype.getIconUrl = function() {
     return this.get('icon').url;
   };
 
-  MockMarker.prototype.getIconOffsetX = function() {
+  MockGoogleMarker.prototype.getIconOffsetX = function() {
     return this.get('icon').anchor.x;
   };
 
-  MockMarker.prototype.getIconOffsetY = function() {
+  MockGoogleMarker.prototype.getIconOffsetY = function() {
     return this.get('icon').anchor.y;
   };
 
@@ -50,7 +55,7 @@ define(['aeris/util', 'aeris/model'], function(_, Model) {
    * @method setIcon
    * @param {Object} icon
    */
-  MockMarker.prototype.setIcon = function(icon) {
+  MockGoogleMarker.prototype.setIcon = function(icon) {
     this.set('icon', icon, { validate: true });
   };
 
@@ -58,7 +63,7 @@ define(['aeris/util', 'aeris/model'], function(_, Model) {
    * @method getIcon
    * @return {Object}
    */
-  MockMarker.prototype.getIcon = function() {
+  MockGoogleMarker.prototype.getIcon = function() {
     return this.get('icon');
   };
 
@@ -66,7 +71,7 @@ define(['aeris/util', 'aeris/model'], function(_, Model) {
    * @method setMap
    * @param {google.maps.Map} map
    */
-  MockMarker.prototype.setMap = function(map) {
+  MockGoogleMarker.prototype.setMap = function(map) {
     this.set('map', map, { validate: true });
   };
 
@@ -74,7 +79,7 @@ define(['aeris/util', 'aeris/model'], function(_, Model) {
    * @method getMap
    * @return {google.maps.Map}
    */
-  MockMarker.prototype.getMap = function() {
+  MockGoogleMarker.prototype.getMap = function() {
     return this.get('map');
   };
 
@@ -82,7 +87,7 @@ define(['aeris/util', 'aeris/model'], function(_, Model) {
    * @method setPosition
    * @param {google.maps.LatLng} position
    */
-  MockMarker.prototype.setPosition = function(position) {
+  MockGoogleMarker.prototype.setPosition = function(position) {
     this.set('position', position, { validate: true });
   };
 
@@ -90,7 +95,7 @@ define(['aeris/util', 'aeris/model'], function(_, Model) {
    * @method getPosition
    * @return {google.maps.LatLng}
    */
-  MockMarker.prototype.getPosition = function() {
+  MockGoogleMarker.prototype.getPosition = function() {
     return this.get('position');
   };
 
@@ -98,7 +103,7 @@ define(['aeris/util', 'aeris/model'], function(_, Model) {
    * @method setTitle
    * @param {string} title
    */
-  MockMarker.prototype.setTitle = function(title) {
+  MockGoogleMarker.prototype.setTitle = function(title) {
     this.set('title', title, { validate: true });
   };
 
@@ -106,10 +111,43 @@ define(['aeris/util', 'aeris/model'], function(_, Model) {
    * @method getTitle
    * @return {string}
    */
-  MockMarker.prototype.getTitle = function() {
+  MockGoogleMarker.prototype.getTitle = function() {
     return this.get('title');
   };
 
+  /**
+   * @method setDraggable
+   * @param {Boolean} isDraggable
+   */
+  MockGoogleMarker.prototype.setDraggable = function(isDraggable) {
+    this.set('draggable', isDraggable, { validate: true });
+  };
 
-  return MockMarker;
+  /**
+   * @method getDraggable
+   * @return {Boolean}
+   */
+  MockGoogleMarker.prototype.getDraggable = function() {
+    return this.get('draggable');
+  };
+
+
+  /**
+   * @method setClickable
+   * @param {Boolean} isClickable
+   */
+  MockGoogleMarker.prototype.setClickable = function(isClickable) {
+    this.set('clickable', isClickable, { validate: true });
+  };
+
+  /**
+   * @method getClickable
+   * @return {Boolean}
+   */
+  MockGoogleMarker.prototype.getClickable = function() {
+    return this.get('clickable');
+  };
+
+
+  return MockGoogleMarker;
 });
