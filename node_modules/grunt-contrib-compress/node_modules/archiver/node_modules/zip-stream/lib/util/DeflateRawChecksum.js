@@ -1,0 +1,55 @@
+/**
+ * node-zip-stream
+ *
+ * Copyright (c) 2014 Chris Talkington, contributors.
+ * Licensed under the MIT license.
+ * https://github.com/ctalkington/node-zip-stream/blob/master/LICENSE-MIT
+ */
+var zlib = require('zlib');
+var inherits = require('util').inherits;
+
+var util = require('./');
+
+function DeflateRawChecksum(options) {
+  zlib.DeflateRaw.call(this, options);
+
+  this.checksum = util.crc32();
+  this.digest = null;
+
+  this.rawSize = 0;
+  this.compressedSize = 0;
+
+  // BC v0.8
+  if (typeof zlib.DeflateRaw.prototype.push !== 'function') {
+    this.on('data', function(chunk) {
+      if (chunk) {
+        this.compressedSize += chunk.length;
+      }
+    });
+  }
+
+  this.once('end', function() {
+    this.digest = this.checksum.digest();
+  });
+}
+
+inherits(DeflateRawChecksum, zlib.DeflateRaw);
+
+DeflateRawChecksum.prototype.push = function(chunk, encoding) {
+  if (chunk) {
+    this.compressedSize += chunk.length;
+  }
+
+  return zlib.DeflateRaw.prototype.push.call(this, chunk, encoding);
+};
+
+DeflateRawChecksum.prototype.write = function(chunk, cb) {
+  if (chunk) {
+    this.checksum.update(chunk);
+    this.rawSize += chunk.length;
+  }
+
+  return zlib.DeflateRaw.prototype.write.call(this, chunk, cb);
+};
+
+module.exports = DeflateRawChecksum;

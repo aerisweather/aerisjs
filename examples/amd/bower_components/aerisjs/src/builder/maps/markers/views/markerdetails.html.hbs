@@ -1,0 +1,11 @@
+<h1 class="aeris-float-left" style="display: inline-block; float: left">Marker Details</h1>
+<button class="aeris-closeBtn" style="display: inline-block; float: right">close</button>
+<div style="clear: both"></div>
+<table>
+  {{#each report}}
+    <tr>
+      <td>{{@key}}</td>
+      <td>{{this}}</td>
+    </tr>
+  {{/each}}
+</table>

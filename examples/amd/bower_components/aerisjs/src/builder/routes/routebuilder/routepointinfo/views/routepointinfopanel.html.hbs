@@ -1,0 +1,37 @@
+<div class="aeris-infoPanel aeris-routePoint">
+  <h1>Route Point</h1>
+
+  <header>
+    <h2>{{ lat }}&deg; {{ latDirection }}, {{ lon }}&deg; {{ lonDirection }}</h2>
+  </header>
+
+  <section class="aeris-routePointInfo">
+    <ul>
+      {{#if distanceFromPrev }}
+        <li>
+          <div class="aeris-key">
+            Distance from previous
+          </div>
+          <div class="aeris-value">
+            {{ distanceFromPrev.miles }} mi <small>{{ distanceFromPrev.km }} km</small>
+          </div>
+        </li>
+      {{/if }}
+
+      {{#if distanceToNext }}
+        <li>
+          <div class="aeris-key">
+            Distance to next
+          </div>
+          <div class="aeris-value">
+            {{ distanceToNext.miles }} mi  <small>{{ distanceToNext.km }} km</small>
+          </div>
+        </li>
+      {{/if }}
+    </ul>
+  </section>
+
+  <section>
+    <a class="aeris-secondaryBtn aeris-deleteBtn" href="#">Delete this point</a>
+  </section>
+</div>
