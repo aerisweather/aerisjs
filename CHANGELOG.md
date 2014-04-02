@@ -1,3 +1,9 @@
+# 0.4.0
+
+**BREAKING CHANGES**
+
+* MOD: Move MapApp Builder library to [its own repo](https://github.com/hamweather/aeris-interactive-maps)
+
 # 0.3.9
 
 * FIX: Markers for google maps properly set clickable/draggable attributes
