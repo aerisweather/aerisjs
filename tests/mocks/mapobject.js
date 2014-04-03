@@ -9,8 +9,15 @@ define([
       'getMap',
       'hasMap'
     ],
-    inherits: Model
+    constructor: function(opt_attrs, opt_options) {
+      var attrs = _.defaults(opt_attrs || {}, {
+        map: null
+      });
+
+      Model.call(this, attrs, opt_options);
+    }
   });
+  _.inherits(MockMapObject, Model);
 
   MockMapObject.prototype.setMap = function(map) {
     if (map === this.get('map')) { return; }
