@@ -29,6 +29,8 @@ define(['aeris/util'], function(_) {
       options.constructor.apply(this, arguments);
 
       this.mockName_ = options.name + '_' + (this.cid || _.uniqueId());
+
+      this.ctorArgs = _.argsToArray(arguments);
     };
     if (options.inherits) {
       _.inherits(Mock, options.inherits);
