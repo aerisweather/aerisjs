@@ -14,6 +14,9 @@ define([
     'fitToBounds'
   ];
 
+  /**
+   * @deprecated Use mocks/aeris/maps/map instead.
+   */
   var MockMap = function(el, opt_attrs, opt_options) {
     var attrs = _.defaults(opt_attrs || {}, {
       el: el
@@ -26,6 +29,8 @@ define([
     mockMethods.forEach(function(methodName) {
       spyOn(this, methodName).andCallThrough();
     }, this);
+
+    this.id = _.uniqueId('Mock_Map_');
   };
   _.inherits(MockMap, Map);
   _.extend(MockMap.prototype, Events.prototype);
@@ -45,6 +50,13 @@ define([
 
   MockMap.prototype.getView = function() {
     return {};
+  };
+
+  /**
+   * @method jasmineToString
+   */
+  MockMap.prototype.jasmineToString = function() {
+    return this.id;
   };
 
 
