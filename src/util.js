@@ -229,6 +229,10 @@ define([
     }
   };
 
+  _.templateSettings = {
+    interpolate: /\{(.+?)\}/g
+  };
+
   // Mix utility methods into underscore
   _.mixin(util);
 

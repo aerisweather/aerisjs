@@ -297,5 +297,15 @@ define([
 
     });
 
+
+    describe('template', function() {
+
+      it('should work with {var} syntax', function() {
+        var str = _.template('foo {what}', { what: 'bar' });
+        expect(str).toEqual('foo bar');
+      });
+
+    });
+
   });
 });
