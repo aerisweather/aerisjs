@@ -215,7 +215,7 @@ define([
     var length;
 
     // Allow first argument to be array of promises
-    if (promises.length == 1 && promises[0] instanceof Array) {
+    if (promises.length === 1 && promises[0] instanceof Array) {
       promises = promises[0];
     }
     length = promises.length;

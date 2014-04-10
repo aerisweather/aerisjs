@@ -194,6 +194,14 @@ define([
     this.set('opacity', opacity, { validate: true });
   };
 
+  /**
+   * @method getOpacity
+   * @return {number}
+   */
+  AbstractTile.prototype.getOpacity = function() {
+    return this.get('opacity');
+  };
+
 
   /**
    * Sets the zIndex of a tile layer.
@@ -203,6 +211,15 @@ define([
    */
   AbstractTile.prototype.setZIndex = function(zIndex) {
     this.set('zIndex', zIndex, { validate: true });
+  };
+
+
+  /**
+   * @method getZIndex
+   * @return {number}
+   */
+  AbstractTile.prototype.getZIndex = function() {
+    return this.get('zIndex');
   };
 
 
