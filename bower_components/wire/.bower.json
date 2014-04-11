@@ -1,10 +1,10 @@
 {
   "name": "wire",
-  "version": "0.10.6",
+  "version": "0.10.7",
   "main": "./wire.js",
   "dependencies": {
     "meld": "~1",
-    "when": "~2",
+    "when": "~3",
     "poly": "~0"
   },
   "devDependencies": {
@@ -17,11 +17,11 @@
     "dijit": "~1"
   },
   "homepage": "https://github.com/cujojs/wire",
-  "_release": "0.10.6",
+  "_release": "0.10.7",
   "_resolution": {
     "type": "version",
-    "tag": "0.10.6",
-    "commit": "08db49082c721282363c2cd7fa8f0cd548a9e6b5"
+    "tag": "0.10.7",
+    "commit": "88e5b9324fbc7949022e2f448c85c0d1ee2c3a53"
   },
   "_source": "git://github.com/cujojs/wire.git",
   "_target": "~0.10.5",

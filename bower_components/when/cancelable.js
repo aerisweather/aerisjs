@@ -2,6 +2,7 @@
 
 /**
  * cancelable.js
+ * @deprecated
  *
  * Decorator that makes a deferred "cancelable".  It adds a cancel() method that
  * will call a special cancel handler function and then reject the deferred.  The
@@ -16,12 +17,11 @@
  */
 
 (function(define) {
-define(function(require) {
-
-	var when = require('./when');
+define(function() {
 
     /**
      * Makes deferred cancelable, adding a cancel() method.
+	 * @deprecated
      *
      * @param deferred {Deferred} the {@link Deferred} to make cancelable
      * @param canceler {Function} cancel handler function to execute when this deferred
@@ -33,29 +33,22 @@ define(function(require) {
      * @returns deferred, with an added cancel() method.
      */
     return function(deferred, canceler) {
-
-        var delegate = when.defer();
-
         // Add a cancel method to the deferred to reject the delegate
         // with the special canceled indicator.
         deferred.cancel = function() {
-            return deferred.reject(canceler(deferred));
+			try {
+				deferred.reject(canceler(deferred));
+			} catch(e) {
+				deferred.reject(e);
+			}
+
+			return deferred.promise;
         };
-
-        // Ensure that the original resolve, reject, and progress all forward
-        // to the delegate
-        deferred.promise.then(delegate.resolve, delegate.reject, delegate.notify);
-
-        // Replace deferred's promise with the delegate promise
-        deferred.promise = delegate.promise;
 
         return deferred;
     };
 
 });
-})(
-	typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); }
-	// Boilerplate for AMD and Node
-);
+})(typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(); });
 
 

@@ -28,7 +28,7 @@
     "backbone": "~1.1.0",
     "marionette": "~1.6.2",
     "handlebars": "~1.1.2",
-    "requirejs": "~2.1.8",
+    "requirejs": "~2.1.10",
     "requirejs-text": "~2.0.10",
     "hbars": "https://github.com/jfparadis/requirejs-handlebars.git",
     "jquery": "1.8.0 - 1.11.0",

@@ -1,51 +1,20 @@
-/** @license MIT License (c) copyright 2010-2013 original author or authors */
+/** @license MIT License (c) copyright 2010-2014 original author or authors */
+/** @author Brian Cavalier */
+/** @author John Hann */
 
-/**
- * Licensed under the MIT License at:
- * http://www.opensource.org/licenses/mit-license.php
- *
- * @author: Brian Cavalier
- * @author: John Hann
- */
 (function(define) { 'use strict';
 define(function(require) {
 
-	var createAggregator, throttleReporter, simpleReporter, aggregator,
-		formatter, stackFilter, excludeRx, filter, reporter, logger,
-		rejectionMsg, reasonMsg, filteredFramesMsg, stackJumpMsg, attachPoint;
+	var PromiseMonitor = require('./PromiseMonitor');
+	var ConsoleReporter = require('./ConsoleReporter');
 
-	createAggregator = require('./aggregator');
-	throttleReporter = require('./throttledReporter');
-	simpleReporter = require('./simpleReporter');
-	formatter = require('./simpleFormatter');
-	stackFilter = require('./stackFilter');
-	logger = require('./logger/consoleGroup');
+	var promiseMonitor = new PromiseMonitor(new ConsoleReporter());
 
-	rejectionMsg = '=== Unhandled rejection escaped at ===';
-	reasonMsg = '=== Caused by reason ===';
-	stackJumpMsg = '  --- new call stack ---';
-	filteredFramesMsg = '  ...[filtered frames]...';
-
-	excludeRx = /when\.js|(module|node)\.js:\d|when\/monitor\//i;
-	filter = stackFilter(exclude, mergePromiseFrames);
-	reporter = simpleReporter(formatter(filter, rejectionMsg, reasonMsg, stackJumpMsg), logger);
-
-	aggregator = createAggregator(throttleReporter(200, reporter));
-
-	attachPoint = typeof console !== 'undefined'
-		? aggregator.publish(console)
-		: aggregator;
-
-	return aggregator;
-
-	function mergePromiseFrames(/* frames */) {
-		return filteredFramesMsg;
+	if(typeof console !== 'undefined') {
+		console.promiseMonitor = promiseMonitor;
 	}
 
-	function exclude(line) {
-		var rx = attachPoint.promiseStackFilter || excludeRx;
-		return rx.test(line);
-	}
+	return promiseMonitor;
 
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));

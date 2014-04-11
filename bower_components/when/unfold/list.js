@@ -1,18 +1,12 @@
 /** @license MIT License (c) copyright B Cavalier & J Hann */
 
-/**
- * unfold
- * @author: brian@hovercraftstudios.com
- */
 (function(define) {
 define(function(require) {
 
-	var when, unfold;
-
-	when = require('../when');
-	unfold = require('../unfold');
+	var unfold = require('../when').unfold;
 
 	/**
+	 * @deprecated
 	 * Given a seed and generator, produces an Array.  Effectively the
 	 * dual (opposite) of when.reduce()
 	 * @param {function} generator function that generates a value (or promise
@@ -34,8 +28,5 @@ define(function(require) {
 	};
 
 });
-})(
-	typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); }
-	// Boilerplate for AMD and Node
-);
+})(typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); });
 

@@ -13,10 +13,9 @@
 (function(define) {
 define(function(require) {
 
-	var when, slice;
-
-	when = require('./when');
-	slice = Array.prototype.slice;
+	var when = require('./when');
+	var all = when.Promise.all;
+	var slice = Array.prototype.slice;
 
 	/**
 	 * Run array of tasks in parallel
@@ -27,17 +26,14 @@ define(function(require) {
 	 * to position of the task in the tasks array
 	 */
 	return function parallel(tasks /*, args... */) {
-		return when.all(slice.call(arguments, 1)).then(function(args) {
+		return all(slice.call(arguments, 1)).then(function(args) {
 			return when.map(tasks, function(task) {
-				return task.apply(null, args);
+				return task.apply(void 0, args);
 			});
 		});
 	};
 
 });
-})(
-	typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); }
-	// Boilerplate for AMD and Node
-);
+})(typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); });
 
 

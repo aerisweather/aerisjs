@@ -1,8 +1,20 @@
 {
 	"name": "when",
-	"version": "2.8.0",
+	"version": "3.1.0",
 	"description": "A lightweight Promises/A+ and when() implementation, plus other async goodies.",
-	"keywords": ["Promises/A+", "promises-aplus", "promise", "promises", "deferred", "deferreds", "when", "async", "asynchronous", "cujo", "ender"],
+	"keywords": [
+		"cujo",
+		"Promises/A+",
+		"promises-aplus",
+		"promise",
+		"promises",
+		"deferred",
+		"deferreds",
+		"when",
+		"async",
+		"asynchronous",
+		"ender"
+	],
 	"homepage": "http://cujojs.com",
 	"licenses": [
 		{
@@ -39,7 +51,8 @@
 		}
 	],
 	"devDependencies": {
-		"curl": "https://github.com/cujojs/curl/tarball/0.7.3",
+		"curl": "git://github.com/cujojs/curl",
+		"poly": "git://github.com/cujojs/poly",
 		"test-support": "~0.3",
 		"promises-aplus-tests": "~2",
 		"benchmark": "~1",
@@ -47,17 +60,18 @@
 		"browserify": "~2"
 	},
 	"main": "when",
-	"ender": { "files": ["*.js", "node/*.js", "unfold/*.js", "monitor/*.js"] },
+	"ender": { "files": ["*.js", "lib/*.js", "node/*.js", "unfold/*.js", "monitor/*.js"] },
 	"directories": {
 		"test": "test"
 	},
 	"scripts": {
 		"test": "jshint . && buster test -e node -r specification && promises-aplus-tests test/promises-aplus-adapter.js --reporter spec",
-		"ci": "npm test && sauceme",
+		"ci": "npm test && sauceme -b test/browsers.json",
 		"tunnel": "sauceme -m",
 		"start": "buster static -e browser",
 		"benchmark": "node benchmark/promise && node benchmark/map",
-		"browserify": "browserify -s when build/when.browserify.js -o build/when.js",
-		"browserify-debug": "browserify -s when build/when.browserify-debug.js -o build/when.js"
+		"browserify-es6": "browserify -s Promise es6-shim/Promise.browserify-es6.js --no-detect-globals -o es6-shim/Promise.js",
+		"browserify": "browserify -s when build/when.browserify.js --no-detect-globals -o build/when.js",
+		"browserify-debug": "browserify -s when build/when.browserify-debug.js --no-detect-globals -o build/when.js"
 	}
 }

@@ -1,11 +1,11 @@
-(function(buster, delay, ObjectProxy, WireProxy) {
+(function(buster, ObjectProxy, WireProxy) {
 "use strict";
 
 var assert, refute, fail;
 
 assert = buster.assert;
 refute = buster.refute;
-fail = buster.assertions.fail;
+fail = buster.fail;
 
 buster.testCase('lib/ObjectProxy', {
 	'should create a proxy for the supplied target': function() {
@@ -103,7 +103,6 @@ buster.testCase('lib/ObjectProxy', {
 });
 })(
 	require('buster'),
-	require('when/delay'),
 	require('../../../lib/ObjectProxy'),
 	require('../../../lib/WireProxy')
 );

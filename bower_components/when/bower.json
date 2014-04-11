@@ -1,7 +1,8 @@
 {
   "name": "when",
+  "version": "3.1.0",
   "main": "when.js",
-  "version": "2.8.0",
+  "moduleType": ["amd", "node"],
   "description": "A lightweight Promises/A+ and when() implementation, plus other async goodies.",
   "keywords": ["Promises/A+", "promises-aplus", "promise", "promises", "deferred", "deferreds", "when", "async", "asynchronous", "cujo"],
   "homepage": "https://github.com/cujojs/when",
@@ -11,6 +12,7 @@
   "license": "MIT",
   "ignore": [
     "**/.*",
+    "**/*.md",
     "docs",
     "benchmark",
     "node_modules",

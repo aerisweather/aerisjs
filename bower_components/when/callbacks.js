@@ -1,29 +1,29 @@
-/** @license MIT License (c) copyright 2013 original author or authors */
+/** @license MIT License (c) copyright 2013-2014 original author or authors */
 
 /**
- * callbacks.js
- *
  * Collection of helper functions for interacting with 'traditional',
  * callback-taking functions using a promise interface.
  *
- * @author Renato Zannon <renato.riccieri@gmail.com>
+ * @author Renato Zannon
  * @contributor Brian Cavalier
  */
 
 (function(define) {
 define(function(require) {
 
-	var when, promise, slice;
+	var when, Promise, promise, slice, _liftAll;
 
 	when = require('./when');
+	Promise = when.Promise;
+	_liftAll = require('./lib/liftAll');
 	promise = when.promise;
-	slice = [].slice;
+	slice = Array.prototype.slice;
 
 	return {
+		lift: lift,
+		liftAll: liftAll,
 		apply: apply,
 		call: call,
-		lift: lift,
-		bind: lift, // DEPRECATED alias for lift
 		promisify: promisify
 	};
 
@@ -58,7 +58,7 @@ define(function(require) {
 	 * @returns {Promise} promise for the callback value of asyncFunction
 	 */
 	function apply(asyncFunction, extraAsyncArgs) {
-		return _apply(asyncFunction, this, extraAsyncArgs);
+		return _apply(asyncFunction, this, extraAsyncArgs || []);
 	}
 
 	/**
@@ -66,15 +66,13 @@ define(function(require) {
 	 * @private
 	 */
 	function _apply(asyncFunction, thisArg, extraAsyncArgs) {
-		return when.all(extraAsyncArgs || []).then(function(args) {
-			return promise(function(resolve, reject) {
-				var asyncArgs = args.concat(
-					alwaysUnary(resolve),
-					alwaysUnary(reject)
-				);
+		return Promise.all(extraAsyncArgs).then(function(args) {
+			var p = Promise._defer();
+			args.push(alwaysUnary(p._handler.resolve, p._handler),
+				alwaysUnary(p._handler.reject, p._handler));
+			asyncFunction.apply(thisArg, args);
 
-				asyncFunction.apply(thisArg, asyncArgs);
-			});
+			return p;
 		});
 	}
 
@@ -143,6 +141,21 @@ define(function(require) {
 	}
 
 	/**
+	 * Lift all the functions/methods on src
+	 * @param {object|function} src source whose functions will be lifted
+	 * @param {function?} combine optional function for customizing the lifting
+	 *  process. It is passed dst, the lifted function, and the property name of
+	 *  the original function on src.
+	 * @param {(object|function)?} dst option destination host onto which to place lifted
+	 *  functions. If not provided, liftAll returns a new object.
+	 * @returns {*} If dst is provided, returns dst with lifted functions as
+	 *  properties.  If dst not provided, returns a new object with lifted functions.
+	 */
+	function liftAll(src, combine, dst) {
+		return _liftAll(lift, combine, dst, src);
+	}
+
+	/**
 	 * `promisify` is a version of `lift` that allows fine-grained control over the
 	 * arguments that passed to the underlying function. It is intended to handle
 	 * functions that don't follow the common callback and errback positions.
@@ -194,31 +207,30 @@ define(function(require) {
 
 		return function() {
 			var thisArg = this;
-			return when.all(arguments).then(function(args) {
-				return promise(applyPromisified);
+			return Promise.all(arguments).then(function(args) {
+				var p = Promise._defer();
 
-				function applyPromisified(resolve, reject) {
-					var callbackPos, errbackPos;
+				var callbackPos, errbackPos;
 
-					if('callback' in positions) {
-						callbackPos = normalizePosition(args, positions.callback);
-					}
-
-					if('errback' in positions) {
-						errbackPos = normalizePosition(args, positions.errback);
-					}
-
-					if(errbackPos < callbackPos) {
-						insertCallback(args, errbackPos, reject);
-						insertCallback(args, callbackPos, resolve);
-					} else {
-						insertCallback(args, callbackPos, resolve);
-						insertCallback(args, errbackPos, reject);
-					}
-
-					asyncFunction.apply(thisArg, args);
+				if('callback' in positions) {
+					callbackPos = normalizePosition(args, positions.callback);
 				}
 
+				if('errback' in positions) {
+					errbackPos = normalizePosition(args, positions.errback);
+				}
+
+				if(errbackPos < callbackPos) {
+					insertCallback(args, errbackPos, p._handler.reject, p._handler);
+					insertCallback(args, callbackPos, p._handler.resolve, p._handler);
+				} else {
+					insertCallback(args, callbackPos, p._handler.resolve, p._handler);
+					insertCallback(args, errbackPos, p._handler.reject, p._handler);
+				}
+
+				asyncFunction.apply(thisArg, args);
+
+				return p;
 			});
 		};
 	}
@@ -227,28 +239,24 @@ define(function(require) {
 		return pos < 0 ? (args.length + pos + 2) : pos;
 	}
 
-	function insertCallback(args, pos, callback) {
+	function insertCallback(args, pos, callback, thisArg) {
 		if(pos != null) {
-			callback = alwaysUnary(callback);
+			callback = alwaysUnary(callback, thisArg);
 			if(pos < 0) {
 				pos = args.length + pos + 2;
 			}
 			args.splice(pos, 0, callback);
 		}
-
 	}
 
-	function alwaysUnary(fn) {
+	function alwaysUnary(fn, thisArg) {
 		return function() {
 			if(arguments.length <= 1) {
-				fn.apply(this, arguments);
+				fn.apply(thisArg, arguments);
 			} else {
-				fn.call(this, slice.call(arguments));
+				fn.call(thisArg, slice.call(arguments));
 			}
 		};
 	}
 });
-})(
-	typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); }
-	// Boilerplate for AMD and Node
-);
+})(typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); });
