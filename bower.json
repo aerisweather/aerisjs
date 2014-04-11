@@ -33,8 +33,6 @@
     "hbars": "https://github.com/jfparadis/requirejs-handlebars.git",
     "jquery": "1.8.0 - 1.11.0",
     "gmaps-markerclusterer-plus": "http://google-maps-utility-library-v3.googlecode.com/svn/tags/markerclustererplus/2.1.1/src/markerclusterer.js",
-    "wire": "~0.10.5",
-    "wire-rjs-builder": "https://github.com/pieter-vanderwerff/wire-rjs-builder.git",
     "googlemaps-amd": "~1.0.0",
     "leaflet.markercluster": "~0.4.0"
   },
