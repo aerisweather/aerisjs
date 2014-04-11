@@ -264,11 +264,13 @@ define([
    * @method getParentNode_
    */
   ImageMapType.prototype.getParentNode_ = function() {
-    if (this.parentNode_) { return this.parentNode_; }
+    var hasValidParentNode = this.parentNode_ && document.contains(this.parentNode_);
 
+    if (hasValidParentNode) { return this.parentNode_; }
 
     try {
       this.parentNode_ = this.divs_[0].parentNode.parentNode;
+      this.setParentNodeZIndex_(this.zIndex_);
     }
     catch (e) {
       this.parentNode_ = null;
