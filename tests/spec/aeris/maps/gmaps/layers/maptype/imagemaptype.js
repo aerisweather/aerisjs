@@ -16,6 +16,13 @@ define([
     }
   };
 
+  MockDocument.prototype.contains = function(el) {
+    // The ImageMapType checks the document to see if
+    // it's parent el exists. I can think of no great way to stub out this behvior,
+    // so we'll just say that it's always there.
+    return true;
+  };
+
 
   var MockImageElement = function() {
     this.img_ = document.createElement('img');
@@ -300,7 +307,6 @@ define([
       var parentNode, tile, mapType;
 
       beforeEach(function() {
-        var firstLevelParent;
         mapType = new ImageMapType({
           getTileUrl: getTileUrl
         });
