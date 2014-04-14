@@ -1,3 +1,13 @@
+# 0.4.1
+
+* FIX: Fix aeris.config.setApiSecret
+* MOD: aeris.util.template uses '{var}' style delimiters
+* FIX: Fix Google ImageMapType zIndex updating
+* MOD: Reconfigure layer zIndexes
+
+See commit log for full change list.
+
+
 # 0.4.0
 
 **BREAKING CHANGES**
