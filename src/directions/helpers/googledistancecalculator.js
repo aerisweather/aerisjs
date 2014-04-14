@@ -2,7 +2,7 @@ define([
   'aeris/util',
   'googlemaps!',
   'aeris/directions/errors/serviceunavailableerror',
-  'aeris/maps/strategy/utils'
+  'aeris/util/gmaps'
 ], function(_, gmaps, ServiceUnavailableError, mapUtil) {
   /**
    * Calculates distances between points

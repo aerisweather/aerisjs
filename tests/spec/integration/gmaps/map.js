@@ -3,7 +3,7 @@ define([
   'googlemaps!',
   'tests/spec/integration/helpers/mapcanvas',
   'tests/lib/flag',
-  'aeris/maps/strategy/utils'
+  'aeris/util/gmaps'
 ], function(AerisMap, gmaps, MapCanvas, Flag, mapUtil) {
 
   describe('Maps with Google Maps', function() {

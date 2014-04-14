@@ -2,7 +2,7 @@ define([
   'aeris/util',
   'aeris/maps/strategy/abstractstrategy',
   'gmaps-markerclusterer-plus',
-  'aeris/maps/strategy/utils'
+  'aeris/util/gmaps'
 ], function(_, AbstractStrategy, MarkerClusterer, mapUtil) {
   /**
    * Strategy for rendering a collection of markers in a cluster.

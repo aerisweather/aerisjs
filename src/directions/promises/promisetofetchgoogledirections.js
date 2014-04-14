@@ -2,7 +2,7 @@ define([
   'aeris/util',
   'googlemaps!',
   'aeris/directions/promises/promisetofetchdirections',
-  'aeris/maps/strategy/utils'
+  'aeris/util/gmaps'
 ], function(_, gmaps, PromiseToFetchDirections, mapUtil) {
   /**
    * A promise to fetch directions from the Google Directions API.

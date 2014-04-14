@@ -1,6 +1,6 @@
 define([
   'aeris/util',
-  'aeris/maps/strategy/utils',
+  'aeris/util/gmaps',
   'aeris/maps/strategy/abstractstrategy',
   'aeris/maps/layers/googleroadmap',
   'googlemaps!'
