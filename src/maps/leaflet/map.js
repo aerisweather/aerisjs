@@ -50,6 +50,8 @@ define([
     var map;
     var el = this.object_.getElement();
 
+    this.bindMapToElementDimensions_();
+
     // Use predefined map view
     if (el instanceof Leaflet.Map) {
       return el;
@@ -138,6 +140,32 @@ define([
    */
   LeafletMapStrategy.prototype.fitToBounds = function(bounds) {
     this.view_.fitBounds(mapUtil.toLeafletBounds(bounds));
+  };
+
+
+  /**
+   * Redraw the Leaflet map whenever the container
+   * element changes size.
+   *
+   * @method bindMapToElementDimensions_
+   * @private
+   */
+  LeafletMapStrategy.prototype.bindMapToElementDimensions_ = function() {
+    var el = this.object_.mapEl_;
+    var lastWidth = el.offsetWidth;
+    var lastHeight = el.offsetHeight;
+
+    el.addEventListener('DOMSubtreeModified', function(event) {
+      var hasDimensionsChanged = (lastWidth !== el.offsetWidth) || (lastHeight !== el.offsetHeight);
+
+      if (hasDimensionsChanged) {
+        console.log('dimensions changed', event);
+        this.view_.invalidateSize();
+        lastWidth = el.offsetWidth;
+        lastHeight = el.offsetHeight;
+        event.stopImmediatePropagation();
+      }
+    }.bind(this));
   };
 
 
