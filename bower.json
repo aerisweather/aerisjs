@@ -11,16 +11,10 @@
   "homepage": "https://github.com/hamweather/aerisjs",
   "main": "src",
   "ignore": [
-    "deployment/",
-    "tasks/",
-    "examples/",
     "bower_components/",
     "node_modules/",
-    "docs/",
-    "assets/",
     ".gitignore",
     ".travis.yml",
-    "Gruntfile.js",
     "README.md"
   ],
   "dependencies": {
