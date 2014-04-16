@@ -1,9 +1,9 @@
 define({
+  Radar: 70,
+
   SatelliteGlobal: 60,
   SatelliteVisible: 60,
   Satellite: 60,
-
-  Radar: 50,
 
   Advisories: 45,
 
