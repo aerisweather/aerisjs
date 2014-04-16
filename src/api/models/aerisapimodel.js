@@ -15,7 +15,13 @@ define([
    *
    * @constructor
    * @override
-  */
+   *
+   * @param {Object=} opt_attrs
+   * @param {Object=} opt_options
+   * @param {string} opt_options.endpoint
+   * @param {string} opt_options.action
+   * @param {aeris.api.params.Params} opt_options.params
+   */
   var AerisApiModel = function(opt_attrs, opt_options) {
     var options = _.defaults(opt_options || {}, {
       endpoint: '',
@@ -137,7 +143,9 @@ define([
       var isPassingBoth = isPassingThisFilter && isPassingPreviousFilters;
       var isPassingEither = isPassingThisFilter || isPassingPreviousFilters;
 
-      if (isFirstFilter) { return isPassingThisFilter; }
+      if (isFirstFilter) {
+        return isPassingThisFilter;
+      }
 
       // If operator is 'AND', model must pass the current filter,
       // as the previous filters.
