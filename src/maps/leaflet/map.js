@@ -35,6 +35,16 @@ define([
 
     this.proxyLeafletMapEvents_();
     this.bindToLeafletMapState_();
+
+    this.bindMapToElementDimensions_();
+    this.bindElReadyEvent_();
+
+    /**
+     * Triggered when the element is
+     * has non-zero dimensions set on it.
+     *
+     * @event el:dimensions
+     */
   };
   _.inherits(LeafletMapStrategy, AbstractStrategy);
 
@@ -47,10 +57,9 @@ define([
    * @return {L.Map}
    */
   LeafletMapStrategy.prototype.createView_ = function() {
+    var baseLayer;
     var map;
     var el = this.object_.getElement();
-
-    this.bindMapToElementDimensions_();
 
     // Use predefined map view
     if (el instanceof Leaflet.Map) {
@@ -60,7 +69,7 @@ define([
     map = new Leaflet.Map(el);
 
     // Add a baseLayer to the map.
-    var baseLayer = new OSMLayer();
+    baseLayer = new OSMLayer();
     baseLayer.getView().addTo(map);
 
     return map;
@@ -147,27 +156,46 @@ define([
    * Redraw the Leaflet map whenever the container
    * element changes size.
    *
+   * Fixes issue with maps created in containers which
+   * have not yet been added to the DOM.
+   * See https://github.com/Leaflet/Leaflet/issues/941
+   *
    * @method bindMapToElementDimensions_
    * @private
    */
   LeafletMapStrategy.prototype.bindMapToElementDimensions_ = function() {
-    var el = this.object_.mapEl_;
-    var lastWidth = el.offsetWidth;
-    var lastHeight = el.offsetHeight;
-
-    el.addEventListener('DOMSubtreeModified', function(event) {
-      var hasDimensionsChanged = (lastWidth !== el.offsetWidth) || (lastHeight !== el.offsetHeight);
-
-      if (hasDimensionsChanged) {
-        console.log('dimensions changed', event);
-        this.view_.invalidateSize();
-        lastWidth = el.offsetWidth;
-        lastHeight = el.offsetHeight;
-        event.stopImmediatePropagation();
-      }
-    }.bind(this));
+    this.listenTo(this, 'el:dimensions', function() {
+      this.view_.invalidateSize();
+    });
   };
 
+
+  /**
+   * @method bindElReadyEvent_
+   * @private
+   */
+  LeafletMapStrategy.prototype.bindElReadyEvent_ = function() {
+    var pollRef;
+    var el = this.object_.mapEl_;
+    var isElDrawn = function() {
+      return el.offsetWidth !== 0 && el.offsetHeight !== 0;
+    };
+
+    if (isElDrawn()) {
+      this.trigger('el:dimensions');
+    }
+    if (!isElDrawn()) {
+      pollRef = root.setInterval(function() {
+        if (isElDrawn()) {
+          root.clearInterval(pollRef);
+          this.trigger('el:dimensions');
+        }
+      }.bind(this), 100);
+    }
+  };
+
+
+  var root = this;
 
   return LeafletMapStrategy;
 });

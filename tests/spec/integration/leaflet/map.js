@@ -1,11 +1,12 @@
 define([
   'aeris/maps/map',
   'tests/lib/spyonobject',
+  'tests/lib/flag',
   'tests/spec/integration/helpers/mapcanvas',
   'aeris/maps/strategy/util',
   'mocks/leaflet/events/event',
   'leaflet'
-], function(Map, spyOnObject, MapCanvas, mapUtil, LeafletEvent, Leaflet) {
+], function(Map, spyOnObject, Flag, MapCanvas, mapUtil, LeafletEvent, Leaflet) {
 
 
   describe('Maps with Leaflet', function() {
@@ -54,8 +55,11 @@ define([
         describe('should have the correct properties:', function() {
 
           it('center', function() {
-            expect(mapUtil.toAerisLatLon(leafletMap.getCenter())).
-              toEqual(aerisMap.getCenter());
+            expect(leafletMap.getCenter().lat).
+              toBeNear(aerisMap.getCenter()[0], 0.05);
+
+            expect(leafletMap.getCenter().lng).
+              toBeNear(aerisMap.getCenter()[1], 0.05);
           });
 
           it('zoom', function() {
@@ -320,6 +324,28 @@ define([
       aerisMap.fitToBounds(aerisBounds);
 
       expect(leafletMap.fitBounds).toHaveBeenCalledWith(mapUtil.toLeafletBounds(aerisBounds));
+    });
+
+
+    it('should reset the map size when the canvas element is added to the DOM', function() {
+      var timeoutFlag = new Flag();
+      var mapCanvas = new MapCanvas();
+
+      // Reset fixutres using mapCanvas removed from the DOM
+      mapCanvas.remove();
+      aerisMap = new Map(mapCanvas);
+      leafletMap = aerisMap.getView();
+
+      spyOn(leafletMap, 'invalidateSize');
+
+      document.body.appendChild(mapCanvas);
+
+      window.setTimeout(timeoutFlag.set, 500);
+      waitsFor(timeoutFlag.check, 500);
+      runs(function() {
+        expect(leafletMap.invalidateSize).toHaveBeenCalled();
+        mapCanvas.remove();
+      });
     });
 
   });
