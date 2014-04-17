@@ -1,3 +1,10 @@
+# 0.4.2
+
+* MOD: Set default Radar zIndex to be above satellite
+* FIX: Reset Leaflet map dimensions when element size is set
+
+See git history for a full list of changes.
+
 # 0.4.1
 
 * FIX: Fix aeris.config.setApiSecret
