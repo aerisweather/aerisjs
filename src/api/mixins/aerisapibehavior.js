@@ -260,6 +260,23 @@ define([
     },
 
     /**
+     * @method getEndpoint
+     * @return {string}
+     */
+    getEndpoint: function() {
+      return this.endpoint_;
+    },
+
+
+    /**
+     * @method getAction
+     * @return {string}
+     */
+    getAction: function() {
+      return this.action_;
+    },
+
+    /**
      * Handle errors returned by the
      * Aeris API.
      *
