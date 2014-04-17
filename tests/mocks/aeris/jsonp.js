@@ -1,4 +1,8 @@
 define(function() {
+  /**
+   * @class MockJSONP
+   * @constructor
+   */
   var MockJSONP = function() {
     this.get = jasmine.createSpy('get');
   };
@@ -17,7 +21,7 @@ define(function() {
 
   MockJSONP.prototype.getGetArgAt_ = function(argIndex) {
     if (!this.get.callCount) {
-      new Error('Unable to return argument for MockJSONP#get: ' +
+      throw new Error('Unable to return argument for MockJSONP#get: ' +
         'MockJSONP#get was never called');
     }
 
