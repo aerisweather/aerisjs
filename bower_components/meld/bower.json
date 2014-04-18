@@ -7,15 +7,8 @@
     "John Hann <john@unscriptable.com>"
   ],
   "description": "AOP for JS with before, around, on, afterReturning, afterThrowing, after advice, and pointcut support",
-  "moduleType": [
-    "amd",
-    "node"
-  ],
-  "keywords": [
-    "aop",
-    "aspect",
-    "cujo"
-  ],
+  "moduleType": [ "amd", "node" ],
+  "keywords": [ "aop", "aspect", "cujo" ],
   "license": "MIT",
   "homepage": "http://cujojs.com",
   "ignore": [
@@ -26,14 +19,5 @@
     "docs",
     "experiments",
     "package.json"
-  ],
-  "_release": "1.3.1",
-  "_resolution": {
-    "type": "version",
-    "tag": "1.3.1",
-    "commit": "4e43d9d8af7d406a0e38fdec3762483e21ffdb8c"
-  },
-  "_source": "git://github.com/cujojs/meld.git",
-  "_target": "~1",
-  "_originalSource": "meld"
+  ]
 }
