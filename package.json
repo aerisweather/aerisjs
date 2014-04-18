@@ -45,6 +45,6 @@
     "grunt-contrib-compass": "~0.7.2",
     "grunt-contrib-compress": "~0.7.0",
     "grunt-contrib-clean": "~0.5.0",
-    "grunt-jasmine-legacy": "~1.0.3"
+    "grunt-jasmine-legacy": "~1.0.5"
   }
 }

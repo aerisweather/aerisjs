@@ -47,7 +47,11 @@ module.exports = {
             options: {
               timeout: 3000
             },
-            done: function() {
+            done: function(err) {
+              // Handle errors in spawning PhantomJS
+              if (err) {
+                promiseToRunSpecsDeferred.reject(err);
+              }
             }
           });
         }
