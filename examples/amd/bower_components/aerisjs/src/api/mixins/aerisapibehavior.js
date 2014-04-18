@@ -198,14 +198,12 @@ define([
      */
     sync: function(method, model, opt_options) {
       var data;
+      var noop = function() {};
       var promiseToSync = new Promise();
       var options = _.defaults(opt_options || {}, {
-        success: function() {
-        },
-        error: function() {
-        },
-        complete: function() {
-        }
+        success: noop,
+        error: noop,
+        complete: noop
       });
 
       // Restrict requests to be read-only

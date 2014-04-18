@@ -1,0 +1,18 @@
+{
+  "name": "wire-rjs-builder",
+  "version": "0.1.0",
+  "description": "A requirejs (rjs) builder plugin for Wire.js specs",
+  "main": "builder.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pieter-vanderwerff/wire-rjs-builder.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pieter-vanderwerff/wire-rjs-builder/issues"
+  }
+}

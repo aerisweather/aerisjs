@@ -285,7 +285,7 @@ define([
 
 
   Route.prototype.setDistance_ = function(distance) {
-    var distanceHasNotChanged = (distance == this.distance);
+    var distanceHasNotChanged = (distance === this.distance);
 
     if (distanceHasNotChanged) {
       return;

@@ -2,7 +2,7 @@ define([
   'aeris/util',
   'aeris/maps/strategy/abstractstrategy',
   'gmaps-markerclusterer-plus',
-  'aeris/maps/strategy/utils'
+  'aeris/util/gmaps'
 ], function(_, AbstractStrategy, MarkerClusterer, mapUtil) {
   /**
    * Strategy for rendering a collection of markers in a cluster.
@@ -329,7 +329,7 @@ define([
    */
   MarkerClusterStrategy.prototype.createClusterer_ = function(groupName) {
     var clusterer;
-    var clustererOptions = _.defaults({}, this.object_.clusterOptions, {
+    var clustererOptions = _.defaults({}, this.object_.getClusterOptions(), {
       clusterClass: 'aeris-cluster',
       styles: this.object_.getClusterStyle(groupName),
       averageCenter: true,

@@ -1,0 +1,62 @@
+{{registerProjectConfig projectConfig}}
+<!DOCTYPE html>
+<html lang="en" class="yui-overrride">
+<head>
+  <meta charset="utf-8">
+  <title>{{htmlTitle}}</title>
+  <link rel="stylesheet" href="{{yuiGridsUrl}}">
+  <link rel="stylesheet" href="{{projectConfig.assetPath}}/js/api/vendor/prettify/prettify-min.css">
+  <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700' rel='stylesheet' type='text/css'>
+  <link rel="shortcut icon" type="image/png" href="{{projectConfig.assetPath}}/images/aeris-favicon.png">
+  <script src="{{yuiSeedUrl}}"></script>
+  <link rel="stylesheet" href="{{projectConfig.assetPath}}/css/api.css" id="site_styles">
+</head>
+<body class="yui3-skin-sam">
+
+
+{{>forkme}}
+
+<div id="page">
+  {{>public/header}}
+
+  <div id="doc">
+    <div id="bd" class="yui3-g">
+
+      <div class="yui3-u-1-4">
+        <div id="docs-sidebar" class="sidebar apidocs">
+          {{>sidebar}}
+        </div>
+      </div>
+      <div class="yui3-u-3-4">
+        {{>options}}
+        <div class="apidocs">
+          <div id="docs-main">
+            <div class="content">
+              {{>layout_content}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{>public/footer}}
+
+
+<script src="{{projectConfig.assetPath}}/js/api/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="{{projectConfig.assetPath}}/js/api/yui-prettify.js"></script>
+<script src="{{projectConfig.assetPath}}/js/api/api-filter.js"></script>
+<script src="{{projectConfig.assetPath}}/js/api/api-list.js"></script>
+<script src="{{projectConfig.assetPath}}/js/api/api-search.js"></script>
+<script src="{{projectConfig.assetPath}}/js/api/apidocs.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script type="text/javascript" src="{{projectConfig.assetPath}}/js/jquery.details.min.js"></script>
+<script type="text/javascript" src="{{projectConfig.assetPath}}/js/tooltipster/jquery.tooltipster.min.js"></script>
+<script type="text/javascript" src="{{projectConfig.assetPath}}/js/page.js"></script>
+
+
+</body>
+</html>

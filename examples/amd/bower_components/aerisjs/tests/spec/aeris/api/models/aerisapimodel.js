@@ -7,13 +7,13 @@ define([
 
   var NoResultsResponse = function() {
     return {
-      success: true, 
+      success: true,
       error: {
-        code: "warn_no_data", 
-        description: "No data was returned for the request."
-      }, 
+        code: 'warn_no_data',
+        description: 'No data was returned for the request.'
+      },
       response: []
-    }
+    };
   };
 
   describe('An AerisApiModel', function() {
@@ -55,10 +55,10 @@ define([
         fetchOptions = {
           error: onError,
           success: onSuccess
-        }
+        };
       });
-      
-      
+
+
       it('should append the model id onto the request url', function() {
         apiModel.fetch();
 

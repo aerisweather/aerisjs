@@ -27,7 +27,7 @@ define([
 
   MockFilteredCollection.prototype.isPassingFilter = function(val) {
     return this.filter_(val);
-  }
+  };
 
 
   return MockFilteredCollection;

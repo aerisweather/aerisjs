@@ -47,7 +47,7 @@ define([
         evtObj.off();
       });
 
-      it('should accept multiple handler binding a single event', function () {
+      it('should accept multiple handler binding a single event', function() {
         spyOn(Backbone.Events, 'on').andCallThrough();
         evtObj.on(eventsHash, someCtx);
 
@@ -56,7 +56,7 @@ define([
         expect(Backbone.Events.on).toHaveBeenCalledWith('change', evtObj.anotherThing, someCtx);
       });
 
-      it('should accept multiple handler for unbinding a single event', function () {
+      it('should accept multiple handler for unbinding a single event', function() {
         spyOn(Backbone.Events, 'off').andCallThrough();
         evtObj.off(eventsHash, someCtx);
 

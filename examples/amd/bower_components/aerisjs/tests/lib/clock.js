@@ -8,7 +8,7 @@ define(['sinon', 'aeris/util'], function(sinon, _) {
    */
   return {
     useFakeTimers: function() {
-      _.now = function () { return new Date().getTime(); };
+      _.now = function() { return new Date().getTime(); };
       clock = sinon.useFakeTimers();
     },
     restore: function() {

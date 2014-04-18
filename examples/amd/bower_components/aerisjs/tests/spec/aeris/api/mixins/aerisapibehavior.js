@@ -7,7 +7,7 @@ define([
     this.params_ = options.params;
   };
   _.extend(ConcreteAerisApi.prototype, AerisApiBehavior);
-  
+
   var MockParams = new MockFactory({
     methods: [
       'set',
@@ -21,11 +21,11 @@ define([
       'get'
     ]
   });
-  
-  
+
+
   describe('AerisApiBehavior', function() {
     var aerisApi, mockParams, OPTIONS_STUB;
-    
+
     beforeEach(function() {
       OPTIONS_STUB = { STUB: 'OPTIONS_STUB' };
       mockParams = new MockParams();
@@ -37,15 +37,15 @@ define([
 
     describe('setParams', function() {
       var ATTRS_STUB = { stub: 'ATTRS_STUB' };
-      
+
       it('should set params attributes', function() {
         mockParams.set.andCallFake(function(attrs, opts) {
           expect(attrs).toEqual(ATTRS_STUB);
         });
-        
+
         aerisApi.setParams(ATTRS_STUB);
       });
-      
+
       it('should always validate', function() {
         mockParams.set.andCallFake(function(attrs, opts) {
           expect(opts.validate).toEqual(true);
@@ -53,7 +53,7 @@ define([
 
         aerisApi.setParams(ATTRS_STUB);
       });
-      
+
     });
 
     describe('*Filter methods', function() {
@@ -89,6 +89,6 @@ define([
       });
 
     });
-    
+
   });
 });

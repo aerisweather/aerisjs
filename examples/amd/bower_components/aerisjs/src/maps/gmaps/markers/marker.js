@@ -1,6 +1,6 @@
 define([
   'aeris/util',
-  'aeris/maps/strategy/utils',
+  'aeris/util/gmaps',
   'aeris/maps/strategy/abstractstrategy',
   'googlemaps!'
 ], function(_, mapUtil, AbstractStrategy, gmaps) {
@@ -49,7 +49,9 @@ define([
       'change:title': this.updateTitle_,
       'change:url change:offsetX change:offsetY': this.updateIcon_,
       'change:selectedUrl change:selectedOffsetX change:selectedOffsetY': this.updateIcon_,
-      'change:selected': this.updateIcon_
+      'change:selected': this.updateIcon_,
+      'change:clickable': this.updateClickable_,
+      'change:draggable': this.updateDraggable_
     });
   };
   _.inherits(MarkerStrategy, AbstractStrategy);
@@ -170,6 +172,24 @@ define([
   MarkerStrategy.prototype.updateIcon_ = function() {
     var icon = this.createIcon_();
     this.getView().setIcon(icon);
+  };
+
+
+  /**
+   * @method updateClickable_
+   * @private
+   */
+  MarkerStrategy.prototype.updateClickable_ = function() {
+    this.getView().setClickable(this.marker_.get('clickable'));
+  };
+
+
+  /**
+   * @method updateDraggable_
+   * @private
+   */
+  MarkerStrategy.prototype.updateDraggable_ = function() {
+    this.getView().setDraggable(this.marker_.get('draggable'));
   };
 
 

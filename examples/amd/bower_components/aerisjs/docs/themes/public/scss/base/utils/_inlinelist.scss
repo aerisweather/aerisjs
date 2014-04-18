@@ -1,0 +1,20 @@
+%resetList {
+  margin: 0;
+  padding: 0;
+
+  li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+}
+
+%inlineList {
+  @extend %resetList;
+  @include pie-clearfix;
+
+  li {
+    float: left;
+    @include inline-block;
+  }
+}

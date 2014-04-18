@@ -35,11 +35,11 @@ define([
 
   MockApiModel.prototype.testFilterCollection = function() {
     return false;
-  }
+  };
 
   MockApiModel.prototype.testFilter = function() {
     return false;
-  }
+  };
 
 
   var MockApiCollection = new MockFactory({
@@ -182,7 +182,7 @@ define([
           var mockApiModel = new MockApiModel();
           var TEST_RESULT_STUB = 'TEST_RESULT_STUB';
 
-          mockApiModel.testFilterCollection.andReturn(TEST_RESULT_STUB)
+          mockApiModel.testFilterCollection.andReturn(TEST_RESULT_STUB);
 
           // The filter set on the client collection
           // will use the model's 'testFilterCollection' method
@@ -325,7 +325,7 @@ define([
       describe(proxyMethod, function() {
 
         it('should proxy the ' + sourceName + '#' + sourceMethod + ' method', function() {
-          var args = ['ARG_A', 'ARG_B', 'ARG_C' ];
+          var args = ['ARG_A', 'ARG_B', 'ARG_C'];
           aerisApiClientCollection[proxyMethod].apply(aerisApiClientCollection, args);
 
           expect(sourceObj[sourceMethod]).toHaveBeenCalled();
@@ -347,7 +347,7 @@ define([
           'removeLimit'
         ], function(methodName) {
           spyOn(SubsetCollection.prototype, methodName);
-        })
+        });
       });
 
 
@@ -377,7 +377,7 @@ define([
       ];
       _.each(aerisApiProxyMethods, function(methodName) {
         it('should proxy the mockApiColleciton#' + methodName + ' method', function() {
-          var args = ['ARG_A', 'ARG_B', 'ARG_C' ];
+          var args = ['ARG_A', 'ARG_B', 'ARG_C'];
           aerisApiClientCollection[methodName].apply(aerisApiClientCollection, args);
 
           expect(mockApiCollection[methodName]).toHaveBeenCalled();

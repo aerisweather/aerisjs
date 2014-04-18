@@ -51,7 +51,7 @@ define([
 
         waitsFor(testUtil.checkFlag, 100, 'Command to execute');
         runs(function() {
-          expect(waypoint.get('position')).toEqual([30, -20])
+          expect(waypoint.get('position')).toEqual([30, -20]);
         });
       });
 

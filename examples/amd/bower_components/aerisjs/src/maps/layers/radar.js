@@ -15,8 +15,7 @@ define([
     var attrs = _.extend({
       name: 'Radar',
       tileType: 'radar',
-      autoUpdateInterval: AerisTile.updateIntervals.RADAR,
-      zIndex: 505
+      autoUpdateInterval: AerisTile.updateIntervals.RADAR
     }, opt_attrs);
 
 

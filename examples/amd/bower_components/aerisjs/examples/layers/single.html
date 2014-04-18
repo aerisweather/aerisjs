@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Aeris.js - Tile Layers Example</title>
+
+  <link rel="stylesheet" href="../css/example.css"/>
+  <link rel="shortcut icon" type="image/x-icon" href="../weather.ico"/>
+
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false&libraries=geometry"></script>
+  <script type="text/javascript" src="http://cdn.aerisjs.com/aeris.js"></script>
+  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+  <script type="text/javascript" src="../apikeys.js"></script>
+</head>
+<body>
+  <div id="map-canvas"></div>
+
+  <div id="loading">Loading...</div>
+
+  <div class="prompt">
+    <h1>Example: Tile Layer</h1>
+
+    <h2>Aeris.js</h2>
+
+    <p>
+      The Aeris API provides a set of weather "tile" images, which can be overlaid on a map. See <a href="http://www.hamweather.com/support/documentation/aeris/interactive-tiles/" target="_blank">Aeris
+      Interactive Tile documentation</a> for information about available tile layers.
+    </p>
+
+    <small>
+      Having trouble? <br>
+      Make sure you've created a <code>apikeys.js</code> file, with a valid Aeris <code>client_id</code> and <code>client_secret</code>.
+    </small>
+  </div>
+
+  <div class="controls">
+    <label>
+      Opacity
+      <input min="0" max="100" value="100" id="opacity" type="range"/>
+    </label>
+  </div>
+
+  <script type="text/javascript">
+    var map = new aeris.maps.Map('map-canvas');
+    var satellite = new aeris.maps.layers.SatelliteGlobal({
+      apiId: apiKeys.aeris.id,
+      apiSecret: apiKeys.aeris.secret
+    });
+
+    satellite.setMap(map);
+
+
+    // Opacity slider
+    $('#opacity').change(function() {
+      // Opacity must be number between 0 and 1.0
+      var opacity = $(this).val() / 100;
+
+      satellite.setOpacity(opacity);
+    });
+  </script>
+</body>
+</html>

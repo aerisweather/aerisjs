@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Aeris.js - Animation Example</title>
+
+  <link rel="stylesheet" href="../css/example.css"/>
+  <link rel="shortcut icon" type="image/x-icon" href="../weather.ico"/>
+
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false&libraries=geometry"></script>
+  <script type="text/javascript" src="http://cdn.aerisjs.com/aeris.js"></script>
+  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+  <script type="text/javascript" src="../apikeys.js"></script>
+</head>
+<body>
+<div id="map-canvas"></div>
+
+<div id="loading">Loading animation layers... <br>
+  <span id="progress"></span>% done.
+</div>
+
+<div class="prompt">
+  <h1>Example: Animation</h1>
+
+  <h2>Aeris.js</h2>
+
+  <p>
+    Any <a href="http://www.hamweather.com/support/documentation/aeris/interactive-tiles/" target="_blank">Aeris.js tile</a> can be animated using the <code>aeris.maps.animations.TileAnimation</code> object. Animations work by rapidly showing and hiding tile layers associated with a specific date. It is also possible to animate several tiles layers along the same timeline using the <code>aeris.maps.animations.AnimationSync</code> object. See the <a href="sync.html">Animation Sync example.</a>
+  </p>
+</div>
+
+<div class="controls">
+  <p>
+    Time:
+    <span id="currentTime"></span>
+  </p>
+
+  <div class="animationControls">
+    <button id="prev"><img src="../images/prev.png"/></button>
+    <button id="start"><img src="../images/play.png"/></button>
+    <button id="next"><img src="../images/next.png"/></button>
+    <button id="pause"><img src="../images/pause.png"/></button>
+    <button id="stop"><img src="../images/stop.png"/></button>
+  </div>
+</div>
+
+<script type="text/javascript">
+  var map = new aeris.maps.Map('map-canvas');
+  var radar = new aeris.maps.layers.Radar({
+    apiId: apiKeys.aeris.id,
+    apiSecret: apiKeys.aeris.secret
+  });
+
+  // Create an animation "wrapper" around the satellite layer.
+  var animation = new aeris.maps.animations.TileAnimation(radar);
+
+  radar.setMap(map);
+
+  $('#loading').show();
+
+
+  // The animation object begins preloading tiles when it's created,
+  // but you can start the animation right away.
+  // The animation may start out choppy, but as layers are
+  // loaded, they will be added to the animation.
+  //
+  // Alternatively, you can wait for the 'load:complete' event
+  // to fire.
+  animation.start();
+
+
+  // The animation object triggers
+  // load:* events, to update listeners on loading progress.
+  animation.on({
+    'load:progress': function(progress) {
+      $('#progress').text((progress * 100).toFixed(1));
+    },
+
+    'load:complete': function() {
+      $('#loading').delay(500).hide();
+    },
+
+    // When the map bounds change,
+    // tiles must be reloaded.
+    // This fires a 'load:reset' event,
+    // and then 'load:progress' events as the
+    // tiles reload
+    'load:reset': function() {
+      $('#loading').show();
+    },
+
+    'load:error': function(err) {
+      throw err;
+    }
+  });
+
+
+  // A 'change:times' event is triggered
+  // with a date object corresponding to the
+  // current animation frame.
+  animation.on('change:time', function(date) {
+    var formattedTime = date.toTimeString().replace(/.*(\d{2}:\d{2})(:\d{2}).*/, "$1");
+    $('#currentTime').text(formattedTime);
+  });
+
+
+  // Animation controls
+  $('#start').click(function() {
+    animation.start();
+  });
+  $('#stop').click(function() {
+    animation.stop();
+  });
+  $('#pause').click(function() {
+    animation.pause();
+  });
+  $('#prev').click(function() {
+    animation.pause();
+    animation.previous();
+  });
+  $('#next').click(function() {
+    animation.pause();
+    animation.next();
+  });
+</script>
+</body>
+</html>

@@ -29,7 +29,7 @@ define([
 
   MockWaypoint.prototype.getMap = function() {
     return this.map_;
-  }
+  };
 
 
   var MockRoute = function() {
@@ -154,27 +154,27 @@ define([
           it('should have the same position as the original', function() {
             var reverseWaypoint;
 
-            waypoint.set('position', [ 45, -90 ]);
+            waypoint.set('position', [45, -90]);
 
             reverseWaypoint = reverser.getWaypointInReverse(waypoint);
 
-            expect(reverseWaypoint.get('position')).toEqual([ 45, -90 ]);
+            expect(reverseWaypoint.get('position')).toEqual([45, -90]);
           });
 
           it('should not contain any references to original waypoint attributes', function() {
             var reverseWaypoint;
 
-            waypoint.set('position', [ 45, -90 ]);
+            waypoint.set('position', [45, -90]);
 
             reverseWaypoint = reverser.getWaypointInReverse(waypoint);
 
             reverseWaypoint.attributes.position.push('foo');
 
             // Reverse waypoint attribute changed
-            expect(reverseWaypoint.get('position')).toEqual([ 45, -90, 'foo']);
+            expect(reverseWaypoint.get('position')).toEqual([45, -90, 'foo']);
 
             // Original waypoint attribute should not change
-            expect(waypoint.get('position')).toEqual([ 45, -90 ]);
+            expect(waypoint.get('position')).toEqual([45, -90]);
           });
 
         });

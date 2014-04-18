@@ -331,24 +331,24 @@ require([
 
         expect(commandManager.executeCommand).toHaveBeenCalledWith(stubbedCommand);
       });
-      
+
       it('should update the waypoint\'s followDirections and travelMode before adding it', function() {
         routeBuilder.followDirections = 'RB_FOLLOW_DIRECTIONS';
         routeBuilder.travelMode = 'RB_TRAVEL_MODE';
-        
+
         waypoint.set({
           followDirections: 'WAYPOINT_FOLLOW_DIRECTIONS',
           travelMode: 'WAYPOINT_TRAVEL_MODE'
         });
-        
+
         AddWaypointCommand.andCallFake(function(route, waypoint) {
           expect(waypoint.get('followDirections')).toEqual(routeBuilder.followDirections);
           expect(waypoint.get('travelMode')).toEqual(routeBuilder.travelMode);
           return new MockCommand();
         });
-        
+
         routeBuilder.addWaypoint(waypoint);
-        
+
         expect(AddWaypointCommand).toHaveBeenCalled();
       });
 
@@ -401,9 +401,9 @@ require([
       });
 
       it('should execute a MoveWaypointCommand with the provided waypoint and latLon', function() {
-        routeBuilder.moveWaypoint(waypoint, [ 45, -90 ]);
+        routeBuilder.moveWaypoint(waypoint, [45, -90]);
 
-        expect(MoveWaypointCommand).toHaveBeenCalledWith(route, waypoint, [ 45, -90 ]);
+        expect(MoveWaypointCommand).toHaveBeenCalledWith(route, waypoint, [45, -90]);
         expect(commandManager.executeCommand).toHaveBeenCalledWith(moveWaypointCommand);
       });
     });
@@ -481,7 +481,7 @@ require([
         routeBuilder.appendReverseRoute();
 
         expect(AppendReverseRouteCommand).toHaveBeenCalledWith(route);
-        expect(commandManager.executeCommand).toHaveBeenCalledWith(appendReverseRouteCommand)
+        expect(commandManager.executeCommand).toHaveBeenCalledWith(appendReverseRouteCommand);
       });
 
       it('should not execute the command if the route has no waypoints', function() {
@@ -492,7 +492,7 @@ require([
       });
 
       it('should not execute the command if the route has a single waypoints', function() {
-        route.add([ new MockWaypoint() ]);
+        route.add([new MockWaypoint()]);
         routeBuilder.appendReverseRoute();
 
         expect(AppendReverseRouteCommand).not.toHaveBeenCalled();

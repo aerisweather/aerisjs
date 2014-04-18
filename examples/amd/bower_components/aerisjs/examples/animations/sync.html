@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Aeris.js - Animation Sync Example</title>
+
+  <link rel="stylesheet" href="../css/example.css"/>
+  <link rel="shortcut icon" type="image/x-icon" href="../weather.ico"/>
+
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false&libraries=geometry"></script>
+  <script type="text/javascript" src="http://cdn.aerisjs.com/aeris.js"></script>
+  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+  <script type="text/javascript" src="../apikeys.js"></script>
+</head>
+<body>
+<div id="map-canvas"></div>
+
+<div id="loading">Loading animation layers... <br>
+  <span id="progress"></span>% done.
+</div>
+
+<div class="prompt">
+  <h1>Example: Animation Sync</h1>
+
+  <h2>Aeris.js</h2>
+
+  <p>
+    In order to animate multiple tile layers, use an <code>aeris.maps.animations.AnimationSync</code> object. The <code>AnimationSync</code> keeps multiple animations on the same timeline.
+  </p>
+</div>
+
+<div class="controls">
+  <ul>
+    <li>
+    </li>
+    <li class="animationControls">
+      <button id="prev"><img src="../images/prev.png"/></button>
+      <button id="start"><img src="../images/play.png"/></button>
+      <button id="next"><img src="../images/next.png"/></button>
+      <button id="pause"><img src="../images/pause.png"/></button>
+      <button id="stop"><img src="../images/stop.png"/></button>
+    </li>
+    <li>
+      Time: <span id="currentTime"></span>
+      <br>
+      <input id="time" type="range" step="900000"/>
+    </li>
+    <li>
+      <input class="layerToggle" type="checkbox" id="radar" checked/>
+      Radar
+    </li>
+    <li>
+      <input class="layerToggle" type="checkbox" id="satellite" checked/>
+      Satellite
+    </li>
+  </ul>
+</div>
+
+<script type="text/javascript">
+  var map = new aeris.maps.Map('map-canvas', {
+    zoom: 5,
+    center: [40, -95]
+  });
+  var radar = new aeris.maps.layers.Radar({
+    apiId: apiKeys.aeris.id,
+    apiSecret: apiKeys.aeris.secret
+  });
+  var satellite = new aeris.maps.layers.Satellite({
+    apiId: apiKeys.aeris.id,
+    apiSecret: apiKeys.aeris.secret
+  });
+
+  // Create individual animation objects
+  var radarAnimation = new aeris.maps.animations.TileAnimation(radar, {
+    // Limit the number of layers to load
+    limit: 20
+  });
+  var satelliteAnimation = new aeris.maps.animations.TileAnimation(satellite, {
+    limit: 20
+  });
+
+  // Pass the animation objects to an AnimationSync
+  // The AnimationSync uses the same interface as the
+  // AerisTile animation objects.
+  var animationSync = new aeris.maps.animations.AnimationSync([radarAnimation, satelliteAnimation]);
+
+  radar.setMap(map);
+  satellite.setMap(map);
+
+  $('#loading').show();
+
+
+  // You can start the animation right away.
+  // The animation may start out choppy, but as layers are
+  // loaded, they will be added to the animation.
+  //
+  // Alternatively, you can wait for the 'load:complete' event
+  // to fire.
+  animationSync.start();
+
+
+  // The animation object triggers
+  // load:* events, to update listeners on loading progress.
+  animationSync.on({
+    // Available animation layer times have
+    // been loaded from the AerisAPI.
+    // Times is an array of javascript timestamps,
+    // sorted from earliest to latest.
+    'load:times': function(times) {
+      // Set the bounds of the time range input
+      $('#time').attr('min', times[0]);
+      $('#time').attr('max', times[times.length - 1]);
+    },
+
+    'load:progress': function(progress) {
+      $('#progress').text((progress * 100).toFixed(1));
+    },
+
+    'load:complete': function() {
+      $('#loading').delay(500).hide();
+    },
+
+    // When the map bounds change,
+    // tiles must be reloaded.
+    // This fires a 'load:reset' event,
+    // and then 'load:progress' events as the
+    // tiles reload
+    'load:reset': function() {
+      $('#loading').show();
+    },
+
+    'load:error': function(err) {
+      throw err;
+    }
+  });
+
+
+  // A 'change:times' event is triggered
+  // with a date object corresponding to the
+  // current animation frame.
+  animationSync.on('change:time', function(date) {
+    // Update the hh:mm display
+    var formattedTime = date.toTimeString().replace(/.*(\d{2}:\d{2})(:\d{2}).*/, "$1");
+    $('#currentTime').text(formattedTime);
+
+    // Update the position of the time range input
+    $('#time').val(date.getTime());
+  });
+
+
+  // Animation controls
+  $('#start').click(function() {
+    animationSync.start();
+  });
+  $('#stop').click(function() {
+    animationSync.stop();
+  });
+  $('#pause').click(function() {
+    animationSync.pause();
+  });
+  $('#prev').click(function() {
+    animationSync.pause();
+    animationSync.previous();
+  });
+  $('#next').click(function() {
+    animationSync.pause();
+    animationSync.next();
+  });
+
+
+  // Toggle animation layers
+  //
+  // Layers can be added and removed
+  // from an animation sync.
+  $('#satellite').change(function() {
+    var isChecked = $(this).prop('checked');
+
+    if (isChecked) {
+      animationSync.add(satelliteAnimation);
+    }
+    else {
+      animationSync.remove(satelliteAnimation);
+    }
+  });
+  $('#radar').change(function() {
+    var isChecked = $(this).prop('checked');
+
+    if (isChecked) {
+      animationSync.add(radarAnimation);
+    }
+    else {
+      animationSync.remove(radarAnimation);
+    }
+  });
+
+
+  // Time range slider
+  $('#time').change(function() {
+    var time = parseInt($(this).val());
+
+    animationSync.pause();
+    animationSync.goToTime(time);
+  });
+
+</script>
+</body>
+</html>

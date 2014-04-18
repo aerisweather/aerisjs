@@ -101,7 +101,7 @@ define([
    * @param {string} setApiSecret
    */
   Config.prototype.setApiSecret = function(apiSecret) {
-    this.set('apiId', apiSecret, { validate: true });
+    this.set('apiSecret', apiSecret, { validate: true });
   };
 
   // Return a singleton config object,

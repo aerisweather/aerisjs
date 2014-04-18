@@ -53,7 +53,7 @@ define([
           data: mockData
         });
       });
-      
+
       it('should directly proxy params methods using the data object', function() {
         var proxyMethods = [
           'getParams',

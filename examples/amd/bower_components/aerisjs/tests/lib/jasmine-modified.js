@@ -16,7 +16,7 @@ define([
     var declarationError = null;
     try {
       specDefinitions.call(suite);
-    } catch(e) {
+    } catch (e) {
       declarationError = e;
     }
 

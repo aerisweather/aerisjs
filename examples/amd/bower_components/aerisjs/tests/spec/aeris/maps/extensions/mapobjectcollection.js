@@ -15,7 +15,7 @@ define([
   _.inherits(MockMapObject, Model);
 
   MockMapObject.prototype.setMap = function(map, opt_options) {
-    var event = _.isNull(map) ? 'map:remove': 'map:set';
+    var event = _.isNull(map) ? 'map:remove' : 'map:set';
     var options = opt_options || {};
 
     this.set('map', map);
@@ -29,7 +29,7 @@ define([
   function resetSetMapSpiesFor(children) {
     _.each(children, function(child) {
       child.setMap = jasmine.createSpy('setMap');
-    })
+    });
   }
 
 
@@ -258,7 +258,7 @@ define([
         expect(child.setMap).toHaveBeenCalledWith(null);
       });
 
-    })
+    });
 
   });
 

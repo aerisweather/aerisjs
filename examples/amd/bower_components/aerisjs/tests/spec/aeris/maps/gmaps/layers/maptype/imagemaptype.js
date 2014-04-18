@@ -16,6 +16,13 @@ define([
     }
   };
 
+  MockDocument.prototype.contains = function(el) {
+    // The ImageMapType checks the document to see if
+    // it's parent el exists. I can think of no great way to stub out this behvior,
+    // so we'll just say that it's always there.
+    return true;
+  };
+
 
   var MockImageElement = function() {
     this.img_ = document.createElement('img');
@@ -37,7 +44,7 @@ define([
       else {
         setAttribute_orig.call(this.img_, attr, value);
       }
-    }, this)
+    }, this);
 
     this.img_.getAttribute = _.bind(function(attr) {
       if (attr === 'src') {
@@ -58,8 +65,8 @@ define([
 
     return secondLevelParent;
   }
-  
-  
+
+
 
 
 
@@ -94,12 +101,12 @@ define([
         };
         var mapType = new ImageMapType(options);
 
-        expect(mapType.alt).toEqual(options.alt)
-        expect(mapType.minZoom).toEqual(options.minZoom)
-        expect(mapType.maxZoom).toEqual(options.maxZoom)
-        expect(mapType.projection).toEqual(options.projection)
-        expect(mapType.radius).toEqual(options.radius)
-        expect(mapType.tileSize).toEqual(options.tileSize)
+        expect(mapType.alt).toEqual(options.alt);
+        expect(mapType.minZoom).toEqual(options.minZoom);
+        expect(mapType.maxZoom).toEqual(options.maxZoom);
+        expect(mapType.projection).toEqual(options.projection);
+        expect(mapType.radius).toEqual(options.radius);
+        expect(mapType.tileSize).toEqual(options.tileSize);
       });
 
     });
@@ -208,7 +215,7 @@ define([
           var img;
 
           beforeEach(function() {
-            img = $(tile).find('img')[0]
+            img = $(tile).find('img')[0];
           });
 
           it('should request a tile source from the getTileUrl param', function() {
@@ -300,7 +307,6 @@ define([
       var parentNode, tile, mapType;
 
       beforeEach(function() {
-        var firstLevelParent;
         mapType = new ImageMapType({
           getTileUrl: getTileUrl
         });

@@ -6,7 +6,7 @@ define([
     var min = opt_min || 10;
     var max = opt_max || 100;
     var step = (max - min) / (count - 1);
-    var times = _.range(min, max + 1, step)
+    var times = _.range(min, max + 1, step);
 
     // Aeris API provides times in reverse order
     return times.reverse();

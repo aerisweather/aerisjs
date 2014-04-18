@@ -1,0 +1,29 @@
+/**
+ * Text input styles
+*/
+input[type=text], textarea {
+  display: block;
+
+  padding: 5px;
+  width: 350px;
+  max-width: 100%;
+
+  color: black;
+  font-size: 16px;
+  line-height: 1.5em;
+
+  border: 1px solid #aeaeae;
+  @include border-radius(5px);
+
+  background: white;
+
+  &:focus {
+    @include appearance(none);
+    outline: none;
+  }
+}
+
+textarea {
+  height: 100px;
+  resize: vertical;
+}

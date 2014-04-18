@@ -23,7 +23,7 @@ define([
 
   MockObject.prototype.getMap = function() {
     return this.get('map');
-  }
+  };
 
 
   var MockMap = function() {

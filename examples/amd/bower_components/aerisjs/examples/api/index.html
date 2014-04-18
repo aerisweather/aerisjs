@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Aeris.js - API Example</title>
+
+  <link rel="stylesheet" href="../css/example.css"/>
+  <link rel="shortcut icon" type="image/x-icon" href="../weather.ico"/>
+
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+  <script type="text/javascript" src="http://cdn.aerisjs.com/aeris.js"></script>
+  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+  <script type="text/javascript" src="../apikeys.js"></script>
+</head>
+<body>
+<div id="map-canvas"></div>
+
+
+<div id="loading">Loading...</div>
+
+<div class="prompt">
+  <h1>Example: Aeris API</h1>
+  <h2>Aeris.js</h2>
+
+  <p>
+    This example uses the <code>aeris.api.models.Forecast</code> object to fetch <a href="http://www.hamweather.com/support/documentation/aeris/endpoints/forecasts" target="_blank">forecast data from the Aeris API</a>. To get started <strong>click anywhere on the map</strong> -- you should see a popup with forecast information for that location.
+  </p>
+
+  <small>
+    Having trouble? <br>
+    Make sure you've created a <code>apikeys.js</code> file, with a valid Aeris <code>client_id</code> and <code>client_secret</code>.
+  </small>
+</div>
+
+<script id="forecast-template" type="text/template">
+  <table cellpadding="8px">
+    <thead>
+      <% days.forEach(function(day) { %>
+        <td><b><%=formatTimestamp(day.timestamp) %></b></td>
+      <% }); %>
+    </thead>
+
+    <tr>
+      <% days.forEach(function(day) { %>
+        <td>
+          High: <%=day.maxTempF%>&deg; F <br>
+          Low: <%=day.minTempF%>&deg; F <br>
+        </td>
+      <% }); %>
+    </tr>
+  </table>
+</script>
+
+
+<script type="text/javascript">
+  var infoBox;
+  var map = new aeris.maps.Map('map-canvas');
+
+
+  // Listen to map click events.
+  // All click events receive a latLon parameter
+  map.on('click', function(latLon) {
+    // Create a forecast model
+    var forecast = new aeris.api.models.Forecast({
+      id: latLon
+    }, {
+      // Aeris api parameters can be passed
+      // to the forecast model,
+      // or set using `setParams()`
+      params: {
+        client_id: apiKeys.aeris.id,
+        client_secret: apiKeys.aeris.secret
+      }
+    });
+
+
+    // Show a 'loading' prompt during the request
+    // to the Aeris API
+    forecast.on('request', function() {
+      $('#loading').fadeIn(200);
+    });
+    forecast.on('sync', function() {
+      $('#loading').delay(100).fadeOut(200);
+    });
+
+
+    // Fetch forecast data from the
+    // AerisAPI
+    forecast.fetch().
+      // Chain a `done()` method,
+      // which handles a succesful API response
+      done(function(res) {
+
+        // Render an info box
+        // with some templated weather data
+        var html = _.template($('#forecast-template').html(), {
+          days: res.response[0].periods
+        });
+
+        // Close any existing infobox
+        if (infoBox) { infoBox.setMap(null); }
+
+
+        // Create an info box with
+        // weather data
+        infoBox = new aeris.maps.InfoBox({
+          position: latLon,
+          content: $(html)[0]
+        });
+
+        // Add the infoBox to the map
+        infoBox.setMap(map);
+      }).
+
+      // Chain a fail method, whose callback will
+      // receive an error if anything goes wrong
+      // with the request.
+      fail(function(err) {
+        alert('Error fetching forecast data: ' + err.message);
+        throw err;
+      });
+  });
+
+
+  function formatTimestamp(timestamp) {
+    var dayLookup = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Sat'];
+
+    return dayLookup[new Date(timestamp * 1000).getDay()];
+  }
+</script>
+</body>
+</html>

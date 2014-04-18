@@ -81,10 +81,10 @@ define([
         });
 
       });
-      
+
     });
-    
-    
+
+
     describe('ViewModel binding', function() {
 
       describe('When marker is selected/deselected', function() {
@@ -92,7 +92,7 @@ define([
         it('should set the url or selectedUrl accordingly', function() {
           mockMarker.select();
           expect(mockGoogleMarker.getIconUrl()).toEqual(mockMarker.get('selectedUrl'));
-          
+
           mockMarker.deselect();
           expect(mockGoogleMarker.getIconUrl()).toEqual(mockMarker.get('url'));
         });
@@ -108,10 +108,46 @@ define([
         });
 
       });
-      
+
+      describe('when a marker\'s \'dragabble\' attribute changes', function() {
+
+        beforeEach(function() {
+          // set base state
+          mockMarker.set('draggable', false);
+        });
+
+
+        it('should update the view\'s draggable attribute', function() {
+          mockMarker.set('draggable', true);
+          expect(mockGoogleMarker.getDraggable()).toEqual(true);
+
+          mockMarker.set('draggable', false);
+          expect(mockGoogleMarker.getDraggable()).toEqual(false);
+        });
+
+      });
+
+      describe('when a marker\'s \'clickable\' attribute changes', function() {
+
+        beforeEach(function() {
+          // set base state
+          mockMarker.set('clickable', false);
+        });
+
+
+        it('should update the view\'s clickable attribute', function() {
+          mockMarker.set('clickable', true);
+          expect(mockGoogleMarker.getClickable()).toEqual(true);
+
+          mockMarker.set('clickable', false);
+          expect(mockGoogleMarker.getClickable()).toEqual(false);
+        });
+
+      });
+
     });
-    
-    
+
+
   });
-  
+
 });

@@ -1,0 +1,76 @@
+body {
+  font-size: 14px;
+  line-height: 22px;
+
+  .container {
+
+    h1, h2, h3, h4, h5, h6 {
+      @include font-header;
+      margin: 0;
+      padding: 0;
+      line-height: 1.5em;
+      font-weight: normal;
+    }
+
+    h1 {
+      font-size: 40px;
+      line-height: 1.5em;
+      margin: 0;
+      margin-top: 20px;
+    }
+
+    h2 {
+      font-size: 48px;
+      margin-top: 100px;
+
+      // Prevent double-padding on adjacent headings
+      & + h3, & + h4, & + span + h3, & + span + h4 {
+        margin-top: 10px;
+      }
+    }
+
+    h3 {
+      font-size: 32px;
+      margin-top: 150px;
+    }
+
+    h4 {
+      font-size: 36px;
+      margin-top: 150px;
+    }
+
+    h5 {
+      font-size: 20px;
+      font-weight: bold;
+      padding: 50px 0 5px 0;
+    }
+
+    h6 {
+      font-size: 16px;
+      font-weight: bold;
+      margin: 20px 0 10px 0;
+    }
+
+    p {
+      margin: 15px 0 0 0;
+    }
+
+    pre {
+      font-family: sans-serif;
+    }
+
+    code pre {
+      @include font-monospace;
+    }
+
+    a {
+      &, &:visited {
+        text-decoration: none;
+      }
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}

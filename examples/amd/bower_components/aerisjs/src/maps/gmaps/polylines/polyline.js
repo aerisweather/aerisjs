@@ -1,7 +1,7 @@
 define([
   'aeris/util',
   'aeris/maps/strategy/abstractstrategy',
-  'aeris/maps/strategy/utils',
+  'aeris/util/gmaps',
   'googlemaps!'
 ], function(_, AbstractStrategy, mapUtil, gmaps) {
   /**

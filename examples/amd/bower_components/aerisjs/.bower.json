@@ -7,20 +7,14 @@
     "weathernation",
     "backbone"
   ],
-  "version": "0.3.8",
+  "version": "0.4.2",
   "homepage": "https://github.com/hamweather/aerisjs",
   "main": "src",
   "ignore": [
-    "deployment/",
-    "tasks/",
-    "examples/",
     "bower_components/",
     "node_modules/",
-    "docs/",
-    "assets/",
     ".gitignore",
     ".travis.yml",
-    "Gruntfile.js",
     "README.md"
   ],
   "dependencies": {
@@ -28,13 +22,11 @@
     "backbone": "~1.1.0",
     "marionette": "~1.6.2",
     "handlebars": "~1.1.2",
-    "requirejs": "~2.1.8",
+    "requirejs": "~2.1.10",
     "requirejs-text": "~2.0.10",
     "hbars": "https://github.com/jfparadis/requirejs-handlebars.git",
     "jquery": "1.8.0 - 1.11.0",
     "gmaps-markerclusterer-plus": "http://google-maps-utility-library-v3.googlecode.com/svn/tags/markerclustererplus/2.1.1/src/markerclusterer.js",
-    "wire": "~0.10.5",
-    "wire-rjs-builder": "https://github.com/pieter-vanderwerff/wire-rjs-builder.git",
     "googlemaps-amd": "~1.0.0",
     "leaflet.markercluster": "~0.4.0"
   },
@@ -44,11 +36,11 @@
     "sinon": "http://sinonjs.org/releases/sinon-1.7.1.js",
     "jasmine-slow": "https://github.com/joneath/jasmine-slow.git"
   },
-  "_release": "0.3.8",
+  "_release": "0.4.2",
   "_resolution": {
     "type": "version",
-    "tag": "v0.3.8",
-    "commit": "b2ed3c1ca9b94a9f733fda750f99c4fbb4af5e41"
+    "tag": "v0.4.2",
+    "commit": "825866e1f27955f76550ef5cdcce3c6e03f79883"
   },
   "_source": "git://github.com/hamweather/aerisjs.git",
   "_target": "*",

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Aeris.js - Tile Layers Example</title>
+
+  <link rel="stylesheet" href="../css/example.css"/>
+  <link rel="shortcut icon" type="image/x-icon" href="../weather.ico"/>
+
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false&libraries=geometry"></script>
+  <script type="text/javascript" src="http://cdn.aerisjs.com/aeris.js"></script>
+  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+  <script type="text/javascript" src="../apikeys.js"></script>
+</head>
+<body>
+<div id="map-canvas"></div>
+
+
+<div id="loading">Loading...</div>
+
+<div class="prompt">
+  <h1>Example: Tile Layers</h1>
+  <h2>Aeris.js</h2>
+
+  <p>
+    The Aeris API provides a set of weather "tile" images, which can be overlaid on a map. <strong>Select one or or weather metrics to render the tile layer.</strong>
+  </p>
+  <p>
+    See <a href="http://www.hamweather.com/support/documentation/aeris/interactive-tiles/" target="_blank">Aeris.js Tile documentation</a> for information about available tile layers.
+  </p>
+
+  <small>
+    Having trouble? <br>
+    Make sure you've created a <code>apikeys.js</code> file, with a valid Aeris <code>client_id</code> and <code>client_secret</code>.
+  </small>
+</div>
+
+<div class="controls">
+  <ul>
+  </ul>
+</div>
+
+<script id="layer-controls-template" type="text/template">
+  <ul>
+  <% layers.forEach(function(layer) { %>
+    <li data-layer="<%=layer.className %>">
+      <input type="checkbox" class="layerToggle collapseControl"/>
+      <%=layer.label %>
+
+      <div class="collapseable">
+        <% if (layer.opacity !== false) { %>
+          <label>
+            Opacity
+            <input type="range" class="opacity" value="100" min="0" max="100"/>
+          </label>
+        <% } %>
+        <% if (layer.zIndex !== false) { %>
+          <label>
+            Z Index
+            <input type="range" class="zIndex" value="1" min="1" max="10"/>
+          </label>
+        <% } %>
+      </div>
+    </li>
+  <% }); %>
+  </ul>
+</script>
+
+<script type="text/javascript">
+  var layers = {};
+  var map = new aeris.maps.Map('map-canvas');
+
+  // Helper for rendering HTML controls
+  initializeLayerControls();
+
+  // Initialize all layer objects
+  $('[data-layer]').each(function() {
+    var layerName = $(this).data('layer');
+    layers[layerName] = new aeris.maps.layers[layerName]({
+      apiId: apiKeys.aeris.id,
+      apiSecret: apiKeys.aeris.secret
+    });
+  });
+
+
+  // Toggle layer visibility
+  // on checkbox click
+  $('.layerToggle').change(function() {
+    // Grab the layer object
+    // which we initialized earlier
+    var layerName = $(this).parents('[data-layer]').data('layer');
+    var layer = layers[layerName];
+
+    var isSelected = $(this).prop('checked');
+
+    // Render or erase from the map
+    if (isSelected) {
+      layer.setMap(map);
+    }
+    else {
+      layer.setMap(null);
+    }
+  });
+
+
+  // Handle opacity slider
+  $('.opacity').change(function() {
+    // Grab the layer object
+    // which we initialized earlier
+    var layerName = $(this).parents('[data-layer]').data('layer');
+    var layer = layers[layerName];
+
+    // Opacity is a number between 0 an 1.0
+    var opacity = $(this).val() / 100;
+
+    // Change the layer opacity
+    layer.setOpacity(opacity);
+  });
+
+
+  // Handle Z Index slider
+  $('.zIndex').change(function() {
+    // Grab the layer object
+    // which we initialized earlier
+    var layerName = $(this).parents('[data-layer]').data('layer');
+    var layer = layers[layerName];
+
+    var zIndex = $(this).val();
+
+    // Change the layer z index
+    layer.setZIndex(zIndex);
+  });
+
+
+  // Helper function for rendering
+  // layer controls
+  function initializeLayerControls() {
+    var layerData = [
+      {
+        className: 'Advisories',
+        label: 'Advisories'
+      },
+      {
+        className: 'AdvisoriesKML',
+        label: 'Advisories (KML)',
+
+        // KML layers do not support setting zIndex or opacity
+        zIndex: false,
+        opacity: false
+      },
+      {
+        className: 'Chlorophyll',
+        label: 'Cholorophyll'
+      },
+      {
+        className: 'ConvectiveHazards',
+        label: 'Convective',
+
+        // Convective layers do not support setting zIndex
+        zIndex: false
+      },
+      {
+        className: 'DewPoints',
+        label: 'Dewpoints'
+      },
+      {
+        className: 'HeatIndex',
+        label: 'Heat Index'
+      },
+      {
+        className: 'Humidity',
+        label: 'Humidity'
+      },
+      {
+        className: 'Radar',
+        label: 'Radar'
+      },
+      {
+        className: 'Satellite',
+        label: 'Infrared Satellite'
+      },
+      {
+        className: 'SatelliteGlobal',
+        label: 'Global Infrared Satellite'
+      },
+      {
+        className: 'SatelliteVisible',
+        label: 'Visible Satellite'
+      },
+      {
+        className: 'SeaSurfaceTemps',
+        label: 'Sea Surface Temps'
+      },
+      {
+        className: 'SnowDepth',
+        label: 'Snow Depth'
+      },
+      {
+        className: 'Temps',
+        label: 'Temperature'
+      },
+      {
+        className: 'WindChill',
+        label: 'Wind Chil'
+      },
+      {
+        className: 'Winds',
+        label: 'Wind Strength'
+      }
+    ]
+    var template = $('#layer-controls-template').html();
+    var controlsHtml = _.template(template, { layers: layerData });
+
+    $('.controls').html(controlsHtml);
+  }
+</script>
+
+</body>
+</html>

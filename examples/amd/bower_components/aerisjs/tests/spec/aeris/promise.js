@@ -215,7 +215,7 @@ define(['aeris/promise'], function(Promise) {
         p3 = null;
       });
 
-      it('should reject non-promises', function () {
+      it('should reject non-promises', function() {
         expect(function() {
           Promise.when('foo');
         }).toThrowType('InvalidArgumentError');

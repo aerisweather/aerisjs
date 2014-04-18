@@ -61,5 +61,5 @@ define([
     return this.fetchPath.mostRecentCall.args;
   };
 
-  return MockDirectionsService
+  return MockDirectionsService;
 });

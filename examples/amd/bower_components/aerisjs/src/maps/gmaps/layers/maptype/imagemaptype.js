@@ -93,6 +93,14 @@ define([
     this.opacity_ = options.opacity;
 
 
+    /**
+     * @property document_
+     * @private
+     * @type {HTMLElement}
+    */
+    this.document_ = null;
+
+
     // Update our zIndex
     // whenever other ImageMapTypes are
     // added to the DOM.
@@ -116,6 +124,8 @@ define([
    */
   ImageMapType.prototype.getTile = function(coord, zoom, ownerDocument) {
     var tileSrc, img, tileContainer;
+
+    this.document_ = this.document_ || ownerDocument;
 
     coord = this.getNormalizedCoord_(coord, zoom);
 
@@ -264,11 +274,13 @@ define([
    * @method getParentNode_
    */
   ImageMapType.prototype.getParentNode_ = function() {
-    if (this.parentNode_) { return this.parentNode_; }
+    var hasValidParentNode = this.parentNode_ && this.document_.contains(this.parentNode_);
 
+    if (hasValidParentNode) { return this.parentNode_; }
 
     try {
       this.parentNode_ = this.divs_[0].parentNode.parentNode;
+      this.setParentNodeZIndex_(this.zIndex_);
     }
     catch (e) {
       this.parentNode_ = null;

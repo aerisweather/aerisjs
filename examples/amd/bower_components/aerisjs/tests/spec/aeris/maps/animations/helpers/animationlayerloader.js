@@ -40,7 +40,7 @@ define([
 
   MockLayer.prototype.isLoaded = function() {
     return !!this.isLoaded_;
-  }
+  };
 
 
   var MockTimeLayersFactory = function(opt_count) {
@@ -67,7 +67,7 @@ define([
 
   MockTimeLayersFactory.prototype.getStubbedLayers = function() {
     if (!this.stubbedLayers_) {
-      throw new Error('No stubbed layers time-layers have been created')
+      throw new Error('No stubbed layers time-layers have been created');
     }
 
     return this.stubbedLayers_;

@@ -6,8 +6,9 @@ define([
   'aeris/errors/missingapikeyerror',
   'aeris/errors/timeouterror',
   'aeris/maps/layers/abstracttile',
-  'aeris/jsonp'
-], function(_, aerisConfig, Promise, ValidationError, MissingApiKeyError, TimeoutError, BaseTile, JSONP) {
+  'aeris/jsonp',
+  'aeris/maps/layers/config/zindex'
+], function(_, aerisConfig, Promise, ValidationError, MissingApiKeyError, TimeoutError, BaseTile, JSONP, zIndexConfig) {
   /**
    * Representation of Aeris Interactive Tile layer.
    *
@@ -95,6 +96,8 @@ define([
        */
       apiSecret: aerisConfig.get('apiSecret')
     }, opt_attrs);
+
+    attrs.zIndex = attrs.zIndex || zIndexConfig[attrs.name] || 1;
 
     /**
      * A reference to the timer

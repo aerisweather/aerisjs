@@ -1,0 +1,64 @@
+%btn {
+  display: inline-block;
+
+  @include appearance(none);
+  position: relative;
+
+  padding: 10px 20px;
+
+  color: $text-black;
+  @include font-header;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+
+  border-radius: 5px;
+  border: 1px solid rgba(0,0,0,.1);
+
+  cursor: pointer;
+
+  &:hover {
+    top: -1px;
+    left: -1px;
+    @include box-shadow(1px 1px 0 0 rgba(0, 0, 0, 0.65));
+  }
+  &:active {
+    top: 1px;
+    left: 1px;
+    @include box-shadow(none);
+  }
+}
+
+
+%buttonWithColorBg {
+  @extend %btn;
+  color: white;
+  background: $highlight;
+  @include box-shadow(0 0 0px 1px rgba(0, 0, 0, 0.35) inset);
+
+  cursor: pointer;
+
+  &:hover {
+    background-color: $highlightDark;
+  }
+
+  &:active {
+    background-color: darken($highlightDark, 5%);
+  }
+}
+
+%buttonWithDarkBg {
+  color: white;
+  background: $highlightDark;
+
+  cursor: pointer;
+
+  &:hover {
+    background-color: #000;
+  }
+
+  &:active {
+    background-color: $highlightDark;
+  }
+}

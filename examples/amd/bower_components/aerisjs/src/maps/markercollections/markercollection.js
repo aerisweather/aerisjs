@@ -42,6 +42,7 @@ define([
    *                                  to use as a model for the collection.
    * @param {string|aeris.maps.AbstractStrategy=} opt_options.clusterStrategy Strategy for rendering marker clusters.
    * @param {aeris.maps.markercollections.options.ClusterStyles=} opt_options.clusterStyles
+   * @param {Object=} opt_options.clusterOptions Options to pass onto the marker clusterer view.
    * @param {Boolean=} opt_options.cluster Whether to cluster markers. Default is true.
    * @param {string|aeris.maps.AbstractStrategy=} opt_options.strategy
   */
@@ -50,6 +51,7 @@ define([
       model: Marker,
       clusterStrategy: 'markers/markercluster',
       clusterStyles: {},
+      clusterOptions: {},
       cluster: true,
       strategy: null
     });
@@ -72,6 +74,13 @@ define([
      * @type {aeris.maps.AbstractStrategy}
     */
     this.clusterStrategy_ = options.clusterStrategy;
+
+    /**
+     * @property clusterOptions_
+     * @private
+     * @type {Object}
+    */
+    this.clusterOptions_ = options.clusterOptions;
 
 
     /**
@@ -112,6 +121,15 @@ define([
     var styles = this.clusterStyles_[opt_group] || this.clusterStyles_['defaultStyles'];
 
     return styles.slice(0);
+  };
+
+
+  /**
+   * @method getClusterOptions
+   * @return {Object}
+   */
+  MarkerCollection.prototype.getClusterOptions = function() {
+    return _.clone(this.clusterOptions_);
   };
 
 

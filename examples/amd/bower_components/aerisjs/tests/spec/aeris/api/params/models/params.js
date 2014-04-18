@@ -194,7 +194,7 @@ define([
           shouldPassBoundsValidation([
             [45, -90],
             [50, -85]
-          ])
+          ]);
         });
 
         it('should accept null bounds', function() {
@@ -258,7 +258,7 @@ define([
         expect(function() {
           var params = new Params();
 
-          params.set('query', 'foo', { validate: true })
+          params.set('query', 'foo', { validate: true });
 
           params.isValid();
         }).toThrowType('ValidationError');
@@ -432,7 +432,7 @@ define([
         ], function(filterMethodName) {
           params[filterMethodName + 'Filter'](FILTERS_STUB, OPTIONS_STUB);
           expect(mockFilter[filterMethodName]).toHaveBeenCalledWith(FILTERS_STUB, OPTIONS_STUB);
-        })
+        });
       });
 
     });
@@ -449,7 +449,7 @@ define([
           'reset'
         ],
         inherits: Collection
-      })
+      });
 
       beforeEach(function() {
         QUERY_STUB = ['QUERY_STUB_A', 'QUERY_STUB_B'];
@@ -476,7 +476,7 @@ define([
         });
       });
 
-    })
+    });
 
   });
 

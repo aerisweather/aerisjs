@@ -1,3 +1,33 @@
+# 0.4.2
+
+* MOD: Set default Radar zIndex to be above satellite
+* FIX: Reset Leaflet map dimensions when element size is set
+
+See git history for a full list of changes.
+
+# 0.4.1
+
+* FIX: Fix aeris.config.setApiSecret
+* MOD: aeris.util.template uses '{var}' style delimiters
+* FIX: Fix Google ImageMapType zIndex updating
+* MOD: Reconfigure layer zIndexes
+
+See commit log for full change list.
+
+
+# 0.4.0
+
+**BREAKING CHANGES**
+
+* MOD: Move MapApp Builder library to [its own repo](https://github.com/hamweather/aeris-interactive-maps)
+
+# 0.3.9
+
+* FIX: Markers for google maps properly set clickable/draggable attributes
+* FIX: Marker clusters for google maps accept 'clusterOptions' object
+       from aeris.maps.markercollections.MarkerCollection constructor.
+* MOD: Commit bower and node deps to repo
+
 # 0.3.8
 
 * ADD: Improve ability to integrate with existing mapping applications

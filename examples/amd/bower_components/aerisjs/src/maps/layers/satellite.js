@@ -13,8 +13,7 @@ define([
     var attrs = _.extend({
       name: 'Satellite',
       tileType: 'sat',
-      autoUpdateInterval: AerisTile.updateIntervals.SATELLITE,
-      zIndex: 501
+      autoUpdateInterval: AerisTile.updateIntervals.SATELLITE
     }, opt_attrs);
 
 

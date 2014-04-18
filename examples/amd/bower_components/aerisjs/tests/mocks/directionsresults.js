@@ -3,7 +3,7 @@
 */
 define([
   'testUtils',
-  'aeris/maps/strategy/utils',
+  'aeris/util/gmaps',
   'aeris/util',
   'googlemaps!'
 ], function(testUtils, mapUtils, _) {
@@ -14,7 +14,7 @@ define([
    * @param {Array<Array>=} opt_options.path
    * @param {Number=} opt_options.distance
    * @param {string=} opt_options.textDistance
-   * @returns {Object} see https://developers.google.com/maps/documentation/javascript/reference#DirectionsResult
+   * @return {Object} see https://developers.google.com/maps/documentation/javascript/reference#DirectionsResult
    * @constructor
    */
   var DirectionsResult = function(opt_options) {

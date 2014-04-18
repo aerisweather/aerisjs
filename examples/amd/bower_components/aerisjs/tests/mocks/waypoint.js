@@ -1,4 +1,4 @@
-define(['aeris/maps/routes/waypoint','aeris/util'], function(Waypoint, _) {
+define(['aeris/maps/routes/waypoint', 'aeris/util'], function(Waypoint, _) {
   // Random float between
   function randomFloatBetween(minValue, maxValue, precision) {
     precision || (precision = 2);

@@ -224,7 +224,7 @@ define([
       var MockTimesResponse = function(times) {
         return {
           files: _.map(times, this.timeToResponseObject_, this)
-        }
+        };
       };
 
       MockTimesResponse.prototype.timeToResponseObject_ = function(time, i) {

@@ -14,7 +14,6 @@ define([
   var AdvisoriesKML = function(opt_attrs, opt_options) {
     var attrs = _.extend({
       url: 'http://gis.hamweather.net/kml/hwadv_all.kml',
-      zIndex: 0,
       autoUpdateInterval: 1000 * 60 * 3
     }, opt_attrs);
 
