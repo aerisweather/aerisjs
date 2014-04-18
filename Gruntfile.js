@@ -406,7 +406,6 @@ module.exports = function(grunt) {
     'shell:copyDocsToVersionDir'
   ]);
   grunt.registerTask('buildDemo', [
-    'shell:bower-example',
     'copy:demo',
     'copy:demo-api-keys'
   ]);
