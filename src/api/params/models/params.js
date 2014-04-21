@@ -89,25 +89,9 @@ define([
 
     Model.call(this, attrs, options);
 
-    // Proxy filter events
-    this.listenTo(this.get('filter'), {
-      'all': function() {
-        this.trigger('change', this);
-        this.trigger('change:filter', this, this.get('filter'));
-      }
-    });
 
-    // Set up query change events
-    this.listenTo(this, 'change:query', function() {
-      var oldQuery = this.previous('query');
-
-      // Unbind events to old query model
-      if (oldQuery && oldQuery.off) {
-        this.stopListening(oldQuery);
-        this.proxyQueryEvents_();
-      }
-    });
-    this.proxyQueryEvents_();
+    this.proxyEventsForAttr_('query');
+    this.proxyEventsForAttr_('filter');
 
     this.bindToApiKeys_();
   };
@@ -318,17 +302,17 @@ define([
 
 
   /**
-   * Proxy change events
-   * from our query attribute.
+   * Proxy events for a nested {aeris.Model|aeris.Collection} object.
    *
+   * @method proxyEventsForAttr_
    * @private
-   * @method proxyQueryEvents_
+   * @param {string} attr Attribute name of the nested object.
    */
-  Params.prototype.proxyQueryEvents_ = function() {
+  Params.prototype.proxyEventsForAttr_ = function(attr) {
     // Bind to current query model
-    if (this.get('query') && this.get('query').on) {
-      this.listenTo(this.get('query'), 'add remove change reset', function(query, opts) {
-        this.trigger('change:query', this, this.get('query'), opts);
+    if (this.get(attr) && this.get(attr).on) {
+      this.listenTo(this.get(attr), 'add remove change reset', function(model, opts) {
+        this.trigger('change:' + attr, this, this.get(attr), opts);
         this.trigger('change', this, opts);
       });
     }
