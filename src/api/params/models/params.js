@@ -16,41 +16,75 @@ define([
    * @extends aeris.Model
    *
    * @param {Object=} opt_options
-   * @param {aeris.api.params.collections.FilterCollection=} opt_options.filter Constructor for filter.
-   * @param {Function=} opt_options.QueryType Constructor for query attr model.
+   * @param {function():aeris.api.params.collections.FilterCollection=} opt_options.FilterCollectionType Constructor for filter.
+   * @param {function():aeris.api.params.collections.ChainedQueries=} opt_options.QueryType Constructor for query attr model.
    *
    * @constructor
    */
   var Params = function(opt_attrs, opt_options) {
-    var attrs;
-    var options = _.extend({
-      filter: Filters,
+    var options = _.defaults(opt_options || {}, {
+      FilterCollectionType: Filters,
       QueryType: ChainedQueries,
       validate: true
-    }, opt_options);
+    });
 
-    // Default parameters
-    options.defaults = _.defaults(options.defaults || {}, {
+    var attrs = _.defaults(opt_attrs || {}, {
+      /**
+       * Location parameter
+       *
+       * @attribute p
+       * @type {string|aeris.maps.LatLon}
+       */
       p: null,
-      filter: new options.filter(),
+
+      /**
+       * @attribute filter
+       * @type {aeris.api.params.collections.FilterCollection}
+       */
+      filter: [],
+
+      /**
+       * @attribute query
+       * @type {aeris.api.params.collections.ChainedQueries}
+       */
       query: [],
+
+      /**
+       * @attribute client_id
+       * @type {string}
+       */
       client_id: aerisConfig.get('apiId'),
+
+      /**
+       * @attribute client_secret
+       * @type {string}
+       */
       client_secret: aerisConfig.get('apiSecret')
     });
 
-    attrs = opt_attrs || {};
-
 
     /**
-     * @type {Function} Constructor for query attribute object.
+     * @type {function():aeris.api.params.collections.ChainedQuery} Constructor for query attribute object.
      * @private
      * @property QueryType_
      */
     this.QueryType_ = options.QueryType;
 
 
+    /**
+     * @property FilterCollectionType_
+     * @private
+     * @type {function():aeris.api.params.collections.FilterCollection}
+     */
+    this.FilterCollectionType_ = options.FilterCollectionType;
+
+
+    // Process query/filter attrs provided as raw objects
     if (!(attrs.query instanceof this.QueryType_)) {
       attrs.query = new this.QueryType_(attrs.query);
+    }
+    if (!(attrs.filter instanceof this.FilterCollectionType_)) {
+      attrs.filter = new this.FilterCollectionType_(attrs.filter);
     }
 
     Model.call(this, attrs, options);

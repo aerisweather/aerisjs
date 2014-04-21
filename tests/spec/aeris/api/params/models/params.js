@@ -15,7 +15,13 @@ define([
   }
 
 
-  describe('A Params model', function() {
+  var MockFilterCollection = function(opt_models, opt_options) {
+    Collection.call(this, opt_models, opt_options);
+  };
+  _.inherits(MockFilterCollection, Collection);
+
+
+  describe('Params', function() {
 
 
     afterEach(function() {
@@ -55,49 +61,12 @@ define([
 
 
         // Reset query models
-        query.reset([{ id: 'foo' }, { id: 'bar' }]);
+        query.reset([
+          { id: 'foo' },
+          { id: 'bar' }
+        ]);
         expect(listeners.change.callCount).toEqual(4);
         expect(listeners.changeAttr.callCount).toEqual(4);
-      });
-
-      it('should trigger change events when the query attribute is overwritten', function() {
-        var queryA = new Collection();
-        var queryB = new Collection();
-        var queryC = new Collection();
-        var params = new Params({
-          query: queryA
-        }, { QueryType: Collection });
-
-        var listeners = jasmine.createSpyObj('listeners', [
-          'change',
-          'changeAttr'
-        ]);
-
-        params.set('query', queryB);
-
-        params.on('change', listeners.change);
-        params.on('change:query', listeners.changeAttr);
-
-        // Old query model change -->
-        // params shouldn't trigger change
-        queryA.add({ id: 'foo' });
-        expect(listeners.change).not.toHaveBeenCalled();
-        expect(listeners.changeAttr).not.toHaveBeenCalled();
-
-        // New query model changes -->
-        // params should trigger chnage
-        queryB.add({ id: 'bar' });
-        expect(listeners.change.callCount).toEqual(1);
-        expect(listeners.changeAttr.callCount).toEqual(1);
-
-        // Set a new query object
-        params.set('query', queryC);
-        expect(listeners.change.callCount).toEqual(2);
-        expect(listeners.changeAttr.callCount).toEqual(2);
-
-        queryC.add({ id: 'yo' });
-        expect(listeners.change.callCount).toEqual(3);
-        expect(listeners.changeAttr.callCount).toEqual(3);
       });
 
       it('should not require a query parameter', function() {
@@ -123,6 +92,22 @@ define([
         }, { QueryType: MockQuery });
 
         expect(params.get('query')).toEqual(query);
+      });
+
+      it('should convert a filters array to a FilterCollectionType object', function() {
+        var modelA = new Model(), modelB = new Model();
+        var params = new Params({
+          filter: [
+            modelA,
+            modelB
+          ]
+        }, {
+          FilterCollectionType: MockFilterCollection
+        });
+
+        expect(params.get('filter')).toBeInstanceOf(MockFilterCollection);
+        expect(params.get('filter').at(0)).toEqual(modelA);
+        expect(params.get('filter').at(1)).toEqual(modelB);
       });
 
     });
@@ -186,8 +171,14 @@ define([
         });
 
         it('should require that bounds area is more than 0', function() {
-          shouldFailBoundsValidation([[0, 0], [0, 0]]);
-          shouldFailBoundsValidation([[45, -90], [45, -80]]);
+          shouldFailBoundsValidation([
+            [0, 0],
+            [0, 0]
+          ]);
+          shouldFailBoundsValidation([
+            [45, -90],
+            [45, -80]
+          ]);
         });
 
         it('should accept bounds which define an area', function() {
@@ -302,9 +293,11 @@ define([
       });
 
       it('should convert the filters attribute to string', function() {
-        var mockFilter = new Model();
+        var mockFilter = new Collection();
         var params = new Params({
           filter: mockFilter
+        }, {
+          FilterCollectionType: Collection
         });
 
         mockFilter.toString = jasmine.createSpy('mockFilter.toString').
@@ -392,7 +385,10 @@ define([
 
 
       it('should unset bounds, if null is passed', function() {
-        params.setBounds([[12, 34], [56, 78]]);
+        params.setBounds([
+          [12, 34],
+          [56, 78]
+        ]);
         params.setBounds(null);
 
         expect(params.has('bounds')).toEqual(false);
@@ -418,7 +414,10 @@ define([
         mockFilter = new MockFilter();
         params = new Params({
           filter: mockFilter
-        }, { validate: false });
+        }, {
+          validate: false,
+          FilterCollectionType: MockFilter
+        });
         FILTERS_STUB = ['FILTERS_STUB_A', 'FILTERS_STUB_B'];
         OPTIONS_STUB = { STUB: 'OPTIONS_STUB' };
       });
