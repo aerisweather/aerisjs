@@ -104,7 +104,9 @@ define([
   Params.prototype.validate = function(attrs) {
     var placeError = this.validatePlace_(attrs.p);
 
-    if (placeError) { return placeError; }
+    if (placeError) {
+      return placeError;
+    }
 
     if (attrs.to && !(attrs.to instanceof Date)) {
       return new ValidationError('\'to\' parameter must be a Date object');
@@ -144,14 +146,24 @@ define([
     var isLatLon = _.isArray(p) && _.isNumeric(p[0]);
     var boundsError;
 
-    if (_.isNull(p)) { return NO_ERROR; }
-    if (isPlaceName) { return NO_ERROR; }
-    if (isZipCode) { return NO_ERROR; }
-    if (isLatLon) { return NO_ERROR;}
+    if (_.isNull(p)) {
+      return NO_ERROR;
+    }
+    if (isPlaceName) {
+      return NO_ERROR;
+    }
+    if (isZipCode) {
+      return NO_ERROR;
+    }
+    if (isLatLon) {
+      return NO_ERROR;
+    }
 
     boundsError = this.validateBounds_(p);
 
-    if (boundsError) { return boundsError; }
+    if (boundsError) {
+      return boundsError;
+    }
   };
 
 
@@ -173,7 +185,7 @@ define([
 
     _.each(json, function(param, paramName) {
       // Clean out null, undefined, and empty arrays
-      var isEmptyArray = _.isArray(param) && ! param.length;
+      var isEmptyArray = _.isArray(param) && !param.length;
       if (_.isNull(param) || _.isUndefined(param) || isEmptyArray) {
         delete json[paramName];
         return;
