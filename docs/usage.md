@@ -7,6 +7,7 @@ This document is only an introduction to the features of Aeris.js. Check out the
 - [Supported Mapping Libraries](#supported-mapping-libraries)
 - [Overview of Features](#overview-of-features)
     - [Data and Weather API](#data-and-weather-api)
+        - [Batch Requests](#batch-requests)
     - [Maps](#maps)
     - [Geoservices](#geoservices)
     - [AppBuilder](#appbuilder)
@@ -141,6 +142,73 @@ Data collections are defined for the following [AerisAPI endpoints](http://www.h
 | `/tides`          | [`aeris.api.models.Tide`](http://docs.aerisjs.com#aeris.api.models.Tide)                  | [`aeris.api.collections.Tides`](http://docs.aerisjs.com#aeris.api.collections.Tides)                |
 
 
+
+#### Batch Requests
+
+Using the `aeris.api.models.AerisBatchModel`, you can request data from multiple endpoints using a single API request.
+
+```javascript
+var batchModel = new aeris.api.models.AerisBatchModel(
+  {
+    observation: new aeris.api.models.Observation()
+
+    sevenDayForecast: new aeris.api.models.Forecast({
+      // Each model can specify it's own parameters
+      params: {
+        filter: ['day'],
+        limit: 7
+      }
+    }),
+
+    hourlyForecast: new aeris.api.models.Forecast({
+      params: {
+        filter: ['1hr'],
+        limit: 24
+      }
+    }),
+  },
+  {
+    // These params will apply to all sub-requests
+    params: {
+      p: 'minneapolis,mn'
+    }
+  }
+});
+
+batchModel.fetch();
+```
+
+Running `batchModel.toJSON()` will return something like:
+
+```
+{
+  observation: {
+    id: "KMSP",
+    ob: {
+      tempF: "62",
+      windMPG: 10,
+      ...
+    }
+  }
+  sevenDayForecast: {
+    interval: "day",
+    periods: [...],
+    ...
+  },
+  hourlyForecast: {
+    interval: "1hr",
+    periods: [...]
+  }
+}
+```
+
+There are several advantages to using batch requests:
+
+* Combine different kinds of data into a single model, for the same location (or other shared attribute).
+* Reduce the number of network requests to the server
+* Reduce the asynchronous complexity of your code
+
+For more on batch requests, see the [Aeris API Batch Requests documentation](http://www.hamweather.com/support/documentation/aeris/batch/).
 
 
 ## Maps
