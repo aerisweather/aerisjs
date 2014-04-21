@@ -19,32 +19,24 @@ define([
    *
    * @param {Object=} opt_attrs
    * @param {Object=} opt_options
-   * @param {Array.<aeris.api.models.AerisApiModel>} opt_options.models Models to add to the batch.
+   * @param {Object.<string,aeris.api.models.AerisApiModel>} opt_options.models See addModels documentation.
+   *
    * @param {aeris.api.params.Params} opt_options.params
    */
   var AerisBatchModel = function(opt_attrs, opt_options) {
-    var options = _.defaults(opt_options || {}, {
-      models: []
-    });
+    /**
+     * A list of nested models, in the order of the last
+     * API requests.
+     *
+     * @property modelsInOrder_
+     * @type {Array.<aeris.api.models.AerisApiModel>}
+     * @private
+     */
+    this.modelsInOrder_ = [];
 
-    this.models_ = [];
-
-    AerisApiModel.call(this, opt_attrs, options);
-
-    options.models.forEach(function(model) {
-      this.addModel(model);
-    }, this);
+    AerisApiModel.call(this, opt_attrs, opt_options);
   };
   _.inherits(AerisBatchModel, AerisApiModel);
-
-
-  /**
-   * @method addModel
-   * @param {aeris.api.models.AerisApiModel} model
-   */
-  AerisBatchModel.prototype.addModel = function(model) {
-    this.models_.push(model);
-  };
 
 
   /**
@@ -68,23 +60,82 @@ define([
    * @return {Object}
    */
   AerisBatchModel.prototype.serializeParams_ = function(params) {
-    var requests = this.models_.map(function(model) {
-      return '/' + model.getEndpoint();
-    });
+    // Save models in order,
+    // so that we can parse the response based
+    // on the order of the `responses` array
+    // (because javascript does not necessarily maintain order in objects)
+    this.modelsInOrder_ = this.getNestedModels_();
 
     return _.extend(params.toJSON(), {
-      requests: requests.join(',')
+      requests: this.getEncodedEndpoints_(this.modelsInOrder_)
     });
   };
 
 
   /**
-   * Parses data from all batch responses into a
-   * single attributes object.
+   * Return component models, which
+   * are attributes of the batch model.
    *
-   * If indivual model responses share attributes,
-   * attributes will take precendence based on the order
-   * in which each model was added (later takes precedence).
+   * @method getNestedModels_
+   * @private
+   * @return {Array.<aeris.api.models.AerisApiModel>}
+   */
+  AerisBatchModel.prototype.getNestedModels_ = function() {
+    return this.values().filter(function(attr) {
+      return attr instanceof AerisApiModel;
+    });
+  };
+
+
+  /**
+   * @method getEncodedEndpoints_
+   * @private
+   * @param {Array.<aeris.api.models.AerisApiModel>} apiModels
+   */
+  AerisBatchModel.prototype.getEncodedEndpoints_ = function(apiModels) {
+    var requests = apiModels.map(function(model) {
+      var endpoint = '/' + model.getEndpoint();
+
+      return [
+        endpoint,
+        this.encodeModelParams_(model)
+      ].join(encodeURIComponent('?'));
+    }, this);
+
+    return requests.join(',');
+  };
+
+
+  /**
+   * @method encodeModelParams_
+   * @private
+   * @param {aeris.api.models.AerisApiModel} model
+   * @return {string} Encoded model params.
+   */
+  AerisBatchModel.prototype.encodeModelParams_ = function(model) {
+    var params = model.getParams().toJSON();
+    var paramsStr = _.map(params, function(val, key) {
+      return key + '=' + val;
+    }).join('&');
+
+    return this.encodeParamsString_(paramsStr);
+  };
+
+
+  /**
+   * @method encodeParamsString_
+   * @private
+   */
+  AerisBatchModel.prototype.encodeParamsString_ = function(string) {
+    // Aeris API only needs ? and & encoded.
+    return string.
+      replace('?', '%3F').
+      replace('&', '%26');
+  };
+
+
+  /**
+   * Sets batch response data onto nested models
    *
    * @override
    * @method parse
@@ -92,21 +143,49 @@ define([
    * @return {Object}
    */
   AerisBatchModel.prototype.parse = function(raw) {
-    var attrs;
-
     try {
       var responses = raw.response.responses;
 
-      attrs = this.models_.reduce(function(attrs, model, index) {
-        return _.extend(attrs, model.parse(responses[index]));
-      }, {});
+      this.modelsInOrder_.forEach(function(model, index) {
+        this.updateModelWithResponseData_(model, responses[index]);
+      }, this);
     }
     catch (e) {
       throw new ApiResponseError('Unable to parse batch response data: ' +
         e.message);
     }
 
-    return attrs;
+    return this.attributes;
+  };
+
+
+  /**
+   * @method updateModelWithResponseData_
+   * @private
+   * @param {aeris.api.models.AerisApiModel} model
+   * @param {Object} data Response data
+   */
+  AerisBatchModel.prototype.updateModelWithResponseData_ = function(model, data) {
+    var modelAttrs = model.parse(data);
+    model.set(modelAttrs);
+  };
+
+
+  /**
+   * @method toJSON
+   * @return {Object}
+   */
+  AerisBatchModel.prototype.toJSON = function() {
+    var json = AerisApiModel.prototype.toJSON.call(this);
+
+    // toJSON'ify nested models
+    _.each(json, function(val, key) {
+      if (val instanceof AerisApiModel) {
+        json[key] = val.toJSON();
+      }
+    });
+
+    return json;
   };
 
 

@@ -2,26 +2,42 @@ define([
   'aeris/util',
   'aeris/api/models/aerisbatchmodel',
   'mocks/aeris/jsonp',
-  'aeris/model'
-], function(_, AerisBatchModel, MockJSONP, Model) {
+  'mocks/mockfactory',
+  'aeris/model',
+  'aeris/api/models/aerisapimodel'
+], function(_, AerisBatchModel, MockJSONP, MockFactory, Model, AerisApiModel) {
 
   AerisBatchModel.prototype.jasmineToString = function() {
     return 'AerisBatchModel_' + this.cid;
   };
 
-  var MockApiModel = function(opt_attrs, opt_options) {
-    Model.call(this, opt_attrs, opt_options);
-  };
-  _.inherits(MockApiModel, Model);
-
-  MockApiModel.prototype.jasmineToString = function() {
-    return 'MockApiModel_' + this.cid;
-  };
+  var MockApiModel = MockFactory({
+    inherits: AerisApiModel,
+    methods: [
+      'getParams',
+      'parse',
+      'toJSON'
+    ],
+    name: 'MockApiModel'
+  });
 
   MockApiModel.prototype.getEndpoint = function() {
     return _.template('MockApiModel{id}ENDPOINTSTUB', {
       id: this.cid
     });
+  };
+
+
+  MockApiModel.prototype.getParams = function() {
+    return new Model();
+  };
+
+  MockApiModel.prototype.parse = function(data) {
+    return data;
+  };
+
+  MockApiModel.prototype.toJSON = function() {
+    return _.clone(this.attributes);
   };
 
 
@@ -42,33 +58,16 @@ define([
       });
     });
 
-    describe('constructor', function() {
-
-      it('should add the provided models (option)', function() {
-        var mockModel_A = new MockApiModel();
-        var mockModel_B = new MockApiModel();
-
-        spyOn(AerisBatchModel.prototype, 'addModel');
-
-        batchModel = new AerisBatchModel(null, {
-          models: [mockModel_A, mockModel_B],
-          jsonp: mockJSONP
-        });
-
-        expect(batchModel.addModel).toHaveBeenCalledInTheContextOf(batchModel);
-        expect(batchModel.addModel).toHaveBeenCalledWith(mockModel_A);
-        expect(batchModel.addModel).toHaveBeenCalledWith(mockModel_B);
-      });
-
-    });
 
     describe('fetch', function() {
 
       describe('when models have been added', function() {
 
         beforeEach(function() {
-          batchModel.addModel(mockModel_A);
-          batchModel.addModel(mockModel_B);
+          batchModel.set({
+            modelA: mockModel_A,
+            modelB: mockModel_B
+          });
         });
 
 
@@ -115,9 +114,15 @@ define([
         describe('the jsonp request data', function() {
 
           describe('the \'requests\' parameter', function() {
-            var requestsParam;
+            var requestsParam, modelAParams;
 
             beforeEach(function() {
+              modelAParams = new Model({
+                foo: 'bar',
+                faz: 'baz'
+              });
+              mockModel_A.getParams.andReturn(modelAParams);
+
               batchModel.fetch();
 
               requestsParam = mockJSONP.getRequestedData().requests;
@@ -131,8 +136,18 @@ define([
                 });
               });
 
+              it('should contain serialized and encoded model params', function() {
+                expect(requestsParam).toMatch(
+                  mockModel_A.getEndpoint() +
+                    // Note that request params order is not known,
+                    // so we need to check in either order
+                    '%3F(foo=bar%26faz=baz|faz=baz%26foo=bar)'
+                );
+              });
+
               it('should be comma-separated', function() {
-                expect(requestsParam).toMatch(/\/[a-z|0-9]+,\/[a-z|0-9]+/i);
+                // Matches /[whatever],/[whatever]
+                expect(requestsParam).toMatch(/\/.*,\/.*/i);
               });
 
             });
@@ -162,10 +177,11 @@ define([
       var PARSED_STUB_A, PARSED_STUB_B;
 
       beforeEach(function() {
-        mockJSONP.resolveWith(batchResponse);
-      });
+        batchModel.set({
+          modelA: mockModel_A,
+          modelB: mockModel_B
+        });
 
-      beforeEach(function() {
         modelResponse_A = { STUB: 'RESPONSE_A' };
         modelResponse_B = { STUB: 'RESPONSE_B' };
 
@@ -179,9 +195,6 @@ define([
             ]
           }
         };
-
-        batchModel.addModel(mockModel_A);
-        batchModel.addModel(mockModel_B);
 
 
         PARSED_STUB_A = {
@@ -197,28 +210,58 @@ define([
           andReturn(PARSED_STUB_A);
         mockModel_B.parse = jasmine.createSpy('parse_A').
           andReturn(PARSED_STUB_B);
+
+
+        // Fetch is required for parse logic
+        batchModel.fetch();
       });
 
-      it('should combine the responses into a single object, using each model\'s \'parse\' method', function() {
+      it('should parse the response for each model, and set it on the model', function() {
         var attrs = batchModel.parse(batchResponse);
 
         expect(mockModel_A.parse).toHaveBeenCalledWith(modelResponse_A);
         expect(mockModel_B.parse).toHaveBeenCalledWith(modelResponse_B);
 
-        expect(attrs.attrA).toEqual(PARSED_STUB_A.attrA);
-        expect(attrs.attrB).toEqual(PARSED_STUB_B.attrB);
-      });
-
-      it('should override common properties, in the order in which the ApiModels were added', function() {
-        var attrs = batchModel.parse(batchResponse);
-
-        // Should use model B's attr, overriding the same
-        // attr from the response for A, because model B was added
-        // after model A.
-        expect(attrs.commonAttr).toEqual(PARSED_STUB_B.commonAttr);
+        expect(attrs.modelA.attributes).toEqual(PARSED_STUB_A);
+        expect(attrs.modelB.attributes).toEqual(PARSED_STUB_B);
       });
 
     });
+
+    describe('toJSON', function() {
+      var json_A;
+      var json_B;
+
+
+      beforeEach(function() {
+        json_A = { stub: 'modelAttr_A' };
+        json_B = { stub: 'modelAttr_B' };
+        mockModel_A.toJSON.andReturn(json_A);
+        mockModel_B.toJSON.andReturn(json_B);
+
+        batchModel.set({
+          modelA: mockModel_A,
+          modelB: mockModel_B,
+          foo: 'bar'
+        });
+      });
+
+
+      it('should toJSON\'ify nested models', function() {
+        var json = batchModel.toJSON();
+
+        expect(json.modelA).toEqual(json_A);
+        expect(json.modelB).toEqual(json_B);
+      });
+
+      it('should include all attributes (besides nested models)', function() {
+        var json = batchModel.toJSON();
+
+        expect(json.foo).toEqual('bar');
+      });
+
+    });
+
 
   });
 
