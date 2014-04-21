@@ -125,11 +125,20 @@ Individual models can be retrieved from the AerisAPI by id.
 Data collections are defined for the following [AerisAPI endpoints](http://www.hamweather.com/support/documentation/aeris/endpoints/):
 
 
-| Endpoint | Model | Collection |
-| ----------------- |-------| -----------|
-| `/earthquakes` | [`aeris.api.models.Earthquake`](http://docs.aerisjs.com#aeris.api.models.Earthquake) | [`aeris.api.collections.Earthquakes`](http://docs.aerisjs.com#aeris.api.collections.Earthquakes)|
-| `/fires` | [`aeris.api.models.Fire`](http://docs.aerisjs.com#aeris.api.models.Fire) | [`aeris.api.collections.Fires`](http://docs.aerisjs.com#aeris.api.collections.Fires) |
-| `/stormreports` | [`aeris.api.models.StormReport`](http://docs.aerisjs.com#aeris.api.models.StormReport) | [`aeris.api.collections.StormReports`](http://docs.aerisjs.com#aeris.api.collections.StormReports) |
+| Endpoint          | Model                                                                                     | Collection                                                                                          |
+| ----------------- |-------------------------------------------------------------------------------------------| ----------------------------------------------------------------------------------------------------|
+| `/advisories`     | [`aeris.api.models.Advisory`](http://docs.aerisjs.com#aeris.api.models.Advisory)          | [`aeris.api.collections.Advisorys`](http://docs.aerisjs.com#aeris.api.collections.Advisorys)        |
+| `/earthquakes`    | [`aeris.api.models.Earthquake`](http://docs.aerisjs.com#aeris.api.models.Earthquake)      | [`aeris.api.collections.Earthquakes`](http://docs.aerisjs.com#aeris.api.collections.Earthquakes)    |
+| `/fires`          | [`aeris.api.models.Fire`](http://docs.aerisjs.com#aeris.api.models.Fire)                  | [`aeris.api.collections.Fires`](http://docs.aerisjs.com#aeris.api.collections.Fires)                |
+| `/forecasts`      | [`aeris.api.models.Forecast`](http://docs.aerisjs.com#aeris.api.models.Forecast)          | none                                                                                                |
+| `/lightning`      | [`aeris.api.models.Lightning`](http://docs.aerisjs.com#aeris.api.models.Lightning)        | [`aeris.api.collections.Lightning`](http://docs.aerisjs.com#aeris.api.collections.Lightning)        |
+| `/normals`        | [`aeris.api.models.Normal`](http://docs.aerisjs.com#aeris.api.models.Normal)              | [`aeris.api.collections.Normals`](http://docs.aerisjs.com#aeris.api.collections.Normals)            |
+| `/observations`   | [`aeris.api.models.Observation`](http://docs.aerisjs.com#aeris.api.models.Observation)    | [`aeris.api.collections.Observations`](http://docs.aerisjs.com#aeris.api.collections.Observations)  |
+| `/records`        | [`aeris.api.models.Record`](http://docs.aerisjs.com#aeris.api.models.Record)              | [`aeris.api.collections.Records`](http://docs.aerisjs.com#aeris.api.collections.Records)            |
+| `/stormcells`     | [`aeris.api.models.StormCell`](http://docs.aerisjs.com#aeris.api.models.StormCell)        | [`aeris.api.collections.StormCells`](http://docs.aerisjs.com#aeris.api.collections.StormCells)      |
+| `/stormreports`   | [`aeris.api.models.StormReport`](http://docs.aerisjs.com#aeris.api.models.StormReport)    | [`aeris.api.collections.StormReports`](http://docs.aerisjs.com#aeris.api.collections.StormReports)  |
+| `/sunmoon`        | [`aeris.api.models.SunMoon`](http://docs.aerisjs.com#aeris.api.models.SunMoon)            | none                                                                                                |
+| `/tides`          | [`aeris.api.models.Tide`](http://docs.aerisjs.com#aeris.api.models.Tide)                  | [`aeris.api.collections.Tides`](http://docs.aerisjs.com#aeris.api.collections.Tides)                |
 
 
 
