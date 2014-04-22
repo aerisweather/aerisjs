@@ -56,32 +56,29 @@
 </div>
 
 <script type="text/javascript">
-  var map = new aeris.maps.Map('map-canvas', {
+  var map, radar, satellite;
+  var animationSync;
+
+  aeris.config.set({
+    apiId: apiKeys.aeris.id,
+    apiSecret: apiKeys.aeris.secret
+  })
+
+  map = new aeris.maps.Map('map-canvas', {
     zoom: 5,
     center: [40, -95]
   });
-  var radar = new aeris.maps.layers.Radar({
-    apiId: apiKeys.aeris.id,
-    apiSecret: apiKeys.aeris.secret
-  });
-  var satellite = new aeris.maps.layers.Satellite({
-    apiId: apiKeys.aeris.id,
-    apiSecret: apiKeys.aeris.secret
-  });
 
-  // Create individual animation objects
-  var radarAnimation = new aeris.maps.animations.TileAnimation(radar, {
-    // Limit the number of layers to load
-    limit: 20
-  });
-  var satelliteAnimation = new aeris.maps.animations.TileAnimation(satellite, {
-    limit: 20
-  });
+  radar = new aeris.maps.layers.Radar();
+  satellite = new aeris.maps.layers.Satellite();
 
   // Pass the animation objects to an AnimationSync
   // The AnimationSync uses the same interface as the
   // AerisTile animation objects.
-  var animationSync = new aeris.maps.animations.AnimationSync([radarAnimation, satelliteAnimation]);
+  animationSync = new aeris.maps.animations.AnimationSync([
+    radar,
+    satellite
+  ]);
 
   radar.setMap(map);
   satellite.setMap(map);
@@ -158,12 +155,27 @@
     animationSync.pause();
   });
   $('#prev').click(function() {
+    var HOUR = 1000 * 60 * 60;
+
     animationSync.pause();
-    animationSync.previous();
+
+    // Go back 1 hour
+    animationSync.previous(HOUR);
   });
   $('#next').click(function() {
+    var HOUR = 1000 * 60 * 60;
+
     animationSync.pause();
-    animationSync.next();
+
+    // Go forward 1 hour
+    animationSync.next(HOUR);
+  });
+  // Time range slider
+  $('#time').change(function() {
+    var time = parseInt($(this).val());
+
+    animationSync.pause();
+    animationSync.goToTime(time);
   });
 
 
@@ -193,13 +205,6 @@
   });
 
 
-  // Time range slider
-  $('#time').change(function() {
-    var time = parseInt($(this).val());
-
-    animationSync.pause();
-    animationSync.goToTime(time);
-  });
 
 </script>
 </body>
