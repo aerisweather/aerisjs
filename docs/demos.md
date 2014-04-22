@@ -13,6 +13,8 @@ You can sign up for a free Aeris API developer account at [hamweather.com](http:
 * [Geolocate](http://demo.aerisjs.com/geoservices/geolocate.html)
 * [Tile Layers (single layer)](http://demo.aerisjs.com/layers/single.html)
 * [Tile Layers (mutliple)](http://demo.aerisjs.com/layers/multi.html)
+* [Animations](http://demo.aerisjs.com/animations/single.html)
+* [Animations (sync)](http://demo.aerisjs.com/animations/sync.html)
 * [MarkerCollection](http://demo.aerisjs.com/markercollections/index.html)
 
 
