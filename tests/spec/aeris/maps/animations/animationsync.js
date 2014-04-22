@@ -4,15 +4,16 @@ define([
   'aeris/events',
   'aeris/maps/animations/animationsync',
   'aeris/maps/animations/animationinterface',
+  'mocks/aeris/maps/layers/animationlayer',
   'mocks/times'
-], function(_, sinon, Events, AnimationSync, Animation) {
+], function(_, sinon, Events, AnimationSync, Animation, MockAnimationLayer) {
   var CannedTimes = require('mocks/times');
 
   var TestFactory = function(opt_options) {
     var options = _.extend({
     }, opt_options);
 
-    this.sync = new AnimationSync();
+    this.sync = new AnimationSync([], options);
   };
 
   var MockAnimation = function(opt_options) {
@@ -51,7 +52,8 @@ define([
   };
 
 
-  describe('An AnimationSync', function() {
+  describe('AnimationSync', function() {
+
 
     describe('constructor', function() {
 
@@ -72,6 +74,7 @@ define([
 
     });
 
+
     describe('add', function() {
 
       it('should stop the animation', function() {
@@ -80,6 +83,34 @@ define([
 
         test.sync.add(animation);
         expect(animation.stop).toHaveBeenCalled();
+      });
+
+      describe('when adding layers', function() {
+        var MockAnimationType;
+        var animationSync;
+        var layer_A, layer_B;
+
+        beforeEach(function() {
+          layer_A = new MockAnimationLayer();
+          layer_B = new MockAnimationLayer();
+
+          MockAnimationType = jasmine.createSpy('MockAnimationType').
+            andReturn(new MockAnimation());
+
+          animationSync = new AnimationSync(null, {
+            AnimationType: MockAnimationType
+          });
+        });
+
+
+        it('should create animation objects for each added layer', function() {
+          animationSync.add([layer_A, layer_B]);
+
+          expect(MockAnimationType).toHaveBeenCalledWith(layer_A);
+          expect(MockAnimationType).toHaveBeenCalledWith(layer_B);
+          expect(MockAnimationType.callCount).toEqual(2);
+        });
+
       });
 
       describe('trigger load events', function() {
@@ -188,6 +219,7 @@ define([
 
     });
 
+
     describe('remove', function() {
       var animation, test;
 
@@ -231,6 +263,7 @@ define([
       });
     });
 
+
     describe('getTimes', function() {
       it('should return all of the animation times', function() {
         var test = new TestFactory();
@@ -246,5 +279,233 @@ define([
         expect(_.difference(times, test.sync.getTimes())).toEqual([]);
       });
     });
+
+
+    describe('goToTime', function() {
+      var mockAnimation_A, mockAnimation_B;
+      var TIME_STUB = 12345;
+
+
+      beforeEach(function() {
+        mockAnimation_A = new MockAnimation();
+        mockAnimation_B = new MockAnimation();
+      });
+
+
+      describe('when animations are added', function() {
+        var animationSync;
+
+        beforeEach(function() {
+          animationSync = new AnimationSync();
+          animationSync.add([mockAnimation_A, mockAnimation_B]);
+        });
+
+
+        it('should call \'goToTime\' on each added animation', function() {
+          animationSync.goToTime(TIME_STUB);
+
+          expect(mockAnimation_A.goToTime).toHaveBeenCalledWith(TIME_STUB);
+          expect(mockAnimation_B.goToTime).toHaveBeenCalledWith(TIME_STUB);
+        });
+
+      });
+
+      describe('when layers are added', function() {
+        var animationSync;
+        var MockAnimationFactory;
+
+        beforeEach(function() {
+          var createAnimCount = 0;
+          var mockAnimations = [mockAnimation_A, mockAnimation_B];
+
+          // Factory to provide our mock animations
+          MockAnimationFactory = function() {
+            var anim = mockAnimations[createAnimCount];
+            createAnimCount++;
+
+            if (!anim) {
+              throw new Error('More animations created than expected');
+            }
+
+            return anim;
+          };
+
+          animationSync = new AnimationSync(null, {
+            AnimationType: MockAnimationFactory
+          });
+
+
+          animationSync.add([new MockAnimationLayer(), new MockAnimationLayer()]);
+        });
+
+
+        it('should call \'goToTime\' on animation object created for each layer', function() {
+          animationSync.goToTime(TIME_STUB);
+          expect(mockAnimation_A.goToTime).toHaveBeenCalledWith(TIME_STUB);
+          expect(mockAnimation_B.goToTime).toHaveBeenCalledWith(TIME_STUB);
+        });
+
+      });
+
+      describe('when an animation is removed', function() {
+        var animationSync;
+
+        beforeEach(function() {
+          animationSync = new AnimationSync();
+          animationSync.add([mockAnimation_A, mockAnimation_B]);
+          animationSync.remove(mockAnimation_B);
+        });
+
+
+        it('should not call \'goToTime\' on the removed animation', function() {
+          animationSync.goToTime(TIME_STUB);
+
+          expect(mockAnimation_B.goToTime).not.toHaveBeenCalled();
+        });
+
+      });
+
+    });
+
+
+    describe('next', function() {
+      var animationSync;
+      var TIMESTEP = 50;
+      var FROM = 0;
+      var TO = 2000;
+
+      beforeEach(function() {
+        animationSync = new AnimationSync(null, {
+          timestep: TIMESTEP,
+          from: FROM,
+          to: TO
+        });
+        spyOn(animationSync, 'goToTime').andCallThrough();
+
+        // Start at FROM time
+        animationSync.goToTime(FROM);
+      });
+
+      it('should go to (current time + timestep)', function() {
+        animationSync.next();
+        expect(animationSync.goToTime).toHaveBeenCalledWith(FROM + TIMESTEP);
+      });
+
+      it('should go to \'from\', if current time is \'to\'', function() {
+        animationSync.goToTime(TO);
+        animationSync.next();
+
+        // Check most recent call,
+        // because test bootstrap already called with FROM
+        expect(animationSync.goToTime.mostRecentCall.args[0]).toEqual(FROM);
+      });
+
+      it('should go to \'to\', if (current time + timestep) would be more than to', function() {
+        animationSync.goToTime(TO - TIMESTEP + 1);
+
+        animationSync.next();
+
+        expect(animationSync.goToTime).toHaveBeenCalledWith(TO);
+      });
+
+      describe('when called with a timestep argument', function() {
+
+        it('should go to (current time + timestep)', function() {
+          TIMESTEP += 123;    // arbitrary (different) number
+
+          animationSync.next(TIMESTEP);
+          expect(animationSync.goToTime).toHaveBeenCalledWith(FROM + TIMESTEP);
+        });
+
+      });
+
+    });
+
+
+    describe('previous', function() {
+      var animationSync;
+      var TIMESTEP = 50;
+      var FROM = 0;
+      var TO = 2000;
+
+      beforeEach(function() {
+        animationSync = new AnimationSync(null, {
+          timestep: TIMESTEP,
+          from: FROM,
+          to: TO
+        });
+        spyOn(animationSync, 'goToTime').andCallThrough();
+
+        // Start at TO time
+        animationSync.goToTime(TO);
+      });
+
+      it('should go to (current time - timestep)', function() {
+        animationSync.previous();
+        expect(animationSync.goToTime).toHaveBeenCalledWith(TO - TIMESTEP);
+      });
+
+      it('should go to \'to\', if current time is \'from\'', function() {
+        animationSync.goToTime(FROM);
+        animationSync.previous();
+
+        // Check most recent call,
+        // because test bootstrap already called with TO
+        expect(animationSync.goToTime.mostRecentCall.args[0]).toEqual(TO);
+      });
+
+      it('should go to \'from\', if (current time - timestep) would be less than from', function() {
+        animationSync.goToTime(FROM + TIMESTEP - 1);
+
+        animationSync.previous();
+
+        expect(animationSync.goToTime).toHaveBeenCalledWith(FROM);
+      });
+
+      describe('when called with a timestep argument', function() {
+
+        it('should go to (current time - timestep)', function() {
+          TIMESTEP += 123;    // arbitrary (different) number
+
+          animationSync.previous(TIMESTEP);
+          expect(animationSync.goToTime).toHaveBeenCalledWith(TO - TIMESTEP);
+        });
+
+      });
+
+
+    });
+
+
+    describe('changeTime', function() {
+      var onChangeTime;
+      var animationSync;
+      var TIME_STUB = 1234321;
+
+      beforeEach(function() {
+        animationSync = new AnimationSync();
+
+        onChangeTime = jasmine.createSpy('onChangeTime');
+        animationSync.on('change:time', onChangeTime);
+      });
+
+
+      it('should emit when goToTime is called', function() {
+        animationSync.goToTime(TIME_STUB);
+        expect(onChangeTime).toHaveBeenCalled();
+      });
+
+      it('should include the current animation time as a Date object', function() {
+        var timeEventParam;
+
+        animationSync.goToTime(TIME_STUB);
+
+        timeEventParam = onChangeTime.mostRecentCall.args[0];
+        expect(timeEventParam).toBeInstanceOf(Date);
+        expect(timeEventParam.getTime()).toEqual(TIME_STUB);
+      });
+
+    });
+
   });
 });

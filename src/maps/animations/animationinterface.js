@@ -111,7 +111,7 @@ define(['aeris/util', 'aeris/events'], function(_, Events) {
   /**
    * Go to a specific time in the animation.
    *
-   * @param {number} time The time to go to.
+   * @param {number} time The time to go to (timestamp)
    * @method goToTime
    */
   AnimationInterface.prototype.goToTime = _.abstractMethod;
