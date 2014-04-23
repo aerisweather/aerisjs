@@ -27,7 +27,7 @@ define([
       MockMapObject.call(this, attrs, opt_options);
     }
   });
-  _.inherits(MockMap, MockMapObject);
+  _.defaults(MockMap.prototype, MockMapObject.prototype);
 
   return MockMap;
 });
