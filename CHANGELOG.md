@@ -1,3 +1,22 @@
+# 0.4.3
+
+* ADD: Batch api requests with AerisBatchModel
+       see [docs](docs/usage.md#batch-requests) for details
+* ADD: AerisApiModel/AerisApiCollection `getAction` and `getEndpoint` methods.
+* ADD: Params accept array for 'filter' option.
+       (previously only accepted a FilterCollection)
+* ADD: AnimationSync accepts an array of layers for `add` and as
+       constructor argument.
+* MOD: Params do not proxy change events for the nested ChainedQuery
+       collection if the query instance is changed.
+       (removed bloated code which provided little value, and no documented use)
+* MOD: TileAnimations default 'frame' limit set to 10
+       (instead of unlimited). Results in faster load time, by default.
+       Note: you can set the TileAnimation 'limit' option to null to
+       revert to unlimited animation frames.
+
+See git history for a full list of changes.
+
 # 0.4.2
 
 * MOD: Set default Radar zIndex to be above satellite
