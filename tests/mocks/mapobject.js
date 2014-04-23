@@ -38,7 +38,7 @@ define([
   };
 
   MockMapObject.prototype.hasMap = function() {
-    return !!_.isNull(this.get('map'));
+    return !_.isNull(this.get('map'));
   };
 
 
