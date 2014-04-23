@@ -121,16 +121,16 @@ module.exports = function(grunt) {
       }
     },
     requirejs: {
-      api: {
-        options: createRjsConfig('api', {
+      'aeris-api': {
+        options: createRjsConfig('aeris-api', {
           packages: [
             'aeris/packages/api'
           ],
           outDir: '<%=buildDirs.lib %>'
         })
       },
-      'api.min': {
-        options: createRjsConfig('api', {
+      'aeris-api.min': {
+        options: createRjsConfig('aeris-api', {
           packages: [
             'aeris/packages/api'
           ],
@@ -139,8 +139,8 @@ module.exports = function(grunt) {
         })
       },
 
-      gmaps: {
-        options: createRjsConfig('gmaps', {
+      'aeris-gmaps': {
+        options: createRjsConfig('aeris-gmaps', {
           packages: [
             'aeris/packages/gmaps'
           ],
@@ -148,8 +148,8 @@ module.exports = function(grunt) {
           strategy: 'gmaps'
         })
       },
-      'gmaps.min': {
-        options: createRjsConfig('gmaps', {
+      'aeris-gmaps.min': {
+        options: createRjsConfig('aeris-gmaps', {
           packages: [
             'aeris/packages/gmaps'
           ],
@@ -159,8 +159,8 @@ module.exports = function(grunt) {
         })
       },
 
-      'gmaps-plus': {
-        options: createRjsConfig('gmaps-plus', {
+      'aeris-gmaps-plus': {
+        options: createRjsConfig('aeris-gmaps-plus', {
           packages: [
             'aeris/packages/gmaps',
             'aeris/packages/api',
@@ -170,8 +170,8 @@ module.exports = function(grunt) {
           outDir: '<%=buildDirs.lib %>'
         })
       },
-      'gmaps-plus.min': {
-        options: createRjsConfig('gmaps-plus', {
+      'aeris-gmaps-plus.min': {
+        options: createRjsConfig('aeris-gmaps-plus', {
           packages: [
             'aeris/packages/gmaps',
             'aeris/packages/api',
@@ -183,8 +183,8 @@ module.exports = function(grunt) {
         })
       },
 
-      'leaflet': {
-        options: createRjsConfig('leaflet', {
+      'aeris-leaflet': {
+        options: createRjsConfig('aeris-leaflet', {
           packages: [
             'aeris/packages/leaflet'
           ],
@@ -192,8 +192,8 @@ module.exports = function(grunt) {
           outDir: '<%=buildDirs.lib %>'
         })
       },
-      'leaflet.min': {
-        options: createRjsConfig('leaflet', {
+      'aeris-leaflet.min': {
+        options: createRjsConfig('aeris-leaflet', {
           packages: [
             'aeris/packages/leaflet'
           ],
@@ -203,8 +203,8 @@ module.exports = function(grunt) {
         })
       },
 
-      'leaflet-plus': {
-        options: createRjsConfig('leaflet-plus', {
+      'aeris-leaflet-plus': {
+        options: createRjsConfig('aeris-leaflet-plus', {
           packages: [
             'aeris/packages/leaflet',
             'aeris/packages/api',
@@ -217,8 +217,8 @@ module.exports = function(grunt) {
           outDir: '<%=buildDirs.lib %>'
         })
       },
-      'leaflet-plus.min': {
-        options: createRjsConfig('leaflet-plus', {
+      'aeris-leaflet-plus.min': {
+        options: createRjsConfig('aeris-leaflet-plus', {
           packages: [
             'aeris/packages/leaflet',
             'aeris/packages/api',
@@ -296,8 +296,8 @@ module.exports = function(grunt) {
 
       copyAerisJs: {
         command: [
-          'cp <%=buildDirs.lib %>/gmaps-plus.js <%=buildDirs.lib %>/aeris.js',
-          'cp <%=buildDirs.lib %>/gmaps-plus.min.js <%=buildDirs.lib %>/aeris.min.js'
+          'cp <%=buildDirs.lib %>/aeris-leaflet-plus.js <%=buildDirs.lib %>/aeris.js',
+          'cp <%=buildDirs.lib %>/aeris-leaflet-plus.min.js <%=buildDirs.lib %>/aeris.min.js'
         ].join('&&')
       },
 
