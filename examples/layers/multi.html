@@ -13,6 +13,8 @@
   <script type="text/javascript" src="http://cdn.aerisjs.com/aeris.js"></script>
   <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
   <script type="text/javascript" src="../apikeys.js"></script>
+
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
 </head>
 <body>
 <div id="map-canvas"></div>
@@ -143,23 +145,8 @@
         label: 'Advisories'
       },
       {
-        className: 'AdvisoriesKML',
-        label: 'Advisories (KML)',
-
-        // KML layers do not support setting zIndex or opacity
-        zIndex: false,
-        opacity: false
-      },
-      {
         className: 'Chlorophyll',
         label: 'Cholorophyll'
-      },
-      {
-        className: 'ConvectiveHazards',
-        label: 'Convective',
-
-        // Convective layers do not support setting zIndex
-        zIndex: false
       },
       {
         className: 'DewPoints',
