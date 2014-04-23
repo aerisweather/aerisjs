@@ -326,13 +326,24 @@ module.exports = function(grunt) {
         ].join('&&')
       },
 
-      'bower-example': {
-        command: 'bower update',
-        options: {
-          execOptions: {
-            cwd: 'examples/amd'
-          }
-        }
+      'bower-update': {
+        command: 'bower install && bower update'
+      },
+
+      'node-update': {
+        command: 'npm install && npm update'
+      },
+
+      // Manually update bower compoments
+      // for demo, so we can use the lastest Aerisjs version
+      // before it has been released publicly
+      'demo-bower-update': {
+        command: [
+          'rm -rf examples/amd/bower_components',
+          'cp -r bower_components examples/amd',
+          'mkdir examples/amd/bower_components/aerisjs',
+          'cp -r src examples/amd/bower_components/aerisjs'
+        ].join('&&')
       }
     },
 
@@ -410,6 +421,13 @@ module.exports = function(grunt) {
   grunt.registerTask('buildDemo', [
     'copy:demo',
     'copy:demo-api-keys'
+  ]);
+
+  // Update dependencies
+  grunt.registerTask('update', [
+    'shell:bower-update',
+    'shell:node-update',
+    'shell:demo-bower-update'
   ]);
 
   grunt.registerTask('deploy', [
