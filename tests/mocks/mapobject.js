@@ -3,6 +3,9 @@ define([
   'aeris/model',
   'mocks/mockfactory'
 ], function(_, Model, MockFactory) {
+  /**
+   * @class MockMapObject
+   */
   var MockMapObject = new MockFactory({
     methods: [
       'setMap',
