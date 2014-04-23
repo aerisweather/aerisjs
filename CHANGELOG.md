@@ -1,3 +1,15 @@
+# 0.5.0
+
+**BREAKING CHANGES**
+
+* MOD: Renamed built library files, using an 'aeris-` prefix.
+       eg. 'aeris-gmaps.js' instead of 'gmaps.js'
+* MOD: Default aeris.js not uses Leaflet, instead of gmaps.
+
+To adapt to breaking changes, make sure you update your links to the Aeris.js library.
+If you currently using Google Maps along with the main 'aeris.js' or 'aeris.min.js'
+script, you will want to switch to use 'aeris-gmaps.js' or 'aeris-gmaps.min.js'.
+
 # 0.4.3
 
 * ADD: Batch api requests with AerisBatchModel
