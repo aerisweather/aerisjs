@@ -16,64 +16,82 @@ define([
    * @extends aeris.Model
    *
    * @param {Object=} opt_options
-   * @param {aeris.api.params.collections.FilterCollection=} opt_options.filter Constructor for filter.
-   * @param {Function=} opt_options.QueryType Constructor for query attr model.
+   * @param {function():aeris.api.params.collections.FilterCollection=} opt_options.FilterCollectionType Constructor for filter.
+   * @param {function():aeris.api.params.collections.ChainedQueries=} opt_options.QueryType Constructor for query attr model.
    *
    * @constructor
    */
   var Params = function(opt_attrs, opt_options) {
-    var attrs;
-    var options = _.extend({
-      filter: Filters,
+    var options = _.defaults(opt_options || {}, {
+      FilterCollectionType: Filters,
       QueryType: ChainedQueries,
       validate: true
-    }, opt_options);
+    });
 
-    // Default parameters
-    options.defaults = _.defaults(options.defaults || {}, {
+    var attrs = _.defaults(opt_attrs || {}, {
+      /**
+       * Location parameter
+       *
+       * @attribute p
+       * @type {string|aeris.maps.LatLon}
+       */
       p: null,
-      filter: new options.filter(),
+
+      /**
+       * @attribute filter
+       * @type {aeris.api.params.collections.FilterCollection}
+       */
+      filter: [],
+
+      /**
+       * @attribute query
+       * @type {aeris.api.params.collections.ChainedQueries}
+       */
       query: [],
+
+      /**
+       * @attribute client_id
+       * @type {string}
+       */
       client_id: aerisConfig.get('apiId'),
+
+      /**
+       * @attribute client_secret
+       * @type {string}
+       */
       client_secret: aerisConfig.get('apiSecret')
     });
 
-    attrs = opt_attrs || {};
-
 
     /**
-     * @type {Function} Constructor for query attribute object.
+     * @type {function():aeris.api.params.collections.ChainedQuery} Constructor for query attribute object.
      * @private
      * @property QueryType_
      */
     this.QueryType_ = options.QueryType;
 
 
+    /**
+     * @property FilterCollectionType_
+     * @private
+     * @type {function():aeris.api.params.collections.FilterCollection}
+     */
+    this.FilterCollectionType_ = options.FilterCollectionType;
+
+
+    // Process query/filter attrs provided as raw objects
     if (!(attrs.query instanceof this.QueryType_)) {
       attrs.query = new this.QueryType_(attrs.query);
+    }
+    if (!(attrs.filter instanceof this.FilterCollectionType_)) {
+      attrs.filter = new this.FilterCollectionType_(attrs.filter);
     }
 
     Model.call(this, attrs, options);
 
-    // Proxy filter events
-    this.listenTo(this.get('filter'), {
-      'all': function() {
-        this.trigger('change', this);
-        this.trigger('change:filter', this, this.get('filter'));
-      }
-    });
 
-    // Set up query change events
-    this.listenTo(this, 'change:query', function() {
-      var oldQuery = this.previous('query');
-
-      // Unbind events to old query model
-      if (oldQuery && oldQuery.off) {
-        this.stopListening(oldQuery);
-        this.proxyQueryEvents_();
-      }
-    });
-    this.proxyQueryEvents_();
+    this.proxyEventsForAttr_('query');
+    this.proxyEventsForAttr_('filter');
 
     this.bindToApiKeys_();
   };
@@ -86,7 +104,9 @@ define([
   Params.prototype.validate = function(attrs) {
     var placeError = this.validatePlace_(attrs.p);
 
-    if (placeError) { return placeError; }
+    if (placeError) {
+      return placeError;
+    }
 
     if (attrs.to && !(attrs.to instanceof Date)) {
       return new ValidationError('\'to\' parameter must be a Date object');
@@ -126,14 +146,24 @@ define([
     var isLatLon = _.isArray(p) && _.isNumeric(p[0]);
     var boundsError;
 
-    if (_.isNull(p)) { return NO_ERROR; }
-    if (isPlaceName) { return NO_ERROR; }
-    if (isZipCode) { return NO_ERROR; }
-    if (isLatLon) { return NO_ERROR;}
+    if (_.isNull(p)) {
+      return NO_ERROR;
+    }
+    if (isPlaceName) {
+      return NO_ERROR;
+    }
+    if (isZipCode) {
+      return NO_ERROR;
+    }
+    if (isLatLon) {
+      return NO_ERROR;
+    }
 
     boundsError = this.validateBounds_(p);
 
-    if (boundsError) { return boundsError; }
+    if (boundsError) {
+      return boundsError;
+    }
   };
 
 
@@ -155,7 +185,7 @@ define([
 
     _.each(json, function(param, paramName) {
       // Clean out null, undefined, and empty arrays
-      var isEmptyArray = _.isArray(param) && ! param.length;
+      var isEmptyArray = _.isArray(param) && !param.length;
       if (_.isNull(param) || _.isUndefined(param) || isEmptyArray) {
         delete json[paramName];
         return;
@@ -284,17 +314,17 @@ define([
 
 
   /**
-   * Proxy change events
-   * from our query attribute.
+   * Proxy events for a nested {aeris.Model|aeris.Collection} object.
    *
+   * @method proxyEventsForAttr_
    * @private
-   * @method proxyQueryEvents_
+   * @param {string} attr Attribute name of the nested object.
    */
-  Params.prototype.proxyQueryEvents_ = function() {
+  Params.prototype.proxyEventsForAttr_ = function(attr) {
     // Bind to current query model
-    if (this.get('query') && this.get('query').on) {
-      this.listenTo(this.get('query'), 'add remove change reset', function(query, opts) {
-        this.trigger('change:query', this, this.get('query'), opts);
+    if (this.get(attr) && this.get(attr).on) {
+      this.listenTo(this.get(attr), 'add remove change reset', function(model, opts) {
+        this.trigger('change:' + attr, this, this.get(attr), opts);
         this.trigger('change', this, opts);
       });
     }

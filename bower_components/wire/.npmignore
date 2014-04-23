@@ -1,9 +1,0 @@
-.idea/
-test/
-support/
-experiments/
-components/
-bower_components/
-.gitignore
-.gitmodules
-.npmignore

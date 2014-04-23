@@ -217,7 +217,7 @@ define([
       // and implemented by original sync method.
       this.trigger('request', this, promiseToSync, options);
 
-      data = this.params_.toJSON();
+      data = this.serializeParams_(this.params_);
 
 
       this.jsonp_.get(this.getEndpointUrl_(), data, _.bind(function(res) {
@@ -238,6 +238,21 @@ define([
         fail(this.handleRequestError_, this);
     },
 
+
+    /**
+     * Convert the model's Params object
+     * into a JSON data object.
+     *
+     * @method serializeParams_
+     * @protected
+     * @param {aeris.api.params.models.Params} params
+     * @return {Object}
+     */
+    serializeParams_: function(params) {
+      return params.toJSON();
+    },
+
+
     /**
      * Fetch data from the Aeris API.
      *
@@ -257,6 +272,23 @@ define([
         this.endpoint_,
         this.action_
       ]).join('/') + '/';
+    },
+
+    /**
+     * @method getEndpoint
+     * @return {string}
+     */
+    getEndpoint: function() {
+      return this.endpoint_;
+    },
+
+
+    /**
+     * @method getAction
+     * @return {string}
+     */
+    getAction: function() {
+      return this.action_;
     },
 
     /**

@@ -1,7 +1,9 @@
 define([
   'aeris/util',
-  'aeris/maps/animations/abstractanimation'
-], function(_, AbstractAnimation) {
+  'aeris/maps/animations/abstractanimation',
+  'aeris/maps/layers/animationlayer',
+  'aeris/maps/animations/tileanimation'
+], function(_, AbstractAnimation, AnimationLayer, TileAnimation) {
   /**
    * Animates multiple layers along a single timeline.
    * Works by running a single 'master' animation, and having
@@ -11,10 +13,8 @@ define([
    * with the shortest average interval between time frames. You can
    * manually set the master animation using the setMaster method, as well.
    *
-   * @param {Array<aeris.maps.layers.AnimationLayer>=} opt_animations
-   *                                            Animations to sync.
-   *                                            Animations can also be added using
-   *                                            the `add` method.
+   * @param {Array<aeris.maps.layers.AnimationLayer|aeris.maps.animations.AnimationInterface>=} opt_animations Layers/Animations to sync.
+   *        Animations can also be added using the `add` method.
    *
    *
    * @constructor
@@ -25,6 +25,10 @@ define([
    * @implements aeris.maps.animations.AnimationInterface
    */
   var AnimationSync = function(opt_animations, opt_options) {
+    var options = _.defaults(opt_options || {}, {
+      AnimationType: TileAnimation
+    });
+
     AbstractAnimation.call(this, opt_options);
 
 
@@ -52,6 +56,17 @@ define([
     this.animations_ = [];
 
 
+    /**
+     * Type of animation object to use when adding
+     * a layer.
+     *
+     * @property AnimationType_
+     * @private
+     * @type {function():aeris.maps.animations.AnimationInterface}
+     */
+    this.AnimationType_ = options.AnimationType;
+
+
     // Add animations passed in constructor
     this.add(opt_animations || []);
   };
@@ -62,12 +77,23 @@ define([
   /**
    * Add one or more animations to the sync.
    *
-   * @param {aeris.maps.animations.AnimationInterface|Array.<aeris.maps.animations.AnimationInterface>} animations
+   * @param {Array.<aeris.maps.animations.AnimationInterface|aeris.maps.layers.AnimationLayer>} animations_or_layers Animation
+   *        object or layer (or an array of objects).
    * @method add
    */
-  AnimationSync.prototype.add = function(animations) {
+  AnimationSync.prototype.add = function(animations_or_layers) {
+    var animations;
+
     // Normalize as array
-    animations = _.isArray(animations) ? animations : [animations];
+    animations_or_layers = _.isArray(animations_or_layers) ?
+      animations_or_layers : [animations_or_layers];
+
+    // Normalize as animation objects
+    animations = animations_or_layers.map(function(obj) {
+      var isLayer = obj instanceof AnimationLayer;
+
+      return isLayer ? new this.AnimationType_(obj) : obj;
+    }, this);
 
     _.each(animations, this.addOne_, this);
   };
@@ -193,39 +219,78 @@ define([
 
   /**
    * @method next
+   * @param {number=} opt_timestep Milliseconds to advance.
    */
-  AnimationSync.prototype.next = function() {
-    var time;
+  AnimationSync.prototype.next = function(opt_timestep) {
+    var timestep = opt_timestep || this.timestep_;
+    var nextTime = this.getNextTime_(this.currentTime_, timestep);
 
-    if (this.currentTime_ >= this.to_) {
+    this.goToTime(nextTime);
+  };
+
+
+  /**
+   * @method getNextTime_
+   * @private
+   * @param {number} baseTime
+   * @param {number} timestep Milliseconds to advance past base time.
+   * @return {number} Next available time. If time is greater than 'to' bound, starts over at 'from'.
+   */
+  AnimationSync.prototype.getNextTime_ = function(baseTime, timestep) {
+    var nextTime = baseTime + timestep;
+
+    // We're already at end
+    // --> restart
+    if (baseTime >= this.to_) {
       // Reset back to start.
-      time = this.from_;
-    }
-    else {
-      // Step up by this.timestep_ milliseconds.
-      time = this.currentTime_ + this.timestep_;
+      nextTime = this.from_;
     }
 
-    this.goToTime(time);
+    // Our next time is outside our 'to' bound
+    // --> go to end
+    else if (nextTime >= this.to_) {
+      nextTime = this.to_;
+    }
+
+    return nextTime;
   };
 
 
   /**
    * @method previous
+   * @param {number=} opt_timestep Milleseconds to rewind.
    */
-  AnimationSync.prototype.previous = function() {
-    var time;
+  AnimationSync.prototype.previous = function(opt_timestep) {
+    var timestep = opt_timestep || this.timestep_;
+    var prevTime = this.getPrevTime_(this.currentTime_, timestep);
 
-    if (this.currentTime_ <= this.from_) {
-      // Reset back to last frame.
-      time = this.to_;
-    }
-    else {
-      // Step up by this.timestep_ milliseconds.
-      time = this.currentTime_ - this.timestep_;
+    this.goToTime(prevTime);
+  };
+
+
+  /**
+   * @method getPrevTime_
+   * @private
+   * @param {number} baseTime
+   * @param {number} timestep Milliseconds to reverse before base time.
+   * @return {number} Next available time. If time is less than 'from' bound, starts over at 'to'.
+   */
+  AnimationSync.prototype.getPrevTime_ = function(baseTime, timestep) {
+    var prevTime = baseTime - timestep;
+
+    // We're already at beginning
+    // --> go to end
+    if (baseTime <= this.from_) {
+      prevTime = this.to_;
     }
 
-    this.goToTime(time);
+    // Next time is before beginning
+    // --> go to beginning
+    else if (prevTime <= this.from_) {
+      prevTime = this.from_;
+    }
+
+    return prevTime;
   };
 
 
@@ -255,7 +320,9 @@ define([
       times = times.concat(anim.getTimes());
     });
 
-    return _.sortBy(times, function(n) { return n; });
+    return _.sortBy(times, function(n) {
+      return n;
+    });
   };
 
 
