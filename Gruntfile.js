@@ -394,6 +394,7 @@ module.exports = function(grunt) {
     'jasmine-legacy',
     'gjslint'
   ]);
+
   grunt.registerTask('build', [
     'test',
     'shell:removeBuildDir',
@@ -405,23 +406,28 @@ module.exports = function(grunt) {
     'shell:copyLibToVersionDir',
     'shell:copyDocsToVersionDir'
   ]);
+
   grunt.registerTask('buildDemo', [
     'copy:demo',
     'copy:demo-api-keys'
   ]);
+
   grunt.registerTask('deploy', [
     'version:aeris',
     'build',
     'shell:deployS3'
   ]);
+
   grunt.registerTask('default', [
     'build'
   ]);
+
   grunt.registerTask('gzip', [
     'compress',
     'copy:without-gzip-extension',
     'clean:remove-gzip-files'
   ]);
+
   grunt.registerTask('travis', [
     'version:aeris',
     'build',
