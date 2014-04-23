@@ -9,7 +9,7 @@ define([
    * @constructor
    */
   var MockMap = MockFactory({
-    method: [
+    methods: [
       'getBounds',
       'getView',
       'setCenter',
