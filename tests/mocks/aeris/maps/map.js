@@ -13,6 +13,7 @@ define([
       'getBounds',
       'getView',
       'setCenter',
+      'getCenter',
       'setZoom',
       'setBaseLayer',
       'fitToBounds'
