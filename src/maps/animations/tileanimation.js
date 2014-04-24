@@ -60,6 +60,12 @@ define([
     this.times_ = [];
 
 
+    /**
+     * Helper for creating and loading animation layer 'frames.'
+     *
+     * @type {aeris.animations.helpers.AnimationLayerLoader}
+     * @private
+     */
     this.animationLayerLoader_ = options.animationLayerLoader || new AnimationLayerLoader(this.baseLayer_, {
       from: this.from_,
       to: this.to_,
@@ -111,7 +117,9 @@ define([
   TileAnimation.prototype.next = function() {
     var nextTime = this.getNextTime_();
 
-    if (!nextTime) { return; }
+    if (!nextTime) {
+      return;
+    }
 
     this.goToTime(nextTime);
   };
@@ -125,7 +133,9 @@ define([
   TileAnimation.prototype.previous = function() {
     var prevTime = this.getPreviousTime_();
 
-    if (!prevTime) { return; }
+    if (!prevTime) {
+      return;
+    }
 
     this.goToTime(prevTime);
   };
@@ -376,7 +386,6 @@ define([
     var timeOfCurrentLayer = this.getClosestTime_(this.currentTime_);
     return this.times_.indexOf(timeOfCurrentLayer);
   };
-
 
 
   return _.expose(TileAnimation, 'aeris.maps.animations.TileAnimation');

@@ -67,7 +67,6 @@ define([
     }
 
 
-
     /**
      * When a model's attribute changes
      * @event change
@@ -262,42 +261,42 @@ define([
  * @protected
  * @method has
  * @return {Boolean}
-*/
+ */
 
 /**
  * @param {string} attribute
  * @protected
  * @method unset
-*/
+ */
 
 /**
  * @protected
  * @method
-*/
+ */
 
 /**
  * @protected
  * @property idAttribute
  * @type {string}
-*/
+ */
 
 /**
  * @protected
  * @property id
  * @type {number|string}
-*/
+ */
 
 /**
  * @protected
  * @property cid
  * @type {number|string}
-*/
+ */
 
 /**
  * @protected
  * @property attributes
  * @type {Object}
-*/
+ */
 
 /**
  * @protected
@@ -322,19 +321,19 @@ define([
  * Fetch model data.
  *
  * @method fetch
-*/
+ */
 
 /**
  * @method validate
  * @protected
-*/
+ */
 
 /**
  * @method parse
  * @protected
-*/
+ */
 
 /**
  * @method sync
  * @protected
-*/
+ */

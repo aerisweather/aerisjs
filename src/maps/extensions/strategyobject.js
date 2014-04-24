@@ -49,7 +49,11 @@ define([
         // Throw an uncatchable here,
         // because we are not otherwise exposing
         // error handlers for this load promise.
-        fail(function(e) { _.defer(function() { throw e; }); });
+        fail(function(e) {
+          _.defer(function() {
+            throw e;
+          });
+        });
     }
     else if (!_.isNull(options.strategy)) {
       this.setStrategy_(options.strategy);
@@ -142,7 +146,9 @@ define([
    * @method removeStrategy
    */
   StrategyObject.prototype.removeStrategy = function() {
-    if (!this.strategy_) { return; }
+    if (!this.strategy_) {
+      return;
+    }
 
     this.strategy_.destroy();
     this.strategy_ = null;

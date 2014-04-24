@@ -19,7 +19,7 @@ define([
     this.model = new Model(options.attrs, options.options);
   }
 
-  describe('A Model', function() {
+  describe('Model', function() {
     describe('constructor', function() {
       it('should not validate on instantiation, by default', function() {
         new TestFactory();
@@ -89,7 +89,9 @@ define([
         var a = new Model({id: 'id', foo: 1, bar: 2, baz: 3});
         var changeCount = 0;
 
-        a.on('change:foo', function() { changeCount += 1; });
+        a.on('change:foo', function() {
+          changeCount += 1;
+        });
         a.set({'foo': 2});
 
         expect(a.get('foo')).toEqual(2);
@@ -181,7 +183,7 @@ define([
           'deepObj.levelA.foo',
           'deepObj.levelA.levelB.foo.bar'
         ], function(path) {
-            expect(model.getAtPath(path)).toBeUndefined();
+          expect(model.getAtPath(path)).toBeUndefined();
         });
       });
 
@@ -190,7 +192,8 @@ define([
 
         _.each([
           true, false, undefined, null, NaN,
-          new Date(), ['foo'], { foo: 'bar' }, function() {},
+          new Date(), ['foo'], { foo: 'bar' }, function() {
+          },
           1, -1, 0, Infinity
         ], function(path) {
           expect(function() {
