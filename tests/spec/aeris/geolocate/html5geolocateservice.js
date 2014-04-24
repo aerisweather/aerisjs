@@ -6,16 +6,6 @@ define([
   'mocks/window/geolocationresults',
   'mocks/window/geolocationerror'
 ], function(_, HTML5GeolocateService, GeolocateServiceError, MockNavigator, MockGeolocationResults, MockGeolocationError) {
-  var root = this;
-  var navigator_orig = root.navigator;
-
-  function stubGlobalNavigator(mock) {
-    root.navigator = mock;
-  }
-  function restoreGlobalNavigator() {
-    root.navigator = navigator_orig;
-  }
-
 
   describe('The HTML5 Geolocation Service', function() {
     var geolocator, navigator, position;
@@ -52,16 +42,11 @@ define([
       }, onResolve);
 
       onReject.getError = _.bind(function() {
-        if (!this.callCount) { throw new Error('onrReject was never called'); }
+        if (!this.callCount) { throw new Error('onReject was never called'); }
         return this.mostRecentCall.args[0];
       }, onReject);
 
-      stubGlobalNavigator(new MockNavigator());
-    });
-
-
-    afterEach(function() {
-      restoreGlobalNavigator();
+      geolocator.setNavigator(navigator);
     });
 
 
@@ -92,9 +77,10 @@ define([
       });
 
       it('should reject the request if HTML5 geolocation is not available', function() {
-        stubGlobalNavigator(null);
+        geolocator.setNavigator(null);
 
-        geolocator.getCurrentPosition().fail(onReject);
+        geolocator.getCurrentPosition().
+          fail(onReject);
 
         expect(onReject).toHaveBeenCalled();
         expect(onReject.getError().name).toEqual('GeolocateServiceError');
@@ -137,7 +123,7 @@ define([
       });
 
       it('should invoke the errback if HTML5 navigation is not supported', function() {
-        stubGlobalNavigator(null);
+        geolocator.setNavigator(null);
 
         geolocator.watchPosition(null, onReject);
 
@@ -161,15 +147,11 @@ define([
 
     describe('isSupported', function() {
       it('should return true if HTML5 geolocation is supported', function() {
-        stubGlobalNavigator(new MockNavigator());
-
-        expect(HTML5GeolocateService.isSupported()).toEqual(true);
+        expect(HTML5GeolocateService.isSupported(navigator)).toEqual(true);
       });
 
       it('should return false if HTML5 geolocation is not supported', function() {
-        stubGlobalNavigator(null);
-
-        expect(HTML5GeolocateService.isSupported()).toEqual(false);
+        expect(HTML5GeolocateService.isSupported(null)).toEqual(false);
       });
     });
 
