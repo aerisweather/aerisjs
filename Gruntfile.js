@@ -120,7 +120,12 @@ module.exports = function(grunt) {
         src: 'src/**/*.js'
       }
     },
+
     requirejs: {
+      options: {
+        logLevel: grunt.option('verbose') ? 0 : 2     // 0 = TRACE, 2 = WARN
+      },
+
       'aeris-api': {
         options: createRjsConfig('aeris-api', {
           packages: [
