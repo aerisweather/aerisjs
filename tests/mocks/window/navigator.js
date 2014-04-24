@@ -1,6 +1,11 @@
 define(['aeris/util'], function(_) {
   var root = this;
 
+  /**
+   * @class MockNavigator
+   * @implements Navigator
+   * @constructor
+   */
   var MockNavigator = function() {
     return {
       geolocation: new MockGeolocation()
