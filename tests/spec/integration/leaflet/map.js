@@ -163,8 +163,18 @@ define([
 
 
     describe('data binding', function() {
+      // Note: we were having some issues with leaking scope
+      // on these test assets. We're going to re-initialize them here
+      // as a quick fix to this problem.
+      // The root problem is probably related to some asyncronous behavior
+      // which is affecting the state of the map.
+      var aerisMap, leafletMap, mapCanvas;
 
       beforeEach(function() {
+        mapCanvas = new MapCanvas();
+        aerisMap = new Map(mapCanvas.id);
+        leafletMap = aerisMap.getView();
+
         this.addMatchers({
           toHaveSameCenter: function(leafletMap) {
             var aerisMap = this.actual;
@@ -199,6 +209,10 @@ define([
             return aerisMap.getZoom() === leafletMap.getZoom();
           }
         });
+      });
+
+      afterEach(function() {
+        mapCanvas.remove();
       });
 
 
