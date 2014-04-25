@@ -71,14 +71,27 @@ define([
 
 
     describe('destroy', function() {
+      var strategy;
 
-      it('should unbind event listeners', function() {
-        var strategy = new AbstractStrategy(new MockObject());
+      beforeEach(function() {
+        strategy = new AbstractStrategy(new MockObject());
 
         spyOn(strategy, 'stopListening');
+        spyOn(strategy, 'remove');
+      });
 
+
+      it('should unbind event listeners', function() {
         strategy.destroy();
+
         expect(strategy.stopListening).toHaveBeenCalled();
+      });
+
+
+      it('should remove the strategy', function() {
+        strategy.destroy();
+
+        expect(strategy.remove).toHaveBeenCalled();
       });
 
     });

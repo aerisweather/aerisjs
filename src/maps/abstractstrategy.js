@@ -121,11 +121,14 @@ define([
 
 
   /**
-   * Cleans up and shuts down the strategy object.
+   * Destroy the rendered map object view, and cease
+   * rendering changes to the map object.
+   *
    * @method destroy
    */
   AbstractStrategy.prototype.destroy = function() {
     this.stopListening();
+    this.remove();
   };
 
 
