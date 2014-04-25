@@ -40,6 +40,13 @@ define([
      */
     this.strategy_ = null;
 
+    /**
+     * @property StrategyType_
+     * @private
+     * @type {function():aeris.maps.AbstractStrategy}
+     */
+    this.StrategyType_ = null;
+
     Events.call(this);
 
 
@@ -49,11 +56,7 @@ define([
         // Throw an uncatchable here,
         // because we are not otherwise exposing
         // error handlers for this load promise.
-        fail(function(e) {
-          _.defer(function() {
-            throw e;
-          });
-        });
+        fail(_.throwUncatchable);
     }
     else if (!_.isNull(options.strategy)) {
       this.setStrategy(options.strategy);
@@ -89,6 +92,7 @@ define([
         'invalid strategy constructor.');
     }
 
+    this.StrategyType_ = Strategy;
     this.strategy_ = this.createStrategy_(Strategy);
 
     this.trigger('strategy:set', this.strategy_);
@@ -150,6 +154,22 @@ define([
 
     this.strategy_.destroy();
     this.strategy_ = null;
+  };
+
+
+  /**
+   * Reset the rendering strategy used by the
+   * object. Useful for re-enabled a strategy which has
+   * previously been removed with StrategyObject#removeStrategy
+   *
+   * @method resetStrategy
+   */
+  StrategyObject.prototype.resetStrategy = function() {
+    if (!this.StrategyType_) {
+      throw new Error('Unable to reset strategy: no strategy has yet been defined');
+    }
+
+    this.setStrategy(this.StrategyType_);
   };
 
 

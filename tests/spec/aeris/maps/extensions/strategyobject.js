@@ -6,7 +6,7 @@ define([
   'mocks/require'
 ], function(_, StrategyObject, Promise, testUtil, MockRequire) {
 
-  var StrategyFactory = function() {
+  var StrategyTypeFactory = function() {
     var Strategy = jasmine.createSpy(_.uniqueId('MockStrategyCtor_'));
 
     Strategy.prototype.destroy = jasmine.createSpy('MockStrategy#destroy');
@@ -25,7 +25,7 @@ define([
     describe('constructor', function() {
 
       it('should set a strategy', function() {
-        var Strategy = StrategyFactory();
+        var Strategy = StrategyTypeFactory();
 
         spyOn(StrategyObject.prototype, 'setStrategy');
 
@@ -63,7 +63,7 @@ define([
     describe('setStrategy', function() {
 
       it('should instantiate a strategy', function() {
-        var Strategy = StrategyFactory();
+        var Strategy = StrategyTypeFactory();
         var obj = new StrategyObject();
 
         obj.setStrategy(Strategy);
@@ -71,8 +71,8 @@ define([
       });
 
       it('should remove any existing strategy', function() {
-        var OldStrategy = StrategyFactory();
-        var NewStrategy = StrategyFactory();
+        var OldStrategy = StrategyTypeFactory();
+        var NewStrategy = StrategyTypeFactory();
         var obj = new StrategyObject();
 
         obj.setStrategy(OldStrategy);
@@ -106,7 +106,7 @@ define([
       var Strategy, mockRequire;
 
       beforeEach(function() {
-        Strategy = StrategyFactory();
+        Strategy = StrategyTypeFactory();
 
         mockRequire = new MockRequire();
         mockRequire.useMockRequire();
@@ -122,7 +122,6 @@ define([
       afterEach(function() {
         mockRequire.restore();
       });
-
 
 
       it('should set the strategy to a named ReqJS module', function() {
@@ -165,7 +164,7 @@ define([
 
       it('should destroy any existing strategy', function() {
         var obj = new StrategyObject();
-        var Strategy = StrategyFactory();
+        var Strategy = StrategyTypeFactory();
 
         obj.setStrategy(Strategy);
 
@@ -175,13 +174,65 @@ define([
 
       it('should do nothing the second time you call it, because it has no longer has a reference to the strategy.', function() {
         var obj = new StrategyObject();
-        var Strategy = StrategyFactory();
+        var Strategy = StrategyTypeFactory();
 
         obj.setStrategy(Strategy);
 
         obj.removeStrategy();
         obj.removeStrategy();
         expect(Strategy.prototype.destroy.callCount).toEqual(1);
+      });
+
+    });
+
+    describe('resetStrategy', function() {
+      var strategyObject, StrategyType;
+
+      beforeEach(function() {
+        strategyObject = new StrategyObject();
+        StrategyType = StrategyTypeFactory();
+      });
+
+
+      describe('if no strategy has been set', function() {
+
+        it('should throw an error', function() {
+          expect(function() {
+            strategyObject.resetStrategy();
+          }).toThrow('Unable to reset strategy: no strategy has yet been defined');
+        });
+
+      });
+
+      describe('if a strategy has been set', function() {
+
+        beforeEach(function() {
+          strategyObject.setStrategy(StrategyType);
+        });
+
+
+        it('should set the same strategy again', function() {
+          spyOn(strategyObject, 'setStrategy');
+          strategyObject.resetStrategy();
+
+          expect(strategyObject.setStrategy).toHaveBeenCalledWith(StrategyType);
+        });
+
+        describe('if a strategy has then been removed', function() {
+
+          beforeEach(function() {
+            strategyObject.removeStrategy();
+          });
+
+          it('should set the same strategy again', function() {
+            spyOn(strategyObject, 'setStrategy');
+            strategyObject.resetStrategy();
+
+            expect(strategyObject.setStrategy).toHaveBeenCalledWith(StrategyType);
+          });
+
+        });
+
       });
 
     });
