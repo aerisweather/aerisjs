@@ -67,7 +67,6 @@ define([
     }
 
 
-
     /**
      * When a model's attribute changes
      * @event change
@@ -224,6 +223,54 @@ define([
   };
 
 
+  /**
+   * Keep this model updated with values
+   * from the target model.
+   *
+   * Immediately updates the model with the specified
+   * attributes, and updates this model whenever the
+   * target model's attributes change.
+   *
+   * @method bindAttributesTo
+   * @param {aeris.Model} target Model to bind to.
+   * @param {Array.<string>} attrs Attributes to bind.
+   */
+  Model.prototype.bindAttributesTo = function(target, attrs) {
+    var update = this.updateWithAttributesOf_.bind(this, target, attrs);
+    var attrEvents = attrs.map(function(attr) {
+      return 'change:' + attr;
+    });
+
+    // Sync to target immediately
+    update();
+
+    // Sync to changes in target
+    this.listenTo(target, attrEvents.join(' '), update);
+  };
+
+
+  /**
+   * Update the attributes of the model
+   * with attributes from another model.
+   *
+   * @private
+   *
+   * @method updateWithAttributesOf_
+   * @param {aeris.Model} target Source model.
+   * @param {Array.<string>} attrs List of attributes to update.
+   */
+  Model.prototype.updateWithAttributesOf_ = function(target, attrs) {
+    // Create { attrName: targetValue } hash
+    // for all attributes
+    var attrValues = attrs.reduce(function(obj, attr) {
+      obj[attr] = target.get(attr);
+      return obj;
+    }, {});
+
+    this.set(attrValues, { validate: true });
+  };
+
+
   return Model;
 });
 /**
@@ -262,42 +309,42 @@ define([
  * @protected
  * @method has
  * @return {Boolean}
-*/
+ */
 
 /**
  * @param {string} attribute
  * @protected
  * @method unset
-*/
+ */
 
 /**
  * @protected
  * @method
-*/
+ */
 
 /**
  * @protected
  * @property idAttribute
  * @type {string}
-*/
+ */
 
 /**
  * @protected
  * @property id
  * @type {number|string}
-*/
+ */
 
 /**
  * @protected
  * @property cid
  * @type {number|string}
-*/
+ */
 
 /**
  * @protected
  * @property attributes
  * @type {Object}
-*/
+ */
 
 /**
  * @protected
@@ -322,19 +369,19 @@ define([
  * Fetch model data.
  *
  * @method fetch
-*/
+ */
 
 /**
  * @method validate
  * @protected
-*/
+ */
 
 /**
  * @method parse
  * @protected
-*/
+ */
 
 /**
  * @method sync
  * @protected
-*/
+ */

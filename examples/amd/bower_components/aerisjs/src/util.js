@@ -1,6 +1,7 @@
 define([
   'underscore'
 ], function(_) {
+  var util = _.noConflict();
 
   /**
    * Aeris library utilities.
@@ -9,7 +10,7 @@ define([
    * @namespace aeris
    * @static
    */
-  var util = {
+  util.mixin({
     /**
      * Representation of an abstract method that needs overriding.
      * @method abstractMethod
@@ -227,14 +228,12 @@ define([
         throw e;
       });
     }
-  };
+  });
 
-  _.templateSettings = {
+  util.templateSettings = {
     interpolate: /\{(.+?)\}/g
   };
 
-  // Mix utility methods into underscore
-  _.mixin(util);
 
-  return _;
+  return util;
 });
