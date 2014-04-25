@@ -138,5 +138,14 @@ define([
   };
 
 
+  /**
+   * @method destroy
+   */
+  Tile.prototype.destroy = function() {
+    this.view_.clearAllEventListeners();
+    AbstractStrategy.prototype.destroy.call(this);
+  };
+
+
   return Tile;
 });

@@ -1,3 +1,15 @@
+# 0.5.1
+
+* MOD: Update demos to use Leaflet,
+       or use aeris-gmaps build when not a features are supported.
+* ADD: aeris.Model#bindAttributesTo method
+* FIX: Use noConflict on underscore
+* FIX: Strategy object remove rendered map object view
+       on destroy
+* FIX: Leaflet strategies clean up view event listeners on destroy.
+
+SEe git history for a full list of changes.
+
 # 0.5.0
 
 **BREAKING CHANGES**

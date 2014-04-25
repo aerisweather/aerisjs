@@ -144,11 +144,11 @@ define([
     };
 
     if (_.isString(this.clusterStrategy_)) {
-      this.loadStrategy_(this.clusterStrategy_).
+      this.loadStrategy(this.clusterStrategy_).
         fail(throwUncatchable);
     }
     else {
-      this.setStrategy_(this.clusterStrategy_);
+      this.setStrategy(this.clusterStrategy_);
     }
 
     this.isClustering_ = true;

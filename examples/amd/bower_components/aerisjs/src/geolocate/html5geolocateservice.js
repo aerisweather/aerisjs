@@ -66,7 +66,7 @@ define([
     }, this);
 
 
-    if (!HTML5GeolocateService.isSupported()) {
+    if (!HTML5GeolocateService.isSupported(this.navigator_)) {
       promise.reject(this.createServiceUnavailableError_());
     }
     else {
@@ -83,7 +83,7 @@ define([
   HTML5GeolocateService.prototype.watchPosition = function(onSuccess, onError, opt_options) {
     var self = this;
 
-    if (!HTML5GeolocateService.isSupported()) {
+    if (!HTML5GeolocateService.isSupported(this.navigator_)) {
       onError(this.createServiceUnavailableError_());
     }
     else {
@@ -126,9 +126,14 @@ define([
 
   /**
    * @method isSupported
+   * @param {Navigator=} opt_navigator The navigator object
+   *        for which to check geolocation support. Defaults
+   *        to the global window.navigator object.
    */
-  HTML5GeolocateService.isSupported = function() {
-    return !!(root.navigator && root.navigator.geolocation);
+  HTML5GeolocateService.isSupported = function(opt_navigator) {
+    var navigator = arguments.length ? opt_navigator : root.navigator;
+
+    return !!(navigator && navigator.geolocation);
   };
 
 
@@ -162,6 +167,15 @@ define([
    */
   HTML5GeolocateService.prototype.createGeolocateError_ = function(error) {
     return new GeolocateServiceError(error);
+  };
+
+
+  /**
+   * @method setNavigator
+   * @param {Navigator} navigator Set the navigator object to use for geolocation.
+   */
+  HTML5GeolocateService.prototype.setNavigator = function(navigator) {
+    this.navigator_ = navigator;
   };
 
 
