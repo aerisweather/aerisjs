@@ -134,6 +134,7 @@
   });
 
 
+  // Display the current time of the animation
   // A 'change:times' event is triggered
   // with a date object corresponding to the
   // current animation frame.
@@ -185,25 +186,25 @@
   // Toggle animation layers
   //
   // Layers can be added and removed
-  // from an animation sync.
+  // using setMap
   $('#satellite').change(function() {
     var isChecked = $(this).prop('checked');
 
     if (isChecked) {
-      animationSync.add(satelliteAnimation);
+      satellite.setMap(map);
     }
     else {
-      animationSync.remove(satelliteAnimation);
+      satellite.setMap(null);
     }
   });
   $('#radar').change(function() {
     var isChecked = $(this).prop('checked');
 
     if (isChecked) {
-      animationSync.add(radarAnimation);
+      radar.setMap(map);
     }
     else {
-      animationSync.remove(radarAnimation);
+      radar.setMap(null);
     }
   });
 
