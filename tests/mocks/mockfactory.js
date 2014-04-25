@@ -5,6 +5,8 @@ define(['aeris/util'], function(_) {
    *
    * @param {Object=} opt_options
    * @param {Array.<string>} opt_options.methods List of methods for which to create spies.
+   * @param {Array.<string>} opt_options.getSetters List of attributes for which to create
+   *        getter and setter spies (Model types only).
    * @param {Function=} opt_options.inherits Parent class.
    * @param {Function=} opt_options.constructor Constructor method.
    * @param {string=} opt_options.name Used for spec output.
@@ -12,6 +14,7 @@ define(['aeris/util'], function(_) {
   var MockFactory = function(opt_options) {
     var options = _.defaults(opt_options || {}, {
       methods: [],
+      getSetters: [],
       constructor: function() {},
       name: 'Mock_Object'
     });
@@ -23,6 +26,11 @@ define(['aeris/util'], function(_) {
 
       options.methods.forEach(function(methodName) {
         spyOn(this, methodName).andCallThrough();
+      }, this);
+
+      options.getSetters.forEach(function(attr) {
+        spyOn(this, 'set' + capitalize(attr)).andCallThrough();
+        spyOn(this, 'get' + capitalize(attr)).andCallThrough();
       }, this);
 
 
@@ -45,9 +53,25 @@ define(['aeris/util'], function(_) {
     });
 
 
+    options.getSetters.forEach(function(attr) {
+      Mock.prototype['set' + capitalize(attr)] = function(val) {
+        this.set(attr, val);
+      };
+
+      Mock.prototype['get' + capitalize(attr)] = function() {
+        return this.get(attr);
+      };
+    });
+
+
     return Mock;
   };
 
 
   return MockFactory;
+
+
+  function capitalize(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
 });
