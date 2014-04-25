@@ -7,6 +7,7 @@ This document is only an introduction to the features of Aeris.js. Check out the
 - [Supported Mapping Libraries](#supported-mapping-libraries)
 - [Overview of Features](#overview-of-features)
     - [Data and Weather API](#data-and-weather-api)
+        - [Batch Requests](#batch-requests)
     - [Maps](#maps)
     - [Geoservices](#geoservices)
     - [AppBuilder](#appbuilder)
@@ -125,13 +126,87 @@ Individual models can be retrieved from the AerisAPI by id.
 Data collections are defined for the following [AerisAPI endpoints](http://www.hamweather.com/support/documentation/aeris/endpoints/):
 
 
-| Endpoint | Model | Collection |
-| ----------------- |-------| -----------|
-| `/earthquakes` | {{publicDocLink 'aeris.api.models.Earthquake' }} | {{publicDocLink 'aeris.api.collections.Earthquakes' }}|
-| `/fires` | {{publicDocLink 'aeris.api.models.Fire' }} | {{publicDocLink 'aeris.api.collections.Fires' }} |
-| `/stormreports` | {{publicDocLink 'aeris.api.models.StormReport' }} | {{publicDocLink 'aeris.api.collections.StormReports' }} |
+| Endpoint          | Model                                                                                     | Collection                                                                                          |
+| ----------------- |-------------------------------------------------------------------------------------------| ----------------------------------------------------------------------------------------------------|
+| `/advisories`     | [`aeris.api.models.Advisory`](http://docs.aerisjs.com#aeris.api.models.Advisory)          | [`aeris.api.collections.Advisorys`](http://docs.aerisjs.com#aeris.api.collections.Advisorys)        |
+| `/earthquakes`    | [`aeris.api.models.Earthquake`](http://docs.aerisjs.com#aeris.api.models.Earthquake)      | [`aeris.api.collections.Earthquakes`](http://docs.aerisjs.com#aeris.api.collections.Earthquakes)    |
+| `/fires`          | [`aeris.api.models.Fire`](http://docs.aerisjs.com#aeris.api.models.Fire)                  | [`aeris.api.collections.Fires`](http://docs.aerisjs.com#aeris.api.collections.Fires)                |
+| `/forecasts`      | [`aeris.api.models.Forecast`](http://docs.aerisjs.com#aeris.api.models.Forecast)          | none                                                                                                |
+| `/lightning`      | [`aeris.api.models.Lightning`](http://docs.aerisjs.com#aeris.api.models.Lightning)        | [`aeris.api.collections.Lightning`](http://docs.aerisjs.com#aeris.api.collections.Lightning)        |
+| `/normals`        | [`aeris.api.models.Normal`](http://docs.aerisjs.com#aeris.api.models.Normal)              | [`aeris.api.collections.Normals`](http://docs.aerisjs.com#aeris.api.collections.Normals)            |
+| `/observations`   | [`aeris.api.models.Observation`](http://docs.aerisjs.com#aeris.api.models.Observation)    | [`aeris.api.collections.Observations`](http://docs.aerisjs.com#aeris.api.collections.Observations)  |
+| `/records`        | [`aeris.api.models.Record`](http://docs.aerisjs.com#aeris.api.models.Record)              | [`aeris.api.collections.Records`](http://docs.aerisjs.com#aeris.api.collections.Records)            |
+| `/stormcells`     | [`aeris.api.models.StormCell`](http://docs.aerisjs.com#aeris.api.models.StormCell)        | [`aeris.api.collections.StormCells`](http://docs.aerisjs.com#aeris.api.collections.StormCells)      |
+| `/stormreports`   | [`aeris.api.models.StormReport`](http://docs.aerisjs.com#aeris.api.models.StormReport)    | [`aeris.api.collections.StormReports`](http://docs.aerisjs.com#aeris.api.collections.StormReports)  |
+| `/sunmoon`        | [`aeris.api.models.SunMoon`](http://docs.aerisjs.com#aeris.api.models.SunMoon)            | none                                                                                                |
+| `/tides`          | [`aeris.api.models.Tide`](http://docs.aerisjs.com#aeris.api.models.Tide)                  | [`aeris.api.collections.Tides`](http://docs.aerisjs.com#aeris.api.collections.Tides)                |
 
 
+
+#### Batch Requests
+
+Using the `aeris.api.models.AerisBatchModel`, you can request data from multiple endpoints using a single API request.
+
+```javascript
+var batchModel = new aeris.api.models.AerisBatchModel({
+  observation: new aeris.api.models.Observation()
+
+  sevenDayForecast: new aeris.api.models.Forecast({
+    // Each model can specify it's own parameters
+    params: {
+      filter: ['day'],
+      limit: 7
+    }
+  }),
+
+  hourlyForecast: new aeris.api.models.Forecast({
+    params: {
+      filter: ['1hr'],
+      limit: 24
+    }
+  }),
+}, {
+  // These params will apply to all sub-requests
+  params: {
+    p: 'minneapolis,mn'
+    }
+  }
+});
+
+batchModel.fetch();
+```
+
+Running `batchModel.toJSON()` will return something like:
+
+```javascript
+{
+  observation: {
+    id: "KMSP",
+    ob: {
+      tempF: "62",
+      windMPG: 10,
+      ...
+    }
+  }
+  sevenDayForecast: {
+    interval: "day",
+    periods: [...],
+    ...
+  },
+  hourlyForecast: {
+    interval: "1hr",
+    periods: [...]
+  }
+}
+```
+
+There are several advantages to using batch requests:
+
+* Combine different kinds of data into a single model, for the same location (or other shared attribute).
+* Reduce the number of network requests to the server
+* Reduce the asynchronous complexity of your code
+
+For more on batch requests, see the [Aeris API Batch Requests documentation](http://www.hamweather.com/support/documentation/aeris/batch/).
 
 
 ## Maps

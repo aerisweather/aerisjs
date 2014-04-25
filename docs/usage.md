@@ -148,29 +148,27 @@ Data collections are defined for the following [AerisAPI endpoints](http://www.h
 Using the `aeris.api.models.AerisBatchModel`, you can request data from multiple endpoints using a single API request.
 
 ```javascript
-var batchModel = new aeris.api.models.AerisBatchModel(
-  {
-    observation: new aeris.api.models.Observation()
+var batchModel = new aeris.api.models.AerisBatchModel({
+  observation: new aeris.api.models.Observation()
 
-    sevenDayForecast: new aeris.api.models.Forecast({
-      // Each model can specify it's own parameters
-      params: {
-        filter: ['day'],
-        limit: 7
-      }
-    }),
-
-    hourlyForecast: new aeris.api.models.Forecast({
-      params: {
-        filter: ['1hr'],
-        limit: 24
-      }
-    }),
-  },
-  {
-    // These params will apply to all sub-requests
+  sevenDayForecast: new aeris.api.models.Forecast({
+    // Each model can specify it's own parameters
     params: {
-      p: 'minneapolis,mn'
+      filter: ['day'],
+      limit: 7
+    }
+  }),
+
+  hourlyForecast: new aeris.api.models.Forecast({
+    params: {
+      filter: ['1hr'],
+      limit: 24
+    }
+  }),
+}, {
+  // These params will apply to all sub-requests
+  params: {
+    p: 'minneapolis,mn'
     }
   }
 });
@@ -180,7 +178,7 @@ batchModel.fetch();
 
 Running `batchModel.toJSON()` will return something like:
 
-```
+```javascript
 {
   observation: {
     id: "KMSP",
