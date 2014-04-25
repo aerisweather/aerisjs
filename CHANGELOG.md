@@ -1,3 +1,71 @@
+# 0.6.0
+
+**BREAKING CHANGES**
+
+* MOD: Animations are bound to the layer with which they were created.
+* MOD: Remove MapExtensionObject#requestView.
+* MOD: Update animation examples
+
+See git history for a full list of changes
+
+### Notes on upgrading to Aeris.js v0.6.0
+
+##### Animations
+You can now control an animation using the layer with which it wascreated. For example:
+
+```javascript
+var map = new aeris.maps.Map('map-canvas');
+var radar = new aeris.maps.layers.Radar();
+var animation = new aeris.maps.animations.TileAnimation(radar);
+
+animation.start();
+
+// animation.setOpacity(0.5);     // this no longer works in v0.6.0
+
+radar.setOpacity(0.5);            // use this instead
+radar.setMap(null);               // Removes the animated layer from the map
+radar.setMap(map);                // Adds the animated back to the map
+```
+
+The same works for AnimationSync objects
+
+```javascript
+var map = new aeris.maps.Map('map-canvas');
+var radar = new aeris.maps.layers.Radar();
+var satellite = new aeris.maps.layers.Satellite();
+var animation = new aeris.maps.animations.AnimationSync([radar, satellite]);
+
+radar.setMap(map);
+satellite.setMap(map);
+animation.start();
+
+radar.setOpacity(0.5);    // Changes the opacity of the radar layer only
+                          // (note that this was not possible in v0.5)
+
+radar.setMap(null);       // Removes the radar layer from the map
+```
+
+The goal of this change is to better decouple the animation object from the layer objects. Previously, if a layer was being animated, you could not manipulate the base layer without messing up the animation. Now, you can use the base layer the same as before it was animated, and all animation frames will follow suit.
+
+
+##### requestView
+
+The `requestView` method has been removed from all mapObjects. It was previously recommended to use `mapObject.requestView()` (asynchronous, returns promise) in place of `mapObject.getView()` (synchronous, returns view) because some map objects loaded their view-rendering strategy asynchronously. In v0.6.0, the StrategyObject has been refactored to only load strategies synchronously.
+
+When upgrading to v0.6.0, you will need to replace all calls to `requestView` with calls to `getView`. For example:
+
+```javascript
+// In v0.5
+mapObject.requestView().
+  done(function(view) {
+    var mapObjectView = view;
+  });
+
+
+// In v0.6
+var mapObjectView = mapObject.getView();
+```
+
 # 0.5.1
 
 * MOD: Update demos to use Leaflet,
