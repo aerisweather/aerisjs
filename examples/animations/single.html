@@ -47,23 +47,31 @@
 </div>
 
 <script type="text/javascript">
-  var map = new aeris.maps.Map('map-canvas');
-  var radar = new aeris.maps.layers.Radar({
+  var map, radar, animation;
+
+  // Configure Aeris API keys
+  aeris.config.set({
     apiId: apiKeys.aeris.id,
     apiSecret: apiKeys.aeris.secret
   });
 
+  map = new aeris.maps.Map('map-canvas');
+  radar = new aeris.maps.layers.Radar();
+
   // Create an animation "wrapper" around the satellite layer.
-  var animation = new aeris.maps.animations.TileAnimation(radar);
+  animation = new aeris.maps.animations.TileAnimation(radar, {
+    // Set the maximum number of animation "frames"
+    // to load. A higher limit will result in a smoother
+    // animation, though it will take longer to load.
+    limit: 50
+  });
 
   radar.setMap(map);
 
-  $('#loading').show();
 
-
-  // The animation object begins preloading tiles when it's created,
+  // The animation object begins preloading tiles as soon as it's created,
   // but you can start the animation right away.
-  // The animation may start out choppy, but as layers are
+  // The animation will start out with a low "frame-rate", but as layers are
   // loaded, they will be added to the animation.
   //
   // Alternatively, you can wait for the 'load:complete' event
@@ -71,8 +79,11 @@
   animation.start();
 
 
-  // The animation object triggers
-  // load:* events, to update listeners on loading progress.
+  // Show loading progress
+  $('#loading').show();
+
+  // The animation object triggers load:* events
+  // when tile layers are loaded, and ready to render.
   animation.on({
     'load:progress': function(progress) {
       $('#progress').text((progress * 100).toFixed(1));
@@ -97,6 +108,8 @@
   });
 
 
+  // Display the current time of the animation.
+  //
   // A 'change:times' event is triggered
   // with a date object corresponding to the
   // current animation frame.
