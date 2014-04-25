@@ -1,8 +1,9 @@
 define([
   'aeris/util',
   'aeris/errors/unimplementedpropertyerror',
-  'aeris/maps/layers/layer'
-], function(_, UnimplementedPropertyError, BaseLayer) {
+  'aeris/maps/layers/layer',
+  'aeris/maps/strategy/layers/googlemaptype'
+], function(_, UnimplementedPropertyError, BaseLayer, GoogleMapTypeStrategy) {
   /**
    * An abstract representation of a Google MapType layer.
    *
@@ -13,7 +14,7 @@ define([
    */
   var GoogleMapType = function(opt_attrs, opt_options) {
     var options = _.extend({
-      strategy: 'layers/googlemaptype'
+      strategy: GoogleMapTypeStrategy
     }, opt_options);
 
 

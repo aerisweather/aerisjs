@@ -2,7 +2,7 @@ define([
   'aeris/util',
   'aeris/maps/layers/animationlayer',
   'aeris/maps/strategy/layers/kml'
-], function(_, BaseLayer, Strategy) {
+], function(_, BaseLayer, KMLStrategy) {
   /**
    * Representation of KML layer.
    *
@@ -13,7 +13,7 @@ define([
    */
   var KML = function(opt_attrs, opt_options) {
     var options = _.extend({
-      strategy: 'layers/kml'
+      strategy: KMLStrategy
     }, opt_options);
     var attrs = _.extend({
       /**

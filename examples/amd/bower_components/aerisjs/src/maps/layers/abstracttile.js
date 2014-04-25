@@ -2,8 +2,9 @@ define([
   'aeris/util',
   'aeris/errors/unimplementedpropertyerror',
   'aeris/errors/validationerror',
-  'aeris/maps/layers/animationlayer'
-], function(_, UnimplementedPropertyError, ValidationError, BaseLayer) {
+  'aeris/maps/layers/animationlayer',
+  'aeris/maps/strategy/layers/tile'
+], function(_, UnimplementedPropertyError, ValidationError, BaseLayer, TileStrategy) {
   /**
    * Representation of image tile layer. Tile layers are
    * expected to pull in tile images from an API.
@@ -28,7 +29,7 @@ define([
      */
 
     var options = _.extend({
-      strategy: 'layers/tile',
+      strategy: TileStrategy,
       validate: true
     }, opt_options);
 

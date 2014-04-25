@@ -2,8 +2,9 @@ define([
   'aeris/util',
   'aeris/events',
   'aeris/maps/extensions/mapextensionobject',
-  'aeris/errors/validationerror'
-], function(_, Events, MapExtensionObject, ValidationError) {
+  'aeris/errors/validationerror',
+  'aeris/maps/strategy/infobox'
+], function(_, Events, MapExtensionObject, ValidationError, InfoBoxStrategy) {
   /**
    * Representation of an Info Box.
    *
@@ -15,7 +16,7 @@ define([
    */
   var InfoBox = function(opt_attrs, opt_options) {
     var options = _.extend({
-      strategy: 'infobox'
+      strategy: InfoBoxStrategy
     }, opt_options);
 
     var attrs = _.extend({
