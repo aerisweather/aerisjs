@@ -9,27 +9,38 @@ define([
   'leaflet'
 ], function(_, Map, spyOnObject, Flag, MapCanvas, mapUtil, LeafletEvent, Leaflet) {
 
+  var TestFactory = function() {
+    var mapCanvas = new MapCanvas();
+    var aerisMap = new Map(mapCanvas.id);
+    var leafletMap = aerisMap.getView();
+
+    return {
+      mapCanvas: mapCanvas,
+      aerisMap: aerisMap,
+      leafletMap: leafletMap
+    };
+  };
 
   describe('Maps with Leaflet', function() {
     var leafletMap, aerisMap;
     var mapCanvas;
 
+    function createTestObjectsInScope() {
+      var test = TestFactory();
+
+      mapCanvas = test.mapCanvas;
+      aerisMap = test.aerisMap;
+      leafletMap = test.leafletMap;
+    }
 
     function fireMapEvent(topic, data) {
       leafletMap.fireEvent(topic, new LeafletEvent(data));
     }
 
-    beforeEach(function() {
-      mapCanvas = new MapCanvas();
-    });
+    beforeEach(createTestObjectsInScope);
+
     afterEach(function() {
       mapCanvas.remove();
-    });
-
-
-    beforeEach(function() {
-      aerisMap = new Map(mapCanvas.id);
-      leafletMap = aerisMap.getView();
     });
 
 
@@ -219,6 +230,10 @@ define([
       describe('should update an Aeris map attribute from a Leaflet map action \n ([Leaflet map action] --> [Aeris map attribute])', function() {
 
         describe('L:[Leaflet map action] --> A:[Aeris map attribute]', function() {
+
+          // Reset test objects to fix some scope leakage
+          // issues we're having
+          beforeEach(createTestObjectsInScope);
 
 
           it('L:zoom --> A:center', function() {

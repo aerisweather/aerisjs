@@ -1,12 +1,11 @@
 define([
   'aeris/util',
   'aeris/maps/layers/osm',
-  'aeris/maps/strategy/layers/osm',
   'aeris/maps/map',
   'tests/spec/integration/helpers/mapcanvas',
   'mocks/mockfactory',
   'leaflet'
-], function(_, OSMLayer, OSMLayerStrategy, Map, MapCanvas, MockFactory, Leaflet) {
+], function(_, OSMLayer, Map, MapCanvas, MockFactory, Leaflet) {
 
   var MockLeafletTile = new MockFactory({
     methods: [
@@ -15,25 +14,39 @@ define([
     ]
   });
 
+  var TestFactory = function() {
+    var mapCanvas = new MapCanvas();
+    var aerisMap = new Map(mapCanvas.id);
+    var leafletMap = aerisMap.getView();
+    var aerisOsmLayer = new OSMLayer();
+    var leafletOsmLayer = aerisOsmLayer.getView();
+
+    return {
+      mapCanvas: mapCanvas,
+      aerisMap: aerisMap,
+      leafletMap: leafletMap,
+      aerisOsmLayer: aerisOsmLayer,
+      leafletOsmLayer: leafletOsmLayer
+    };
+  };
+
 
   describe('OSM Layer', function() {
     var aerisOsmLayer, leafletOsmLayer;
     var aerisMap, leafletMap;
-    var mapCanvas, MAP_CANVAS_ID = 'MAP_CANVAS_ID';
+    var mapCanvas;
 
-    beforeEach(function() {
-      mapCanvas = new MapCanvas(MAP_CANVAS_ID);
+    function createTestObjectsInScope() {
+      var test = TestFactory();
 
-      aerisMap = new Map(MAP_CANVAS_ID);
-      leafletMap = aerisMap.getView();
+      mapCanvas = test.mapCanvas;
+      aerisMap = test.aerisMap;
+      leafletMap = test.leafletMap;
+      aerisOsmLayer = test.aerisOsmLayer;
+      leafletOsmLayer = test.leafletOsmLayer;
+    }
 
-      aerisOsmLayer = new OSMLayer(null, {
-        // Provide strategy instance
-        // so we can have synchronous access to the leaflet view
-        strategy: OSMLayerStrategy
-      });
-      leafletOsmLayer = aerisOsmLayer.getView();
-    });
+    beforeEach(createTestObjectsInScope);
 
     afterEach(function() {
       mapCanvas.remove();
@@ -60,9 +73,7 @@ define([
 
           // Recreate map object instances,
           // using our stubbed Leaflet.TileLayer ctor
-          aerisOsmLayer = new OSMLayer(null, {
-            strategy: OSMLayerStrategy
-          });
+          aerisOsmLayer = new OSMLayer();
           leafletOsmLayer = aerisOsmLayer.getView();
         });
 
@@ -158,6 +169,10 @@ define([
 
       describe('load:reset', function() {
         var onLoadReset;
+
+        // Reset test objects, to fix some scope leakage
+        // problems we're having.
+        beforeEach(createTestObjectsInScope);
 
         beforeEach(function() {
           onLoadReset = jasmine.createSpy('onLoadReset');
