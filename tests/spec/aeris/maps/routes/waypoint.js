@@ -6,6 +6,7 @@ define([
   'aeris/collection',
   'mocks/mapobject',
   'mocks/waypoint',
+  'mocks/aeris/maps/polylines/polyline',
   'mocks/aeris/directions/directionsservice',
   'matchers/route-matchers'
 ], function(
@@ -16,18 +17,9 @@ define([
   Collection,
   MockMapObject,
   MockWaypoint,
+  MockPolyline,
   MockDirectionsService
 ) {
-
-  var MockPolyline = function() {
-    var stubbedMethods = [
-      'setStyles'
-    ];
-    MockMapObject.apply(this, arguments);
-
-    _.extend(this, jasmine.createSpyObj('mockPolyline', stubbedMethods));
-  };
-  _.inherits(MockPolyline, MockMapObject);
 
 
   var MockPolylineValidationError = function(message) {
@@ -54,12 +46,10 @@ define([
 
     beforeEach(function() {
       spyOn(Waypoint.prototype, 'setStrategy');
-      spyOn(Waypoint.prototype, 'loadStrategy').andReturn(new Promise());
     });
 
     afterEach(function() {
       Waypoint.prototype.setStrategy.andCallThrough();
-      Waypoint.prototype.loadStrategy.andCallThrough();
     });
 
 
@@ -661,7 +651,9 @@ define([
           travelMode: STUB_TRAVEL_MODE
         }, {
           directionsService: mockDirectionsService,
-          nonstopDirectionsService: mockNonstopDirectionsService
+          nonstopDirectionsService: mockNonstopDirectionsService,
+          strategy: null,
+          polyline: new MockPolyline()
         });
       });
 

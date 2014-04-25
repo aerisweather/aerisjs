@@ -4,8 +4,9 @@ define([
   'aeris/togglecollectionbehavior',
   'aeris/maps/extensions/strategyobject',
   'aeris/maps/markers/marker',
-  'aeris/maps/markercollections/config/clusterstyles'
-], function(_, MapObjectCollection, ToggleCollectionBehavior, StrategyObject, Marker, clusterStyles) {
+  'aeris/maps/markercollections/config/clusterstyles',
+  'aeris/maps/strategy/markers/markercluster'
+], function(_, MapObjectCollection, ToggleCollectionBehavior, StrategyObject, Marker, clusterStyles, MarkerClusterStrategy) {
   /**
    * A collection of {aeris.maps.markers.Marker} objects.
    *
@@ -40,7 +41,7 @@ define([
    * @param {Object=} opt_options
    * @param {Function=} opt_options.model Constructor for an {aeris.maps.markers.Marker} object.
    *                                  to use as a model for the collection.
-   * @param {string|aeris.maps.AbstractStrategy=} opt_options.clusterStrategy Strategy for rendering marker clusters.
+   * @param {function():aeris.maps.AbstractStrategy=} opt_options.clusterStrategy Strategy for rendering marker clusters.
    * @param {aeris.maps.markercollections.options.ClusterStyles=} opt_options.clusterStyles
    * @param {Object=} opt_options.clusterOptions Options to pass onto the marker clusterer view.
    * @param {Boolean=} opt_options.cluster Whether to cluster markers. Default is true.
@@ -49,7 +50,7 @@ define([
   var MarkerCollection = function(opt_markers, opt_options) {
     var options = _.defaults(opt_options || {}, {
       model: Marker,
-      clusterStrategy: 'markers/markercluster',
+      clusterStrategy: MarkerClusterStrategy,
       clusterStyles: {},
       clusterOptions: {},
       cluster: true,
@@ -71,7 +72,7 @@ define([
     /**
      * @property clusterStrategy_
      * @private
-     * @type {aeris.maps.AbstractStrategy}
+     * @type {function():aeris.maps.AbstractStrategy}
     */
     this.clusterStrategy_ = options.clusterStrategy;
 
@@ -139,17 +140,7 @@ define([
    * @method startClustering
    */
   MarkerCollection.prototype.startClustering = function() {
-    var throwUncatchable = function(e) {
-      _.defer(function() {throw e; });
-    };
-
-    if (_.isString(this.clusterStrategy_)) {
-      this.loadStrategy(this.clusterStrategy_).
-        fail(throwUncatchable);
-    }
-    else {
-      this.setStrategy(this.clusterStrategy_);
-    }
+    this.setStrategy(this.clusterStrategy_);
 
     this.isClustering_ = true;
   };

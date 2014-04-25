@@ -7,8 +7,9 @@ define([
   'aeris/errors/timeouterror',
   'aeris/maps/layers/abstracttile',
   'aeris/jsonp',
-  'aeris/maps/layers/config/zindex'
-], function(_, aerisConfig, Promise, ValidationError, MissingApiKeyError, TimeoutError, BaseTile, JSONP, zIndexConfig) {
+  'aeris/maps/layers/config/zindex',
+  'aeris/maps/strategy/layers/aeristile'
+], function(_, aerisConfig, Promise, ValidationError, MissingApiKeyError, TimeoutError, BaseTile, JSONP, zIndexConfig, AerisTileStrategy) {
   /**
    * Representation of Aeris Interactive Tile layer.
    *
@@ -19,7 +20,7 @@ define([
    */
   var AerisTile = function(opt_attrs, opt_options) {
     var options = _.extend({
-      strategy: 'layers/aeristile',
+      strategy: AerisTileStrategy,
       validate: true,
       jsonp: JSONP
     }, opt_options);

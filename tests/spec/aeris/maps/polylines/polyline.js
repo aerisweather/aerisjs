@@ -10,6 +10,9 @@ define([
       var setPolylineStyles;
 
       beforeEach(function() {
+        // stub out strategy
+        spyOn(Polyline.prototype, 'setStrategy');
+
         polyline = new Polyline();
 
         // Stub out validation

@@ -36,16 +36,6 @@ define([
         expect(StrategyObject.prototype.setStrategy).toHaveBeenCalledWith(Strategy);
       });
 
-      it('should load a strategy from a string path', function() {
-        spyOn(StrategyObject.prototype, 'loadStrategy').andReturn(new Promise());
-
-        new StrategyObject({
-          strategy: 'mock/strategy'
-        });
-
-        expect(StrategyObject.prototype.loadStrategy).toHaveBeenCalledWith('mock/strategy');
-      });
-
       it('should not require a strategy argument', function() {
         // Shouldn't throw an error
         new StrategyObject();
@@ -97,57 +87,6 @@ define([
           }).toThrowType('InvalidArgumentError');
         });
 
-      });
-
-    });
-
-
-    describe('loadStrategy', function() {
-      var Strategy, mockRequire;
-
-      beforeEach(function() {
-        Strategy = StrategyTypeFactory();
-
-        mockRequire = new MockRequire();
-        mockRequire.useMockRequire();
-        mockRequire.useMockDefine();
-
-        define('aeris/maps/strategy/mockStrategyModule', function() {
-          return Strategy;
-        });
-
-        spyOn(StrategyObject.prototype, 'setStrategy');
-      });
-
-      afterEach(function() {
-        mockRequire.restore();
-      });
-
-
-      it('should set the strategy to a named ReqJS module', function() {
-        var obj = new StrategyObject();
-
-        obj.loadStrategy('mockStrategyModule').
-          done(testUtil.setFlag).
-          fail(errBack);
-
-        waitsFor(testUtil.checkFlag, 100, 'load to complete');
-        runs(function() {
-          expect(obj.setStrategy).toHaveBeenCalledWith(Strategy);
-          expect(obj.setStrategy).toHaveBeenCalledInTheContextOf(obj);
-        });
-      });
-
-      it('should complain if the strategy module doesn\'t exist', function() {
-        var obj = new StrategyObject();
-
-        obj.loadStrategy('no/modules/here').
-          fail(function(e) {
-            expect(e.name).toEqual('InvalidArgumentError');
-            testUtil.setFlag();
-          });
-
-        waitsFor(testUtil.checkFlag, 100, 'load promise to be rejected');
       });
 
     });

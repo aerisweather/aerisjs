@@ -2,8 +2,9 @@ define([
   'aeris/util',
   'aeris/maps/extensions/mapextensionobject',
   'aeris/errors/validationerror',
-  'aeris/errors/invalidargumenterror'
-], function(_, MapExtensionObject, ValidationError, InvalidArgumentError) {
+  'aeris/errors/invalidargumenterror',
+  'aeris/maps/strategy/polylines/polyline'
+], function(_, MapExtensionObject, ValidationError, InvalidArgumentError, PolylineStrategy) {
   /**
    * A polyline is an array of latLon coordinates
    * renders as a line on the map.
@@ -17,7 +18,7 @@ define([
   */
   var Polyline = function(opt_attrs, opt_options) {
     var options = _.defaults(opt_options || {}, {
-      strategy: 'polylines/polyline'
+      strategy: PolylineStrategy
     });
 
     var attrs = _.defaults(opt_attrs || {}, {

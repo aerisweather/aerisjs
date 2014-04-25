@@ -1,4 +1,8 @@
-define(['aeris/maps/routes/waypoint', 'aeris/util'], function(Waypoint, _) {
+define([
+  'aeris/maps/routes/waypoint',
+  'aeris/util',
+  'mocks/aeris/maps/polylines/polyline'
+], function(Waypoint, _, MockPolyline) {
   // Random float between
   function randomFloatBetween(minValue, maxValue, precision) {
     precision || (precision = 2);
@@ -40,6 +44,8 @@ define(['aeris/maps/routes/waypoint', 'aeris/util'], function(Waypoint, _) {
       latLon: getRandomLatLon()
     }, opt_options);
 
-    return new Waypoint(wpOptions);
+    return new Waypoint(wpOptions, {
+      polyline: new MockPolyline()
+    });
   }
 });
