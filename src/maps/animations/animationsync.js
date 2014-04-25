@@ -170,7 +170,6 @@ define([
 
     this.animations_ = _.without(this.animations_, animation);
     animation.stop();
-    animation.remove();
   };
 
 
@@ -325,18 +324,6 @@ define([
     });
   };
 
-
-  /**
-   * Sets the opacity for all sync'ed animations.
-   *
-   * @param {number} opacity
-   * @method setOpacity
-   */
-  AnimationSync.prototype.setOpacity = function(opacity) {
-    _.each(this.animations_, function(anim) {
-      anim.setOpacity(opacity);
-    }, this);
-  };
 
   return _.expose(AnimationSync, 'aeris.maps.animations.AnimationSync');
 });

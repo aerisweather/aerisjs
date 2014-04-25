@@ -11,7 +11,6 @@ define([
    * @param {number} opt_options.timestep
    * @param {number} opt_options.speed
    * @param {number} opt_options.endDelay Milliseconds to pause between animation loops.
-   * @param {number} opt_options.opacity
    *
    * @constructor
    * @class AbstractAnimation
@@ -24,7 +23,6 @@ define([
       to: new Date().getTime(),
       speed: 60 * 3,
       timestep: 1000 * 60,
-      opacity: 1,
       endDelay: 1000
     });
 
@@ -110,16 +108,6 @@ define([
      * @property animationClock_
      */
     this.animationClock_ = null;
-
-
-    /**
-     * Opacity of animation tiles.
-     *
-     * @type {number}
-     * @private
-     * @property opacity_
-     */
-    this.opacity_ = options.opacity;
 
 
     AnimationInterface.call(this);

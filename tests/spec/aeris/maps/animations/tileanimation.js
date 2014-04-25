@@ -6,13 +6,17 @@ define([
   'aeris/events',
   'mocks/aeris/maps/animations/helpers/times',
   'mocks/mockfactory'
-], function(_, AerisTileAnimation, Model, Promise, Events, MockTimes, MockFactory) {
+], function(_, TileAnimation, Model, Promise, Events, MockTimes, MockFactory) {
 
   var MockOrderedTimes = function() {
     var times = MockTimes.apply(null, arguments);
 
     return _.sortBy(times, _.identity);
   };
+
+  var MockMap = MockFactory({
+    name: 'MockMap'
+  });
 
   var MockLayer = MockFactory({
     getSetters: [
@@ -25,12 +29,17 @@ define([
       'isLoaded',
       'show',
       'hide',
-      'disableStrategy',
-      'enableStrategy'
+      'removeStrategy',
+      'resetStrategy'
     ],
     inherits: Model,
+    name: 'MockLayer',
     constructor: function() {
       this.set('opacity', 1, { silent: true });
+
+      if (!this.getMap()) {
+        this.setMap(null, { silent: true });
+      }
     }
   });
 
@@ -48,6 +57,12 @@ define([
 
   MockLayer.prototype.hide = function() {
     this.setOpacity(0);
+  };
+
+  MockLayer.prototype.isShown = function() {
+    var isSetToMap = !_.isNull(this.getMap());
+    var isVisible = this.getOpacity() > 0;
+    return isSetToMap && isVisible;
   };
 
 
@@ -108,18 +123,17 @@ define([
   };
 
 
-
-
-
   describe('TileAnimation', function() {
-    var animation, layerLoader, baseLayer;
+    var animation, layerLoader, masterLayer;
     var times, timeLayers;
     var TIMES_COUNT = 10;
+    var map;
 
     beforeEach(function() {
-      baseLayer = new MockLayer();
+      map = new MockMap();
+      masterLayer = new MockLayer({ map: map });
       layerLoader = new MockLayerLoader();
-      animation = new AerisTileAnimation(baseLayer, {
+      animation = new TileAnimation(masterLayer, {
         animationLayerLoader: layerLoader
       });
 
@@ -133,6 +147,43 @@ define([
       layerLoader.load.andResolveWith(opt_timeLayers || timeLayers);
     }
 
+
+    describe('constructor', function() {
+
+      it('should call loadAnimationLayers', function() {
+        var animation;
+
+        spyOn(TileAnimation.prototype, 'loadAnimationLayers');
+
+        animation = new TileAnimation(masterLayer, {
+          animationLayerLoader: layerLoader
+        });
+
+        expect(TileAnimation.prototype.loadAnimationLayers).toHaveBeenCalledInTheContextOf(animation);
+      });
+
+      it('should disable the master layer strategy', function() {
+        var masterLayer = new MockLayer();
+        new TileAnimation(masterLayer, {
+          animationLayerLoader: layerLoader
+        });
+
+        expect(masterLayer.removeStrategy).toHaveBeenCalled();
+      });
+
+      it('should not change the master layer\'s map attribute', function() {
+        var mockMap = new MockMap();
+        var masterLayer = new MockLayer({
+          map: mockMap
+        });
+        new TileAnimation(masterLayer, {
+          animationLayerLoader: layerLoader
+        });
+
+        expect(masterLayer.getMap()).toEqual(mockMap);
+      });
+
+    });
 
 
     describe('loadAnimationLayers', function() {
@@ -163,14 +214,6 @@ define([
         ], shouldProxyLoaderEvent);
       });
 
-      it('should turn of autoUpdating on the base layer', function() {
-        baseLayer.set('autoUpdate', true);
-
-        animation.loadAnimationLayers();
-
-        expect(baseLayer.get('autoUpdate')).toEqual(false);
-      });
-
 
       describe('when layers times are loaded', function() {
         var timeLayers, times;
@@ -189,17 +232,16 @@ define([
           expect(animation.getCurrentTime()).toEqual(latestTime);
         });
 
-        it('should hide all layers except for the latest', function() {
+        it('should sync the most current layer to the master layer', function() {
           var timeLayers = {
-            10: new MockLayer({ opacity: 1}),
-            20: new MockLayer({ opacity: 1}),
-            30: new MockLayer({ opacity: 1})
+            10: new MockLayer(),
+            20: new MockLayer(),
+            30: new MockLayer()
           };
+          spyOn(timeLayers[30], 'bindAttributesTo');
           resolveLayerLoader([10, 20, 30], timeLayers);
 
-          expect(timeLayers[10].getOpacity()).toEqual(0);
-          expect(timeLayers[20].getOpacity()).toEqual(0);
-          expect(timeLayers[30].getOpacity()).toBeGreaterThan(0);
+          expect(timeLayers[30].bindAttributesTo).toHaveBeenCalledWithSomeOf(masterLayer);
         });
 
       });
@@ -299,17 +341,27 @@ define([
 
 
       describe('goToTime', function() {
+        var map;
 
         beforeEach(function() {
           animation.loadAnimationLayers();
 
+
           this.addMatchers({
+            /**
+             * Checks that only the layer for the given time
+             * is set to a map.
+             *
+             * @param {number} time Timestamp.
+             * @return {Boolean}
+             */
             toBeShowingLayerForTime: function(time) {
               var timeLayers = this.actual;
+              var times = _.keys(timeLayers);
 
-              var shownTimes = _.filter(_.keys(timeLayers), function(time) {
+              var shownTimes = _.filter(times, function(time) {
                 var layer = timeLayers[time];
-                return layer.getOpacity() > 0;
+                return layer.isShown();
               });
               // Convert to numbers
               shownTimes = _.map(shownTimes, function(time) {
@@ -389,16 +441,16 @@ define([
         });
 
         it('should not show the layer, if the layer is not loaded', function() {
-          var layer = new MockLayer({
-            opacity: 0
-          });
           var timeLayers = {
-            10: layer
+            10: new MockLayer(),
+            20: new MockLayer(),
+            30: new MockLayer()
           };
-          resolveLayerLoader([10], timeLayers);
+          timeLayers[20].isLoaded.andReturn(false);
+          resolveLayerLoader([10, 20, 30], timeLayers);
 
-          animation.goToTime(10);
-          expect(layer.getOpacity()).toEqual(0);
+          animation.goToTime(20);
+          expect(timeLayers[20].isShown()).toEqual(false);
         });
 
         it('should trigger a \'change:time\' event, with a Date object', function() {
@@ -419,6 +471,52 @@ define([
           animation.goToTime(new Date(12345));
         });
 
+
+        describe('the shown layer', function() {
+          var shownLayer;
+          var ZINDEX_STUB = 'ZINDEX_STUB';
+          var OPACITY_STUB = 'OPACITY_STUB';
+          var map;
+
+          beforeEach(function() {
+            var timeLayers;
+
+            shownLayer = new MockLayer();
+            spyOn(shownLayer, 'bindAttributesTo');
+            timeLayers = {
+              10: shownLayer
+            };
+            resolveLayerLoader([10], timeLayers);
+
+            map = new MockMap();
+
+            masterLayer.set({
+              map: map,
+              zIndex: ZINDEX_STUB,
+              opacity: OPACITY_STUB
+            });
+
+            animation.goToTime(10);
+          });
+
+
+          it('should be bound to the master layer\'s opacity, zIndex, and map attributes', function() {
+            var boundObj, boundAttrs;
+
+            expect(shownLayer.bindAttributesTo).toHaveBeenCalled();
+
+            boundObj = shownLayer.bindAttributesTo.mostRecentCall.args[0];
+            boundAttrs = shownLayer.bindAttributesTo.mostRecentCall.args[1];
+
+            expect(boundObj).toEqual(masterLayer);
+            expect(_.contains(boundAttrs, 'map')).toEqual(true);
+            expect(_.contains(boundAttrs, 'opacity')).toEqual(true);
+            expect(_.contains(boundAttrs, 'zIndex')).toEqual(true);
+          });
+
+
+        });
+
       });
 
 
@@ -437,95 +535,20 @@ define([
     });
 
 
-    describe('remove', function() {
+    describe('destroy', function() {
 
-      it('should stop the animation', function() {
-        spyOn(animation, 'stop');
+      it('should clear all event listeners', function() {
+        spyOn(animation, 'stopListening');
 
-        animation.remove();
+        animation.destroy();
 
-        expect(animation.stop).toHaveBeenCalled();
+        expect(animation.stopListening).toHaveBeenCalled();
       });
 
-      it('should hide all layers', function() {
-        resolveLayerLoader();
-        animation.goToTime(0);
+      it('should re-enable the master layer strategy', function() {
+        animation.destroy();
 
-        animation.remove();
-
-        _.each(timeLayers, function(layer) {
-          expect(layer.get('opacity')).toEqual(0);
-        });
-      });
-
-      it('should not destroy the animation (animation can be re-started)', function() {
-        var timeLayers = {
-          10: new MockLayer(),
-          20: new MockLayer(),
-          30: new MockLayer()
-        };
-        resolveLayerLoader([10, 20, 30], timeLayers);
-
-        animation.remove();
-        animation.goToTime(20);
-
-        expect(timeLayers[20].getOpacity()).toBeGreaterThan(0);
-      });
-
-    });
-
-
-    describe('setOpacity', function() {
-      var OPACITY_STUB = 0.1234321;
-
-      beforeEach(function() {
-        animation.loadAnimationLayers();
-      });
-
-
-      it('should set the opacity of the current layer', function() {
-        resolveLayerLoader();
-
-        animation.setOpacity(OPACITY_STUB);
-
-        expect(animation.getCurrentLayer().getOpacity()).toEqual(OPACITY_STUB);
-      });
-
-      it('should not set the opacity of non-current layers', function() {
-        var timeLayers = {
-          10: new MockLayer(),
-          20: new MockLayer(),
-          30: new MockLayer()
-        };
-        resolveLayerLoader([10, 20, 30], timeLayers);
-        animation.goToTime(20);
-
-        animation.setOpacity(OPACITY_STUB);
-
-        expect(timeLayers[10].getOpacity()).toEqual(0);
-        expect(timeLayers[30].getOpacity()).toEqual(0);
-
-      });
-
-      it('should not throw a fit if no times are loaded', function() {
-        animation.setOpacity(OPACITY_STUB);
-      });
-
-      it('should use the opacity on the next layer rendered with goToTime', function() {
-        var timeLayers = {
-          10: new MockLayer(),
-          20: new MockLayer(),
-          30: new MockLayer()
-        };
-        resolveLayerLoader([10, 20, 30], timeLayers);
-        animation.goToTime(20);
-
-        animation.setOpacity(OPACITY_STUB);
-        animation.goToTime(30);
-
-        expect(timeLayers[10].getOpacity()).toEqual(0);
-        expect(timeLayers[20].getOpacity()).toEqual(0);
-        expect(timeLayers[30].getOpacity()).toEqual(OPACITY_STUB);
+        expect(masterLayer.resetStrategy).toHaveBeenCalled();
       });
 
     });

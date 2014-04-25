@@ -13,7 +13,7 @@ define([
    * @constructor
    * @extends aeris.maps.animations.AbstractAnimation
    *
-   * @param {aeris.maps.layers.AerisTile} layer Base layer.
+   * @param {aeris.maps.layers.AerisTile} layer The layer to animate.
    * @param {aeris.maps.animations.options.AnimationOptions} opt_options
    * @param {number} opt_options.timestep Time between animation frames, in milliseconds.
    * @param {aeris.maps.animations.helpers.AnimationLayerLoader=} opt_options.animationLayerLoader
@@ -30,20 +30,21 @@ define([
 
 
     /**
-     * The layer which is being animated
+     * The original layer object, which will serve as
+     * the 'master' for all animation layer "frames."
      *
      * @type {aeris.maps.layers.AerisTile}
      * @private
-     * @property baseLayer_
+     * @property masterLayer_
      */
-    this.baseLayer_ = layer;
+    this.masterLayer_ = layer;
 
 
     /**
      * A hash of {aeris.maps.layers.AerisTile},
      * listed by timestamp.
      *
-     * @type {Object}
+     * @type {Object.<number,aeris.maps.layers.AerisTile>}
      * @private
      * @property timeLayers_
      */
@@ -66,12 +67,13 @@ define([
      * @type {aeris.animations.helpers.AnimationLayerLoader}
      * @private
      */
-    this.animationLayerLoader_ = options.animationLayerLoader || new AnimationLayerLoader(this.baseLayer_, {
+    this.animationLayerLoader_ = options.animationLayerLoader || new AnimationLayerLoader(this.masterLayer_, {
       from: this.from_,
       to: this.to_,
       limit: this.limit_
     });
 
+    this.prepareMasterLayer_();
     this.loadAnimationLayers();
   };
   _.inherits(TileAnimation, AbstractAnimation);
@@ -87,25 +89,47 @@ define([
    * @method loadAnimationLayers
    */
   TileAnimation.prototype.loadAnimationLayers = function() {
-    this.baseLayer_.set({
-      // Turn autoUpdate off, to prevent
-      // some funky behavior.
-      autoUpdate: false,
-
-      // All cloned layers should be hidden
-      opacity: 0
-    });
-
     this.bindLoadEvents_();
 
     this.animationLayerLoader_.once('load:times', function(times, timeLayers) {
       this.setTimeLayers_(timeLayers);
       this.updateTimeBounds_();
-      this.goToTime(this.to_);
       this.trigger('load:times', times, timeLayers);
+
+      this.showInitialAnimationFrame_();
     }, this);
 
     return this.animationLayerLoader_.load();
+  };
+
+
+  /**
+   * Convert master layer into a "dummy" view model,
+   * with no bound rendering behavior.
+   *
+   * This will allow the client to manipulate the master layer
+   * as a proxy for all other animation frames, without actually
+   * showing the layer on the map.
+   *
+   * @method prepareMasterLayer_
+   * @private
+   */
+  TileAnimation.prototype.prepareMasterLayer_ = function() {
+    // Destroy its strategy, so changes to its state are not rendered
+    this.masterLayer_.removeStrategy();
+  };
+
+
+  /**
+   * @method showInitialAnimationFrame_
+   * @private
+   */
+  TileAnimation.prototype.showInitialAnimationFrame_ = function() {
+    var initialTime = this.to_;
+    var lastLayer = this.getLayerForTime_(initialTime);
+
+    this.goToTime(initialTime);
+    this.syncLayerToMaster_(lastLayer);
   };
 
 
@@ -189,31 +213,20 @@ define([
 
 
   /**
-   * Removes the animated layers from the map.
-   * @method remove
-   */
-  TileAnimation.prototype.remove = function() {
-    this.stop();
-
-    _.invoke(this.timeLayers_, 'setOpacity', 0);
-  };
-
-
-  /**
-   * Sets the opacity of the animated
-   * layers.
+   * Destroys the tile animation object,
+   * clears animation frames from memory.
    *
-   * @param {number} opacity
-   * @method setOpacity
+   *
+   * @method destroy
    */
-  TileAnimation.prototype.setOpacity = function(opacity) {
-    var currentLayer = this.getCurrentLayer();
+  TileAnimation.prototype.destroy = function() {
+    _.invoke(this.timeLayers_, 'destroy');
+    this.timeLayers_ = {};
+    this.times_.length = 0;
 
-    this.opacity_ = opacity;
+    this.stopListening();
 
-    if (currentLayer) {
-      currentLayer.setOpacity(this.opacity_);
-    }
+    this.masterLayer_.resetStrategy();
   };
 
 
@@ -248,9 +261,50 @@ define([
   };
 
 
+  /**
+   * Set the layer "frames" to animate.
+   *
+   * @method setTimeLayers_
+   * @param {Object.<number,aeris.maps.layers.AerisTile>} timeLayers Hash of timestamp --> layer
+   * @private
+   */
   TileAnimation.prototype.setTimeLayers_ = function(timeLayers) {
     this.timeLayers_ = timeLayers;
     this.times_ = this.getOrderedTimesFromLayers_(timeLayers);
+
+    _.each(timeLayers, this.initializeLayerLoading_, this);
+  };
+
+
+  /**
+   * Some mapping libraries will not load a layer
+   * until it has been set to the map.
+   *
+   * This method "quietly" sets a layer to the map,
+   * to make sure loading is initialized.
+   *
+   * @method initializeLayerLoading_
+   * @private
+   * @param {aeris.maps.layers.AerisTile} layer
+   */
+  TileAnimation.prototype.initializeLayerLoading_ = function(layer) {
+    var quietlyAddToMap = (function() {
+      // Temporarily set to 0 opacity, so we don't see
+      // the layer being added to the map
+      layer.setOpacity(0);
+
+      // Trigger loading, by setting to the map
+      layer.setMap(this.masterLayer_.getMap());
+
+      // We're not going to be reset our layer attributes
+      // here because it (for some reason) causes the application
+      // to crash.
+      // Instead we'll rely on the transitioning logic.
+      // This may be dangerous, but it will work for now.
+    }).bind(this);
+
+    quietlyAddToMap();
+    this.listenTo(this.masterLayer_, 'map:set', quietlyAddToMap);
   };
 
 
@@ -321,18 +375,37 @@ define([
    * @method transition_
    */
   TileAnimation.prototype.transition_ = function(oldLayer, newLayer) {
-    this.hideAllLayersExcept_(newLayer);
+    this.syncLayerToMaster_(newLayer);
 
-    newLayer.setOpacity(this.opacity_);
+    // Sometime we have trouble with old layers sticking around.
+    // especially when we need to reload layers for new bounds.
+    // This a fail-proof way to handle that issue.
+    _.each(this.timeLayers_, function(layer) {
+      if (layer !== newLayer) {
+        // Note that removing the old layer from the map
+        // every time causes performance issues.
+        layer.setOpacity(0);
+        layer.stopListening(this.masterLayer_);
+      }
+    }, this);
   };
 
 
-  TileAnimation.prototype.hideAllLayersExcept_ = function(exceptLayer) {
-    _.each(this.timeLayers_, function(layer) {
-      if (layer.cid !== exceptLayer.cid) {
-        layer.stop().hide();
-      }
-    }, this);
+  /**
+   * Update the attributes of the provided layer
+   * to match those of the master layer.
+   *
+   * @method syncLayerToMaster_
+   * @private
+   * @param  {aeris.maps.layers.AerisTile} layer
+   */
+  TileAnimation.prototype.syncLayerToMaster_ = function(layer) {
+    var boundAttrs = [
+      'map',
+      'opacity',
+      'zIndex'
+    ];
+    layer.bindAttributesTo(this.masterLayer_, boundAttrs);
   };
 
 

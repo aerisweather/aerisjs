@@ -2,15 +2,19 @@ define([
   'aeris/util',
   'aeris/maps/animations/helpers/timelayersfactory',
   'aeris/model',
-  'mocks/aeris/maps/animations/helpers/times'
-], function(_, TimeLayersFactory, Model, MockTimes) {
+  'mocks/aeris/maps/animations/helpers/times',
+  'mocks/mockfactory'
+], function(_, TimeLayersFactory, Model, MockTimes, MockFactory) {
 
-  var MockLayer = function(opt_attrs, opt_options) {
-    Model.apply(this, arguments);
-
-    spyOn(this, 'clone').andCallThrough();
-  };
-  _.inherits(MockLayer, Model);
+  var MockLayer = MockFactory({
+    getSetters: [
+      'map'
+    ],
+    methods: [
+      'clone'
+    ],
+    inherits: Model
+  });
 
   MockLayer.prototype.clone = function(opt_attrs, opt_options) {
     var attrs = _.extend({}, this.attributes, opt_attrs);
@@ -31,7 +35,7 @@ define([
     });
   }
 
-  describe('A TimeLayersFactory', function() {
+  describe('TimeLayersFactory', function() {
     var baseLayer;
 
     beforeEach(function() {
@@ -111,6 +115,14 @@ define([
           expect(lyr.get('time').getTime()).toEqual(parseFloat(time));
         });
       });
+
+
+      it('should create layers which have no map set', function() {
+        _.each(layers, function(lyr, time) {
+          expect(lyr.getMap()).toEqual(null);
+        });
+      });
+
 
       it('should create layers by cloning the base layer', function() {
         var CLONE_STUB = 'CLONE_STUB';

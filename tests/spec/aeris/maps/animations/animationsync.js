@@ -235,11 +235,6 @@ define([
         expect(animation.stop).toHaveBeenCalled();
       });
 
-      it('should remove the animation', function() {
-        test.sync.remove(animation);
-        expect(animation.remove).toHaveBeenCalled();
-      });
-
       it('should stop listening to Animation events', function() {
         var listeners = {
           load: jasmine.createSpy('load listener'),
