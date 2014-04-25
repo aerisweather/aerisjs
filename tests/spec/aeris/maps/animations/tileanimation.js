@@ -4,8 +4,9 @@ define([
   'aeris/model',
   'aeris/promise',
   'aeris/events',
-  'mocks/aeris/maps/animations/helpers/times'
-], function(_, AerisTileAnimation, Model, Promise, Events, MockTimes) {
+  'mocks/aeris/maps/animations/helpers/times',
+  'mocks/mockfactory'
+], function(_, AerisTileAnimation, Model, Promise, Events, MockTimes, MockFactory) {
 
   var MockOrderedTimes = function() {
     var times = MockTimes.apply(null, arguments);
@@ -13,36 +14,28 @@ define([
     return _.sortBy(times, _.identity);
   };
 
-  var MockMap = function() {};
-
-
-  var MockLayer = function(opt_attrs, opt_options) {
-    var attrs = _.defaults(opt_attrs || {}, {
-      opacity: 1
-    });
-
-    Model.call(this, attrs, opt_options);
-  };
-  _.inherits(MockLayer, Model);
-
-  MockLayer.prototype.setMap = function(map) {
-    this.set('map', map);
-  };
-
-  MockLayer.prototype.getMap = function() {
-    return this.get('map');
-  };
+  var MockLayer = MockFactory({
+    getSetters: [
+      'map',
+      'opacity',
+      'zIndex'
+    ],
+    methods: [
+      'stop',
+      'isLoaded',
+      'show',
+      'hide',
+      'disableStrategy',
+      'enableStrategy'
+    ],
+    inherits: Model,
+    constructor: function() {
+      this.set('opacity', 1, { silent: true });
+    }
+  });
 
   MockLayer.prototype.isLoaded = function() {
     return true;
-  };
-
-  MockLayer.prototype.setOpacity = function(opacity) {
-    this.set('opacity', opacity);
-  };
-
-  MockLayer.prototype.getOpacity = function() {
-    return this.get('opacity');
   };
 
   MockLayer.prototype.stop = function() {
@@ -118,7 +111,7 @@ define([
 
 
 
-  describe('An AerisTile Animation', function() {
+  describe('TileAnimation', function() {
     var animation, layerLoader, baseLayer;
     var times, timeLayers;
     var TIMES_COUNT = 10;
@@ -402,7 +395,6 @@ define([
           var timeLayers = {
             10: layer
           };
-          spyOn(layer, 'isLoaded').andReturn(false);
           resolveLayerLoader([10], timeLayers);
 
           animation.goToTime(10);
