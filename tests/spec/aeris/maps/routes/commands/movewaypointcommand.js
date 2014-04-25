@@ -1,10 +1,12 @@
 define([
+  'aeris/util',
   'testUtils',
   'aeris/model',
   'aeris/maps/routes/commands/movewaypointcommand',
   'aeris/maps/routes/waypoint',
   'aeris/maps/routes/route'
 ], function(
+  _,
   testUtil,
   Model,
   MoveWaypointCommand,

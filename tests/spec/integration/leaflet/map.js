@@ -1,4 +1,5 @@
 define([
+  'aeris/util',
   'aeris/maps/map',
   'tests/lib/spyonobject',
   'tests/lib/flag',
@@ -6,7 +7,7 @@ define([
   'aeris/maps/strategy/util',
   'mocks/leaflet/events/event',
   'leaflet'
-], function(Map, spyOnObject, Flag, MapCanvas, mapUtil, LeafletEvent, Leaflet) {
+], function(_, Map, spyOnObject, Flag, MapCanvas, mapUtil, LeafletEvent, Leaflet) {
 
 
   describe('Maps with Leaflet', function() {

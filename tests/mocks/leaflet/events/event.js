@@ -1,6 +1,7 @@
 define([
+  'aeris/util',
   'leaflet'
-], function(Leaflet) {
+], function(_, Leaflet) {
   var LeafletEvent = function(evt) {
     return _.defaults(evt, {
       originalEvent: {

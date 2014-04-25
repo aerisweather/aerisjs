@@ -1,4 +1,6 @@
-define(function() {
+define([
+  'aeris/util'
+], function(_) {
   var MockDirectionsService = function() {
     var stubbedMethods = [
       'route'

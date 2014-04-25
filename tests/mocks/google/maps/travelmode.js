@@ -1,6 +1,6 @@
 define([
   'aeris/util'
-], function() {
+], function(_) {
   var TravelMode = {};
 
   var modes = {
