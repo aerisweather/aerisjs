@@ -299,5 +299,108 @@ define([
 
     });
 
+
+    describe('bindAttributesTo', function() {
+      var model, target;
+
+      beforeEach(function() {
+        model = new Model();
+        target = new Model();
+      });
+
+      describe('immediately', function() {
+
+        beforeEach(function() {
+          target.set({
+            foo: 'bar',
+            faz: 'baz',
+            other: 'value'
+          });
+        });
+
+
+        it('should update with attributes from the specified model', function() {
+          model.bindAttributesTo(target, ['foo', 'faz']);
+
+          expect(model.get('foo')).toEqual('bar');
+          expect(model.get('faz')).toEqual('baz');
+        });
+
+        it('should not update with unspecified attributes', function() {
+          model.bindAttributesTo(target, ['foo', 'faz']);
+
+          expect(model.has('other')).toEqual(false);
+        });
+
+        it('should validate updated attributes', function() {
+          var ERROR_MSG_STUB = 'ERROR_MSG_STUB';
+
+          model.validate = function(attrs) {
+            if (attrs.foo === 'bar') {
+              throw new Error(ERROR_MSG_STUB);
+            }
+          };
+
+          expect(function() {
+            model.bindAttributesTo(target, ['foo', 'faz']);
+          }).toThrow(ERROR_MSG_STUB);
+        });
+
+      });
+
+      describe('when target attributes change', function() {
+
+        it('should update with attributes from the specified model', function() {
+          model.bindAttributesTo(target, ['foo', 'faz']);
+          target.set({
+            foo: 'bar',
+            faz: 'baz'
+          });
+
+          expect(model.get('foo')).toEqual('bar');
+          expect(model.get('faz')).toEqual('baz');
+        });
+
+        it('should not update with unspecified attributes', function() {
+          model.bindAttributesTo(target, ['foo', 'faz']);
+
+          target.set({ other: 'value' });
+
+          expect(model.has('other')).toEqual(false);
+        });
+
+        it('should validate updated attributes', function() {
+          var ERROR_MSG_STUB = 'ERROR_MSG_STUB';
+
+          model.bindAttributesTo(target, ['foo', 'faz']);
+
+          model.validate = function(attrs) {
+            if (attrs.foo === 'bar') {
+              throw new Error(ERROR_MSG_STUB);
+            }
+          };
+
+          expect(function() {
+            target.set({ foo: 'bar' });
+          }).toThrow(ERROR_MSG_STUB);
+        });
+
+        it('should stop updating after calling stopListening', function() {
+          model.bindAttributesTo(target, ['foo', 'bar']);
+          model.stopListening(target);
+
+          target.set({
+            foo: 'bar',
+            faz: 'baz'
+          });
+
+          expect(model.has('foo')).toEqual(false);
+          expect(model.has('faz')).toEqual(false);
+        });
+
+      });
+
+    });
+
   });
 });
