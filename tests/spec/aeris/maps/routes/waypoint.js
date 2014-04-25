@@ -53,13 +53,13 @@ define([
   describe('A Waypoint', function() {
 
     beforeEach(function() {
-      spyOn(Waypoint.prototype, 'setStrategy_');
-      spyOn(Waypoint.prototype, 'loadStrategy_').andReturn(new Promise());
+      spyOn(Waypoint.prototype, 'setStrategy');
+      spyOn(Waypoint.prototype, 'loadStrategy').andReturn(new Promise());
     });
 
     afterEach(function() {
-      Waypoint.prototype.setStrategy_.andCallThrough();
-      Waypoint.prototype.loadStrategy_.andCallThrough();
+      Waypoint.prototype.setStrategy.andCallThrough();
+      Waypoint.prototype.loadStrategy.andCallThrough();
     });
 
 

@@ -22,7 +22,7 @@ define([
    *
    *        Note that using a string path will result in asynchronous loading
    *        of the strategy. To handle loading callbacks and errors, use the
-   *        loadStrategy_ method, instead.
+   *        loadStrategy method, instead.
    */
   var StrategyObject = function(opt_options) {
     var options = _.defaults(opt_options || {}, {
@@ -45,7 +45,7 @@ define([
 
     // Set strategy from ctor options
     if (_.isString(options.strategy)) {
-      this.loadStrategy_(options.strategy).
+      this.loadStrategy(options.strategy).
         // Throw an uncatchable here,
         // because we are not otherwise exposing
         // error handlers for this load promise.
@@ -56,7 +56,7 @@ define([
         });
     }
     else if (!_.isNull(options.strategy)) {
-      this.setStrategy_(options.strategy);
+      this.setStrategy(options.strategy);
     }
 
 
@@ -76,10 +76,9 @@ define([
    *
    * @param {Function} Strategy
    *        Constructor for an {aeris.maps.AbstractStrategy} object.
-   * @protected
-   * @method setStrategy_
+   * @method setStrategy
    */
-  StrategyObject.prototype.setStrategy_ = function(Strategy) {
+  StrategyObject.prototype.setStrategy = function(Strategy) {
     // Clean up any existing strategy
     if (this.strategy_) {
       this.removeStrategy();
@@ -120,15 +119,14 @@ define([
    *
    * @param {string} path
    * @return {aeris.Promise} A promise to load and set the strategy.
-   * @method loadStrategy_
-   * @protected
+   * @method loadStrategy
    */
-  StrategyObject.prototype.loadStrategy_ = function(path) {
+  StrategyObject.prototype.loadStrategy = function(path) {
     var loadPromise = new Promise();
 
     require(['aeris/maps/strategy/' + path],
       _.bind(function(Strategy) {
-        this.setStrategy_(Strategy);
+        this.setStrategy(Strategy);
 
         loadPromise.resolve();
       }, this),
