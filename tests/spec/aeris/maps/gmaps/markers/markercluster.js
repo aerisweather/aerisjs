@@ -32,15 +32,6 @@ define([
     this.getView = jasmine.createSpy('Marker#getView').
       andReturn(markerView);
 
-    this.requestView = jasmine.createSpy('Marker#requestView').
-      andCallFake(function() {
-        var promise = new Promise();
-
-        _.delay(promise.resolve.bind(promise), ASYNC_DELAY, markerView);
-
-        return promise;
-      });
-
     Model.apply(this, arguments);
   };
   _.inherits(MockMarker, Model);

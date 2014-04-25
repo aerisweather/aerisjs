@@ -116,12 +116,6 @@ define([
    * Returns the object view,
    * as rendered by the object's strategy.
    *
-   * Note that a view may not be immediately
-   * available, if the objects strategy is being
-   * loaded asynchronously. For this reason, it is
-   * recommended to use #requestView, unless you know
-   * for certain that the object's strategy has been loaded.
-   *
    * @throws {Error} If no strategy has been set on the object.
    *
    * @return {*}
@@ -134,38 +128,6 @@ define([
     }
 
     return this.strategy_.getView();
-  };
-
-
-  /**
-   * Request the view associated with
-   * this map object.
-   *
-   * Because the strategy used to render the view
-   * may be loaded asynchrously, this method allows you
-   * to request a object's view without knowing whether or
-   * not the strategy has been loaded.
-   *
-   * @return {aeris.Promise} Resolves with: {*} view.
-   * @method requestView
-   */
-  MapExtensionObject.prototype.requestView = function() {
-    var promise = new Promise();
-
-    // Strategy is already loaded
-    // --> resolve immediately with view.
-    if (this.strategy_) {
-      promise.resolve(this.getView());
-      return promise;
-    }
-
-    // Wait for strategy to load
-    this.once('strategy:set', function(strategy) {
-      promise.resolve(this.getView());
-    }, this);
-
-
-    return promise;
   };
 
 

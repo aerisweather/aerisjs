@@ -206,6 +206,7 @@ define([
    * @method addMarker
    */
   MarkerClusterStrategy.prototype.addMarker = function(marker) {
+    var markerView;
     var groupName = this.getMarkerGroup_(marker);
 
     // Create the clusterer, if one doesn't already
@@ -214,12 +215,9 @@ define([
       this.addClusterer_(this.createClusterer_(groupName), groupName);
     }
 
-    // Add the marker to its group's clustere
-    marker.requestView().
-      done(function(markerView) {
-        this.getClusterer(groupName).addMarker(markerView);
-      }, this).
-      fail(_.throwUncatchable);
+    // Add the marker to its group's clusterer
+    markerView = marker.getView();
+    this.getClusterer(groupName).addMarker(markerView);
   };
 
 
@@ -234,11 +232,7 @@ define([
     var clusterer = this.getClusterer(groupName);
 
     if (clusterer) {
-      marker.requestView().
-        done(function(markerView) {
-          clusterer.removeMarker(markerView);
-        }, this).
-        fail(_.throwUncatchable);
+      clusterer.removeMarker(marker.getView());
     }
   };
 
