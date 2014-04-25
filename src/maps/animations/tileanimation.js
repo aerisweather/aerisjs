@@ -23,7 +23,7 @@ define([
       // Defaults will be set after times are loaded.
       from: 0,
       to: new Date().getTime(),
-      limit: 10
+      limit: 20
     });
 
     AbstractAnimation.call(this, options);
