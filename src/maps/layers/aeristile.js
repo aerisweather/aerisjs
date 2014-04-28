@@ -177,7 +177,9 @@ define([
 
 
   AerisTile.prototype.stopAutoUpdate_ = function() {
-    if (!this.autoUpdateIntervalTimer_) { return; }
+    if (!this.autoUpdateIntervalTimer_) {
+      return;
+    }
 
     window.clearInterval(this.autoUpdateIntervalTimer_);
   };
@@ -234,10 +236,10 @@ define([
     this.ensureApiKeys_();
 
     return this.get('server') +
-        this.get('apiId') + '_' +
-        this.get('apiSecret') +
-        '/' + this.get('tileType') +
-        '/{z}/{x}/{y}/{t}.png';
+      this.get('apiId') + '_' +
+      this.get('apiSecret') +
+      '/' + this.get('tileType') +
+      '/{z}/{x}/{y}/{t}.png';
   };
 
 
@@ -315,6 +317,7 @@ define([
    * tile images are available on the AerisAPI server.
    *
    * @return {aeris.Promise} Resolves with arrary of timestamps.
+   * @throws {aeris.errors.MissingAPIKeyError}
    * @method loadTileTimes
    */
   AerisTile.prototype.loadTileTimes = function() {
