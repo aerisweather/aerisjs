@@ -117,5 +117,11 @@ define(['aeris/util', 'aeris/events'], function(_, Events) {
   AnimationInterface.prototype.goToTime = _.abstractMethod;
 
 
+  /**
+   * @method isAnimating
+   * @return {Boolean}
+   */
+  AnimationInterface.prototype.isAnimating = _.abstractMethod;
+
   return AnimationInterface;
 });
