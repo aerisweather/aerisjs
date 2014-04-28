@@ -18,9 +18,14 @@ define([
       });
 
       Model.call(this, attrs, opt_options);
-    }
+    },
+    name: 'MockMapObject'
   });
   _.inherits(MockMapObject, Model);
+
+  MockMapObject.prototype.jasmineToString = function() {
+    return _.uniqueId('MockMapObject_');
+  };
 
   MockMapObject.prototype.setMap = function(map) {
     if (map === this.get('map')) { return; }
