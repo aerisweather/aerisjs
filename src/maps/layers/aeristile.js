@@ -321,9 +321,12 @@ define([
    * @method loadTileTimes
    */
   AerisTile.prototype.loadTileTimes = function() {
+    var url;
     var TIMEOUT = 5000;
     var promiseToLoadTimes = new Promise();
-    var url = this.createTileTimesUrl_();
+
+    this.ensureApiKeys_();
+    url = this.createTileTimesUrl_();
 
     this.jsonp_.get(url, {}, _.bind(function(res) {
       var times;
@@ -368,8 +371,6 @@ define([
    */
   AerisTile.prototype.createTileTimesUrl_ = function() {
     var urlPattern = '{server}/{client_id}_{client_secret}/{tileType}.jsonp';
-
-    this.ensureApiKeys_();
 
     return urlPattern.
       replace('{server}', 'http://tile.aerisapi.com').
