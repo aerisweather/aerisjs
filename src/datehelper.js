@@ -30,7 +30,7 @@ define(['aeris/util'], function(_) {
   DateHelper.prototype.addMilliseconds = function(ms) {
     this.date_.setTime(this.date_.getTime() + ms);
 
-    return this.date_;
+    return this;
   };
 
 

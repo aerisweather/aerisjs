@@ -33,13 +33,13 @@ define([
         expect(test.date.getTime()).toEqual(test.startTime + (5 * MILLISECOND));
       });
 
-      it('should return the modified date object', function() {
+      it('should return the date helper', function() {
         var test = new TestFactory();
 
         var ret = test.helper.addMilliseconds(5);
 
-        // Returns the date object
-        expect(ret).toEqual(test.date);
+        // Returns the date helper object
+        expect(ret).toEqual(test.helper);
 
         // Date is modified
         expect(test.date.getTime()).not.toEqual(test.startTime);
@@ -63,7 +63,7 @@ define([
         var ret = test.helper.addSeconds(5);
 
         // Returns the date object
-        expect(ret).toEqual(test.date);
+        expect(ret).toEqual(test.helper);
 
         // Date is modified
         expect(test.date.getTime()).not.toEqual(test.startTime);
@@ -86,8 +86,7 @@ define([
 
         var ret = test.helper.addMinutes(5);
 
-        // Returns the date object
-        expect(ret).toEqual(test.date);
+        expect(ret).toEqual(test.helper);
 
         // Date is modified
         expect(test.date.getTime()).not.toEqual(test.startTime);
@@ -110,8 +109,8 @@ define([
 
         var ret = test.helper.addHours(5);
 
-        // Returns the date object
-        expect(ret).toEqual(test.date);
+        // Returns the date helper object
+        expect(ret).toEqual(test.helper);
 
         // Date is modified
         expect(test.date.getTime()).not.toEqual(test.startTime);
@@ -134,8 +133,8 @@ define([
 
         var ret = test.helper.addDays(5);
 
-        // Returns the date object
-        expect(ret).toEqual(test.date);
+        // Returns the date helper object
+        expect(ret).toEqual(test.helper);
 
         // Date is modified
         expect(test.date.getTime()).not.toEqual(test.startTime);
@@ -158,8 +157,8 @@ define([
 
         var ret = test.helper.addWeeks(5);
 
-        // Returns the date object
-        expect(ret).toEqual(test.date);
+        // Returns the date helper object
+        expect(ret).toEqual(test.helper);
 
         // Date is modified
         expect(test.date.getTime()).not.toEqual(test.startTime);
