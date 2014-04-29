@@ -198,11 +198,6 @@ define([
   };
 
 
-  TileAnimation.prototype.getCurrentTime = function() {
-    return this.currentTime_;
-  };
-
-
   /**
    * @return {number} Percentage complete loading tile (1.0 is 100% complete).
    * @method getLoadProgress

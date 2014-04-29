@@ -229,7 +229,7 @@ define([
           var latestTime = Math.max.apply(null, times);
           resolveLayerLoader();
 
-          expect(animation.getCurrentTime()).toEqual(latestTime);
+          expect(animation.getCurrentTime().getTime()).toEqual(latestTime);
         });
 
         it('should sync the most current layer to the master layer', function() {
@@ -265,10 +265,10 @@ define([
           animation.goToTime(times[0]);
 
           animation.next();
-          expect(animation.getCurrentTime()).toEqual(times[1]);
+          expect(animation.getCurrentTime().getTime()).toEqual(times[1]);
 
           animation.next();
-          expect(animation.getCurrentTime()).toEqual(times[2]);
+          expect(animation.getCurrentTime().getTime()).toEqual(times[2]);
         });
 
         it('should go to the next closest time', function() {
@@ -278,7 +278,7 @@ define([
           animation.goToTime(22);
 
           animation.next();
-          expect(animation.getCurrentTime()).toEqual(30);
+          expect(animation.getCurrentTime().getTime()).toEqual(30);
 
         });
 
@@ -288,7 +288,7 @@ define([
           animation.goToTime(_.last(times));
 
           animation.next();
-          expect(animation.getCurrentTime()).toEqual(times[0]);
+          expect(animation.getCurrentTime().getTime()).toEqual(times[0]);
         });
 
         it('should do nothing if no times are loaded', function() {
@@ -307,10 +307,10 @@ define([
           animation.goToTime(times[2]);
 
           animation.previous();
-          expect(animation.getCurrentTime()).toEqual(times[1]);
+          expect(animation.getCurrentTime().getTime()).toEqual(times[1]);
 
           animation.previous();
-          expect(animation.getCurrentTime()).toEqual(times[0]);
+          expect(animation.getCurrentTime().getTime()).toEqual(times[0]);
         });
 
         it('should go to the previous closest time', function() {
@@ -320,7 +320,7 @@ define([
           animation.goToTime(22);
 
           animation.previous();
-          expect(animation.getCurrentTime()).toEqual(10);
+          expect(animation.getCurrentTime().getTime()).toEqual(10);
         });
 
         it('should go to the last time, if the first time is current', function() {
@@ -328,7 +328,7 @@ define([
           animation.goToTime(times[0]);
 
           animation.previous();
-          expect(animation.getCurrentTime()).toEqual(_.last(times));
+          expect(animation.getCurrentTime().getTime()).toEqual(_.last(times));
         });
 
         it('should do nothing if no times are loaded', function() {
@@ -419,25 +419,25 @@ define([
 
         it('should set the current time to the specified time', function() {
           animation.goToTime(0);
-          expect(animation.getCurrentTime()).toEqual(0);
+          expect(animation.getCurrentTime().getTime()).toEqual(0);
 
           animation.goToTime(2);
-          expect(animation.getCurrentTime()).toEqual(2);
+          expect(animation.getCurrentTime().getTime()).toEqual(2);
 
           animation.goToTime(10);
-          expect(animation.getCurrentTime()).toEqual(10);
+          expect(animation.getCurrentTime().getTime()).toEqual(10);
 
           animation.goToTime(14);
-          expect(animation.getCurrentTime()).toEqual(14);
+          expect(animation.getCurrentTime().getTime()).toEqual(14);
 
           animation.goToTime(16);
-          expect(animation.getCurrentTime()).toEqual(16);
+          expect(animation.getCurrentTime().getTime()).toEqual(16);
 
           animation.goToTime(24);
-          expect(animation.getCurrentTime()).toEqual(24);
+          expect(animation.getCurrentTime().getTime()).toEqual(24);
 
           animation.goToTime(9999);
-          expect(animation.getCurrentTime()).toEqual(9999);
+          expect(animation.getCurrentTime().getTime()).toEqual(9999);
         });
 
         it('should not show the layer, if the layer is not loaded', function() {
@@ -592,7 +592,7 @@ define([
         var CURRENT_TIME = 1234;
         animation.goToTime(1234);
 
-        expect(animation.getCurrentTime()).toEqual(1234);
+        expect(animation.getCurrentTime().getTime()).toEqual(1234);
       });
 
       it('should return null, if no time are loaded, and goToTime hasn\'t been called', function() {

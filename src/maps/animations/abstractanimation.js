@@ -188,6 +188,15 @@ define([
 
 
   /**
+   * @method getCurrentTime
+   * @return {?Date}
+   */
+  AbstractAnimation.prototype.getCurrentTime = function() {
+    return _.isNull(this.currentTime_) ? null : new Date(this.currentTime_);
+  };
+
+
+  /**
    * Stop animating the layer,
    * and return to the most recent frame
    * @method stop
