@@ -115,7 +115,7 @@ define([
    * @private
    */
   TileAnimation.prototype.prepareMasterLayer_ = function() {
-    // Destroy its strategy, so changes to its state are not rendered
+    // Destroy its strategy, so changes to its state is not rendered
     this.masterLayer_.removeStrategy();
   };
 
@@ -262,6 +262,20 @@ define([
 
 
   /**
+   * @method proxyEvent_
+   * @param {aeris.Events} target
+   * @param {string} eventName
+   * @private
+   */
+  TileAnimation.prototype.proxyEvent_ = function(target, eventName) {
+    this.listenTo(target, eventName, function(var_args) {
+      var args = _.argsToArray(arguments);
+      this.trigger.apply(this, [eventName].concat(args));
+    });
+  };
+
+
+  /**
    * Set the layer "frames" to animate.
    *
    * @method setTimeLayers_
@@ -326,14 +340,6 @@ define([
       return parseInt(time);
     });
     return _.sortBy(times, _.identity);
-  };
-
-
-  TileAnimation.prototype.proxyEvent_ = function(target, eventName) {
-    this.listenTo(target, eventName, function(var_args) {
-      var args = _.argsToArray(arguments);
-      this.trigger.apply(this, [eventName].concat(args));
-    });
   };
 
 
