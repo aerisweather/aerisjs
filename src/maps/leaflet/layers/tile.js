@@ -33,7 +33,8 @@ define([
       maxZoom: this.object_.get('maxZoom'),
       opacity: this.object_.get('opacity'),
       zIndex: this.object_.get('zIndex'),
-      attribution: this.getOSMAttribution_()
+      attribution: this.getOSMAttribution_(),
+      reuseTiles: true
     });
 
     return tileLayer;

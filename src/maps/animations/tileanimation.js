@@ -294,7 +294,7 @@ define([
    * Some mapping libraries will not load a layer
    * until it has been set to the map.
    *
-   * This method "quietly" sets a layer to the map,
+   * This method silently and temporarily sets a layer to the map,
    * to make sure loading is initialized.
    *
    * @method initializeLayerLoading_
@@ -302,23 +302,31 @@ define([
    * @param {aeris.maps.layers.AerisTile} layer
    */
   TileAnimation.prototype.initializeLayerLoading_ = function(layer) {
-    var quietlyAddToMap = (function() {
-      // Temporarily set to 0 opacity, so we don't see
-      // the layer being added to the map
-      layer.setOpacity(0);
+    var triggerLayerLoad = (function() {
+      // Don't mess with the current layer.
+      if (this.isCurrentLayer_(layer)) {
+        return;
+      }
 
-      // Trigger loading, by setting to the map
-      layer.setMap(this.masterLayer_.getMap());
+      layer.set({
+        // Temporarily set to 0 opacity, so we don't see
+        // the layer being added to the map
+        opacity: 0,
 
-      // We're not going to be reset our layer attributes
-      // here because it (for some reason) causes the application
-      // to crash.
-      // Instead we'll rely on the transitioning logic.
-      // This may be dangerous, but it will work for now.
+        // Trigger loading, by setting to the map
+        map: this.masterLayer_.getMap()
+      });
     }).bind(this);
 
-    quietlyAddToMap();
-    this.listenTo(this.masterLayer_, 'map:set', quietlyAddToMap);
+    // Prevent layer initialization from
+    // blocking the call stack.
+    // (this is a CPU intensive method)
+    var triggerLayerLoad_non_blocking = _.throttle(function() {
+      _.defer(triggerLayerLoad);
+    }, 10);
+
+    triggerLayerLoad_non_blocking();
+    this.listenTo(this.masterLayer_, 'map:set', triggerLayerLoad_non_blocking);
   };
 
 
@@ -430,6 +438,16 @@ define([
     var lastTime = _.last(this.times_);
     return this.isCurrentLayerFirst_() ?
       lastTime : this.times_[this.getLayerIndex_() - 1];
+  };
+
+  /**
+   * @method isCurrentLayer_
+   * @private
+   * @param {aeris.maps.layers.AerisTile} layer
+   * @return {Boolean}
+   */
+  TileAnimation.prototype.isCurrentLayer_ = function(layer) {
+    return layer === this.getCurrentLayer();
   };
 
 
