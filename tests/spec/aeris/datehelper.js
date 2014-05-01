@@ -166,6 +166,50 @@ define([
 
     });
 
+    describe('addTime', function() {
+      var test, dateHelper;
+
+      beforeEach(function() {
+        test = new TestFactory();
+        dateHelper = test.helper;
+
+        spyOn(dateHelper, 'addHours').andReturn(dateHelper);
+        spyOn(dateHelper, 'addMinutes').andReturn(dateHelper);
+        spyOn(dateHelper, 'addSeconds').andReturn(dateHelper);
+        spyOn(dateHelper, 'addMilliseconds').andReturn(dateHelper);
+      });
+
+      it('should add hours, minutes, seconds, and milliseconds', function() {
+        dateHelper.addTime(1, 2, 3, 4);
+
+        expect(dateHelper.addHours).toHaveBeenCalledWith(1);
+        expect(dateHelper.addMinutes).toHaveBeenCalledWith(2);
+        expect(dateHelper.addSeconds).toHaveBeenCalledWith(3);
+        expect(dateHelper.addMilliseconds).toHaveBeenCalledWith(4);
+      });
+
+      it('should only require the hours argument', function() {
+        dateHelper.addTime(1);
+
+        expect(dateHelper.addHours).toHaveBeenCalledWith(1);
+      });
+
+      it('should accept negative values', function() {
+        dateHelper.addTime(-1, -2, -3, -4);
+
+        expect(dateHelper.addHours).toHaveBeenCalledWith(-1);
+        expect(dateHelper.addMinutes).toHaveBeenCalledWith(-2);
+        expect(dateHelper.addSeconds).toHaveBeenCalledWith(-3);
+        expect(dateHelper.addMilliseconds).toHaveBeenCalledWith(-4);
+      });
+
+      it('should return the DateHelper instance', function() {
+        expect(dateHelper.addTime(1, 2, 3, 4)).toEqual(dateHelper);
+      });
+
+    });
+
+
   });
 
 });

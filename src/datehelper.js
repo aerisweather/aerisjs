@@ -83,6 +83,24 @@ define(['aeris/util'], function(_) {
     return this.addMilliseconds(weeks * WEEK);
   };
 
+  /**
+   * @method add
+   * @param {number} hours
+   * @param {number=} opt_minutes
+   * @param {number=} opt_seconds
+   * @param {number=} opt_milliseconds
+   */
+  DateHelper.prototype.addTime = function(hours, opt_minutes, opt_seconds, opt_milliseconds) {
+    var minutes = _.isUndefined(opt_minutes) ? 0 : opt_minutes;
+    var seconds = _.isUndefined(opt_seconds) ? 0 : opt_seconds;
+    var milliseconds = _.isUndefined(opt_milliseconds) ? 0 : opt_milliseconds;
+
+    return this.addHours(hours).
+      addMinutes(minutes).
+      addSeconds(seconds).
+      addMilliseconds(milliseconds);
+  };
+
 
   /**
    * @return {Date}
