@@ -117,6 +117,8 @@ define(['aeris/util'], function(_) {
    */
   DateHelper.prototype.setDate = function(opt_date) {
     this.date_ = opt_date || new Date();
+
+    return this;
   };
 
 

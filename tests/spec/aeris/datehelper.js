@@ -209,6 +209,28 @@ define([
 
     });
 
+    describe('setDate', function() {
+      var dateHelper;
+
+      beforeEach(function() {
+        dateHelper = new DateHelper();
+      });
+
+
+      it('should return the dateHelper', function() {
+        expect(dateHelper.setDate(new Date())).toEqual(dateHelper);
+      });
+
+      it('should set the date', function() {
+        var date = new Date();
+
+        dateHelper.setDate(date);
+
+        expect(dateHelper.getDate()).toEqual(date);
+      });
+
+    });
+
 
   });
 
