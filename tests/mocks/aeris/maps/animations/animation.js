@@ -1,7 +1,8 @@
 define([
   'aeris/util',
-  'mocks/mockfactory'
-], function(_, MockFactory) {
+  'mocks/mockfactory',
+  'aeris/events'
+], function(_, MockFactory, Events) {
   /**
    * @class MockAnimation
    * @implements aeris.maps.animations.AnimationInterface
@@ -15,8 +16,10 @@ define([
       'previous',
       'next',
       'goToTime',
+      'getCurrentTime',
       'isAnimating'
-    ]
+    ],
+    inherits: Events
   });
 
   /**
@@ -49,6 +52,16 @@ define([
   MockAnimation.prototype.isAnimating = function() {
     return !!this.isPlaying_;
   };
+
+
+  /**
+   * @method getCurrentTime
+   * @return {Date}
+   */
+  MockAnimation.prototype.getCurrentTime = function() {
+    return new Date();
+  };
+
 
   return MockAnimation;
 });
