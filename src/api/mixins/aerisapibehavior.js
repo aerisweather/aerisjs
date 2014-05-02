@@ -221,7 +221,7 @@ define([
 
 
       this.jsonp_.get(this.getEndpointUrl_(), data, _.bind(function(res) {
-        if (!res.success) {
+        if (!this.isSuccessResponse_(res)) {
           promiseToSync.reject(res);
         }
         else {
@@ -236,6 +236,19 @@ define([
         fail(options.error).
         always(options.complete).
         fail(this.handleRequestError_, this);
+    },
+
+
+    /**
+     * Does the response object signal
+     * a succesful API response?
+     *
+     * @param {Object} res Raw response data
+     * @protected
+     * @return {Boolean}
+     */
+    isSuccessResponse_: function(res) {
+      return res && res.success;
     },
 
 
