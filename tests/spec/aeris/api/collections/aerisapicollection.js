@@ -226,12 +226,6 @@ define([
           expect(onComplete).toHaveBeenCalledWithSomeOf(SUCCESS_RESPONSE);
         });
 
-        it('should throw an ApiResponseError on an error response', function() {
-          expect(function() {
-            jsonpCallback(FAIL_RESPONSE);
-          }).toThrowType('APIResponseError');
-        });
-
       });
     });
 

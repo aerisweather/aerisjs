@@ -3,9 +3,8 @@ define([
   'aeris/model',
   'aeris/promise',
   'aeris/api/params/models/params',
-  'aeris/errors/invalidargumenterror',
-  'aeris/errors/apiresponseerror'
-], function(_, Model, Promise,  Params, InvalidArgumentError, ApiResponseError) {
+  'aeris/errors/invalidargumenterror'
+], function(_, Model, Promise,  Params, InvalidArgumentError) {
   /**
    * @class AerisApiBehavior
    * @namespace aeris.api.mixins
@@ -234,8 +233,7 @@ define([
       return promiseToSync.
         done(options.success).
         fail(options.error).
-        always(options.complete).
-        fail(this.handleRequestError_, this);
+        always(options.complete);
     },
 
 
@@ -302,30 +300,6 @@ define([
      */
     getAction: function() {
       return this.action_;
-    },
-
-    /**
-     * Handle errors returned by the
-     * Aeris API.
-     *
-     * @throws {aeris.errors.APIResponseError}
-     *
-     * @param {Object} res Response object.
-     * @private
-     * @method handleRequestError_
-     */
-    handleRequestError_: function(res) {
-      var error = res.error;
-      var errorMsg;
-
-      if (!error || !error.code || !error.description) {
-        errorMsg = 'Unknown error';
-      }
-      else {
-        errorMsg = error.description + '[' + error.code + ']';
-      }
-
-      throw new ApiResponseError('Unable to fetch data from Aeris API: ' + errorMsg);
     },
 
     /**

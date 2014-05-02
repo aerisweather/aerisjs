@@ -199,13 +199,6 @@ define([
             });
           });
 
-
-          it('should throw an ApiResponseError', function() {
-            expect(function() {
-              batchModel.fetch();
-            }).toThrowType(ApiResponseError);
-          });
-
         });
 
 
@@ -219,13 +212,6 @@ define([
                 description: 'STUB_ERROR_DESCRIPTION'
               }
             });
-          });
-
-
-          it('should throw an ApiResponseError', function() {
-            expect(function() {
-              batchModel.fetch();
-            }).toThrowType(ApiResponseError);
           });
 
         });
