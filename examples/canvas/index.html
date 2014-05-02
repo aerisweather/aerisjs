@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Leaflet Canvas Tiles SANDBOX</title>
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.2/leaflet.css"/>
+  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.2/leaflet-src.js"></script>
+
+  <link rel="stylesheet" href="../css/example.css"/>
+  <link rel="shortcut icon" type="image/x-icon" href="../weather.ico"/>
+
+  <style type="text/css">
+    #map-canvas {
+      width: 1024px;
+      height: 900px;
+    }
+  </style>
+
+  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+</head>
+<body>
+
+<div id="map-canvas"></div>
+
+<script type="text/javascript">
+  map = new L.Map('map-canvas');
+  baseLayer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    subdomains: ['a', 'b', 'c']
+  });
+  baseLayer.addTo(map);
+</script>
+
+</body>
+</html>
