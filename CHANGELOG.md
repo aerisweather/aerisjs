@@ -1,3 +1,10 @@
+# 0.7.1
+
+* FIX: AerisBatchModel handles errors in indiviudal endpoint responses
+* FIX: AerisApiModel/Collection objects do not throw an ApiResponseError.
+       Errors should be handled by either on `onerror` option for `fetch`,
+       or by the promise returned by `fetch`.
+
 # 0.7.0
 
 **BREAKING CHANGES**
