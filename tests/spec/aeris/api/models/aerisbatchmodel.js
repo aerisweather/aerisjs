@@ -4,8 +4,9 @@ define([
   'mocks/aeris/jsonp',
   'mocks/mockfactory',
   'aeris/model',
-  'aeris/api/models/aerisapimodel'
-], function(_, AerisBatchModel, MockJSONP, MockFactory, Model, AerisApiModel) {
+  'aeris/api/models/aerisapimodel',
+  'aeris/errors/apiresponseerror'
+], function(_, AerisBatchModel, MockJSONP, MockFactory, Model, AerisApiModel, ApiResponseError) {
 
   AerisBatchModel.prototype.jasmineToString = function() {
     return 'AerisBatchModel_' + this.cid;
@@ -166,6 +167,53 @@ define([
 
           expect(mockJSONP.getRequestedData().foo).toEqual('bar');
           expect(mockJSONP.getRequestedData().faz).toEqual('baz');
+        });
+
+      });
+
+      describe('response handling', function() {
+
+        describe('when any batch model response contains an error', function() {
+
+          beforeEach(function() {
+            mockJSONP.resolveWith({
+              success: true,
+              error: null,
+              response: {
+                responses: [
+                  {
+                    success: true,
+                    error: null,
+                    response: [{}]
+                  },
+                  {
+                    success: false,
+                    error: {
+                      code: 'STUB_ERROR_CODE',
+                      description: 'STUB_ERROR_DESCRIPTION'
+                    },
+                    response: []
+                  }
+                ]
+              }
+            });
+          });
+
+        });
+
+
+        describe('when the top level response contains an error', function() {
+
+          beforeEach(function() {
+            mockJSONP.resolveWith({
+              success: false,
+              error: {
+                code: 'STUB_ERROR_CODE',
+                description: 'STUB_ERROR_DESCRIPTION'
+              }
+            });
+          });
+
         });
 
       });

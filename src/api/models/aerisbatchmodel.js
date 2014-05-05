@@ -135,6 +135,24 @@ define([
 
 
   /**
+   * @method isSuccessResponse_
+   * @param {Object} res
+   * @protected
+   * @return {Boolean}
+   */
+  AerisBatchModel.prototype.isSuccessResponse_ = function(res) {
+    var isBatchSuccess = !!res && res.success;
+    if (!isBatchSuccess) {
+      return false;
+    }
+
+    return res.response.responses.every(function(r) {
+      return !!r && r.success;
+    });
+  };
+
+
+  /**
    * Sets batch response data onto nested models
    *
    * @override
