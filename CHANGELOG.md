@@ -1,3 +1,17 @@
+# 0.7.0
+
+**BREAKING CHANGES**
+
+* MOD: Animation#getCurrentTime return a date object instead of a timestamp.
+* MOD: DateHelper methods return the DateHelper instance, instead of the underlying Date object.
+
+**Other change*
+
+* ADD: Animation#isAnimating method
+* MOD: Improve TileAnimation performance, and fix blocking behavior
+
+See git history for a full list of changes.
+
 # 0.6.0
 
 **BREAKING CHANGES**
@@ -11,7 +25,7 @@ See git history for a full list of changes
 ### Notes on upgrading to Aeris.js v0.6.0
 
 ##### Animations
-You can now control an animation using the layer with which it wascreated. For example:
+You can now control an animation using the layer with which it was created. For example:
 
 ```javascript
 var map = new aeris.maps.Map('map-canvas');
