@@ -59,7 +59,7 @@ define([
       // We may want to only draw images if the layer is visible (set to map, with opacity > 0)
       // otherwise, we could end up preloading more than we want to.
       this.drawTileImage_(canvas, tilePoint, zoom, this.mapObject_.getAerisTimeString());
-    }.bind(this))
+    }.bind(this));
   };
 
 
@@ -67,7 +67,7 @@ define([
   CanvasLayer.prototype.drawTileCoords_ = function(canvas, tilePoint) {
     var ctx = canvas.getContext('2d');
 
-    ctx.font = "30px Arial";
+    ctx.font = '30px Arial';
     ctx.fillText([tilePoint.x, tilePoint.y].join(', '), 100, 100);
 
     ctx.rect(0, 0, canvas.width, canvas.height);
@@ -89,37 +89,25 @@ define([
       return;
     }
 
-    /**
-     * Really, all were doing here (below) is pre-caching images.
-     *
-     * Using a delay shuffles to order in which the images
-     * are created, so that we don't have to wait for everything to be done
-     * before we can play.
-     */
-    //Using a random seeded by the time keeps tiles in the same
-    // "layer set" loaded around the same time.
-    // so we don't have various tiles from various times loading together.
-    var randomDelay = Math.round(seededRandom(time) * 500);
-    _.delay(function() {
-      // No cached image --> create one
-      img = new Image();
-      // Prevents security errors on canvas.toDataUrl
-      img.crossOrigin = 'Anonymous';
 
-      img.isLoaded = false;
-      img.onload = function() {
-        img.isLoaded = true;
+    // No cached image --> create one
+    img = new Image();
+    // Prevents security errors on canvas.toDataUrl
+    img.crossOrigin = 'Anonymous';
 
-        // Only draw if we're still at the same time
-        if (this.mapObject_.getAerisTimeString() === time) {
-          this.clearCanvas_(canvas);
-          ctx.drawImage(img, 0, 0);
-        }
-      }.bind(this);
+    img.isLoaded = false;
+    img.onload = function() {
+      img.isLoaded = true;
 
-      img.src = this.getImageUrl_(point, zoom, time);
-      this.cacheImage_(img, point, zoom, time);
-    }.bind(this), randomDelay);
+      // Only draw if we're still at the same time
+      if (this.mapObject_.getAerisTimeString() === time) {
+        this.clearCanvas_(canvas);
+        ctx.drawImage(img, 0, 0);
+      }
+    }.bind(this);
+
+    img.src = this.getImageUrl_(point, zoom, time);
+    this.cacheImage_(img, point, zoom, time);
   };
 
   CanvasLayer.prototype.getImageUrl_ = function(point, zoom, time) {
@@ -146,18 +134,26 @@ define([
 
   CanvasLayer.prototype.cacheImage_ = function(img, point, zoom, time) {
     // Prepare object
-    this.cache_[time] || (this.cache_[time] = {});
-    this.cache_[time][zoom] || (this.cache_[time][zoom] = {});
-    this.cache_[time][zoom][point.x] || (this.cache_[time][zoom][point.x] = {});
+    this.cache_[zoom] || (this.cache_[zoom] = {});
+    this.cache_[zoom][time] || (this.cache_[zoom][time] = {});
+    this.cache_[zoom][time][point.x] || (this.cache_[zoom][time][point.x] = {});
 
+
+    var zoomLevelCache = this.cache_[zoom];
+    this.cache_ = {};
+    this.cache_[zoom] = zoomLevelCache;
 
     // Save the image memory.
     // Alternatively, we could save the base64 encoded image
     // using toDataUrl. Using base64 is less memory intensive,
     // but the drawing is more CPU intensive.
-    this.cache_[time][zoom][point.x][point.y] = img;
+    this.cache_[zoom][time][point.x][point.y] = img;
 
-    this.cachedImages_.push(img);
+    /*this.cachedImages_.push(img);
+
+     if (this.cachedImages_.length > 1000) {
+     this.cachedImages_.shift();
+     }*/
   };
 
   CanvasLayer.prototype.isCached_ = function(point, zoom, time) {
@@ -167,8 +163,8 @@ define([
 
   CanvasLayer.prototype.getFromCache_ = function(point, zoom, time) {
     return _.path([
-      time,
       zoom,
+      time,
       point.x,
       point.y
     ].join('.'), this.cache_);

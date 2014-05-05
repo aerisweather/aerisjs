@@ -122,6 +122,8 @@ require([
   stop = function() {
     window.clearInterval(int);
   };
+
+  start();
 });
 
 
