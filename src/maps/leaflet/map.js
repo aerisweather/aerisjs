@@ -66,7 +66,9 @@ define([
       return el;
     }
 
-    map = new Leaflet.Map(el);
+    map = new Leaflet.Map(el, {
+      fadeAnimation: false
+    });
 
     // Add a baseLayer to the map.
     baseLayer = new OSMLayer();

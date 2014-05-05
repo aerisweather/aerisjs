@@ -13,6 +13,12 @@ define([
   */
   var AerisTileStrategy = function(mapObject) {
     Tile.call(this, mapObject);
+
+    this.listenTo(this.object_, {
+      'change:time': function() {
+        this.view_.setUrl(this.getTileUrl_());
+      }
+    });
   };
   _.inherits(AerisTileStrategy, Tile);
 
