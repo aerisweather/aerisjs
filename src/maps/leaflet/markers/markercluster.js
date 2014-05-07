@@ -4,8 +4,8 @@ define([
   'aeris/maps/strategy/util',
   'leaflet',
   'leaflet-markercluster',
-  'hbars!aeris/maps/strategy/markers/clustericon.html'
-], function(_, AbstractStrategy, mapUtil, Leaflet, MarkerClusterGroup, clusterTemplate) {
+  'aeris/maps/strategy/markers/clustericontemplate'
+], function(_, AbstractStrategy, mapUtil, Leaflet, MarkerClusterGroup, clusterIconTemplate) {
   /**
    * A strategy for rendering clusters of markers
    * using Leaflet.
@@ -125,7 +125,7 @@ define([
   MarkerCluster.prototype.createHtmlForCluster_ = function(cluster, type) {
     var clusterStyle = this.getClusterStyle_(cluster, type);
 
-    return clusterTemplate(_.extend({}, clusterStyle, {
+    return clusterIconTemplate(_.extend({}, clusterStyle, {
       count: cluster.getChildCount()
     }));
   };
