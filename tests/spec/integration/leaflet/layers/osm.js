@@ -167,35 +167,6 @@ define([
       });
 
 
-      describe('load:reset', function() {
-        var onLoadReset;
-
-        // Reset test objects, to fix some scope leakage
-        // problems we're having.
-        beforeEach(createTestObjectsInScope);
-
-        beforeEach(function() {
-          onLoadReset = jasmine.createSpy('onLoadReset');
-          aerisOsmLayer.on('load:reset', onLoadReset);
-
-          aerisOsmLayer.setMap(aerisMap);
-        });
-
-
-        it('should fire when the map pans', function() {
-          aerisMap.setCenter([12.345, 67.8910]);
-          expect(onLoadReset).toHaveBeenCalled();
-        });
-
-        it('should fire when the map zooms', function() {
-          aerisMap.setZoom(aerisMap.getZoom() - 1);
-          expect(onLoadReset).toHaveBeenCalled();
-        });
-
-
-      });
-
-
     });
 
     describe('layer manipulation', function() {

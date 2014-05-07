@@ -186,6 +186,18 @@ define([
         aerisMap = new Map(mapCanvas.id);
         leafletMap = aerisMap.getView();
 
+        function isNearLatLon(latLonA, latLonB, tolerance) {
+          var diffLat = Math.abs(latLonA[0] - latLonB[0]);
+          var diffLon = Math.abs(latLonA[1] - latLonB[1]);
+
+          return diffLat < tolerance && diffLon < tolerance;
+        }
+
+        function isNearBounds(boundsA, boundsB, tolerance) {
+          return isNearLatLon(boundsA[0], boundsB[0], tolerance) &&
+            isNearLatLon(boundsA[1], boundsB[1], tolerance);
+        }
+
         this.addMatchers({
           toHaveSameCenter: function(leafletMap) {
             var aerisMap = this.actual;
@@ -196,7 +208,7 @@ define([
                 ' but aeris center is ' + jasmine.pp(aerisMap.getCenter());
             };
 
-            return _.isEqual(aerisMap.getCenter(), leafletCenter);
+            return isNearLatLon(aerisMap.getCenter(), leafletCenter, 0.1);
           },
           toHaveSameBounds: function(leafletMap) {
             var aerisMap = this.actual;
@@ -207,7 +219,7 @@ define([
                 ' but Aeris map bounds is are' + jasmine.pp(aerisMap.getBounds());
             };
 
-            return _.isEqual(aerisMap.getBounds(), leafletBounds);
+            return isNearBounds(aerisMap.getBounds(), leafletBounds, 0.1);
           },
           toHaveSameZoom: function(leafletMap) {
             var aerisMap = this.actual;
