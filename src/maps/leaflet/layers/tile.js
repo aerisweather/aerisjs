@@ -91,10 +91,12 @@ define([
    */
   Tile.prototype.proxyLoadEvents_ = function() {
     var mapLoadResetEvents = {
-      moveend: function() {
+      loading: function() {
         this.object_.trigger('load:reset');
       }
     };
+
+    // Tiles loading is reset whenever map moves
     var bindMapLoadResetEvents = (function() {
       var mapView = this.mapView_;
 
@@ -112,7 +114,6 @@ define([
       }
     }, this);
 
-    // Tiles loading is reset whenever map moves
     this.listenTo(this.object_, {
       'map:set': bindMapLoadResetEvents
     });
