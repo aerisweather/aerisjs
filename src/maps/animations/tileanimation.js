@@ -187,7 +187,7 @@ define([
 
     // Only transition if the layer is loaded
     // to prevent gaps in animation.
-    if (nextLayer && nextLayer.isLoaded()) {
+    if (nextLayer && nextLayer !== this.getCurrentLayer() && nextLayer.isLoaded()) {
       this.transition_(this.getCurrentLayer(), nextLayer);
     }
 
