@@ -20,10 +20,7 @@
   "dependencies": {
     "underscore": "~1.6.0",
     "backbone": "~1.1.0",
-    "handlebars": "~1.1.2",
     "requirejs": "~2.1.10",
-    "requirejs-text": "~2.0.10",
-    "hbars": "https://github.com/jfparadis/requirejs-handlebars.git",
     "gmaps-markerclusterer-plus": "http://google-maps-utility-library-v3.googlecode.com/svn/tags/markerclustererplus/2.1.1/src/markerclusterer.js",
     "googlemaps-amd": "~1.0.0",
     "leaflet.markercluster": "~0.4.0"
