@@ -1,3 +1,11 @@
+# 0.7.2
+
+* MOD: Remove Handlebars and hbars! dependencies
+* MOD: Clean up unused dependencies from bower.json and amd config
+* MOD: Update AMD example to use Leaflet
+* MOD: Minor changes and clarifications to documentation
+
+
 # 0.7.1
 
 * FIX: AerisBatchModel handles errors in indiviudal endpoint responses
