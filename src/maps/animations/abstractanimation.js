@@ -8,8 +8,10 @@ define([
    * @param {Object} opt_options
    * @param {Date} opt_options.from Starting time for the animation.
    * @param {Date} opt_options.to Ending time for the animation.
+   * @param {number=} opt_options.limit Maximimum number of time intervals to load.
    * @param {number} opt_options.timestep
-   * @param {number} opt_options.speed
+   * @param {number} opt_options.speed Number of minutes of weather data
+   *        to display within a second.
    * @param {number} opt_options.endDelay Milliseconds to pause between animation loops.
    *
    * @constructor
@@ -21,7 +23,7 @@ define([
     var options = _.defaults(opt_options || {}, {
       from: 0,
       to: new Date().getTime(),
-      speed: 60 * 3,
+      speed: 30,
       timestep: 1000 * 60,
       endDelay: 1000
     });
