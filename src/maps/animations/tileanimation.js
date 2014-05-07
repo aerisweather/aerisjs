@@ -330,6 +330,10 @@ define([
    * @method updateTimeBounds_
    */
   TileAnimation.prototype.updateTimeBounds_ = function() {
+    if (!this.times_.length) {
+      return;
+    }
+
     // Our tile loader already constrained our tile times
     // for us, so we can reset our bounds.
     this.from_ = Math.min.apply(null, this.times_);

@@ -79,7 +79,7 @@ define([
    * @method setTimes
    */
   TimeLayersFactory.prototype.setTimes = function(times) {
-    this.times_ = _.clone(times);
+    this.times_ = times;
   };
 
 
@@ -98,7 +98,14 @@ define([
    */
   TimeLayersFactory.prototype.createTimeLayers = function() {
     var timeLayers = {};
+
     this.prepareTimes_();
+
+    // Make sure we have at least one time layer.
+    if (!this.times_.length) {
+      timeLayers[Date.now()] = this.createLayerForTime_(this.baseLayer_.get('time').getTime());
+      return timeLayers;
+    }
 
     // We want random times for layer creation
     // So our layers are not loaded in sequential
