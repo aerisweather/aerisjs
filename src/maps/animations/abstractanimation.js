@@ -270,6 +270,32 @@ define([
 
 
   /**
+   * @method setFrom
+   * @param {Date|number} from
+   */
+  AbstractAnimation.prototype.setFrom = function(from) {
+    if (from instanceof Date) {
+      from = from.getTime();
+    }
+
+    this.from_ = from;
+  };
+
+
+  /**
+   * @method setTo
+   * @param {Date|number} to
+   */
+  AbstractAnimation.prototype.setTo = function(to) {
+    if (to instanceof Date) {
+      to = to.getTime();
+    }
+
+    this.to_ = to;
+  };
+
+
+  /**
    * @return {Boolean} True, if the animation is currently running.
    * @method isAnimating
    */

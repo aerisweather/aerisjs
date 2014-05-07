@@ -17,6 +17,8 @@ define([
       'next',
       'goToTime',
       'getCurrentTime',
+      'setFrom',
+      'setTo',
       'isAnimating'
     ],
     inherits: Events

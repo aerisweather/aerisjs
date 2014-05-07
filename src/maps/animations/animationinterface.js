@@ -133,6 +133,20 @@ define(['aeris/util', 'aeris/events'], function(_, Events) {
 
 
   /**
+   * @method setFrom
+   * @param {Date|number} from
+   */
+  AnimationInterface.prototype.setFrom = _.abstractMethod;
+
+
+  /**
+   * @method setTo
+   * @param {Date|number} to
+   */
+  AnimationInterface.prototype.setTo = _.abstractMethod;
+
+
+  /**
    * @method isAnimating
    * @return {Boolean}
    */
