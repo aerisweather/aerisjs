@@ -119,8 +119,16 @@ require.config({
         'leaflet-markercluster': 'mapApp/lib/vendor/leaflet.markercluster'
     },
     shim: {
-        // Shim configuration may be required.
+        // A Shim configuration is required for libraries which
+        // do not support AMD out of the box.
         // See http://requirejs.org/docs/api.html#config-shim
+        'gmaps-markerclusterer-plus': {
+          exports: 'MarkerClusterer'
+        },
+        'leaflet-markercluster': {
+          deps: ['leaflet'],
+          exports: 'L.MarkerClusterGroup'
+        }
     }
 });
 ```
@@ -130,11 +138,14 @@ See [the AMD/Bower.js example app](https://github.com/hamweather/aerisjs/tree/ma
 
 #### Specifying a Map Library
 
-The Aeris.js library allows all of its components to be rendered either by using [Google Maps API v3.x](https://developers.google.com/maps/), or [OpenLayers](http://openlayers.org/). To instruct Aeris.js on which library to use, you must specify a map rendering *strategy*.
+By default,tThe Aeris.js library uses [Leaflet](http://leafletjs.com/) as it core mapping library. You can change which mapping library is used by overriding the `aeris/maps/strategy` AMD path.
 
 ```javascript
 require.config({
     paths: {
+        // For Leaflet (default)
+        'aeris/maps/strategy': 'myApp/vendor/aerisjs/src/maps/leaflet'
+
         // For Google Maps
         'aeris/maps/strategy': 'myApp/vendor/aerisjs/src/maps/gmaps'
 
@@ -144,11 +155,9 @@ require.config({
 });
 ```
 
-All of the components of the public API are strategy-agnostic, meaning that they will interface which whatever strategy is provided to them. By setting the `strategy` path to `gmaps` or `openlayers`, Aeris.js components know to request the correct strategy implementation.
+All of the components of the public API are strategy-agnostic, meaning that they will interface which whatever strategy is provided to them. By setting the `strategy` path to `gmaps` or `openlayers`, Aeris.js components know to request the correct strategy implementation. Note that CDN pacakges are hard-coded to use a single strategy.
 
-Not all functionalities are currently implemented for all map rendering strategies. If there's something you're sorely missing, I encourage you to take a look at how [strategy architecture](http://docs.aerisjs.com/api/classes/aeris.maps.AbstractStrategy.html) is implemented, and then submit a [pull request.](https://github.com/hamweather/aerisjs/pulls)
-
-Note that CDN pacakges are hard-coded to use a single strategy.
+Not all functionalities are currently implemented for all map rendering strategies. See [*Supported Mapping Libraries*](usage.md#supported-mapping-libraries) for a breakdown of supported features.
 
 The map libraries will be loaded for you as AMD modules -- there is no need to include them separately. See [Setting API Keys](#setting-api-keys) for instructions of map library configuration.
 

@@ -47,7 +47,6 @@ There is currently some variation in feature support between the mapping library
 **Google Map Base Layers**             | ✓           |         | ✓
 **KML Layers**                         | ✓           |         |
 **Polygons** (eg. convective layers)   | ✓           |         |
-**KML Layers**                         | ✓           |         |
 **Polylines**                          | ✓           |         |
 
 
