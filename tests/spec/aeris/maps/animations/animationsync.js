@@ -89,6 +89,7 @@ define([
         var MockAnimationType;
         var animationSync;
         var layer_A, layer_B;
+        var FROM_STUB = 'FROM_STUB', TO_STUB = 'TO_STUB', LIMIT_STUB = 'LIMIT_STUB';
 
         beforeEach(function() {
           layer_A = new MockAnimationLayer();
@@ -98,16 +99,24 @@ define([
             andReturn(new MockAnimation());
 
           animationSync = new AnimationSync(null, {
-            AnimationType: MockAnimationType
+            AnimationType: MockAnimationType,
+            from: FROM_STUB,
+            to: TO_STUB,
+            limit: LIMIT_STUB
           });
         });
 
 
         it('should create animation objects for each added layer', function() {
+          var animOptions = {
+            from: FROM_STUB,
+            to: TO_STUB,
+            limit: LIMIT_STUB
+          };
           animationSync.add([layer_A, layer_B]);
 
-          expect(MockAnimationType).toHaveBeenCalledWith(layer_A);
-          expect(MockAnimationType).toHaveBeenCalledWith(layer_B);
+          expect(MockAnimationType).toHaveBeenCalledWith(layer_A, animOptions);
+          expect(MockAnimationType).toHaveBeenCalledWith(layer_B, animOptions);
           expect(MockAnimationType.callCount).toEqual(2);
         });
 

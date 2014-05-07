@@ -42,7 +42,8 @@ define([
      */
     this.options_ = {
       to: this.to_,
-      from: this.from_
+      from: this.from_,
+      limit: this.limit_
     };
 
 
@@ -92,7 +93,7 @@ define([
     animations = animations_or_layers.map(function(obj) {
       var isLayer = obj instanceof AnimationLayer;
 
-      return isLayer ? new this.AnimationType_(obj) : obj;
+      return isLayer ? new this.AnimationType_(obj, this.options_) : obj;
     }, this);
 
     _.each(animations, this.addOne_, this);
