@@ -251,7 +251,9 @@ define([
         expect(_.isNumeric('10px')).toEqual(false);
         expect(_.isNumeric('')).toEqual(false);
         expect(_.isNumeric({ foo: 'bar' })).toEqual(false);
-        expect(_.isNumeric([{name: 'FireMarkers'}])).toEqual(false);
+        expect(_.isNumeric([
+          {name: 'FireMarkers'}
+        ])).toEqual(false);
         expect(_.isNumeric(new Date())).toEqual(false);
       });
 
@@ -275,12 +277,15 @@ define([
       var parent, child, grandChild;
 
       beforeEach(function() {
-        Parent = function() {};
+        Parent = function() {
+        };
 
-        Child = function() {};
+        Child = function() {
+        };
         _.inherits(Child, Parent);
 
-        GrandChild = function() {};
+        GrandChild = function() {
+        };
         _.inherits(GrandChild, Child);
 
         parent = new Parent();
