@@ -1,5 +1,5 @@
 require([
-  'underscore',
+  'aeris/util',
   'jasmine'
 ], function(_, jasmine) {
 
