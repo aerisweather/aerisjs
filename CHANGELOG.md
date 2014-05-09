@@ -1,3 +1,12 @@
+# 0.7.3
+
+* FIX: Prevent aeris.util from overriding underscore object.
+       This fixes issues with clients' underscore templates not
+       properly compiling, and prevents custom Aeris.js utlity functions
+       from leaking into other users code.
+
+See git history for a full list of changes.
+
 # 0.7.2
 
 * MOD: Remove Handlebars and hbars! dependencies
