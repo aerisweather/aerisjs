@@ -1,4 +1,4 @@
-define(['sinon', 'aeris/util'], function(sinon, _) {
+define(['sinon', 'underscore'], function(sinon, _) {
   var now_orig = _.now;
   var clock;
 

@@ -1,7 +1,9 @@
+var underscore_orig = window._ || (window._ = { STUB: 'UNDERSCORE_ORIG' });
 define([
   'sinon',
-  'aeris/util'
-], function(sinon, _) {
+  'aeris/util',
+  'underscore'
+], function(sinon, _, underscore) {
   describe('The Aeris Utility Library', function() {
 
     describe('expose method', function() {
@@ -251,7 +253,9 @@ define([
         expect(_.isNumeric('10px')).toEqual(false);
         expect(_.isNumeric('')).toEqual(false);
         expect(_.isNumeric({ foo: 'bar' })).toEqual(false);
-        expect(_.isNumeric([{name: 'FireMarkers'}])).toEqual(false);
+        expect(_.isNumeric([
+          {name: 'FireMarkers'}
+        ])).toEqual(false);
         expect(_.isNumeric(new Date())).toEqual(false);
       });
 
@@ -275,12 +279,15 @@ define([
       var parent, child, grandChild;
 
       beforeEach(function() {
-        Parent = function() {};
+        Parent = function() {
+        };
 
-        Child = function() {};
+        Child = function() {
+        };
         _.inherits(Child, Parent);
 
-        GrandChild = function() {};
+        GrandChild = function() {
+        };
         _.inherits(GrandChild, Child);
 
         parent = new Parent();
@@ -303,6 +310,44 @@ define([
       it('should work with {var} syntax', function() {
         var str = _.template('foo {what}', { what: 'bar' });
         expect(str).toEqual('foo bar');
+      });
+
+      it('should not effect underscore.template', function() {
+        _.template('foo {what}', { what: 'bar' });
+
+        expect(underscore.template('<%=foo%>', {
+          foo: 'bar'
+        })).toEqual('bar');
+      });
+
+    });
+
+    describe('extending underscore', function() {
+
+      it('should not effect the underscore AMD module', function() {
+        // Check that our custom function is not in the underscore AMD module
+        expect(underscore.argsToArray).not.toBeDefined();
+      });
+
+      it('should not effect the global underscore object', function() {
+        _.aeris_foo = 'aeris_bar';
+        expect(window._.aeris_foo).not.toBeDefined();
+        expect(window._).toEqual(underscore_orig);
+
+        expect(window._.argsToArray).not.toBeDefined();
+      });
+
+      it('should include underscore methods', function() {
+        // Just a partial test, to check that we're extending underscore
+        expect(_.last(['a', 'b', 'c'])).toEqual('c');
+      });
+
+      it('should act as a wrapping function', function() {
+        // with a underscore method
+        expect(_(['a', 'b', 'c']).last()).toEqual('c');
+
+        // with a custom Aeris.js method
+        expect(_(['a', 'b', 'c']).argsToArray()).toEqual(['a', 'b', 'c']);
       });
 
     });
