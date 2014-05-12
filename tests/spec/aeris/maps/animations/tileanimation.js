@@ -4,9 +4,11 @@ define([
   'aeris/model',
   'aeris/promise',
   'aeris/events',
+  'mocks/aeris/maps/layers/aeristile',
   'mocks/aeris/maps/animations/helpers/times',
+  'mocks/aeris/maps/animations/helpers/animationlayerloader',
   'mocks/mockfactory'
-], function(_, TileAnimation, Model, Promise, Events, MockTimes, MockFactory) {
+], function(_, TileAnimation, Model, Promise, Events, MockLayer, MockTimes, MockLayerLoader, MockFactory) {
 
   var MockOrderedTimes = function() {
     var times = MockTimes.apply(null, arguments);
@@ -17,53 +19,6 @@ define([
   var MockMap = MockFactory({
     name: 'MockMap'
   });
-
-  var MockLayer = MockFactory({
-    getSetters: [
-      'map',
-      'opacity',
-      'zIndex'
-    ],
-    methods: [
-      'stop',
-      'isLoaded',
-      'show',
-      'hide',
-      'removeStrategy',
-      'resetStrategy'
-    ],
-    inherits: Model,
-    name: 'MockLayer',
-    constructor: function() {
-      this.set('opacity', 1, { silent: true });
-
-      if (!this.getMap()) {
-        this.setMap(null, { silent: true });
-      }
-    }
-  });
-
-  MockLayer.prototype.isLoaded = function() {
-    return true;
-  };
-
-  MockLayer.prototype.stop = function() {
-    return this;
-  };
-
-  MockLayer.prototype.show = function() {
-    this.setOpacity(1);
-  };
-
-  MockLayer.prototype.hide = function() {
-    this.setOpacity(0);
-  };
-
-  MockLayer.prototype.isShown = function() {
-    var isSetToMap = !_.isNull(this.getMap());
-    var isVisible = this.getOpacity() > 0;
-    return isSetToMap && isVisible;
-  };
 
 
   var MockTimeLayers = function(opt_times) {
@@ -80,47 +35,7 @@ define([
   };
 
 
-  var MockLayerLoader = function() {
-    this.createPromiseSpy_('load');
-    Events.call(this);
-  };
-  _.extend(MockLayerLoader.prototype, Events.prototype);
 
-  MockLayerLoader.prototype.load = function() {
-    return new Promise();
-  };
-
-  MockLayerLoader.prototype.createPromiseSpy_ = function(methodName) {
-    var methodNotCalledError = new Error('Unable to resolve mock promise method: ' +
-      methodName + ' method was never called');
-    var throwMethodNotCalledError = function() {
-      throw methodNotCalledError;
-    };
-
-    // Stub the spy,
-    // and provide test methods for resolving the returned promise;
-    var methodSpy = spyOn(this, methodName).andCallFake(function() {
-      var promise = new Promise();
-
-      methodSpy.andResolveWith = function(var_args) {
-        promise.resolve.apply(promise, arguments);
-      };
-      methodSpy.andRejectWith = function(var_args) {
-        promise.reject.apply(promise, arguments);
-      };
-
-      return promise;
-    });
-
-    methodSpy.andResolveWith = throwMethodNotCalledError;
-    methodSpy.andRejectWith = throwMethodNotCalledError;
-
-    return methodSpy;
-  };
-
-  MockLayerLoader.prototype.getLoadProgress = function() {
-    return 0.12345;
-  };
 
 
   describe('TileAnimation', function() {
