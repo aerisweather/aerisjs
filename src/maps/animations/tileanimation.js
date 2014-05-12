@@ -23,7 +23,8 @@ define([
       // Defaults will be set after times are loaded.
       from: 0,
       to: new Date().getTime(),
-      limit: 20
+      limit: 20,
+      AnimationLayerLoader: AnimationLayerLoader
     });
 
     AbstractAnimation.call(this, options);
@@ -62,16 +63,28 @@ define([
 
 
     /**
-     * Helper for creating and loading animation layer 'frames.'
+     * animationLayerLoader constructor.
      *
-     * @type {aeris.animations.helpers.AnimationLayerLoader}
+     * @property AnimationLayerLoader_
+     * @type {function():aeris.maps.animations.helpers.AnimationLayerLoader}
      * @private
      */
-    this.animationLayerLoader_ = options.animationLayerLoader || new AnimationLayerLoader(this.masterLayer_, {
+    this.AnimationLayerLoader_ = options.AnimationLayerLoader;
+
+
+    /**
+     * Helper for creating and loading animation layer 'frames'
+     *
+     * @property animationLayerLoader_
+     * @private
+     * @type {aeris.maps.animations.helpers.AnimationLayerLoader}
+     */
+    this.animationLayerLoader_ = new this.AnimationLayerLoader_(this.masterLayer_, {
       from: this.from_,
       to: this.to_,
       limit: this.limit_
     });
+
 
     this.prepareMasterLayer_();
     this.loadAnimationLayers();
@@ -82,14 +95,11 @@ define([
   /**
    * Load the tile layers for the animation.
    *
-   * Note that is is not necessary to wait for all layers
-   * to load before starting animations.
-   *
    * @return {aeris.Promise} Promise to load all layers.
    * @method loadAnimationLayers
    */
   TileAnimation.prototype.loadAnimationLayers = function() {
-    this.bindLoadEvents_();
+    this.bindLoadEventsTo_(this.animationLayerLoader_);
 
     this.animationLayerLoader_.once('load:times', function(times, timeLayers) {
       this.setTimeLayers_(timeLayers);
@@ -243,9 +253,14 @@ define([
   };
 
 
-  TileAnimation.prototype.bindLoadEvents_ = function() {
+  /**
+   * @method bindLoadEventsTo_
+   * @private
+   * @param {aeris.maps.animations.helpers.AnimationLayerLoader} layerLoader
+   */
+  TileAnimation.prototype.bindLoadEventsTo_ = function(layerLoader) {
     // Proxy load events from AnimationLayerLoader
-    var proxyLayerLoaderEvents = _.partial(this.proxyEvent_, this.animationLayerLoader_);
+    var proxyLayerLoaderEvents = _.partial(this.proxyEvent_, layerLoader);
 
     _.each([
       'load:progress',

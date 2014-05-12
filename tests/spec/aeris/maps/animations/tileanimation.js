@@ -134,7 +134,7 @@ define([
       masterLayer = new MockLayer({ map: map });
       layerLoader = new MockLayerLoader();
       animation = new TileAnimation(masterLayer, {
-        animationLayerLoader: layerLoader
+        AnimationLayerLoader: _.constant(layerLoader)
       });
 
 
@@ -156,7 +156,7 @@ define([
         spyOn(TileAnimation.prototype, 'loadAnimationLayers');
 
         animation = new TileAnimation(masterLayer, {
-          animationLayerLoader: layerLoader
+          AnimationLayerLoader: _.constant(layerLoader)
         });
 
         expect(TileAnimation.prototype.loadAnimationLayers).toHaveBeenCalledInTheContextOf(animation);
@@ -165,7 +165,7 @@ define([
       it('should disable the master layer strategy', function() {
         var masterLayer = new MockLayer();
         new TileAnimation(masterLayer, {
-          animationLayerLoader: layerLoader
+          AnimationLayerLoader: _.constant(layerLoader)
         });
 
         expect(masterLayer.removeStrategy).toHaveBeenCalled();
@@ -177,7 +177,7 @@ define([
           map: mockMap
         });
         new TileAnimation(masterLayer, {
-          animationLayerLoader: layerLoader
+          AnimationLayerLoader: _.constant(layerLoader)
         });
 
         expect(masterLayer.getMap()).toEqual(mockMap);
