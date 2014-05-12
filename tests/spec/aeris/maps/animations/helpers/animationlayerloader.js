@@ -45,6 +45,9 @@ define([
 
   var MockTimeLayersFactory = function(opt_count) {
     spyOn(this, 'createTimeLayers').andCallThrough();
+
+    this.destroy = jasmine.createSpy('destroy');
+    this.setTimes = spyOn(this, 'setTimes').andCallThrough();
   };
 
   MockTimeLayersFactory.prototype.setTimes = function(times) {
@@ -74,7 +77,7 @@ define([
   };
 
 
-  describe('An AnimationLayerLoader', function() {
+  describe('AnimationLayerLoader', function() {
     var loader, baseLayer, options, timeLayersFactory, times;
     var LAYER_COUNT = 10;
 
@@ -136,6 +139,28 @@ define([
         baseLayer.rejectTileTimes(tileTimesError);
 
         expect(onFail).toHaveBeenCalledWith(tileTimesError);
+      });
+
+      it('should set the response times on the timeLayersFactory', function() {
+        var times = MockTimes();
+        loader.load();
+        baseLayer.resolveTileTimes(times);
+
+        expect(timeLayersFactory.setTimes).toHaveBeenCalledWith(times);
+      });
+
+      describe('when called multiple times', function() {
+
+        it('should not set the combined times on the timeLayersFactory', function() {
+          loader.load();
+          baseLayer.resolveTileTimes([10, 20, 30, 40]);
+
+          loader.load();
+          baseLayer.resolveTileTimes([30, 40, 50, 60]);
+
+          expect(timeLayersFactory.setTimes).toHaveBeenCalledWith([10, 20, 30, 40, 50, 60]);
+        });
+
       });
 
 
@@ -225,6 +250,25 @@ define([
         _.invoke(timeLayersFactory.getStubbedLayers(), 'markAsLoaded');
 
         expect(loader.getLoadProgress()).toEqual(1);
+      });
+
+    });
+
+
+    describe('destroy', function() {
+
+      it('should stop listening to events', function() {
+        spyOn(loader, 'stopListening');
+
+        loader.destroy();
+
+        expect(loader.stopListening).toHaveBeenCalled();
+      });
+
+      it('should destroy the timeLayersFactory', function() {
+        loader.destroy();
+
+        expect(timeLayersFactory.destroy).toHaveBeenCalled();
       });
 
     });

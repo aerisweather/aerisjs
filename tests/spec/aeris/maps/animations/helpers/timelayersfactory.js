@@ -11,7 +11,8 @@ define([
       'map'
     ],
     methods: [
-      'clone'
+      'clone',
+      'destroy'
     ],
     inherits: Model
   });
@@ -52,6 +53,31 @@ define([
     });
 
 
+    describe('setTimes', function() {
+
+      it('should destroy created layers for times which are not set', function() {
+        var times = [10, 20, 30, 40];
+        var timeLayersFactory = new TimeLayersFactory(new MockLayer(), times);
+        var timeLayers = timeLayersFactory.createTimeLayers();
+
+        var layerToRemove = timeLayers[10];
+        timeLayersFactory.setTimes([20, 30, 40]);
+
+        expect(layerToRemove.destroy).toHaveBeenCalled();
+
+        timeLayers = timeLayersFactory.createTimeLayers();
+        expect(timeLayers[10]).not.toBeDefined();
+      });
+
+
+    });
+
+
+    describe('removeTime', function() {
+
+    });
+
+
     describe('createTimeLayers', function() {
       var TIMES_COUNT = 10;
       var times, factory, layers;
@@ -61,7 +87,6 @@ define([
         factory = new TimeLayersFactory(baseLayer, times, {
           limit: TIMES_COUNT
         });
-        layers = factory.createTimeLayers();
       });
 
 
@@ -99,6 +124,8 @@ define([
 
 
       it('should return a hash of the original times and layers', function() {
+        layers = factory.createTimeLayers();
+
         expect(_.isPlainObject(layers)).toEqual(true);
         expect(_.keys(layers).length).toEqual(TIMES_COUNT);
         expect(_.keys(layers)).toBeTimes(times);
@@ -110,6 +137,8 @@ define([
 
 
       it('should create layers with their \'time\' attributes set their key, as a Date object', function() {
+        layers = factory.createTimeLayers();
+
         _.each(layers, function(lyr, time) {
           expect(lyr.get('time')).toBeInstanceOf(Date);
           expect(lyr.get('time').getTime()).toEqual(parseFloat(time));
@@ -118,14 +147,25 @@ define([
 
 
       it('should create layers which have no map set', function() {
+        layers = factory.createTimeLayers();
+
         _.each(layers, function(lyr, time) {
           expect(lyr.getMap()).toEqual(null);
         });
       });
 
+      it('should create layers with autoupdate turned off', function() {
+        layers = factory.createTimeLayers();
+
+        _.each(layers, function(lyr, time) {
+          expect(lyr.has('autoUpdate')).toEqual(true);
+          expect(lyr.get('autoUpdate')).toEqual(false);
+        });
+      });
+
 
       it('should create layers by cloning the base layer', function() {
-        var CLONE_STUB = 'CLONE_STUB';
+        var CLONE_STUB = new MockLayer();
         baseLayer.clone.andReturn(CLONE_STUB);
 
         layers = factory.createTimeLayers();
@@ -136,6 +176,7 @@ define([
       });
 
       it('should not create unused layer objects', function() {
+        layers = factory.createTimeLayers();
         expect(baseLayer.clone.callCount).toEqual(TIMES_COUNT);
       });
 
@@ -183,19 +224,34 @@ define([
       });
 
 
-      it('should exclude times to maintain a limit', function() {
-        var TIMES_COUNT = 10;
-        var LIMIT = TIMES_COUNT - 3;
-        var times = new MockTimes(TIMES_COUNT);
-        var factory = new TimeLayersFactory(baseLayer, times, {
-          limit: LIMIT
-        });
-        var layers = factory.createTimeLayers();
+      it('should thin times to maintain a limit', function() {
+        // Try a few different version of this
+        [
+          { count: 100, limit: 10 },
+          { count: 11, limit: 10 },
+          { count: 8, limit: 7 },
+          { count: 22, limit: 7 },
+          { count: 137, limit: 7 }
+        ].forEach(function(config) {
+            var times = new MockTimes(config.count);
+            var factory = new TimeLayersFactory(baseLayer, times, {
+              limit: config.limit
+            });
+            var layers = factory.createTimeLayers();
+            var createdTimes = Object.keys(layers).map(function(time) {
+              return parseFloat(time);
+            });
 
-        expect(_.keys(layers).length).toEqual(LIMIT);
+            expect(createdTimes.length).toEqual(config.limit);
+
+            // Should maintain first and last time
+            expect(_.contains(createdTimes, times[0])).toEqual(true);
+            expect(_.contains(createdTimes, _.last(times))).toEqual(true);
+          });
       });
 
       it('should not limit times by chopping of ends', function() {
+        var layers;
         var TIMES_COUNT = 100;
         var LIMIT = 60;
         var CUT_COUNT = TIMES_COUNT - LIMIT;

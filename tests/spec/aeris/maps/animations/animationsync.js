@@ -5,9 +5,9 @@ define([
   'aeris/maps/animations/animationsync',
   'aeris/maps/animations/animationinterface',
   'mocks/aeris/maps/layers/animationlayer',
+  'mocks/aeris/maps/animations/animation',
   'mocks/times'
-], function(_, sinon, Events, AnimationSync, Animation, MockAnimationLayer) {
-  var CannedTimes = require('mocks/times');
+], function(_, sinon, Events, AnimationSync, Animation, MockAnimationLayer, BaseMockAnimation, CannedTimes) {
 
   var TestFactory = function(opt_options) {
     var options = _.extend({
@@ -17,38 +17,26 @@ define([
   };
 
   var MockAnimation = function(opt_options) {
-    var options = _.extend({
+    var options = _.defaults(opt_options || {}, {
       interval: 100,
       progress: 0.5,
       times: new CannedTimes()
-    }, opt_options);
+    });
 
-    var anim = sinon.createStubInstance(Animation);
+    this.loadProgress_ = options.progress;
 
-    _.extend(anim, Events.prototype);
+    this.times_ = options.times;
 
-    _.extend(anim, jasmine.createSpyObj('mock animation', [
-      'start',
-      'stop',
-      'pause',
-      'next',
-      'previous',
-      'goToTime',
-      'getAnimationInterval',
-      'getLoadProgress',
-      'remove',
-      'getTimes'
-    ]));
+    BaseMockAnimation.call(this, null, options);
+  };
+  _.inherits(MockAnimation, BaseMockAnimation);
 
-    anim.getAnimationInterval.andReturn(options.interval);
+  MockAnimation.prototype.getLoadProgress = function() {
+    return this.loadProgress_;
+  };
 
-    anim.getLoadProgress.andReturn(options.progress);
-
-    anim.getTimes.andReturn(options.times);
-
-    Events.call(anim);
-
-    return anim;
+  MockAnimation.prototype.getTimes = function() {
+    return this.times_;
   };
 
 
@@ -89,7 +77,7 @@ define([
         var MockAnimationType;
         var animationSync;
         var layer_A, layer_B;
-        var FROM_STUB = 'FROM_STUB', TO_STUB = 'TO_STUB', LIMIT_STUB = 'LIMIT_STUB';
+        var FROM_STUB = 'FROM_STUB', TO_STUB = 'TO_STUB', LIMIT_STUB = 'LIMIT_STUB', TIMESPAN_STUB = 'TIMESPAN_STUB';
 
         beforeEach(function() {
           layer_A = new MockAnimationLayer();
@@ -102,7 +90,8 @@ define([
             AnimationType: MockAnimationType,
             from: FROM_STUB,
             to: TO_STUB,
-            limit: LIMIT_STUB
+            limit: LIMIT_STUB,
+            timespan: TIMESPAN_STUB
           });
         });
 
@@ -111,7 +100,8 @@ define([
           var animOptions = {
             from: FROM_STUB,
             to: TO_STUB,
-            limit: LIMIT_STUB
+            limit: LIMIT_STUB,
+            timespan: TIMESPAN_STUB
           };
           animationSync.add([layer_A, layer_B]);
 
@@ -127,17 +117,18 @@ define([
         describe('single animation', function() {
 
           it('should trigger a \'load:complete\' event when the animation is finshed loading', function() {
-            var listener = jasmine.createSpy('load handler');
+            var onLoadComplete = jasmine.createSpy('onLoadComplete');
             var animation = new MockAnimation({
               progress: 1
             });
             var test = new TestFactory();
 
             test.sync.add(animation);
-            test.sync.on('load:complete', listener);
+            test.sync.on('load:complete', onLoadComplete);
 
             animation.trigger('load:complete');
-            expect(listener).toHaveBeenCalled();
+
+            expect(onLoadComplete).toHaveBeenCalled();
           });
 
           it('should trigger a \'load:progress\' event while the animations is loading', function() {
@@ -223,6 +214,45 @@ define([
             animation.trigger('load:times');
             expect(spy).toHaveBeenCalledWith(times);
           });
+
+          describe('when a layer changes it\'s bounds', function() {
+            var earlyAnim, middleAnim, lateAnim;
+
+            beforeEach(function() {
+              earlyAnim = new MockAnimation();
+              middleAnim = new MockAnimation();
+              lateAnim = new MockAnimation();
+
+              earlyAnim.getFrom.andReturn(new Date(10));
+              middleAnim.getFrom.andReturn(new Date(20));
+              lateAnim.getFrom.andReturn(new Date(30));
+
+              earlyAnim.getTo.andReturn(new Date(70));
+              middleAnim.getTo.andReturn(new Date(80));
+              lateAnim.getTo.andReturn(new Date(90));
+            });
+
+
+            it('should set the sync\'s `to` as the latest `to` among all the animations', function() {
+              var sync = new TestFactory().sync;
+              sync.add([earlyAnim, middleAnim, lateAnim]);
+
+              middleAnim.trigger('change:to');
+
+              expect(sync.getTo().getTime()).toEqual(lateAnim.getTo().getTime());
+            });
+
+            it('should set the sync\'s `from` as the earliest `from` among all the animations', function() {
+              var sync = new TestFactory().sync;
+              sync.add([earlyAnim, middleAnim, lateAnim]);
+
+              middleAnim.trigger('change:from');
+
+              expect(sync.getFrom().getTime()).toEqual(earlyAnim.getFrom().getTime());
+            });
+
+          });
+
         });
       });
 

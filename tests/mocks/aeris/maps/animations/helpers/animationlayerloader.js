@@ -11,6 +11,8 @@ define([
     name: 'MockAnimationLayerLoader',
     inherits: Events,
     methods: [
+      'setFrom',
+      'setTo',
       'destroy'
     ],
     constructor: function() {
