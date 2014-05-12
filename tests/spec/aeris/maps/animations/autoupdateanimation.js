@@ -106,6 +106,15 @@ define([
         expect(autoUpdateAnimation.loadAnimationLayers).toHaveBeenCalled();
       });
 
+      it('should trigger an autoUpdate event', function() {
+        var onAutoUpdate = jasmine.createSpy('onAutoUpdate');
+        autoUpdateAnimation.on('autoUpdate', onAutoUpdate);
+
+        masterLayer.trigger('autoUpdate');
+
+        expect(onAutoUpdate).toHaveBeenCalled();
+      });
+
     });
 
   });

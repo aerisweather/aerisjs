@@ -215,6 +215,18 @@ define([
             expect(spy).toHaveBeenCalledWith(times);
           });
 
+          it('should proxy an animation\'s autoUpdate event', function() {
+            var sync = new TestFactory().sync;
+            var animation = new MockAnimation();
+            var onAutoUpdate = jasmine.createSpy('onAutoUpdate');
+            sync.add(animation);
+            sync.on('autoUpdate', onAutoUpdate);
+
+            animation.trigger('autoUpdate');
+
+            expect(onAutoUpdate).toHaveBeenCalled();
+          });
+
           describe('when a layer changes it\'s bounds', function() {
             var earlyAnim, middleAnim, lateAnim;
 

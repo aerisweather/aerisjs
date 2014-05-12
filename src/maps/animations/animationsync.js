@@ -74,6 +74,11 @@ define([
 
     // Add animations passed in constructor
     this.add(opt_animations || []);
+
+
+    /**
+     * @event autoUpdate
+     */
   };
 
   _.inherits(AnimationSync, AbstractAnimation);
@@ -126,6 +131,9 @@ define([
       },
       'load:reset': function(progress) {
         this.trigger('load:reset', progress);
+      },
+      'autoUpdate': function() {
+        this.trigger('autoUpdate');
       }
     });
 

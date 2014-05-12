@@ -43,6 +43,10 @@ define([
 
 
     this.bindToLayerAutoUpdate_();
+
+    /**
+     * @event autoUpdate
+     */
   };
   _.inherits(AutoUpdateAnimation, TileAnimation);
 
@@ -55,6 +59,8 @@ define([
     this.listenTo(this.masterLayer_, 'autoUpdate', function() {
       this.recalculateTimeBounds_();
       this.reloadAnimationLayers_();
+
+      this.trigger('autoUpdate');
     });
   };
 
