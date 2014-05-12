@@ -280,11 +280,27 @@ define([
    * @param {Date|number} from
    */
   AbstractAnimation.prototype.setFrom = function(from) {
+    var isSame;
+
     if (from instanceof Date) {
       from = from.getTime();
     }
 
-    this.from_ = from;
+    isSame = (from === this.from_);
+
+    if (!isSame) {
+      this.from_ = from;
+      this.trigger('change:from', new Date(this.from_));
+    }
+  };
+
+
+  /**
+   * @method getFrom
+   * @return {Date}
+   */
+  AbstractAnimation.prototype.getFrom = function() {
+    return new Date(this.from_);
   };
 
 
@@ -293,11 +309,26 @@ define([
    * @param {Date|number} to
    */
   AbstractAnimation.prototype.setTo = function(to) {
+    var isSame;
+
     if (to instanceof Date) {
       to = to.getTime();
     }
 
-    this.to_ = to;
+    isSame = (to === this.to_);
+
+    if (!isSame) {
+      this.to_ = to;
+      this.trigger('change:to', new Date(this.to_));
+    }
+  };
+
+
+  /**
+   * @method getTo
+   */
+  AbstractAnimation.prototype.getTo = function() {
+    return new Date(this.to_);
   };
 
 

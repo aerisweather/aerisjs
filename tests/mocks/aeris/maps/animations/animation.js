@@ -1,14 +1,18 @@
 define([
   'aeris/util',
   'mocks/mockfactory',
-  'aeris/events'
-], function(_, MockFactory, Events) {
+  'aeris/model'
+], function(_, MockFactory, Model) {
   /**
    * @class MockAnimation
    * @implements aeris.maps.animations.AnimationInterface
    */
   var MockAnimation = MockFactory({
     name: 'MockAnimation',
+    getSetters: [
+      'from',
+      'to'
+    ],
     methods: [
       'start',
       'pause',
@@ -17,11 +21,11 @@ define([
       'next',
       'goToTime',
       'getCurrentTime',
-      'setFrom',
-      'setTo',
-      'isAnimating'
+      'isAnimating',
+      'getLoadProgress',
+      'getTimes'
     ],
-    inherits: Events
+    inherits: Model
   });
 
   /**
@@ -62,6 +66,23 @@ define([
    */
   MockAnimation.prototype.getCurrentTime = function() {
     return new Date();
+  };
+
+  /**
+   * @method getLoadProgress
+   * @return {number}
+   */
+  MockAnimation.prototype.getLoadProgress = function() {
+    return 0;
+  };
+
+
+  /**
+   * @method getTimes
+   * @return {Array.<number>}
+   */
+  MockAnimation.prototype.getTimes = function() {
+    return [];
   };
 
 

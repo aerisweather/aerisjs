@@ -23,7 +23,7 @@ define([
     spyOn(this.animation, 'goToTime').andCallThrough();
   }
 
-  describe('An AbstractAnimation', function() {
+  describe('AbstractAnimation', function() {
     var clock;
 
     beforeEach(function() {
@@ -143,8 +143,6 @@ define([
     });
 
 
-
-
     describe('pause', function() {
 
       it('should stop animating', function() {
@@ -164,6 +162,7 @@ define([
       });
 
     });
+
 
     describe('stop', function() {
 
@@ -226,6 +225,7 @@ define([
 
     });
 
+
     describe('setTimestep', function() {
 
       it('should change the animation timestep', function() {
@@ -281,6 +281,94 @@ define([
 
         test.animation.pause();
         expect(test.animation).not.toBeAnimating();
+      });
+
+    });
+
+
+    describe('setFrom', function() {
+      var timestamp, animation;
+
+      beforeEach(function() {
+        animation = new Animation();
+        timestamp = Math.round(Math.random() * 100);
+      });
+
+
+      it('should accept a timestamp', function() {
+        animation.setFrom(timestamp);
+
+        expect(animation.getFrom().getTime()).toEqual(timestamp);
+      });
+
+      it('should accept a date', function() {
+        animation.setFrom(new Date(timestamp));
+
+        expect(animation.getFrom().getTime()).toEqual(timestamp);
+      });
+
+      it('should trigger a \'change:from\' event', function() {
+        var onChangeFrom = jasmine.createSpy('onChangeFrom');
+        animation.on('change:from', onChangeFrom);
+
+        animation.setFrom(timestamp);
+
+        expect(onChangeFrom).toHaveBeenCalled();
+        expect(onChangeFrom.mostRecentCall.args[0].getTime()).toEqual(timestamp);
+      });
+
+      it('should not trigger a \'change:from\' event when setting the same time', function() {
+        var onChangeFrom = jasmine.createSpy('onChangeFrom');
+        animation.on('change:from', onChangeFrom);
+
+        animation.setFrom(timestamp);
+        animation.setFrom(timestamp);
+
+        expect(onChangeFrom.callCount).toEqual(1);
+      });
+
+    });
+
+
+    describe('setTo', function() {
+      var timestamp, animation;
+
+      beforeEach(function() {
+        animation = new Animation();
+        timestamp = Math.round(Math.random() * 100);
+      });
+
+
+      it('should accept a timestamp', function() {
+        animation.setTo(timestamp);
+
+        expect(animation.getTo().getTime()).toEqual(timestamp);
+      });
+
+      it('should accept a date', function() {
+        animation.setTo(new Date(timestamp));
+
+        expect(animation.getTo().getTime()).toEqual(timestamp);
+      });
+
+      it('should trigger a \'change:to\' event', function() {
+        var onChangeTo = jasmine.createSpy('onChangeTo');
+        animation.on('change:to', onChangeTo);
+
+        animation.setTo(timestamp);
+
+        expect(onChangeTo).toHaveBeenCalled();
+        expect(onChangeTo.mostRecentCall.args[0].getTime()).toEqual(timestamp);
+      });
+
+      it('should not trigger a \'change:to\' event when setting the same time', function() {
+        var onChangeTo = jasmine.createSpy('onChangeTo');
+        animation.on('change:to', onChangeTo);
+
+        animation.setTo(timestamp);
+        animation.setTo(timestamp);
+
+        expect(onChangeTo.callCount).toEqual(1);
       });
 
     });

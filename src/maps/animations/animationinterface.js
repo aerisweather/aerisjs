@@ -66,6 +66,15 @@ define(['aeris/util', 'aeris/events'], function(_, Events) {
      * @event change:time
      * @param {Date} time
      */
+
+    /**
+     * @event change:from
+     * @param {Date} from
+     */
+    /**
+     * @event change:to
+     * @param {Date} to
+     */
   };
   _.extend(AnimationInterface.prototype, Events.prototype);
 
@@ -144,6 +153,20 @@ define(['aeris/util', 'aeris/events'], function(_, Events) {
    * @param {Date|number} to
    */
   AnimationInterface.prototype.setTo = _.abstractMethod;
+
+
+  /**
+   * @method getFrom
+   * @return {Date}
+   */
+  AnimationInterface.prototype.getFrom = _.abstractMethod;
+
+
+  /**
+   * @method getTo
+   * @return {Date}
+   */
+  AnimationInterface.prototype.getFrom = _.abstractMethod;
 
 
   /**
