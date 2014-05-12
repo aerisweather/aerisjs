@@ -1,3 +1,16 @@
+# 0.7.4
+
+* ADD: Animation method: `setFrom`, `setTo`, `getFrom`, `getTo`
+* ADD: New AutoUpdateAnimation object. Automatically updates an animation with new
+       tile layers as they become available from the Aeris API tile server.
+* MOD: Improvements to animation performance
+* FIX: Remove unused dependencies from bower configuration and repo.
+* FIX: AnimationSync passes options to component animation objects
+* FIX: Fix incorrect unloading of tile objects, which was causing animation
+       to stop playing, in some cases.
+
+See git history for a full list of changes.
+
 # 0.7.3
 
 * FIX: Prevent aeris.util from overriding underscore object.
