@@ -145,7 +145,8 @@ define([
   TimeLayersFactory.prototype.createLayerForTime_ = function(time) {
     return this.baseLayer_.clone({
       time: new Date(time),
-      map: null
+      map: null,
+      autoUpdate: false
     });
   };
 
