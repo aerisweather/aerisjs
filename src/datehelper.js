@@ -112,6 +112,14 @@ define(['aeris/util'], function(_) {
 
 
   /**
+   * @method getTime
+   */
+  DateHelper.prototype.getTime = function() {
+    return this.date_.getTime();
+  };
+
+
+  /**
    * @param {Date} opt_date Defaults to current date.
    * @method setDate
    */
