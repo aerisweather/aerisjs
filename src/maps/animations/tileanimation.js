@@ -67,7 +67,7 @@ define([
      *
      * @property AnimationLayerLoader_
      * @type {function():aeris.maps.animations.helpers.AnimationLayerLoader}
-     * @private
+     * @protected
      */
     this.AnimationLayerLoader_ = options.AnimationLayerLoader;
 
@@ -76,20 +76,29 @@ define([
      * Helper for creating and loading animation layer 'frames'
      *
      * @property animationLayerLoader_
-     * @private
+     * @protected
      * @type {aeris.maps.animations.helpers.AnimationLayerLoader}
      */
-    this.animationLayerLoader_ = new this.AnimationLayerLoader_(this.masterLayer_, {
-      from: this.from_,
-      to: this.to_,
-      limit: this.limit_
-    });
+    this.animationLayerLoader_ = this.createAnimationLayerLoader_();
 
 
     this.prepareMasterLayer_();
     this.loadAnimationLayers();
   };
   _.inherits(TileAnimation, AbstractAnimation);
+
+
+  /**
+   * @method createAnimationLayerLoader_
+   * @protected
+   */
+  TileAnimation.prototype.createAnimationLayerLoader_ = function() {
+    return new this.AnimationLayerLoader_(this.masterLayer_, {
+      from: this.from_,
+      to: this.to_,
+      limit: this.limit_
+    });
+  };
 
 
   /**
