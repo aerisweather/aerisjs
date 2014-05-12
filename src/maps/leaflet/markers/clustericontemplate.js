@@ -4,22 +4,35 @@ define([
   var templateString = '<div>' +
     '  <img src="{url}"' +
     '       style="position: absolute;' +
-    '       top: 0px;' +
-    '       left: 0px;' +
+    '       top: {offsetX}px;' +
+    '       left: {offsetY}px;' +
     '       clip: rect(0px, 25px, 25px, 0px);' +
     '       ">' +
     '  <div style="position: absolute;' +
-    '          top: {anchorText[0]}px;' +
-    '          left: {anchorText[1]}px;' +
-    '          color: {textColor};' +
-    '          font-size: {textSize}px;' +
+    '          top: -23px;' +
+    '          left: 3px;' +
+    '          color: #fff;' +
+    '          font-size: 12px;' +
     '          font-family: Arial,sans-serif;' +
     '          font-weight: bold;' +
     '          font-style: normal;' +
     '          text-decoration: none;' +
     '          text-align: center;' +
     '          width: 25px;' +
-    '          line-height:25px;' +
+    '          line-height:1.5em;' +
+
+                // Background image
+    '           background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #a90329), color-stop(44%, #8f0222), color-stop(100%, #6d0019));' +
+    '           background-image: -webkit-linear-gradient(top, #a90329 0%, #8f0222 44%, #6d0019 100%);' +
+    '           background-image: -moz-linear-gradient(top, #a90329 0%, #8f0222 44%, #6d0019 100%);' +
+    '           background-image: -o-linear-gradient(top, #a90329 0%, #8f0222 44%, #6d0019 100%);' +
+    '           background-image: linear-gradient(top, #a90329 0%, #8f0222 44%, #6d0019 100%);' +
+    '           -webkit-border-radius: 5px;' +
+    '           -moz-border-radius: 5px;' +
+    '           -ms-border-radius: 5px;' +
+    '           -o-border-radius: 5px;' +
+    '           border-radius: 5px;' +
+    '           border: 1px solid rgba(0, 0, 0, 0.5);' +
     '          ">' +
     '    {count}' +
     '  </div>' +
