@@ -8,7 +8,7 @@ define(['aeris/util'], function(_) {
    * @class AbstractError
    * @namespace aeris.errors
    */
-  AbstractError = function(message) {
+  var AbstractError = function(message) {
     // See note above _.inherits.
     try {
       window.Error.call(this);
