@@ -15,6 +15,10 @@ define([
    * @override
   */
   var PointDataMarker = function(opt_attrs, opt_options) {
+    var attrs = _.defaults(opt_attrs || {}, {
+      offsetX: 50,
+      offsetY: 12
+    });
     var options = _.defaults(opt_options || {}, {
       iconPath: config.get('assetPath') + '{name}.png',
       iconLookup: {},
@@ -89,7 +93,7 @@ define([
     this.typeAttribute_ = options.typeAttribute;
 
 
-    Marker.call(this, opt_attrs, options);
+    Marker.call(this, attrs, options);
   };
   _.inherits(PointDataMarker, Marker);
 
