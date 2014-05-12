@@ -72,6 +72,36 @@ define([
       });
     });
 
+    it('should render clusters for markers in the collection', function() {
+      markerCollection = new MarkerCollection(getMarkers(10), {
+        clusterStyles: {
+          defaultStyles: [clusterStyles]
+        }
+      });
+      markerCollection.setMap(map);
+
+      layersReadyFlag.then(function() {
+        expect(findMarkers().length).toEqual(0);
+        expect(findClusters().length).toEqual(1);
+      });
+    });
+
+    it('should render non-clustered markers in the collection', function() {
+      var markers = getMarkers(1, NE).concat(getMarkers(1, SE));
+      markerCollection = new MarkerCollection(markers, {
+        clusterStyles: {
+          defaultStyles: [clusterStyles]
+        }
+      });
+
+      markerCollection.setMap(map);
+
+      layersReadyFlag.then(function() {
+        expect(findMarkers().length).toEqual(2);
+        expect(findClusters().length).toEqual(0);
+      });
+    });
+
 
     describe('when many nearby markers are added to a collection', function() {
       var MARKER_COUNT;

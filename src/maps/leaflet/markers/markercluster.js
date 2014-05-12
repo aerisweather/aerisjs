@@ -59,6 +59,10 @@ define([
   MarkerCluster.prototype.setMap = function(map) {
     AbstractStrategy.prototype.setMap.call(this, map);
 
+    // Add all markers to the cluster
+    this.resetMarkers_(this.object_.models);
+
+    // Add clusters to the map
     _.invoke(this.view_, 'addTo', this.mapView_);
   };
 
@@ -126,7 +130,12 @@ define([
     var clusterStyle = this.getClusterStyle_(cluster, type);
 
     return clusterIconTemplate(_.extend({}, clusterStyle, {
-      count: cluster.getChildCount()
+      count: cluster.getChildCount(),
+
+      // Center the marker icon above the point.
+      // This should at some point be configurable.
+      offsetX: -1 * clusterStyle.width / 2,
+      offsetY: -1 * clusterStyle.height / 2
     }));
   };
 
