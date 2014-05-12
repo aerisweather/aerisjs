@@ -7,9 +7,9 @@ define(['sinon', 'underscore'], function(sinon, _) {
    * with underscore's v1.6.0 usage of Date.now.
    */
   return {
-    useFakeTimers: function() {
+    useFakeTimers: function(var_args) {
       _.now = function() { return new Date().getTime(); };
-      clock = sinon.useFakeTimers();
+      clock = sinon.useFakeTimers.apply(sinon, arguments);
     },
     restore: function() {
       clock.restore();
