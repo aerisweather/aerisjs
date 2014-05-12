@@ -8,6 +8,9 @@ define([
     var step = (max - min) / (count - 1);
     var times = _.range(min, max + 1, step);
 
+    // Ensure correct count
+    times.length = count;
+
     // Aeris API provides times in reverse order
     return times.reverse();
   };
