@@ -133,7 +133,9 @@ define([
     var multiplier = wait / 1000;
     var timeIncrement = this.timestep_ * this.speed_ * multiplier;      // in one second, animate on minute
 
-    if (this.isAnimating()) { return; }
+    if (this.isAnimating()) {
+      return;
+    }
 
 
     // Prevents using endDelay, if we're starting from
@@ -170,8 +172,12 @@ define([
 
 
   AbstractAnimation.prototype.normalizeTimeBounds_ = function() {
-    if (_.isDate(this.from_)) { this.from_ = this.from_.getTime() }
-    if (_.isDate(this.to_)) { this.to_ = this.to_.getTime() }
+    if (_.isDate(this.from_)) {
+      this.from_ = this.from_.getTime();
+    }
+    if (_.isDate(this.to_)) {
+      this.to_ = this.to_.getTime();
+    }
   };
 
 
