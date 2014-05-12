@@ -80,10 +80,7 @@ define([
       /**
        * Whether to auto-update the tile.
        * Auto-updating mean that every this.autoUpdateInterval
-       * milliseconds, the tile's date property will reset.
-       *
-       * It's up to our strategy to handle changes in our
-       * date.
+       * milliseconds, the tile's time attribute will reset.
        */
       autoUpdate: true,
 
@@ -127,6 +124,14 @@ define([
 
 
     this.bindToApiKeys_();
+
+
+    /**
+     * The tile has automatically updated
+     * to the most current time.
+     *
+     * @event autoUpdate
+     */
   };
   _.inherits(AerisTile, BaseTile);
 
@@ -174,6 +179,7 @@ define([
   AerisTile.prototype.startAutoUpdate_ = function() {
     this.autoUpdateIntervalTimer_ = window.setInterval(function() {
       this.set('time', new Date(0));
+      this.trigger('autoUpdate');
     }.bind(this), this.get('autoUpdateInterval'));
   };
 

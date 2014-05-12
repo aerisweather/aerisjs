@@ -45,7 +45,7 @@ define([
   }
 
 
-  describe('An AerisTile', function() {
+  describe('AerisTile', function() {
 
     afterEach(function() {
       MockConfig.restore();
@@ -210,6 +210,19 @@ define([
         test.tile.set('autoUpdate', false);
 
         expect(test.tile).not.toBeAutoUpdating();
+      });
+
+      it('should trigger an \'autoUpdate\' event every \'autoUpdateInterval\' ms', function() {
+        var tile = new TestFactory({ autoUpdate: true }).tile;
+        var interval = tile.get('autoUpdateInterval');
+        var onAutoUpdate = jasmine.createSpy('onAutoUpdate');
+        tile.on('autoUpdate', onAutoUpdate);
+
+        clock.tick(interval);
+        expect(onAutoUpdate).toHaveBeenCalled();
+
+        clock.tick(interval);
+        expect(onAutoUpdate.callCount).toEqual(2);
       });
 
     });
