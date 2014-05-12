@@ -85,6 +85,28 @@ define([
     return [];
   };
 
+  /**
+   * @method setFrom
+   */
+  MockAnimation.prototype.setFrom = function(from) {
+    if (_.isNumber(from)) {
+      from = new Date(from);
+    }
+
+    this.set('from', from);
+  };
+
+  /**
+   * @method setTo
+   */
+  MockAnimation.prototype.setTo = function(to) {
+    if (_.isNumber(to)) {
+      to = new Date(to);
+    }
+
+    this.set('to', to);
+  };
+
 
   return MockAnimation;
 });
