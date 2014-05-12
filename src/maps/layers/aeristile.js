@@ -137,9 +137,13 @@ define([
    */
   AerisTile.prototype.initialize = function() {
     var setAutoUpdate = (function() {
-      var method = this.get('autoUpdate') ? this.startAutoUpdate_ : this.stopAutoUpdate_;
-      method.call(this);
-    }.bind(this));
+      if (this.get('autoUpdate')) {
+        this.startAutoUpdate_();
+      }
+      else {
+        this.stopAutoUpdate_();
+      }
+    }).bind(this);
     setAutoUpdate();      // Setup autoUpdate event on init
 
     // When autoUpdate property is toggled
@@ -168,11 +172,9 @@ define([
 
 
   AerisTile.prototype.startAutoUpdate_ = function() {
-    var self = this;
-
     this.autoUpdateIntervalTimer_ = window.setInterval(function() {
-      self.set('time', new Date(0));
-    }, this.get('autoUpdateInterval'));
+      this.set('time', new Date(0));
+    }.bind(this), this.get('autoUpdateInterval'));
   };
 
 
