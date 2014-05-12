@@ -34,9 +34,9 @@ define([
    * @protected
    */
   EarthquakeMarker.prototype.lookupTitle_ = function() {
-    var mag = this.getDataAttribute('report.mag').toFixed(1);
+    var mag = this.getDataAttribute('report.mag');
     return _.isUndefined(mag) ? 'Earthquake' :
-      'Magnitute ' + mag + ' Earthquake.';
+      'Magnitute ' + mag.toFixed(1) + ' Earthquake.';
   };
 
 
