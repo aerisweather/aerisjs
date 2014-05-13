@@ -83,6 +83,11 @@ define([
 
   describe('A MarkerClustererStrategy', function() {
 
+    it('should append cluster styles to the DOM', function() {
+      // Note that this happens only once, on loading the strategy module.
+      expect($('style').text()).toMatch('.aeris-cluster');
+    });
+
     describe('constructor', function() {
 
       describe('createView', function() {

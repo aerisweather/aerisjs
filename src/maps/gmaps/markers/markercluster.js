@@ -2,8 +2,16 @@ define([
   'aeris/util',
   'aeris/maps/strategy/abstractstrategy',
   'gmaps-markerclusterer-plus',
-  'aeris/util/gmaps'
-], function(_, AbstractStrategy, MarkerClusterer, mapUtil) {
+  'aeris/util/gmaps',
+  'aeris/maps/strategy/markers/markerclusterstyletemplate'
+], function(_, AbstractStrategy, MarkerClusterer, mapUtil, markerClusterStyleTemplate) {
+  // Include styles for marker clusters.
+  // Injects a <style> object into the DOM.
+  var node = document.createElement('style');
+  node.innerHTML = markerClusterStyleTemplate();
+  document.body.appendChild(node);
+
+
   /**
    * Strategy for rendering a collection of markers in a cluster.
    *
