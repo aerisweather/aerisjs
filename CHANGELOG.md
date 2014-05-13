@@ -1,3 +1,11 @@
+# 0.7.5
+
+* FIX: Bug fix: MarkerCollection markers adding before setting the object to a map
+       were not being rendered (Leaflet only)
+* FIX: Include marker cluster icon styles inline (Leaflet), or injected into the DOM (gmaps)
+* FIX: Fix PointDataMarker attribute lookups, in cases where the data object is not populated.
+
+
 # 0.7.4
 
 * ADD: Animation method: `setFrom`, `setTo`, `getFrom`, `getTo`
