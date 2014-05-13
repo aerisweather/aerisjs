@@ -16,7 +16,7 @@ define([
   */
   var PointDataMarker = function(opt_attrs, opt_options) {
     var attrs = _.defaults(opt_attrs || {}, {
-      offsetX: 50,
+      offsetX: 12,
       offsetY: 12
     });
     var options = _.defaults(opt_options || {}, {
