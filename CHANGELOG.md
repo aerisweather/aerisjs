@@ -1,3 +1,12 @@
+# 0.7.6
+
+* FIX: ClusterStyles were failing to load if Aeris.js was loaded before the document
+       was ready.
+* FIX: Animation: ensure current time is within from/to bounds, when bounds are changed.
+* FIX: Fix default PointDataMarker offset (was mistakenly set to 50px, should be 12px)
+
+See git history for a full list of changes.
+
 # 0.7.5
 
 * FIX: Bug fix: MarkerCollection markers adding before setting the object to a map
