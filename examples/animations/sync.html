@@ -45,7 +45,7 @@
     <li>
       Time: <span id="currentTime"></span>
       <br>
-      <input id="time" type="range" step="900000"/>
+      <input id="time" type="range" step="6000"/>
     </li>
     <li>
       <input class="layerToggle" type="checkbox" id="radar" checked/>
@@ -81,7 +81,10 @@
   animationSync = new aeris.maps.animations.AnimationSync([
     radar,
     satellite
-  ]);
+  ], {
+    // How far back to animate.
+    timespan: 1000 * 60 * 60 * 2    // 2 hours
+  });
 
   radar.setMap(map);
   satellite.setMap(map);
@@ -101,16 +104,6 @@
   // The animation object triggers
   // load:* events, to update listeners on loading progress.
   animationSync.on({
-    // Available animation layer times have
-    // been loaded from the AerisAPI.
-    // Times is an array of javascript timestamps,
-    // sorted from earliest to latest.
-    'load:times': function(times) {
-      // Set the bounds of the time range input
-      $('#time').attr('min', times[0]);
-      $('#time').attr('max', times[times.length - 1]);
-    },
-
     'load:progress': function(progress) {
       $('#progress').text((progress * 100).toFixed(1));
     },
@@ -145,6 +138,17 @@
 
     // Update the position of the time range input
     $('#time').val(date.getTime());
+  });
+
+
+  // The AnimationSync object "autoUpdates" -- as new weather images
+  // become available, the animation will shift forward in time to display
+  // the most recent weather.
+  // By listening to the 'change:from' and 'change:to' events, we can
+  // keep our range element in sync with the animation time.
+  animationSync.on('change:from change:to', function() {
+    $('#time').attr('min', animationSync.getFrom().getTime());
+    $('#time').attr('max', animationSync.getTo().getTime());
   });
 
 
