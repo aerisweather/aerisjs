@@ -159,6 +159,26 @@ define([
           expect(timeLayers[30].bindAttributesTo).toHaveBeenCalledWithSomeOf(masterLayer);
         });
 
+        it('should reset `from` to the earliest loaded time', function() {
+          var onChangeFrom = jasmine.createSpy('onChangeFrom');
+          animation.on('change:from', onChangeFrom);
+
+          resolveLayerLoader([20, 10, 50, 100, 30]);
+
+          expect(animation.getFrom().getTime()).toEqual(10);
+          expect(onChangeFrom).toHaveBeenCalled();
+        });
+
+        it('should reset `to` to the latest loaded time', function() {
+          var onChangeTo = jasmine.createSpy('onChangeTo');
+          animation.on('change:to', onChangeTo);
+
+          resolveLayerLoader([20, 10, 50, 100, 30]);
+
+          expect(animation.getTo().getTime()).toEqual(100);
+          expect(onChangeTo).toHaveBeenCalled();
+        });
+
       });
 
     });

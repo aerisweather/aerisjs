@@ -360,8 +360,8 @@ define([
 
     // Our tile loader already constrained our tile times
     // for us, so we can reset our bounds.
-    this.from_ = Math.min.apply(null, this.times_);
-    this.to_ = Math.max.apply(null, this.times_);
+    this.setFrom(Math.min.apply(null, this.times_));
+    this.setTo(Math.max.apply(null, this.times_));
     this.limit_ = this.times_.length;
   };
 
