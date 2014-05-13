@@ -113,6 +113,8 @@ define([
 
 
     AnimationInterface.call(this);
+
+    this.keepCurrentTimeInBounds_();
   };
 
   _.inherits(AbstractAnimation, AnimationInterface);
@@ -171,6 +173,10 @@ define([
   };
 
 
+  /**
+   * @method normalizeTimeBounds_
+   * @private
+   */
   AbstractAnimation.prototype.normalizeTimeBounds_ = function() {
     if (_.isDate(this.from_)) {
       this.from_ = this.from_.getTime();
@@ -178,6 +184,29 @@ define([
     if (_.isDate(this.to_)) {
       this.to_ = this.to_.getTime();
     }
+  };
+
+
+  /**
+   * Makes sure that the current time is always within
+   * the `from` and `to` bounds of the animation.
+   *
+   * @method keepCurrentTimeInBounds_
+   * @private
+   */
+  AbstractAnimation.prototype.keepCurrentTimeInBounds_ = function() {
+    this.listenTo(this, {
+      'change:to': function() {
+        if (this.getCurrentTime() > this.getTo()) {
+          this.goToTime(this.getTo());
+        }
+      },
+      'change:from': function() {
+        if (this.getCurrentTime() < this.getFrom()) {
+          this.goToTime(this.getFrom());
+        }
+      }
+    });
   };
 
 
@@ -191,7 +220,7 @@ define([
    * @method goToTime
    */
   AbstractAnimation.prototype.goToTime = function(time) {
-    this.currentTime_ = time;
+    this.currentTime_ = _.isDate(time) ? time.getTime() : time;
   };
 
 

@@ -327,6 +327,20 @@ define([
         expect(onChangeFrom.callCount).toEqual(1);
       });
 
+      describe('if new `from` time is later than current time', function() {
+
+        it('should go to the new `from` time', function() {
+          animation.goToTime(100);
+          spyOn(animation, 'goToTime').andCallThrough();
+
+          animation.setFrom(200);
+
+          expect(animation.goToTime).toHaveBeenCalledWith(new Date(200));
+          expect(animation.getCurrentTime().getTime()).toEqual(200);
+        });
+
+      });
+
     });
 
 
@@ -369,6 +383,20 @@ define([
         animation.setTo(timestamp);
 
         expect(onChangeTo.callCount).toEqual(1);
+      });
+
+      describe('if new `to` time is earlier than current time', function() {
+
+        it('should go to the new `to` time', function() {
+          animation.goToTime(200);
+          spyOn(animation, 'goToTime').andCallThrough();
+
+          animation.setTo(100);
+
+          expect(animation.goToTime).toHaveBeenCalledWith(new Date(100));
+          expect(animation.getCurrentTime().getTime()).toEqual(100);
+        });
+
       });
 
     });
