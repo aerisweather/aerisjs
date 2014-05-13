@@ -309,7 +309,7 @@ define([
    * @method goToTime
    */
   AnimationSync.prototype.goToTime = function(time) {
-    this.currentTime_ = time;
+    this.currentTime_ = _.isDate(time) ? time.getTime() : time;
 
     // Move all animations to the current time
     _.each(this.animations_, function(anim) {
