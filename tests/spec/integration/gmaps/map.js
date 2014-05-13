@@ -13,9 +13,6 @@ define([
     beforeEach(function() {
       mapCanvas = new MapCanvas();
     });
-    afterEach(function() {
-      mapCanvas.remove();
-    });
 
 
     beforeEach(function() {
@@ -47,6 +44,24 @@ define([
 
         it('should have the Aeris map\'s zoom', function() {
           expect(googleMap.getZoom()).toEqual(aerisMap.getZoom());
+        });
+
+        it('should use the provided scrollZoom option', function() {
+          var mapCanvas = new MapCanvas();
+          spyOn(gmaps, 'Map').andReturn(googleMap);
+          gmaps.Map.getOptions = function() {
+            return gmaps.Map.mostRecentCall.args[1];
+          };
+
+          new AerisMap(mapCanvas, {
+            scrollZoom: false
+          });
+          expect(gmaps.Map.getOptions().scrollwheel).toEqual(false);
+
+          new AerisMap(mapCanvas, {
+            scrollZoom: true
+          });
+          expect(gmaps.Map.getOptions().scrollwheel).toEqual(true);
         });
 
       });

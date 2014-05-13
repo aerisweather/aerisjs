@@ -9,9 +9,9 @@ define([
   'leaflet'
 ], function(_, Map, spyOnObject, Flag, MapCanvas, mapUtil, LeafletEvent, Leaflet) {
 
-  var TestFactory = function() {
+  var TestFactory = function(opt_mapOptions) {
     var mapCanvas = new MapCanvas();
-    var aerisMap = new Map(mapCanvas.id);
+    var aerisMap = new Map(mapCanvas.id, opt_mapOptions);
     var leafletMap = aerisMap.getView();
 
     return {
@@ -25,8 +25,10 @@ define([
     var leafletMap, aerisMap;
     var mapCanvas;
 
-    function createTestObjectsInScope() {
-      var test = TestFactory();
+    function createTestObjects(opt_mapOptions) {
+      var test;
+
+      test = TestFactory(opt_mapOptions);
 
       mapCanvas = test.mapCanvas;
       aerisMap = test.aerisMap;
@@ -37,11 +39,7 @@ define([
       leafletMap.fireEvent(topic, new LeafletEvent(data));
     }
 
-    beforeEach(createTestObjectsInScope);
-
-    afterEach(function() {
-      mapCanvas.remove();
-    });
+    beforeEach(createTestObjects);
 
 
     describe('when an Aeris map is created', function() {
@@ -50,8 +48,20 @@ define([
         expect(leafletMap).toBeInstanceOf(Leaflet.Map);
       });
 
-      it('should create a Leaflet map with the correct map canvas element', function() {
+      it('should create a Leaflet map with the specified map canvas element', function() {
         expect(mapCanvas.childElementCount).toBeGreaterThan(0);
+      });
+
+      it('should create a Leaflet map with the specified scrollZoom option ', function() {
+        createTestObjects({
+          scrollZoom: true
+        });
+        expect(leafletMap.options.scrollWheelZoom).toEqual(true);
+
+        createTestObjects({
+          scrollZoom: false
+        });
+        expect(leafletMap.options.scrollWheelZoom).toEqual(false);
       });
 
       it('should accept a Leaflet map as the element', function() {
@@ -245,7 +255,7 @@ define([
 
           // Reset test objects to fix some scope leakage
           // issues we're having
-          beforeEach(createTestObjectsInScope);
+          beforeEach(createTestObjects);
 
 
           it('L:zoom --> A:center', function() {

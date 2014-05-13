@@ -70,7 +70,18 @@ define([
        * @attribute zoom
        * @type {number}
        */
-      zoom: 4
+      zoom: 4,
+
+      /**
+       * Whether to enable zooming using the
+       * mouse scrollwheel.
+       *
+       * Attribute not currently supported by open layers.
+       *
+       * @attribute scrollZoom
+       * @type {Boolean}
+       */
+      scrollZoom: true
     }, opt_attrs);
 
     var options = _.extend({

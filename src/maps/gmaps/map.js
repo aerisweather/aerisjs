@@ -60,7 +60,8 @@ define([
     gmaps.visualRefresh = true;
     view = new gmaps.Map(el, {
       center: mapUtil.arrayToLatLng(this.object_.get('center')),
-      zoom: this.object_.get('zoom')
+      zoom: this.object_.get('zoom'),
+      scrollwheel: this.object_.get('scrollZoom')
     });
 
     return view;

@@ -66,7 +66,9 @@ define([
       return el;
     }
 
-    map = new Leaflet.Map(el);
+    map = new Leaflet.Map(el, {
+      scrollWheelZoom: this.object_.get('scrollZoom')
+    });
 
     // Add a baseLayer to the map.
     baseLayer = new OSMLayer();
