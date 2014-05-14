@@ -19,7 +19,7 @@ define([
   var Lightning = function(opt_models, opt_options) {
     var options = _.defaults(opt_options || {}, {
       params: {
-        limit: 200
+        limit: 100
       },
       model: LightningModel,
       endpoint: 'lightning',
