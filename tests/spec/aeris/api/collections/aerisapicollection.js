@@ -16,13 +16,19 @@ define([
 
   var MockSuccessResponse = function() {
     return {
-      success: true
+      success: true,
+      response: [
+        {
+          mock: 'response data'
+        }
+      ]
     };
   };
 
   var MockFailResponse = function() {
     return {
-      success: false
+      success: false,
+      response: []
     };
   };
 
@@ -33,7 +39,8 @@ define([
       error: {
         code: 'warn_no_data',
         description: 'No data was returned for the request.'
-      }
+      },
+      response: []
     };
   };
 
@@ -53,7 +60,7 @@ define([
   }
 
 
-  describe('An AerisApiCollection', function() {
+  describe('AerisApiCollection', function() {
 
     describe('constructor', function() {
 
@@ -167,6 +174,60 @@ define([
         apiCollection.fetch();
 
         expect(jsonp.getRequestedData()).toEqual(PARAMS_JSON);
+      });
+
+      it('should not create duplicate models, when using the `remove: false` option', function() {
+        // This is regarding a bug in Backbone.js.
+        // See https://github.com/jashkenas/backbone/issues/3147#issuecomment-43108388
+        // and http://jsfiddle.net/tT2D9/3/
+        var ModelWithNestedId = function(attrs, opts) {
+          Model.call(this, attrs, opts);
+        };
+        _.inherits(ModelWithNestedId, Model);
+
+        ModelWithNestedId.prototype.parse = function(data) {
+          data.id = data.report.id;
+          return data;
+        };
+
+        apiCollection = new TestFactory({
+          model: ModelWithNestedId
+        }).collection;
+
+        // Stub response data
+        apiCollection.sync = function(method, model, options) {
+          var promise = new Promise();
+          var data = {
+            success: true,
+            response: [
+              {
+                report: {
+                  id: 'A'
+                }
+              },
+              {
+                report: {
+                  id: 'B'
+                }
+              }
+            ]
+          };
+
+          options.success(data);
+          promise.resolve(data);
+
+          return promise;
+        };
+
+        apiCollection.fetch({
+          remove: false
+        });
+        expect(apiCollection.length).toEqual(2);
+
+        apiCollection.fetch({
+          remove: false
+        });
+        expect(apiCollection.length).toEqual(2);
       });
 
 
