@@ -205,12 +205,10 @@ define([
         });
       });
 
-      it('should require \'to\' to be a date', function() {
+      it('should not require \'to\' to be a date', function() {
         var test = new TestFactory();
 
-        expect(function() {
-          test.params.set('to', { foo: 'bar' }, { validate: true });
-        }).toThrowType('ValidationError');
+        test.params.set('to', 'tomorrow', { validate: true });
 
         // Should not throw error
         test.params.set('to', new Date(), { validate: true });
@@ -225,15 +223,11 @@ define([
         test.params.isValid();
       });
 
-      it('should require \'from\' to be a date', function() {
+      it('should not require \'from\' to be a date', function() {
         var test = new TestFactory();
 
-        expect(function() {
-          test.params.set('from', { foo: 'bar' }, { validate: true });
-        }).toThrowType('ValidationError');
-
-        // Should not throw error
-        test.params.set('from', new Date(), { validate: true });
+        // should not throw error
+        test.params.set('from', 'today', { validate: true });
       });
 
       it('should not require \'from\' to be set', function() {
