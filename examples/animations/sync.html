@@ -163,20 +163,18 @@
     animationSync.pause();
   });
   $('#prev').click(function() {
-    var HOUR = 1000 * 60 * 60;
-
     animationSync.pause();
 
-    // Go back 1 hour
-    animationSync.previous(HOUR);
+    // Go back 15 minutes
+    animationSync.previous(1000 * 60 * 15);
   });
   $('#next').click(function() {
     var HOUR = 1000 * 60 * 60;
 
     animationSync.pause();
 
-    // Go forward 1 hour
-    animationSync.next(HOUR);
+    // Go forward 15 minutes
+    animationSync.next(1000 * 60 * 15);
   });
   // Time range slider
   $('#time').change(function() {
