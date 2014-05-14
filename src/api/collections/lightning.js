@@ -3,7 +3,7 @@ define([
   'aeris/api/collections/pointdatacollection',
   'aeris/api/collections/aerisapiclientcollection',
   'aeris/api/models/lightning'
-], function(_, PointDataCollection, AerisApiClientCollection, Lightning) {
+], function(_, PointDataCollection, AerisApiClientCollection, LightningModel) {
   /**
    * A representation of lighting data from the
    * Aeris API 'lightning' endpoint.
@@ -21,7 +21,7 @@ define([
       params: {
         limit: 200
       },
-      model: Lightning,
+      model: LightningModel,
       endpoint: 'lightning',
       action: 'within',
       SourceCollectionType: PointDataCollection
