@@ -22,15 +22,15 @@ define([
    * @param {aeris.Collection|Array.<aeris.Model>} sourceCollection
    *
    * @param {Object=} opt_options
-   * @param {number=} opt_options.limit
-   * @param {function():Boolean} opt_options.filter
+   * @param {?number=} opt_options.limit
+   * @param {?function():Boolean=} opt_options.filter
    *
    * @throws {aeris.errors.InvalidArgumentError} If an invalid sourceCollection is provided.
    */
   var SubsetCollection = function(sourceCollection, opt_options) {
     var options = _.defaults(opt_options || {}, {
       limit: null,
-      filter: SubsetCollection.NON_FILTER_
+      filter: null
     });
 
     /**
@@ -51,7 +51,7 @@ define([
     /**
      * @property filter_
      * @private
-     * @type {function():Boolean}
+     * @type {?function():Boolean}
      */
     this.filter_ = options.filter;
 
@@ -105,16 +105,68 @@ define([
    */
   SubsetCollection.prototype.bindToSourceCollection_ = function() {
     this.listenTo(this.sourceCollection_, {
-      'add remove reset change sort': this.syncToSourceModel_
+      'reset change sort': this.resetToSourceModel_,
+
+      remove: function(model, sourceCollection, options) {
+        var subsetModels;
+
+        if (this.contains(model)) {
+          // Remove the corresponding subsetCollection model
+          this.remove(model);
+
+          // If we freed up some room by removing that model,
+          // and the next available model from the source collection.
+          if (this.limit_ && this.isUnderLimit()) {
+            subsetModels = this.getFilteredSourceModels_();
+            this.add(_.last(subsetModels));
+          }
+        }
+      },
+
+      add: function(model, sourceCollection, options) {
+        var wasModelAppended, filteredSourceModels;
+        var doesAddedModelPassFilter = _.isNull(this.filter_) || this.filter_(model);
+
+        // Model doesn't pass our filter, so
+        // we're just going to pretend this never happened...
+        if (!doesAddedModelPassFilter) {
+          return;
+        }
+
+        // Model was appended to the end of the source collection
+        // --> we can append it onto our collection.
+        wasModelAppended = _.isUndefined(options.at);
+        if (wasModelAppended && this.isUnderLimit()) {
+          this.add(model);
+        }
+
+        // Model was added in the middle of the sourceCollection
+        // so we need to make sure to add it in the right spot
+        else {
+          filteredSourceModels = this.getFilteredSourceModels_();
+
+          if (_.contains(filteredSourceModels, model)) {
+            // Add the model at the correct index
+            this.add(model, {
+              at: filteredSourceModels.indexOf(model)
+            });
+
+            // Remove the model which was pushed over the limit
+            if (this.isOverLimit()) {
+              this.pop();
+            }
+          }
+        }
+      }
     });
   };
 
 
   /**
-   * @method syncToSourceModel_
+   * @method resetToSourceModel_
    * @private
    */
-  SubsetCollection.prototype.syncToSourceModel_ = function() {
+  SubsetCollection.prototype.resetToSourceModel_ = function() {
     this.set(this.getFilteredSourceModels_());
   };
 
@@ -126,10 +178,13 @@ define([
    *                              which pass subset filtering rules.
    */
   SubsetCollection.prototype.getFilteredSourceModels_ = function() {
-    var filteredSourceModels = this.sourceCollection_.filter(this.filter_);
-    var limit = _.isNull(this.limit_) ? filteredSourceModels.length : this.limit_;
+    var filteredSourceModels = _.isNull(this.filter_) ?
+      this.sourceCollection_.models :
+      this.sourceCollection_.filter(this.filter_);
 
-    return filteredSourceModels.slice(0, limit);
+    var limit = _.isNull(this.limit_) ? filteredSourceModels.length : this.limit_;
+    var limitedModels = filteredSourceModels.slice(0, limit);
+    return limitedModels;
   };
 
 
@@ -151,6 +206,8 @@ define([
    * If the filter returns true, the model will be added
    * to the SubsetCollection.
    *
+   * Set the filter to null to disable filtering.
+   *
    * @method setFilter
    * @param {function(aeris.Model):Boolean} filter
    * @param {Object=} opt_ctx Context to set on filter function.
@@ -158,11 +215,11 @@ define([
   SubsetCollection.prototype.setFilter = function(filter, opt_ctx) {
     this.filter_ = filter;
 
-    if (opt_ctx) {
+    if (opt_ctx && !_.isNull(filter)) {
       this.filter_ = _.bind(this.filter_, opt_ctx);
     }
 
-    this.syncToSourceModel_();
+    this.resetToSourceModel_();
   };
 
 
@@ -172,9 +229,9 @@ define([
    * @method removeFilter
    */
   SubsetCollection.prototype.removeFilter = function() {
-    this.filter_ = SubsetCollection.NON_FILTER_;
+    this.setFilter(null);
 
-    this.syncToSourceModel_();
+    this.resetToSourceModel_();
   };
 
 
@@ -188,7 +245,7 @@ define([
   SubsetCollection.prototype.setLimit = function(limit) {
     this.limit_ = limit;
 
-    this.syncToSourceModel_();
+    this.resetToSourceModel_();
   };
 
 
@@ -201,7 +258,7 @@ define([
   SubsetCollection.prototype.removeLimit = function() {
     this.limit_ = null;
 
-    this.syncToSourceModel_();
+    this.resetToSourceModel_();
   };
 
 
@@ -219,6 +276,16 @@ define([
     return _.isNull(this.limit_) || this.length < this.limit_;
   };
 
+  /**
+   * @method isOverLimit
+   * @return {Boolean}
+   */
+  SubsetCollection.prototype.isOverLimit = function() {
+    var isAtLimit = this.length === this.sourceCollection_.length;
+
+    return !this.isUnderLimit() && !isAtLimit;
+  };
+
 
   /**
    * Fetches data from the underlying source collection.
@@ -231,16 +298,6 @@ define([
     return this.sourceCollection_.fetch(opt_options);
   };
 
-
-  /**
-   * Filter which does not reject any
-   * models.
-   *
-   * @method
-   * @private
-   * @static
-   */
-  SubsetCollection.NON_FILTER_ = _.constant(true);
 
   return SubsetCollection;
 });

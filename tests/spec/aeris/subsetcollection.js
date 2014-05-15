@@ -183,6 +183,95 @@ define([
     });
 
 
+    describe('speed test', function() {
+      var BigModel = function() {
+        return new Model({
+          data: {
+            that: {
+              is: {
+                nested: {
+                  really: 'deep'
+                }
+              }
+            }
+          },
+          and: [
+            'there',
+            'are',
+            'some',
+            'arrays',
+            { of: 'data' }
+          ].map(function(arr) {
+              return { even: { deeper: arr }};
+            })
+        });
+      };
+
+      // Shim performance.now (not supported by PhantomJS)
+      if (!window.performance || !window.performance.now) {
+        window.performance = _.extend({}, window.performance, {
+          now: function() {
+            return Date.now();
+          }
+        });
+      }
+
+      function speedTest(count, iterations) {
+        var times = [], totalTime, averageTime;
+
+        _.times(iterations, function() {
+          var lotsOfModels = new BulkModels(count, BigModel);
+          var startTime = performance.now();
+
+          // Add a bunch of models
+          _.each(lotsOfModels, function(model) {
+            sourceCollection.add(model);
+          });
+
+          // Remove a bunch of models
+          _.each(lotsOfModels.slice(0, count / 2), function(model) {
+            sourceCollection.remove(model);
+          });
+
+          // Record how much time it tooke
+          times.push(performance.now() - startTime);
+        });
+
+        totalTime = times.reduce(function(sum, current) {
+          return sum + current;
+        }, 0);
+        averageTime = totalTime / times.length;
+
+        return averageTime;
+      }
+
+      it('adding and removing models', function() {
+        expect(speedTest(200, 20)).toBeLessThan(50);
+      });
+
+      it('adding and removing models, with limit', function() {
+        subsetCollection.setLimit(200);
+        expect(speedTest(200, 20)).toBeLessThan(50);
+      });
+
+      it('adding and removing models, with filter', function() {
+        subsetCollection.setFilter(function() {
+          return Math.random() > 0.5;
+        });
+        expect(speedTest(200, 20)).toBeLessThan(50);
+      });
+
+      it('adding and removing models, with limit and filter', function() {
+        subsetCollection.setLimit(200);
+        subsetCollection.setFilter(function() {
+          return Math.random() > 0.5;
+        });
+        expect(speedTest(200, 20)).toBeLessThan(50);
+      });
+
+    });
+
+
     describe('constructor', function() {
 
       it('should reject invalid source collections', function() {
@@ -355,6 +444,19 @@ define([
 
         beforeEach(function() {
           subsetCollection.setLimit(LIMIT);
+        });
+
+        it('should not fire unecessary events', function() {
+          var onAdd = jasmine.createSpy('onAdd');
+          var onRemove = jasmine.createSpy('onRemove');
+          subsetCollection.on({
+            add: onAdd,
+            remove: onRemove
+          });
+
+          sourceCollection.add(new BulkModels(15));
+          expect(onAdd.callCount).toEqual(LIMIT);
+          expect(onRemove.callCount).toEqual(0);
         });
 
 
