@@ -11,7 +11,7 @@ define([
     TYPE_C: 'TYPE_C'
   };
 
-  var ModelsCount = function(opt_modelCount, opt_ModelType) {
+  var BulkModels = function(opt_modelCount, opt_ModelType) {
     this.modelCount_ = opt_modelCount || 5;
     this.ModelType_ = opt_ModelType || Model;
     this.models_ = this.createModels_();
@@ -19,14 +19,14 @@ define([
     return this.models_;
   };
 
-  ModelsCount.prototype.createModels_ = function() {
+  BulkModels.prototype.createModels_ = function() {
     var models = [];
 
     _.times(this.modelCount_, function(i) {
-      var model = new this.ModelType_;
+      var model = new this.ModelType_();
 
       model.jasmineToString = function() {
-        return 'MODEL_COUNT_' + i;
+        return model.cid || i;
       };
 
       models.push(model);
@@ -80,7 +80,7 @@ define([
   }
 
 
-  describe('A SubsetCollection', function() {
+  describe('SubsetCollection', function() {
     var subsetCollection, sourceCollection;
     var modelTypeA, modelTypeB, modelTypeC, modelTypesABC;
 
@@ -238,9 +238,10 @@ define([
         });
 
         it('should stay in sync when models are reset from the source collection (with new models)', function() {
+          var newModels = new BulkModels(3);
           sourceCollection.add(modelTypesABC);
 
-          sourceCollection.reset([new Model(), new Model(), new Model()]);
+          sourceCollection.reset(newModels);
         });
 
         it('should stay in sync when models are changed in the source collection', function() {
@@ -253,62 +254,62 @@ define([
       function itShouldStayInSyncWithLimit(limit) {
 
         it('more models than the limit are added', function() {
-          sourceCollection.add(new ModelsCount(limit + 5));
+          sourceCollection.add(new BulkModels(limit + 5));
         });
 
         it('fewer models than the limit are added', function() {
-          sourceCollection.add(new ModelsCount(limit - 2));
+          sourceCollection.add(new BulkModels(limit - 2));
         });
 
         it('models are added at an index above the limit', function() {
-          sourceCollection.add(new ModelsCount(limit - 5));
-          sourceCollection.add(new ModelsCount(10));
+          sourceCollection.add(new BulkModels(limit - 5));
+          sourceCollection.add(new BulkModels(10));
         });
 
         it('models are added at an index straddling the limit', function() {
-          sourceCollection.add(new ModelsCount(limit + 5));
-          sourceCollection.add(new ModelsCount(5), { at: 8 });
+          sourceCollection.add(new BulkModels(limit + 5));
+          sourceCollection.add(new BulkModels(5), { at: 8 });
         });
 
         it('models are added to the source at an index inside the limit', function() {
-          sourceCollection.add(new ModelsCount(limit + 5));
-          sourceCollection.add(new ModelsCount(3), { at: 1 });
+          sourceCollection.add(new BulkModels(limit + 5));
+          sourceCollection.add(new BulkModels(3), { at: 1 });
         });
 
         it('models are removed from the source at an index inside the limit', function() {
-          var models = new ModelsCount(limit + 5);
+          var models = new BulkModels(limit + 5);
           sourceCollection.add(models);
           sourceCollection.remove(models[1], models[2], models[4]);
         });
 
         it('models are removed from the source at an index outside the limit', function() {
-          var models = new ModelsCount(limit + 5);
+          var models = new BulkModels(limit + 5);
           sourceCollection.add(models);
 
           sourceCollection.remove(models[limit + 2], models[limit + 3]);
         });
 
         it('models are removed from the source at an index straddling the limit', function() {
-          var models = new ModelsCount(limit + 5);
+          var models = new BulkModels(limit + 5);
           sourceCollection.add(models);
 
           sourceCollection.remove(models[limit - 2], models[limit], models[limit + 2]);
         });
 
         it('source models are reset, with more models than the limit', function() {
-          sourceCollection.add(new ModelsCount(limit + 5));
+          sourceCollection.add(new BulkModels(limit + 5));
 
-          sourceCollection.reset(new ModelsCount(limit + 5));
+          sourceCollection.reset(new BulkModels(limit + 5));
         });
 
         it('source models are reset, with fewer models than the limit', function() {
-          sourceCollection.add(new ModelsCount(limit + 5));
+          sourceCollection.add(new BulkModels(limit + 5));
 
-          sourceCollection.reset(new ModelsCount(limit - 2));
+          sourceCollection.reset(new BulkModels(limit - 2));
         });
 
         it('source models are reset, with no models added', function() {
-          sourceCollection.add(new ModelsCount(limit + 5));
+          sourceCollection.add(new BulkModels(limit + 5));
 
           sourceCollection.reset();
         });
@@ -319,7 +320,6 @@ define([
         expect(subsetCollection).toOnlyContainSourceModels();
         expect(subsetCollection).toMatchTheSourceOrder();
       });
-
 
       describe('without a filter or limit', function() {
 
@@ -389,7 +389,7 @@ define([
             describe('and the model is within the limit', function() {
 
               it('should be added to the subset', function() {
-                var models = new ModelsCount(LIMIT + 5);
+                var models = new BulkModels(LIMIT + 5);
                 var changingModel = models[LIMIT - 2];
 
                 changingModel.set('type', Types.TYPE_A);                          // model fails filter
@@ -405,7 +405,7 @@ define([
             describe('and the model is outside the limit', function() {
 
               it('should not be added to the subset', function() {
-                var models = new ModelsCount(LIMIT + 5, ModelTypeB);
+                var models = new BulkModels(LIMIT + 5, ModelTypeB);
                 var changingModel = models[LIMIT + 2];
 
                 changingModel.set('type', Types.TYPE_A);                          // model fails filter
@@ -425,7 +425,7 @@ define([
             describe('and the model is within the limit', function() {
 
               it('should be removed from the subset', function() {
-                var models = new ModelsCount(LIMIT + 5);
+                var models = new BulkModels(LIMIT + 5);
                 var changingModel = models[LIMIT - 2];
 
                 changingModel.set('type', Types.TYPE_B);                          // model passes filter
@@ -441,7 +441,7 @@ define([
             describe('and the model is outside the limit', function() {
 
               it('should not be added to the subset', function() {
-                var models = new ModelsCount(LIMIT + 5, ModelTypeB);
+                var models = new BulkModels(LIMIT + 5, ModelTypeB);
                 var changingModel = models[LIMIT + 2];
 
                 sourceCollection.add(models);
@@ -535,14 +535,14 @@ define([
       var LIMIT = 10;
 
       it('should remove any models beyond the limit', function() {
-        sourceCollection.add(new ModelsCount(LIMIT + 5));
+        sourceCollection.add(new BulkModels(LIMIT + 5));
 
         subsetCollection.setLimit(LIMIT);
         expect(subsetCollection.length).toEqual(LIMIT);
       });
 
       it('should not remove models if the subset has fewer models than the limit', function() {
-        sourceCollection.add(new ModelsCount(LIMIT - 2));
+        sourceCollection.add(new BulkModels(LIMIT - 2));
 
         subsetCollection.setLimit(LIMIT);
         expect(subsetCollection.length).toEqual(LIMIT - 2);
@@ -556,7 +556,7 @@ define([
 
 
         it('should add models from source', function() {
-          sourceCollection.add(new ModelsCount(LIMIT + 5));
+          sourceCollection.add(new BulkModels(LIMIT + 5));
 
           subsetCollection.setLimit(LIMIT);
           expect(subsetCollection.length).toEqual(LIMIT);
@@ -591,7 +591,7 @@ define([
 
 
       it('should add all previously over-limit models from the source', function() {
-        sourceCollection.add(new ModelsCount(LIMIT + 5));
+        sourceCollection.add(new BulkModels(LIMIT + 5));
 
         subsetCollection.removeLimit();
 
@@ -601,7 +601,7 @@ define([
       it('should allow models added to the source to be added to the subset (data binding)', function() {
         subsetCollection.removeLimit();
 
-        sourceCollection.add(new ModelsCount(LIMIT + 5));
+        sourceCollection.add(new BulkModels(LIMIT + 5));
 
         expect(subsetCollection.length).toEqual(LIMIT + 5);
       });
@@ -668,9 +668,6 @@ define([
 
         expect(filter).toHaveBeenCalled();
       });
-
-
-
 
 
       afterEach(function() {

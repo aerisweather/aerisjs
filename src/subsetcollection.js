@@ -26,7 +26,7 @@ define([
    * @param {function():Boolean} opt_options.filter
    *
    * @throws {aeris.errors.InvalidArgumentError} If an invalid sourceCollection is provided.
-  */
+   */
   var SubsetCollection = function(sourceCollection, opt_options) {
     var options = _.defaults(opt_options || {}, {
       limit: null,
@@ -44,7 +44,7 @@ define([
      * @property limit_
      * @protected
      * @type {?number} If null, no limit is enforced.
-    */
+     */
     this.limit_ = options.limit;
 
 
@@ -52,7 +52,7 @@ define([
      * @property filter_
      * @private
      * @type {function():Boolean}
-    */
+     */
     this.filter_ = options.filter;
 
 
