@@ -1,8 +1,7 @@
 define([
   'aeris/util',
-  'aeris/maps/animations/tileanimation',
-  'aeris/datehelper'
-], function(_, TileAnimation, DateHelper) {
+  'aeris/maps/animations/tileanimation'
+], function(_, TileAnimation) {
   /**
    * An AutoUpdateAnimation is automatically updated
    * to to display the most recent tiles available
@@ -24,7 +23,7 @@ define([
   var AutoUpdateAnimation = function(masterLayer, opt_options) {
     var options = _.defaults(opt_options || {}, {
       limit: 20,
-      timespan: new DateHelper(new Date(0)).addHours(2).getTime()
+      timespan: 1000 * 60 * 60 * 2   // 2 hours
     });
 
     options.to = Date.now();
