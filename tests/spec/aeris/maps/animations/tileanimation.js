@@ -530,10 +530,6 @@ define([
         expect(animation.getCurrentTime().getTime()).toEqual(1234);
       });
 
-      it('should return null, if no time are loaded, and goToTime hasn\'t been called', function() {
-        expect(animation.getCurrentTime()).toEqual(null);
-      });
-
     });
 
 

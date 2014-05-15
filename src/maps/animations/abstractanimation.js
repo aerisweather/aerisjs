@@ -22,7 +22,7 @@ define([
   var AbstractAnimation = function(opt_options) {
     var options = _.defaults(opt_options || {}, {
       from: 0,
-      to: new Date().getTime(),
+      to: _.now(),
       speed: 30,
       timestep: 1000 * 60,
       endDelay: 1000
@@ -95,11 +95,11 @@ define([
     /**
      * The time of the current animation frame.
      *
-     * @type {Date}
+     * @type {number} Timestamp
      * @private
      * @property currentTime_
      */
-    this.currentTime_ = null;
+    this.currentTime_ = Date.now();
 
 
     /**
@@ -229,7 +229,7 @@ define([
    * @return {?Date}
    */
   AbstractAnimation.prototype.getCurrentTime = function() {
-    return _.isNull(this.currentTime_) ? null : new Date(this.currentTime_);
+    return new Date(this.currentTime_);
   };
 
 
