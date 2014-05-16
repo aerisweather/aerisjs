@@ -24,13 +24,5 @@ define([
   _.inherits(SnowDepth, AerisTile);
 
 
-  /**
-   * @method getTileTimesCallback
-   */
-  SnowDepth.prototype.getTileTimesCallback = function() {
-    return 'snowdepth_snodasTimes';
-  };
-
-
   return _.expose(SnowDepth, 'aeris.maps.layers.SnowDepth');
 });
