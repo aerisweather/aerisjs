@@ -5,11 +5,12 @@ define([
   'aeris/errors/validationerror',
   'aeris/errors/missingapikeyerror',
   'aeris/errors/timeouterror',
+  'aeris/errors/unsupportedfeatureerror',
   'aeris/maps/layers/abstracttile',
   'aeris/jsonp',
   'aeris/maps/layers/config/zindex',
   'aeris/maps/strategy/layers/aeristile'
-], function(_, aerisConfig, Promise, ValidationError, MissingApiKeyError, TimeoutError, BaseTile, JSONP, zIndexConfig, AerisTileStrategy) {
+], function(_, aerisConfig, Promise, ValidationError, MissingApiKeyError, TimeoutError, UnsupportedFeatureError, BaseTile, JSONP, zIndexConfig, AerisTileStrategy) {
   /**
    * Representation of Aeris Interactive Tile layer.
    *
@@ -102,7 +103,15 @@ define([
     });
 
     _.defaults(attrs, {
-      zIndex: zIndexConfig[attrs.name] || 1
+      zIndex: zIndexConfig[attrs.name] || 1,
+
+      /**
+       * The type of Aeris Interactive tile
+       * to use when the tile's time is set to a future date.
+       *
+       * @attribute futureTileType
+       */
+      futureTileType: attrs.tileType
     });
 
 
@@ -213,6 +222,8 @@ define([
    * @method validate
    */
   AerisTile.prototype.validate = function(attrs) {
+    var isFutureTile;
+
     if (!_.isString(attrs.tileType)) {
       return new ValidationError('tileType', 'not a valid string');
     }
@@ -222,6 +233,12 @@ define([
     if (attrs.minZoom < 1) {
       return new ValidationError('minZoom for Aeris Interactive tiles must be ' +
         'more than 0');
+    }
+
+    isFutureTile = attrs.time > new Date();
+    if (isFutureTile && attrs.autoUpdate) {
+      return new UnsupportedFeatureError('Auto update is not currently supported by for future tiles.' +
+        ' Turn off auto update (tile.set(\'autoUpdate\', false) before using future tiles.');
     }
 
     return BaseTile.prototype.validate.apply(this, arguments);
@@ -242,18 +259,6 @@ define([
 
 
   /**
-   * Return the name of the jsonp callback
-   * For returning timestamp metatdata
-   *
-   * @return {string} name of jsonp callback.
-   * @method getTileTimesCallback
-   */
-  AerisTile.prototype.getTileTimesCallback = function() {
-    return this.get('tileType') + 'Times';
-  };
-
-
-  /**
    * @method getUrl
    */
   AerisTile.prototype.getUrl = function() {
@@ -262,7 +267,7 @@ define([
     return this.get('server') +
       this.get('apiId') + '_' +
       this.get('apiSecret') +
-      '/' + this.get('tileType') +
+      '/' + this.getTileTypeEndpoint_() +
       '/{z}/{x}/{y}/{t}.png';
   };
 
@@ -345,12 +350,49 @@ define([
    * @method loadTileTimes
    */
   AerisTile.prototype.loadTileTimes = function() {
-    var url;
+    var promiseToLoadAllTimes = new Promise();
+    var pastTimesEndpoint = this.get('tileType');
+    var futureTimesEndpoint = this.get('futureTileType');
+    var isFutureTimesAvailable = pastTimesEndpoint !== futureTimesEndpoint;
+
+    var loadPromises = [];
+
+    loadPromises.push(this.loadTileTimesForEndpoint_(pastTimesEndpoint));
+
+    if (isFutureTimesAvailable) {
+      loadPromises.push(this.loadTileTimesForEndpoint_(futureTimesEndpoint));
+    }
+
+    Promise.when(loadPromises).
+      done(function(currTimesArgs, futureTimesArgs) {
+        var currentTimes = currTimesArgs[0];
+        var futureTimes = futureTimesArgs ? futureTimesArgs[0] : [];
+
+        promiseToLoadAllTimes.resolve(currentTimes.concat(futureTimes));
+      }).
+      fail(promiseToLoadAllTimes.reject.bind(promiseToLoadAllTimes));
+
+    return promiseToLoadAllTimes;
+  };
+
+
+  /**
+   * @method loadTileTimesForEndpoint_
+   * @private
+   * @param {string} endpoint
+   * @return {aeris.Promise}
+   */
+  AerisTile.prototype.loadTileTimesForEndpoint_ = function(endpoint) {
     var TIMEOUT = 5000;
     var promiseToLoadTimes = new Promise();
+    var url = this.createTileTimesUrlForEndpoint_(endpoint);
+
+    // Times API uses a static callback function
+    // (as opposed to accepting a callback param)
+    // based on the tile type
+    var jsonpCallback = endpoint + 'Times';
 
     this.ensureApiKeys_();
-    url = this.createTileTimesUrl_();
 
     this.jsonp_.get(url, {}, function(res) {
       var times;
@@ -362,7 +404,7 @@ define([
       times = this.parseTileTimes_(res);
 
       promiseToLoadTimes.resolve(times);
-    }.bind(this), this.getTileTimesCallback());
+    }.bind(this), jsonpCallback);
 
     // As jsonp does not currently provide an onerror,
     // fallback to a timeout
@@ -394,13 +436,36 @@ define([
    * @method createTileTimesUrl_
    */
   AerisTile.prototype.createTileTimesUrl_ = function() {
+    var pastTimesEndpoint = this.get('tileType');
+
+    return this.createTileTimesUrlForEndpoint_(pastTimesEndpoint);
+  };
+
+
+  /**
+   * @method createFutureTileTimesUrl_
+   * @private
+   */
+  AerisTile.prototype.createFutureTileTimesUrl_ = function() {
+    var futureTimesEndpoint = this.get('futureTileType');
+
+    return this.createTileTimesUrlForEndpoint_(futureTimesEndpoint);
+  };
+
+
+  /**
+   * @method createTileTimesUrlForEndpoint_
+   * @private
+   * @param {string} endpoint Tile type endpoint.
+   */
+  AerisTile.prototype.createTileTimesUrlForEndpoint_ = function(endpoint) {
     var urlPattern = '{server}/{client_id}_{client_secret}/{tileType}.jsonp';
 
     return urlPattern.
       replace('{server}', 'http://tile.aerisapi.com').
       replace('{client_id}', this.get('apiId')).
       replace('{client_secret}', this.get('apiSecret')).
-      replace('{tileType}', this.get('tileType'));
+      replace('{tileType}', endpoint);
   };
 
 
@@ -411,7 +476,7 @@ define([
    * @method parseTileTimes_
    */
   AerisTile.prototype.parseTileTimes_ = function(res) {
-    return _.map(res.files, function(time) {
+    return res.files.map(function(time) {
       // Convert UNIX timestamp (seconds)
       // to JS timestamp (milliseconds)
       return time.timestamp * 1000;
@@ -419,6 +484,16 @@ define([
   };
 
 
-  return _.expose(AerisTile, 'aeris.maps.layers.AerisTile');
+  /**
+   * @method getTileTypeEndpoint_
+   * @private
+   */
+  AerisTile.prototype.getTileTypeEndpoint_ = function() {
+    var isFutureTile = this.get('time') > new Date();
 
+    return isFutureTile ? this.get('futureTileType') : this.get('tileType');
+  };
+
+
+  return _.expose(AerisTile, 'aeris.maps.layers.AerisTile');
 });

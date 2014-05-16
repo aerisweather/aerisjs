@@ -58,6 +58,60 @@ define([
         }).toThrowType('ValidationError');
       });
 
+      it('should throw an error if the time is in the future, and autoUpdate is on', function() {
+        var NOW = 1000;
+        clock.useFakeTimers(NOW);
+
+        expect(function() {
+          new TestFactory({
+            time: NOW + 100,
+            autoUpdate: true
+          });
+        }).toThrowType('UnsupportedFeatureError');
+
+        // Should not throw errors
+        new TestFactory({
+          time: NOW + 100,
+          autoUpdate: false
+        });
+        new TestFactory({
+          time: NOW,
+          autoUpdate: true
+        });
+
+        clock.restore();
+      });
+
+    });
+
+
+    describe('validation', function() {
+
+      it('should throw an error if the time is in the future, and autoUpdate is on', function() {
+        var NOW = 1000;
+        var tile = new TestFactory().tile;
+        clock.useFakeTimers(NOW);
+
+        expect(function() {
+          tile.set({
+            time: NOW + 100,
+            autoUpdate: true
+          }, { validate: true });
+        }).toThrowType('UnsupportedFeatureError');
+
+        // Should not throw errors
+        tile.set({
+          time: NOW + 100,
+          autoUpdate: false
+        }, { validate: true });
+        tile.set({
+          time: NOW,
+          autoUpdate: true
+        }, { validate: true });
+
+        clock.restore();
+      });
+
     });
 
 
@@ -127,6 +181,60 @@ define([
             apiSecret: _.uniqueId('API_ID_ATTR_')
           });
           tile.getUrl();
+        });
+
+      });
+
+      it('should return [SERVER][API_ID]_[API_SECRET]/[TILE_TYPE]/{z}/{x}/{y}/{t}.png', function() {
+        var tile = new TestFactory().tile;
+        var stubAttrs = {
+          server: 'SERVER_STUB/',
+          apiId: 'API_ID_STUB',
+          apiSecret: 'API_SECRET_STUB',
+          tileType: 'TILE_TYPE_STUB'
+        };
+        tile.set(stubAttrs);
+
+        expect(tile.getUrl()).toEqual(
+          '[SERVER][API_ID]_[API_SECRET]/[TILE_TYPE]/{z}/{x}/{y}/{t}.png'.
+            replace('[SERVER]', stubAttrs.server).
+            replace('[API_ID]', stubAttrs.apiId).
+            replace('[API_SECRET]', stubAttrs.apiSecret).
+            replace('[TILE_TYPE]', stubAttrs.tileType)
+        );
+      });
+
+      describe('when the tile time is in the future', function() {
+        var NOW;
+
+        beforeEach(function() {
+          NOW = 12345;
+          clock.useFakeTimers(NOW);
+        });
+
+        afterEach(function() {
+          clock.restore();
+        });
+
+        it('should return [SERVER][API_ID]_[API_SECRET]/[FUTURE_TILE_TYPE]/{z}/{x}/{y}/{t}.png', function() {
+          var tile = new TestFactory().tile;
+          var stubAttrs = {
+            server: 'SERVER_STUB/',
+            apiId: 'API_ID_STUB',
+            apiSecret: 'API_SECRET_STUB',
+            tileType: 'TILE_TYPE_STUB',
+            futureTileType: 'FUTURE_TILE_TYPE',
+            time: new Date(NOW + 100)
+          };
+          tile.set(stubAttrs);
+
+          expect(tile.getUrl()).toEqual(
+            '[SERVER][API_ID]_[API_SECRET]/[TILE_TYPE]/{z}/{x}/{y}/{t}.png'.
+              replace('[SERVER]', stubAttrs.server).
+              replace('[API_ID]', stubAttrs.apiId).
+              replace('[API_SECRET]', stubAttrs.apiSecret).
+              replace('[TILE_TYPE]', stubAttrs.futureTileType)
+          );
         });
 
       });
@@ -283,6 +391,87 @@ define([
             API_ID_STUB + '_' + API_SECRET_STUB + '/' +
             TILE_TYPE_STUB + '.jsonp'
         );
+      });
+
+      describe('when the futureTileType attribute is set', function() {
+        var NOW = 12345;
+        var FUTURE_TILE_TYPE_STUB = 'FUTURE_TILE_TYPE_STUB', TILE_TYPE_STUB = 'TILE_TYPE_STUB';
+
+        beforeEach(function() {
+          tile.set({
+            tileType: TILE_TYPE_STUB,
+            futureTileType: FUTURE_TILE_TYPE_STUB
+          });
+          clock.useFakeTimers(NOW);
+        });
+        afterEach(function() {
+          clock.restore();
+        });
+
+
+        it('should request times data from the standard and future tiles api', function() {
+          var requestedUrls;
+          tile.loadTileTimes();
+
+          requestedUrls = jsonp.get.calls.map(function(call) {
+            return call.args[0];
+          });
+
+          expect(requestedUrls).toContain(
+            'http://tile.aerisapi.com/' +
+              API_ID_STUB + '_' + API_SECRET_STUB + '/' +
+              FUTURE_TILE_TYPE_STUB + '.jsonp'
+          );
+
+          expect(requestedUrls).toContain(
+            'http://tile.aerisapi.com/' +
+              API_ID_STUB + '_' + API_SECRET_STUB + '/' +
+              TILE_TYPE_STUB + '.jsonp'
+          );
+
+          expect(jsonp.get.callCount).toEqual(2);
+        });
+
+
+        it('should resolve with combined times from the standard and future tile apis', function() {
+          var PAST_TIMES_STUB = _.range(0, 5);
+          var FUTURE_TIMES_STUB = _.range(6, 10);
+          var onTimesLoaded = jasmine.createSpy('onTimesLoaded');
+
+          // Mock jsonp to respond with either past of future times,
+          // based on the url endpoint.
+          jsonp.get.andCallFake(function(url, data, onLoad, callbackName) {
+            var isFutureRequest = new RegExp(FUTURE_TILE_TYPE_STUB).test(url);
+            var times = isFutureRequest ? FUTURE_TIMES_STUB : PAST_TIMES_STUB;
+
+            onLoad(new MockTimesResponse(times));
+          });
+
+          tile.loadTileTimes().
+            done(onTimesLoaded);
+
+          expect(onTimesLoaded).toHaveBeenCalledWith(PAST_TIMES_STUB.concat(FUTURE_TIMES_STUB));
+        });
+
+        it('should use the correct jsonp callback names', function() {
+          jsonp.get.andCallFake(function(url, data, onLoad, callbackName) {
+            var isFutureRequest = new RegExp(FUTURE_TILE_TYPE_STUB).test(url);
+
+            if (isFutureRequest) {
+              expect(callbackName).toEqual(FUTURE_TILE_TYPE_STUB + 'Times');
+            }
+            else {
+              expect(callbackName).toEqual(TILE_TYPE_STUB + 'Times');
+            }
+
+            onLoad(new MockTimesResponse());
+          });
+
+          tile.loadTileTimes();
+
+          expect(jsonp.get).toHaveBeenCalled();
+        });
+
       });
 
       it('should resolve with an array of timestamps', function() {
