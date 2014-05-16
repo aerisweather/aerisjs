@@ -27,7 +27,6 @@ define([
      * @property strategy_
      * @type {?aeris.maps.AbstractStrategy}
      * @protected
-     * @property strategy_
      */
     this.strategy_ = null;
 

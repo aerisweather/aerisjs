@@ -51,6 +51,7 @@ define([
       MockConfig.restore();
     });
 
+
     describe('constructor', function() {
 
       it('should require a tileType', function() {
@@ -62,6 +63,7 @@ define([
       });
 
     });
+
 
     describe('data binding', function() {
 
@@ -89,6 +91,7 @@ define([
       });
 
     });
+
 
     describe('getUrl', function() {
 
@@ -132,6 +135,7 @@ define([
       });
 
     });
+
 
     describe('autoUpdate', function() {
       var clock;

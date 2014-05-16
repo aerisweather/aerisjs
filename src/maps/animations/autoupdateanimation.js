@@ -4,7 +4,7 @@ define([
 ], function(_, TileAnimation) {
   /**
    * An AutoUpdateAnimation is automatically updated
-   * to to display the most recent tiles available
+   * to to display the most current tiles available
    * from the Aeris API.
    *
    * @class AutoUpdateAnimation

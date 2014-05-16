@@ -5,6 +5,9 @@ define(['sinon', 'underscore'], function(sinon, _) {
   /**
    * Resolves sinon-underscore integration issues
    * with underscore's v1.6.0 usage of Date.now.
+   *
+   * @class MockClock
+   * @static
    */
   return {
     useFakeTimers: function(var_args) {

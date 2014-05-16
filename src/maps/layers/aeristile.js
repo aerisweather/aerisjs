@@ -85,12 +85,18 @@ define([
       autoUpdate: true,
 
       /**
-       * @attribute {string} apiId Aeris API client_id
+       * Aeris API client_id
+       *
+       * @attribute apiId
+       * @type {String}
        */
       apiId: aerisConfig.get('apiId'),
 
       /**
-       * @attribute {string} apiSecret Aeris API client_secret
+       * Aeris API client_secret
+       *
+       * @attribute apiSecret
+       * @type {String}
        */
       apiSecret: aerisConfig.get('apiSecret')
     }, opt_attrs);
@@ -109,6 +115,13 @@ define([
     this.autoUpdateIntervalTimer_;
 
 
+    /**
+     * Have the tile images for this layer
+     * have been loaded?
+     *
+     * @type {Boolean}
+     * @private
+     */
     this.loaded_ = false;
 
 
@@ -336,7 +349,7 @@ define([
     this.ensureApiKeys_();
     url = this.createTileTimesUrl_();
 
-    this.jsonp_.get(url, {}, _.bind(function(res) {
+    this.jsonp_.get(url, {}, function(res) {
       var times;
 
       if (!res.files || !res.files.length) {
@@ -346,7 +359,7 @@ define([
       times = this.parseTileTimes_(res);
 
       promiseToLoadTimes.resolve(times);
-    }, this), this.getTileTimesCallback());
+    }.bind(this), this.getTileTimesCallback());
 
     // As jsonp does not currently provide an onerror,
     // fallback to a timeout
