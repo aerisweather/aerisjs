@@ -6,29 +6,25 @@ define([
   'aeris/maps/abstractstrategy',
   'mocks/aeris/jsonp',
   'mocks/aeris/config',
-  'aeris/errors/timeouterror'
-], function(_, sinon, Promise, AerisTile, Strategy, MockJSONP, MockConfig, TimeoutError) {
+  'aeris/errors/timeouterror',
+  'tests/lib/clock'
+], function(_, sinon, Promise, AerisTile, Strategy, MockJSONP, MockConfig, TimeoutError, clock) {
 
 
-  function TestFactory(opt_options) {
-    var options = _.extend({
+  function TestFactory(opt_attrs, opt_options) {
+    var attrs = _.defaults(opt_attrs || {}, {
+      tileType: 'STUB_TILE_TYPE',
+      name: 'STUB_TILE_NAME',
+      autoUpdateInterval: 999999
+    });
+    var options = _.defaults(opt_options || {}, {
       strategy: getStubbedStrategy(),
-      tileType: 'someTileType',
-      name: 'some tile name',
-      autoUpdateInterval: 100
-    }, opt_options);
-
-    var attrs = _.defaults(_.pick(options,
-      'tileType',
-      'autoUpdateInterval',
-      'autoUpdate',
-      'name'
-    ), {
-      tileType: 'STUB_TILE_TYPE'
+      jsonp: new MockJSONP
     });
 
+    this.jsonp = options.jsonp;
     this.strategy = options.strategy;
-    this.tile = new AerisTile(attrs, { strategy: this.strategy });
+    this.tile = new AerisTile(attrs, options);
   }
 
   function getStubbedStrategy() {
@@ -67,6 +63,7 @@ define([
 
     describe('data binding', function() {
 
+
       it('should bind to aeris/config api keys', function() {
         var tile = new TestFactory().tile;
         MockConfig.stubApiKeys();
@@ -104,10 +101,10 @@ define([
             apiSecret: null
           });
 
-          tile = new AerisTile({
+          tile = new TestFactory({
             tileType: 'STUB_TILE_TYPE',
             name: 'STUB_NAME'
-          });
+          }).tile;
         });
 
 
@@ -138,10 +135,9 @@ define([
 
 
     describe('autoUpdate', function() {
-      var clock;
 
       beforeEach(function() {
-        clock = sinon.useFakeTimers();
+        clock.useFakeTimers();
 
         this.addMatchers({
           toBeAutoUpdating: function() {
@@ -233,7 +229,7 @@ define([
 
 
     describe('loadTileTimes', function() {
-      var tile, jsonp, clock;
+      var tile, jsonp;
       var API_ID_STUB = 'API_ID_STUB', API_SECRET_STUB = 'API_SECRET_STUB';
       var TILE_TYPE_STUB = 'TILE_TYPE_STUB';
       var STUB_TIMES = [1000, 2000, 3000, 4000, 5000];
@@ -254,19 +250,20 @@ define([
       };
 
       beforeEach(function() {
+        var test;
+
         // Stub out validation
         spyOn(AerisTile.prototype, 'isValid');
 
-        jsonp = new MockJSONP();
-        tile = new AerisTile({
+        test = new TestFactory({
           apiId: API_ID_STUB,
           apiSecret: API_SECRET_STUB,
           tileType: TILE_TYPE_STUB
-        }, {
-          jsonp: jsonp
         });
+        tile = test.tile;
+        jsonp = test.jsonp;
 
-        clock = sinon.useFakeTimers();
+        clock.useFakeTimers();
       });
 
       afterEach(function() {
@@ -274,18 +271,17 @@ define([
       });
 
 
-
       it('should return a promise', function() {
         expect(tile.loadTileTimes()).toBeInstanceOf(Promise);
       });
 
-      it('should request json data from the aeris tiles API', function() {
+      it('should request times data from the aeris tiles API', function() {
         tile.loadTileTimes();
 
         expect(jsonp.getRequestedUrl()).toEqual(
           'http://tile.aerisapi.com/' +
-          API_ID_STUB + '_' + API_SECRET_STUB + '/' +
-          TILE_TYPE_STUB + '.jsonp'
+            API_ID_STUB + '_' + API_SECRET_STUB + '/' +
+            TILE_TYPE_STUB + '.jsonp'
         );
       });
 

@@ -233,7 +233,7 @@ define([
       });
 
       promise.done(function() {
-        var childResponse = Array.prototype.slice.call(arguments);
+        var childResponse = _.argsToArray(arguments);
         masterResponse.push(childResponse);
         resolvedCount++;
 

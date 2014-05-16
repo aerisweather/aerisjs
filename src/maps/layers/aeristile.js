@@ -25,7 +25,7 @@ define([
       jsonp: JSONP
     }, opt_options);
 
-    var attrs = _.extend({
+    var attrs = _.defaults(opt_attrs || {}, {
       subdomains: ['1', '2', '3', '4'],
       server: 'http://tile{d}.aerisapi.com/',
       maxZoom: 27,
@@ -49,7 +49,7 @@ define([
        * @type {string}
        * @abstract
        */
-      tileType: undefined,
+      tileType: '',
 
 
       /**
@@ -99,9 +99,12 @@ define([
        * @type {String}
        */
       apiSecret: aerisConfig.get('apiSecret')
-    }, opt_attrs);
+    });
 
-    attrs.zIndex = attrs.zIndex || zIndexConfig[attrs.name] || 1;
+    _.defaults(attrs, {
+      zIndex: zIndexConfig[attrs.name] || 1
+    });
+
 
     /**
      * A reference to the timer
