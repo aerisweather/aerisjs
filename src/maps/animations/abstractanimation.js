@@ -275,6 +275,10 @@ define([
    * @method setSpeed
    */
   AbstractAnimation.prototype.setSpeed = function(speed) {
+    if (speed === this.speed_) {
+      return;
+    }
+
     this.speed_ = speed;
 
     if (this.isAnimating()) {
@@ -295,6 +299,10 @@ define([
    * @method setTimestep
    */
   AbstractAnimation.prototype.setTimestep = function(timestep) {
+    if (timestep === this.timestep_) {
+      return;
+    }
+
     this.timestep_ = timestep;
 
     if (this.isAnimating()) {
