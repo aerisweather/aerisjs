@@ -200,7 +200,93 @@ define([
             expect(listener).toHaveBeenCalled();
           });
 
-          it('should proxy layers\' load:times events', function() {
+          describe('load:times event', function() {
+            var STUB_TIMES;
+
+            beforeEach(function() {
+              STUB_TIMES = _.range(0, 100, 10);
+              spyOn(AnimationSync.prototype, 'getTimes').andCallFake(function() {
+                return _.clone(STUB_TIMES);
+              });
+            });
+
+
+            it('should fire when all layers have loaded their time', function() {
+              var onLoadTimes = jasmine.createSpy('onLoadTimes');
+              var animationSync = new TestFactory().sync;
+              var animations = [
+                new MockAnimation(),
+                new MockAnimation(),
+                new MockAnimation()
+              ];
+              animationSync.on('load:times', onLoadTimes);
+              animationSync.add(animations);
+
+              animations[0].trigger('load:times', []);
+              expect(onLoadTimes).not.toHaveBeenCalled();
+              animations[1].trigger('load:times', []);
+              expect(onLoadTimes).not.toHaveBeenCalled();
+
+              // Last of the animation finishes up...
+              animations[2].trigger('load:times', []);
+              expect(onLoadTimes).toHaveBeenCalledWith(STUB_TIMES);
+            });
+
+            describe('when a layer is added after all the other have loaded their times', function() {
+
+              it('should fire an additional event when the added layer is loaded', function() {
+                var newAnimation;
+                var onLoadTimes = jasmine.createSpy('onLoadTimes');
+                var animationSync = new TestFactory().sync;
+                var animations = [
+                  new MockAnimation(),
+                  new MockAnimation(),
+                  new MockAnimation()
+                ];
+                animationSync.add(animations);
+                animations.forEach(function(anim) {
+                  anim.trigger('load:times', []);
+                });
+
+                // Add another animation,
+                // and listen for another 'load:times' event.
+                newAnimation = new MockAnimation();
+                animationSync.add(newAnimation);
+                animationSync.on('load:times', onLoadTimes);
+                newAnimation.trigger('load:times', []);
+
+                expect(onLoadTimes).toHaveBeenCalledWith(STUB_TIMES);
+              });
+
+            });
+
+
+            describe('when a layer fires a \'load:times\' event a second time', function() {
+
+              it('should trigger an additional \'load:times\' event', function() {
+                var onLoadTimes = jasmine.createSpy('onLoadTimes');
+                var animationSync = new TestFactory().sync;
+                var animations = [
+                  new MockAnimation(),
+                  new MockAnimation(),
+                  new MockAnimation()
+                ];
+                animationSync.add(animations);
+                animations.forEach(function(anim) {
+                  anim.trigger('load:times', []);
+                });
+
+                animationSync.on('load:times', onLoadTimes);
+                animations[1].trigger('load:times', []);
+
+                expect(onLoadTimes).toHaveBeenCalledWith(STUB_TIMES);
+              });
+
+            });
+
+          });
+
+          it('should fire a load:times event when all layers have loaded their ', function() {
             var times = new CannedTimes();
             var test = new TestFactory();
             var animation = new MockAnimation();

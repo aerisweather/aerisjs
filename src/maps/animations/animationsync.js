@@ -73,6 +73,16 @@ define([
     this.AnimationType_ = options.AnimationType;
 
 
+    /**
+     * Memory of which animations have triggered a load:times event.
+     *
+     * @property animationsWhichHaveLoadedTimes_
+     * @private
+     * @type {Array.<aeris.maps.animations.AnimationInterface}
+    */
+    this.animationsWhichHaveLoadedTimes_ = [];
+
+
     // Add animations passed in constructor
     this.add(opt_animations || []);
 
@@ -124,7 +134,13 @@ define([
     this.listenTo(animation, {
       'change:from change:to': this.updateTimeBounds_,
       'load:times': function() {
-        this.trigger('load:times', this.getTimes());
+        if (!_.contains(this.animationsWhichHaveLoadedTimes_, animation)) {
+          this.animationsWhichHaveLoadedTimes_.push(animation);
+        }
+
+        if (this.animationsWhichHaveLoadedTimes_.length === this.animations_.length) {
+          this.trigger('load:times', this.getTimes());
+        }
       },
       'load:progress load:complete': this.triggerLoadProgress_,
       'load:error': function(err) {
