@@ -451,6 +451,7 @@ define([
   /**
    * @method getTimeDeviation_
    * @private
+   * @param {number} time
    * @return {number} The difference the provided time, and the closest available time.
    */
   TileAnimation.prototype.getTimeDeviation_ = function(time) {
