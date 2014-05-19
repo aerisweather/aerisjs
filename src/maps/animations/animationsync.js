@@ -47,7 +47,8 @@ define([
       to: this.to_,
       from: this.from_,
       limit: this.limit_,
-      timespan: options.timespan
+      timespan: options.timespan,
+      timeTolerance: options.timeTolerance
     };
 
 

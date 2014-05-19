@@ -17,6 +17,9 @@ define([
    * @param {aeris.maps.animations.options.AnimationOptions} opt_options
    * @param {number} opt_options.timestep Time between animation frames, in milliseconds.
    * @param {aeris.maps.animations.helpers.AnimationLayerLoader=} opt_options.animationLayerLoader
+   * @param {number=} opt_options.timeTolerance When the time is set on a TileAnimation, the animation object will
+   *        find and display the animation layer with the closest timestamp. However, if the closest available layer is
+   *        more than `timeTolerance` ms away from the set time, the layer will not be displayed. Defaults to 2 hours.
    */
   var TileAnimation = function(layer, opt_options) {
     var options = _.defaults(opt_options || {}, {
@@ -24,8 +27,18 @@ define([
       from: _.now() - (1000 * 60 * 60 * 2), // two hours ago
       to: _.now(),
       limit: 20,
-      AnimationLayerLoader: AnimationLayerLoader
+      AnimationLayerLoader: AnimationLayerLoader,
+      timeTolerance: 1000 * 60 * 60 * 2   // 2 hours
     });
+
+
+    /**
+     * @property timeTolerance_
+     * @private
+     * @type {number} In milliseconds.
+     */
+    this.timeTolerance_ = options.timeTolerance;
+
 
     AbstractAnimation.call(this, options);
 
@@ -204,14 +217,14 @@ define([
 
     nextLayer = this.getLayerForTime_(time);
 
-    // Only transition if the layer is loaded
-    // to prevent gaps in animation.
-    if (nextLayer && nextLayer !== this.getCurrentLayer() && nextLayer.isLoaded()) {
-      this.transition_(this.getCurrentLayer(), nextLayer);
-    }
-
     // Set the new layer
     this.currentTime_ = time;
+
+    // Only transition if the layer is loaded
+    // to prevent gaps in animation.
+    if (nextLayer && nextLayer.isLoaded()) {
+      this.transition_(this.getCurrentLayer(), nextLayer);
+    }
 
     this.trigger('change:time', new Date(this.currentTime_));
   };
@@ -412,7 +425,14 @@ define([
    * @method transition_
    */
   TileAnimation.prototype.transition_ = function(oldLayer, newLayer) {
-    this.syncLayerToMaster_(newLayer);
+    newLayer.stopListening(this.masterLayer_);
+
+    if (this.getTimeDeviation_(this.currentTime_) > this.timeTolerance_) {
+      newLayer.setOpacity(0);
+    }
+    else {
+      this.syncLayerToMaster_(newLayer);
+    }
 
     // Sometime we have trouble with old layers sticking around.
     // especially when we need to reload layers for new bounds.
@@ -425,6 +445,16 @@ define([
         layer.stopListening(this.masterLayer_);
       }
     }, this);
+  };
+
+
+  /**
+   * @method getTimeDeviation_
+   * @private
+   * @return {number} The difference the provided time, and the closest available time.
+   */
+  TileAnimation.prototype.getTimeDeviation_ = function(time) {
+    return Math.abs(time - this.getClosestTime_(time));
   };
 
 
@@ -505,6 +535,16 @@ define([
   TileAnimation.prototype.getLayerIndex_ = function() {
     var timeOfCurrentLayer = this.getClosestTime_(this.currentTime_);
     return this.times_.indexOf(timeOfCurrentLayer);
+  };
+
+
+  /**
+   * @method setTimeTolerance
+   * @param {number} tolerance
+   */
+  TileAnimation.prototype.setTimeTolerance = function(tolerance) {
+    this.timeTolerance_ = tolerance;
+    this.goToTime(this.currentTime_);
   };
 
 

@@ -77,7 +77,8 @@ define([
         var MockAnimationType;
         var animationSync;
         var layer_A, layer_B;
-        var FROM_STUB = 'FROM_STUB', TO_STUB = 'TO_STUB', LIMIT_STUB = 'LIMIT_STUB', TIMESPAN_STUB = 'TIMESPAN_STUB';
+        var FROM_STUB = 'FROM_STUB', TO_STUB = 'TO_STUB', LIMIT_STUB = 'LIMIT_STUB';
+        var TIMESPAN_STUB = 'TIMESPAN_STUB', TIME_TOLERANCE_STUB = 'TIME_TOLERANCE_STUB';
 
         beforeEach(function() {
           layer_A = new MockAnimationLayer();
@@ -91,7 +92,8 @@ define([
             from: FROM_STUB,
             to: TO_STUB,
             limit: LIMIT_STUB,
-            timespan: TIMESPAN_STUB
+            timespan: TIMESPAN_STUB,
+            timeTolerance: TIME_TOLERANCE_STUB
           });
         });
 
@@ -101,7 +103,8 @@ define([
             from: FROM_STUB,
             to: TO_STUB,
             limit: LIMIT_STUB,
-            timespan: TIMESPAN_STUB
+            timespan: TIMESPAN_STUB,
+            timeTolerance: TIME_TOLERANCE_STUB
           };
           animationSync.add([layer_A, layer_B]);
 

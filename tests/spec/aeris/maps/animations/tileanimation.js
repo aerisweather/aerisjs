@@ -463,6 +463,48 @@ define([
 
         });
 
+
+        describe('time tolerance', function() {
+
+          describe('when the set time is outside the timeTolerance', function() {
+
+            it('should not show any layers', function() {
+              var timeLayers = {
+                100: new MockLayer(),
+                200: new MockLayer(),
+                300: new MockLayer()
+              };
+              resolveLayerLoader([100, 200, 300], timeLayers);
+              animation.setTimeTolerance(10);
+
+              animation.goToTime(150);
+
+              expect(timeLayers).not.toBeShowingLayerForTime(100);
+              expect(timeLayers).not.toBeShowingLayerForTime(200);
+              expect(timeLayers).not.toBeShowingLayerForTime(300);
+            });
+
+          });
+
+          describe('when the set time is within the timeTolerance', function() {
+
+            it('should show the set time layer', function() {
+              var timeLayers = {
+                100: new MockLayer(),
+                200: new MockLayer(),
+                300: new MockLayer()
+              };
+              resolveLayerLoader([100, 200, 300], timeLayers);
+              animation.setTimeTolerance(10);
+
+              animation.goToTime(109);
+              expect(timeLayers).toBeShowingLayerForTime(100);
+            });
+
+          });
+
+        });
+
       });
 
 
