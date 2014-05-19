@@ -7,11 +7,12 @@ define([
   'mocks/aeris/maps/layers/aeristile',
   'mocks/aeris/maps/animations/helpers/times',
   'mocks/aeris/maps/animations/helpers/animationlayerloader',
-  'mocks/mockfactory'
-], function(_, TileAnimation, Model, Promise, Events, MockLayer, MockTimes, MockLayerLoader, MockFactory) {
+  'mocks/mockfactory',
+  'tests/lib/clock'
+], function(_, TileAnimation, Model, Promise, Events, MockLayer, MockTimes, MockLayerLoader, MockFactory, clock) {
 
-  var MockOrderedTimes = function() {
-    var times = MockTimes.apply(null, arguments);
+  var MockOrderedTimes = function(opt_count, opt_min, opt_max) {
+    var times = MockTimes.call(null, opt_count, opt_min, opt_max);
 
     return _.sortBy(times, _.identity);
   };
@@ -41,8 +42,18 @@ define([
   describe('TileAnimation', function() {
     var animation, layerLoader, masterLayer;
     var times, timeLayers;
-    var TIMES_COUNT = 10;
+    var TIMES_COUNT = 10, CURRENT_TIME = 10e7 + 17;
     var map;
+
+
+    beforeEach(function() {
+      clock.useFakeTimers(CURRENT_TIME);
+    });
+    afterEach(function() {
+      clock.restore();
+    });
+
+
 
     beforeEach(function() {
       map = new MockMap();
@@ -134,17 +145,17 @@ define([
         var timeLayers, times;
 
         beforeEach(function() {
-          times = new MockOrderedTimes();
+          times = new MockOrderedTimes(100, 0, CURRENT_TIME * 2);
           timeLayers = new MockTimeLayers(times);
           animation.loadAnimationLayers();
         });
 
 
-        it('should set the current time to the latest time', function() {
+        it('should set the current animationtime to the actual current time', function() {
           var latestTime = Math.max.apply(null, times);
           resolveLayerLoader();
 
-          expect(animation.getCurrentTime().getTime()).toEqual(latestTime);
+          expect(animation.getCurrentTime().getTime()).toEqual(CURRENT_TIME);
         });
 
         it('should sync the most current layer to the master layer', function() {

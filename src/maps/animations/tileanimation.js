@@ -144,7 +144,7 @@ define([
    * @private
    */
   TileAnimation.prototype.showInitialAnimationFrame_ = function() {
-    var initialTime = this.to_;
+    var initialTime = Date.now();
     var lastLayer = this.getLayerForTime_(initialTime);
 
     this.goToTime(initialTime);
