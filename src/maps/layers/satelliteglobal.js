@@ -13,6 +13,7 @@ define([
     var attrs = _.extend({
       name: 'SatelliteGlobal',
       tileType: 'globalsat',
+      futureTileType: 'fclouds_hrrr',
       autoUpdateInterval: AerisTile.updateIntervals.SATELLITE
     }, opt_attrs);
 
