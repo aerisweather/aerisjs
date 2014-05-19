@@ -23,7 +23,9 @@ define([
       'getCurrentTime',
       'isAnimating',
       'getLoadProgress',
-      'getTimes'
+      'getTimes',
+      'setSpeed',
+      'setTimestep'
     ],
     inherits: Model
   });
