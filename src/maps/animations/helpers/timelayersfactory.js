@@ -226,29 +226,54 @@ define([
    * @method thinTimes_
    */
   TimeLayersFactory.prototype.thinTimes_ = function(limit) {
-    var step, limitedTimes;
-    var overage = this.times_.length - limit;
+    var latestTime, earliestTime, timespan;
+    var idealTimeInterval, idealTimes, goodEnoughTimes;
 
-    // We are already within the limit
-    if (overage <= 0) {
+    if (this.times_.length <= limit) {
       return;
     }
 
+    earliestTime = Math.min.apply(Math, this.times_);
+    latestTime = Math.max.apply(Math, this.times_);
+    timespan = latestTime - earliestTime;
 
-    this.sortTimes_();
+    // Create an "ideal" array of times,
+    // with evenly spaced intervals
+    idealTimeInterval = timespan / (limit - 1);
+    idealTimes = _.range(earliestTime, latestTime + idealTimeInterval, idealTimeInterval);
 
-    // Start out with first and last times
-    limitedTimes = [_.first(this.times_), _.last(this.times_)];
+    // Find the actual times which most closely resemble our
+    // ideal times.
+    goodEnoughTimes = idealTimes.map(this.getClosestTime_, this);
+    goodEnoughTimes = _.uniq(goodEnoughTimes);
 
-    // Add some of the original times back to the array.
-    step = Math.floor(this.times_.length / limit);
-    for (var i = step; i < this.times_.length; i += step) {
-      if (limitedTimes.length < limit) {
-        limitedTimes.push(this.times_[i]);
+    // This sometimes fails to reach our limit.
+    // This hack adds random times until our limit it reached.
+    while (goodEnoughTimes.length < limit) {
+      var randomTime = this.times_[Math.floor(Math.random() * this.times_.length)];
+      if (!_.contains(goodEnoughTimes, randomTime)) {
+        goodEnoughTimes.push(randomTime);
       }
     }
 
-    this.setTimes(limitedTimes);
+    this.setTimes(goodEnoughTimes);
+  };
+
+  // TODO: move into util function,
+  // to share with TileAnimation
+  TimeLayersFactory.prototype.getClosestTime_ = function(targetTime) {
+    var closest = this.times_[0];
+    var diff = Math.abs(targetTime - closest);
+
+    _.each(this.times_, function(time) {
+      var newDiff = Math.abs(targetTime - time);
+      if (newDiff < diff) {
+        diff = newDiff;
+        closest = time;
+      }
+    }, this);
+
+    return closest;
   };
 
 

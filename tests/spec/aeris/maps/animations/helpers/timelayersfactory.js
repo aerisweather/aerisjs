@@ -36,6 +36,23 @@ define([
     });
   }
 
+  function getTimesFromLayers(layers) {
+    return normalizeTimes(Object.keys(layers));
+  }
+
+
+  function getRandomTimes(count) {
+    var times = [];
+
+    _.times(count, function() {
+      var randomTime = Math.round(Math.random() * 1000);
+      times.push(parseInt(randomTime));
+    });
+
+    return times;
+  }
+
+
   describe('TimeLayersFactory', function() {
     var baseLayer;
 
@@ -238,9 +255,7 @@ define([
               limit: config.limit
             });
             var layers = factory.createTimeLayers();
-            var createdTimes = Object.keys(layers).map(function(time) {
-              return parseFloat(time);
-            });
+            var createdTimes = getTimesFromLayers(layers);
 
             expect(createdTimes.length).toEqual(config.limit);
 
@@ -248,6 +263,45 @@ define([
             expect(_.contains(createdTimes, times[0])).toEqual(true);
             expect(_.contains(createdTimes, _.last(times))).toEqual(true);
           });
+      });
+
+      it('should thin times to maintain the limit (random times)', function() {
+        var TEST_ITERATIONS = 1;
+        var TIMES_COUNT = 100;
+        var LIMIT = 17;
+
+        _.times(TEST_ITERATIONS, function(i) {
+          var times = getRandomTimes(TIMES_COUNT);
+          var factory = new TimeLayersFactory(baseLayer, times, {
+            limit: LIMIT
+          });
+          var layers = factory.createTimeLayers();
+          var createdTimes = getTimesFromLayers(layers);
+
+          expect(createdTimes.length).toEqual(LIMIT);
+        });
+      });
+
+      it('should thin time to maintain limit (another example)', function() {
+        var times = [0, 10, 20, 30, 40, 50, 60, 70, 100, 200];
+        var factory = new TimeLayersFactory(baseLayer, times, {
+          limit: 5
+        });
+        var layers = factory.createTimeLayers();
+        var createdTimes = getTimesFromLayers(layers);
+
+        expect(createdTimes.length).toEqual(5);
+      });
+
+      it('should thin time to maintain limit (yet another example)', function() {
+        var times = _.range(0, 100, 10).concat(_.range(200, 1000, 100));
+        var factory = new TimeLayersFactory(baseLayer, times, {
+          limit: 5
+        });
+        var layers = factory.createTimeLayers();
+        var createdTimes = getTimesFromLayers(layers);
+
+        expect(createdTimes.length).toEqual(5);
       });
 
       it('should not limit times by chopping of ends', function() {
