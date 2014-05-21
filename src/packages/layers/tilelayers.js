@@ -4,6 +4,7 @@ define([
   'aeris/maps/layers/dewpoints',
   'aeris/maps/layers/heatindex',
   'aeris/maps/layers/humidity',
+  'aeris/maps/layers/precip',
   'aeris/maps/layers/radar',
   'aeris/maps/layers/satellite',
   'aeris/maps/layers/satelliteglobal',
