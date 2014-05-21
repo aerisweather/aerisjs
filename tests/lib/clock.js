@@ -11,7 +11,7 @@ define(['sinon', 'underscore'], function(sinon, _) {
    */
   return {
     useFakeTimers: function(var_args) {
-      _.now = function() { return new Date().getTime(); };
+      _.now = function() { return new Date.now(); };
       clock = sinon.useFakeTimers.apply(sinon, arguments);
     },
     restore: function() {
