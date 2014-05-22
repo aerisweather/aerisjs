@@ -14,6 +14,10 @@ define([
   };
   _.inherits(MockLayer, Model);
 
+  MockLayer.prototype.jasmineToString = function() {
+    return '\'MockLayer_t' + this.get('time').getTime() + '\'';
+  };
+
 
   MockLayer.prototype.loadTileTimes = function() {
     this.promiseToLoadTimes_ = new Promise();

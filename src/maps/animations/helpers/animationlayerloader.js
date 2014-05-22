@@ -91,23 +91,23 @@ define([
    */
   AnimationLayerLoader.prototype.load = function() {
     var promiseToLoadLayers = new Promise();
+    var resolveOnLoadComplete = function() {
+      this.once('load:complete', function() {
+        promiseToLoadLayers.resolve(this.timeLayers_);
+      });
+    };
+    var triggerLoadTimes = function(times) {
+      this.trigger('load:times', times, this.timeLayers_);
+    };
 
     this.baseLayer_.loadTileTimes().
-      done(function(times) {
-        this.addTimeLayersForTimes_(times);
-
-        this.trigger('load:times', times, this.timeLayers_);
-
-        this.once('load:complete', function() {
-          promiseToLoadLayers.resolve(this.timeLayers_);
-        }, this);
-      }, this).
-      fail(function(err) {
-        this.trigger('load:error', err);
-      }, this).
+      done(this.addLayersForTimes_, this).
+      done(triggerLoadTimes, this).
+      done(resolveOnLoadComplete, this).
       fail(promiseToLoadLayers.reject, promiseToLoadLayers);
 
-    return promiseToLoadLayers;
+    return promiseToLoadLayers.
+      fail(this.trigger.bind(this, 'load:error'));
   };
 
 
@@ -115,19 +115,46 @@ define([
    * @param {Array.<number>} times
    * @return {Object.<number, aeris.maps.layers.AerisTile>}
    * @private
-   * @method addTimeLayersForTimes_
+   * @method addLayersForTimes_
    */
-  AnimationLayerLoader.prototype.addTimeLayersForTimes_ = function(times) {
-    var currentTimes = Object.keys(this.timeLayers_).map(function(time) {
-      return parseInt(time);
-    });
-    times = _.uniq(currentTimes.concat(times));
+  AnimationLayerLoader.prototype.addLayersForTimes_ = function(times) {
+    var currentTimes = this.getTimesFromLayers_(this.timeLayers_);
+    var allTimes = _.uniq(currentTimes.concat(times));
 
-    this.timeLayersFactory_.setTimes(times);
-
+    this.timeLayersFactory_.setTimes(allTimes);
     this.timeLayers_ = this.timeLayersFactory_.createTimeLayers();
 
-    this.bindLayerLoadEvents_(this.timeLayers_);
+    this.resetLayerLoadEvents_(this.timeLayers_);
+  };
+
+
+  /**
+   * For a hash of { times -> layers }, return the times.
+   *
+   * @method getTimesFromLayers_
+   * @param {Object.<number, aeris.maps.layers.AerisTile>} timeLayers
+   * @private
+   * @return {Array.<number>}
+   */
+  AnimationLayerLoader.prototype.getTimesFromLayers_ = function(timeLayers) {
+    var toInt = function(time) {
+      return parseInt(time);
+    };
+
+    return Object.keys(timeLayers).map(toInt);
+  };
+
+
+  /**
+   * Set-up layer 'load:*' events for the specified time layers,
+   * taking care not to set duplicate event listeners.
+   *
+   * @method resetLayerLoadEvents_
+   * @private
+   */
+  AnimationLayerLoader.prototype.resetLayerLoadEvents_ = function(timeLayers) {
+    this.unbindLayerLoadEvents_(timeLayers);
+    this.bindLayerLoadEvents_(timeLayers);
   };
 
 
@@ -136,27 +163,52 @@ define([
    * @param {Object.<number,aeris.maps.layers.AerisTile>} timeLayers
    */
   AnimationLayerLoader.prototype.bindLayerLoadEvents_ = function(timeLayers) {
-    var triggerLoadResetOnce = _.debounce(function() {
-      this.trigger('load:reset', this.getLoadProgress());
-    }, 15);
+    var triggerLoadResetOnce = _.debounce(this.triggerLoadReset_.bind(this), 15);
 
-    _.each(timeLayers, function(layer) {
-      // clear any old event bindings
-      this.stopListening(layer);
-
+    var bindLayerEvents = function(layer) {
       this.listenTo(layer, {
-        'load': function() {
-          var progress = this.getLoadProgress();
-
-          if (progress === 1) {
-            this.trigger('load:complete', progress);
-          }
-
-          this.trigger('load:progress', progress);
-        },
+        'load': this.triggerLoadProgress_,
         'load:reset': triggerLoadResetOnce
       });
-    }, this);
+    };
+
+    _.each(timeLayers, bindLayerEvents, this);
+  };
+
+
+  /**
+   * Unbind 'load:*' events for the specified time layers.
+   *
+   * @method unbindLayerLoadEvents_
+   * @private
+   * @param {object.<number, aeris.maps.layers.AerisTile>} timeLayers
+   */
+  AnimationLayerLoader.prototype.unbindLayerLoadEvents_ = function(timeLayers) {
+    _.each(timeLayers, this.stopListening, this);
+  };
+
+
+  /**
+   * @method triggerLoadProgress_
+   * @private
+   */
+  AnimationLayerLoader.prototype.triggerLoadProgress_ = function() {
+    var progress = this.getLoadProgress();
+
+    if (progress === 1) {
+      this.trigger('load:complete', progress);
+    }
+
+    this.trigger('load:progress', progress);
+  };
+
+
+  /**
+   * @method triggerLoadReset_
+   * @private
+   */
+  AnimationLayerLoader.prototype.triggerLoadReset_ = function() {
+    this.trigger('load:reset', this.getLoadProgress());
   };
 
 
