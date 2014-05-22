@@ -125,15 +125,6 @@ define([
 
 
   /**
-   * @return {Array.<number>} Timestamps in chronological order.
-   * @method getOrderedTimes
-   */
-  TimeLayersFactory.prototype.getOrderedTimes = function() {
-    return _.sortBy(this.times_, _.identity);
-  };
-
-
-  /**
    * @return {Object.<number,aeris.maps.layer.AerisTile>} A hash of timestamps to layers.
    * @method createTimeLayers
    */
@@ -327,7 +318,18 @@ define([
    * @method sortTimes_
    */
   TimeLayersFactory.prototype.sortTimes_ = function() {
-    this.times_ = _.sortBy(this.times_, _.identity);
+    this.times_ = this.getOrderedTimes();
+  };
+
+
+  /**
+   * @return {Array.<number>} Timestamps in chronological order.
+   * @method getOrderedTimes
+   */
+  TimeLayersFactory.prototype.getOrderedTimes = function() {
+    return this.times_.sort(function(a, b) {
+      return a > b ? 1 : -1;
+    });
   };
 
 

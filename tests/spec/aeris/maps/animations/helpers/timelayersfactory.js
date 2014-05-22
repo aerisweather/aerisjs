@@ -26,8 +26,8 @@ define([
   };
 
   function sortChronologically(times) {
-    return _.sortBy(times, function(time) {
-      return time;
+    return times.sort(function(a, b) {
+      return a > b ? 1 : -1;
     });
   }
 
@@ -38,7 +38,8 @@ define([
   }
 
   function getTimesFromLayers(layers) {
-    return normalizeTimes(Object.keys(layers));
+    var times = normalizeTimes(Object.keys(layers));
+    return sortChronologically(times);
   }
 
 
