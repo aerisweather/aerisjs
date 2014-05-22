@@ -226,8 +226,9 @@ define([
    * @method thinTimes_
    */
   TimeLayersFactory.prototype.thinTimes_ = function(limit) {
-    var latestTime, earliestTime, timespan;
-    var idealTimeInterval, idealTimes, goodEnoughTimes;
+    var isTimeAlreadyAdded;
+    var latestTime, earliestTime, mostCurrentTime, closestTime;
+    var step, thinnedTimes;
 
     if (this.times_.length <= limit) {
       return;
@@ -235,32 +236,67 @@ define([
 
     earliestTime = Math.min.apply(Math, this.times_);
     latestTime = Math.max.apply(Math, this.times_);
-    timespan = latestTime - earliestTime;
+    mostCurrentTime = this.getClosestTime_(Date.now());
 
-    // Create an "ideal" array of times,
-    // with evenly spaced intervals
-    idealTimeInterval = timespan / (limit - 1);
-    idealTimes = _.range(earliestTime, latestTime + idealTimeInterval, idealTimeInterval);
+    // Always include earliest, latest, and most-current times.
+    thinnedTimes = _.uniq([earliestTime, mostCurrentTime, latestTime]);
 
-    // Find the actual times which most closely resemble our
-    // ideal times.
-    goodEnoughTimes = idealTimes.map(this.getClosestTime_, this);
-    goodEnoughTimes = _.uniq(goodEnoughTimes);
+    // Add times at regular time intervals
+    // Example:
+    //  - We start with [0, 200, 1024]
+    //  - We add [0, 512, 1024] --> [0, 200, 512, 1024]
+    //  - We add [0, 256, 512, 1024] --> [0, 200, 256, 512, 1024]
+    //  etc.. until we reach our limit.
 
-    // This sometimes fails to reach our limit.
-    // This hack adds random times until our limit it reached.
-    while (goodEnoughTimes.length < limit) {
-      var randomTime = this.times_[Math.floor(Math.random() * this.times_.length)];
-      if (!_.contains(goodEnoughTimes, randomTime)) {
-        goodEnoughTimes.push(randomTime);
+    step = (latestTime - earliestTime) / 2;
+    while (thinnedTimes.length < limit && step >= 1) {
+      var timesToAdd = [];
+      var amountUnderLimit = limit - thinnedTimes.length;
+      var time = earliestTime;
+
+      // Grab times at every `step` interval
+      while (time < latestTime) {
+        time += step;
+
+        closestTime = this.getClosestTime_(time);
+        isTimeAlreadyAdded = _.contains(thinnedTimes, closestTime) || _.contains(timesToAdd, closestTime);
+
+        if (!isTimeAlreadyAdded) {
+          timesToAdd.push(closestTime);
+        }
       }
+
+      // Make sure we're not going over the limit
+      if (timesToAdd.length > amountUnderLimit) {
+        timesToAdd.length = amountUnderLimit;
+      }
+
+      // Add the new set of times
+      thinnedTimes.push.apply(thinnedTimes, timesToAdd);
+
+      // Use a smaller interval for the next iteration
+      step = Math.floor(step / 2);
     }
 
-    this.setTimes(goodEnoughTimes);
+    this.setTimes(thinnedTimes);
   };
 
   // TODO: move into util function,
   // to share with TileAnimation
+  // Or, maybe all of the layer/time collection logic
+  // should be moved into a helper/base-class/mixin
+  // Then TileAnimation would call
+  // this.myHelper_.getTileForTime(time), instead of
+  // having to handle all that logic itself.
+  // Or, maybe TimeLayerCollection should be it's own class,
+  // and it should handle all of that logic.
+  /**
+   * @method getClosestTime_
+   *
+   * @param {number} targetTime
+   * @return {number}
+   * @private
+   */
   TimeLayersFactory.prototype.getClosestTime_ = function(targetTime) {
     var closest = this.times_[0];
     var diff = Math.abs(targetTime - closest);
