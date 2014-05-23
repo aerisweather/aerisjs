@@ -97,6 +97,11 @@ define([
 
     this.prepareMasterLayer_();
     this.loadAnimationLayers();
+
+    this.listenTo(this, 'change:to change:from', function() {
+      this.animationLayerLoader_.setTo(this.to_);
+      this.animationLayerLoader_.setFrom(this.from_);
+    });
   };
   _.inherits(TileAnimation, AbstractAnimation);
 

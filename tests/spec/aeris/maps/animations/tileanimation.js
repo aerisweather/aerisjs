@@ -111,6 +111,19 @@ define([
 
     });
 
+    it('should bind it\'s from/to times to the animationLayerLoader\'s from/to times', function() {
+      _.times(5, function(i) {
+        var FROM = 1e3 * (i + 1);
+        var TO = 2e3 * (i + 1);
+
+        animation.setFrom(FROM);
+        expect(layerLoader.setFrom).toHaveBeenCalledWith(FROM);
+
+        animation.setTo(TO);
+        expect(layerLoader.setTo).toHaveBeenCalledWith(TO);
+      });
+    });
+
 
     describe('loadAnimationLayers', function() {
 
