@@ -243,6 +243,10 @@ define([
         expect(getLastTime()).toEqual(250);
       });
 
+      it('should reject invalid numbers', function() {
+        expect(animation.setSpeed.bind(animation, 'foo')).toThrowType('InvalidArgumentError');
+      });
+
 
       describe('if the speed has changed', function() {
 

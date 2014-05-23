@@ -1,7 +1,8 @@
 define([
   'aeris/util',
-  'aeris/maps/animations/animationinterface'
-], function(_, AnimationInterface) {
+  'aeris/maps/animations/animationinterface',
+  'aeris/errors/invalidargumenterror'
+], function(_, AnimationInterface, InvalidArgumentError) {
   /**
    * A partially implemented {aeris.maps.animations.AnimationInterface}.
    *
@@ -277,6 +278,10 @@ define([
   AbstractAnimation.prototype.setSpeed = function(speed) {
     if (speed === this.speed_) {
       return;
+    }
+
+    if (!_.isNumber(speed)) {
+      throw new InvalidArgumentError(speed + ' is not a valid animation speed.');
     }
 
     this.speed_ = speed;
