@@ -185,10 +185,10 @@ define([
 
       });
 
-      it('should return [SERVER][API_ID]_[API_SECRET]/[TILE_TYPE]/{z}/{x}/{y}/{t}.png', function() {
+      it('should return [SERVER]/[API_ID]_[API_SECRET]/[TILE_TYPE]/{z}/{x}/{y}/{t}.png', function() {
         var tile = new TestFactory().tile;
         var stubAttrs = {
-          server: 'SERVER_STUB/',
+          server: 'SERVER_STUB',
           apiId: 'API_ID_STUB',
           apiSecret: 'API_SECRET_STUB',
           tileType: 'TILE_TYPE_STUB'
@@ -196,7 +196,7 @@ define([
         tile.set(stubAttrs);
 
         expect(tile.getUrl()).toEqual(
-          '[SERVER][API_ID]_[API_SECRET]/[TILE_TYPE]/{z}/{x}/{y}/{t}.png'.
+          '[SERVER]/[API_ID]_[API_SECRET]/[TILE_TYPE]/{z}/{x}/{y}/{t}.png'.
             replace('[SERVER]', stubAttrs.server).
             replace('[API_ID]', stubAttrs.apiId).
             replace('[API_SECRET]', stubAttrs.apiSecret).
@@ -216,10 +216,10 @@ define([
           clock.restore();
         });
 
-        it('should return [SERVER][API_ID]_[API_SECRET]/[FUTURE_TILE_TYPE]/{z}/{x}/{y}/{t}.png', function() {
+        it('should return [SERVER]/[API_ID]_[API_SECRET]/[FUTURE_TILE_TYPE]/{z}/{x}/{y}/{t}.png', function() {
           var tile = new TestFactory().tile;
           var stubAttrs = {
-            server: 'SERVER_STUB/',
+            server: 'SERVER_STUB',
             apiId: 'API_ID_STUB',
             apiSecret: 'API_SECRET_STUB',
             tileType: 'TILE_TYPE_STUB',
@@ -229,7 +229,7 @@ define([
           tile.set(stubAttrs);
 
           expect(tile.getUrl()).toEqual(
-            '[SERVER][API_ID]_[API_SECRET]/[TILE_TYPE]/{z}/{x}/{y}/{t}.png'.
+            '[SERVER]/[API_ID]_[API_SECRET]/[TILE_TYPE]/{z}/{x}/{y}/{t}.png'.
               replace('[SERVER]', stubAttrs.server).
               replace('[API_ID]', stubAttrs.apiId).
               replace('[API_SECRET]', stubAttrs.apiSecret).

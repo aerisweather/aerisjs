@@ -21,7 +21,7 @@ define([
     var attrs = _.extend({
       name: 'OpenStreetMap',
       subdomains: ['a', 'b', 'c'],
-      server: 'http://{d}.tile.openstreetmap.org/',
+      server: 'http://{d}.tile.openstreetmap.org',
       maxZoom: 18
     }, opt_attrs);
 
@@ -38,7 +38,7 @@ define([
    * @method getUrl
    */
   OSM.prototype.getUrl = function() {
-    return this.get('server') + '{z}/{x}/{y}.png';
+    return this.get('server') + '/{z}/{x}/{y}.png';
   };
 
 

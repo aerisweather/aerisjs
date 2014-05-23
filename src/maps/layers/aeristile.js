@@ -28,7 +28,7 @@ define([
 
     var attrs = _.defaults(opt_attrs || {}, {
       subdomains: ['1', '2', '3', '4'],
-      server: 'http://tile{d}.aerisapi.com/',
+      server: 'http://tile{d}.aerisapi.com',
       maxZoom: 27,
       minZoom: 1,
 
@@ -264,7 +264,7 @@ define([
   AerisTile.prototype.getUrl = function() {
     this.ensureApiKeys_();
 
-    return this.get('server') +
+    return this.get('server') + '/' +
       this.get('apiId') + '_' +
       this.get('apiSecret') +
       '/' + this.getTileTypeEndpoint_() +
@@ -460,9 +460,10 @@ define([
    */
   AerisTile.prototype.createTileTimesUrlForEndpoint_ = function(endpoint) {
     var urlPattern = '{server}/{client_id}_{client_secret}/{tileType}.jsonp';
+    var server = this.get('server').replace('{d}', '');
 
     return urlPattern.
-      replace('{server}', 'http://tile.aerisapi.com').
+      replace('{server}', server).
       replace('{client_id}', this.get('apiId')).
       replace('{client_secret}', this.get('apiSecret')).
       replace('{tileType}', endpoint);
