@@ -103,7 +103,6 @@ define([
             from: FROM_STUB,
             to: TO_STUB,
             limit: LIMIT_STUB,
-            timespan: TIMESPAN_STUB,
             timeTolerance: TIME_TOLERANCE_STUB
           };
           animationSync.add([layer_A, layer_B]);
