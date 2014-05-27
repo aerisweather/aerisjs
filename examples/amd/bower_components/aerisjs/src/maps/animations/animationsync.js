@@ -2,8 +2,8 @@ define([
   'aeris/util',
   'aeris/maps/animations/abstractanimation',
   'aeris/maps/layers/animationlayer',
-  'aeris/maps/animations/tileanimation'
-], function(_, AbstractAnimation, AnimationLayer, TileAnimation) {
+  'aeris/maps/animations/autoupdateanimation'
+], function(_, AbstractAnimation, AnimationLayer, AutoUpdateAnimation) {
   /**
    * Animates multiple layers along a single timeline.
    * Works by running a single 'master' animation, and having
@@ -16,6 +16,9 @@ define([
    * @param {Array<aeris.maps.layers.AnimationLayer|aeris.maps.animations.AnimationInterface>=} opt_animations Layers/Animations to sync.
    *        Animations can also be added using the `add` method.
    *
+   * @param {function():aeris.maps.animations.AnimationInterface} opt_options.AnimationType_ The
+   *        type (constructor) of animation object to create when adding a layer to the AnimationSync.
+   *
    *
    * @constructor
    * @publicApi
@@ -26,7 +29,7 @@ define([
    */
   var AnimationSync = function(opt_animations, opt_options) {
     var options = _.defaults(opt_options || {}, {
-      AnimationType: TileAnimation
+      AnimationType: AutoUpdateAnimation
     });
 
     AbstractAnimation.call(this, opt_options);
@@ -42,7 +45,9 @@ define([
      */
     this.options_ = {
       to: this.to_,
-      from: this.from_
+      from: this.from_,
+      limit: this.limit_,
+      timespan: options.timespan
     };
 
 
@@ -69,6 +74,11 @@ define([
 
     // Add animations passed in constructor
     this.add(opt_animations || []);
+
+
+    /**
+     * @event autoUpdate
+     */
   };
 
   _.inherits(AnimationSync, AbstractAnimation);
@@ -92,7 +102,7 @@ define([
     animations = animations_or_layers.map(function(obj) {
       var isLayer = obj instanceof AnimationLayer;
 
-      return isLayer ? new this.AnimationType_(obj) : obj;
+      return isLayer ? new this.AnimationType_(obj, this.options_) : obj;
     }, this);
 
     _.each(animations, this.addOne_, this);
@@ -111,8 +121,8 @@ define([
     this.animations_.push(animation);
 
     this.listenTo(animation, {
+      'change:from change:to': this.updateTimeBounds_,
       'load:times': function() {
-        this.updateTimeBounds_();
         this.trigger('load:times', this.getTimes());
       },
       'load:progress load:complete': this.triggerLoadProgress_,
@@ -121,6 +131,9 @@ define([
       },
       'load:reset': function(progress) {
         this.trigger('load:reset', progress);
+      },
+      'autoUpdate': function() {
+        this.trigger('autoUpdate');
       }
     });
 
@@ -129,19 +142,18 @@ define([
 
 
   AnimationSync.prototype.updateTimeBounds_ = function() {
-    var times = this.getTimes();
-    var earliestTime = Math.min.apply(null, times);
-    var latestTime = Math.max.apply(null, times);
+    var fromTimes = this.animations_.map(function(anim) {
+      return anim.getFrom().getTime();
+    });
+    var toTimes = this.animations_.map(function(anim) {
+      return anim.getTo().getTime();
+    });
 
-    // Update from an to
-    // so they are within available times.
-    this.from_ = Math.max(this.options_.from, earliestTime);
-    this.to_ = Math.min(this.options_.to, latestTime);
+    // Set sync `from` to the earliest animation `from`
+    this.setFrom(Math.min.apply(Math, fromTimes));
 
-    // Ensure that current time is not
-    // out of bounds
-    this.currentTime_ = Math.max(this.from_, this.currentTime_);
-    this.currentTime_ = Math.min(this.to_, this.currentTime_);
+    // Set sync `to` to the latest animation `to`
+    this.setTo(Math.max.apply(Math, toTimes));
   };
 
 
@@ -297,7 +309,7 @@ define([
    * @method goToTime
    */
   AnimationSync.prototype.goToTime = function(time) {
-    this.currentTime_ = time;
+    this.currentTime_ = _.isDate(time) ? time.getTime() : time;
 
     // Move all animations to the current time
     _.each(this.animations_, function(anim) {

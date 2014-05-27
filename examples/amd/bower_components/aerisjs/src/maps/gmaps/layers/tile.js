@@ -39,32 +39,22 @@ define([
 
     this.view_ = new this.MapType_(mapTypeOptions);
 
-    this.proxyViewEvents_();
-
     return this.view_;
-  };
-
-
-  /**
-   * Proxy events fired by the {google.maps.ImageMapType}
-   * object, so that they fire on the {aeris.maps.layers.AbstractTile} layer.
-   * @private
-   * @method proxyViewEvents_
-   */
-  TileLayerStrategy.prototype.proxyViewEvents_ = function() {
-    this.googleEvents_.listenTo(this.getView(), 'load', function() {
-      this.object_.trigger('load');
-    }, this);
   };
 
 
   TileLayerStrategy.prototype.delegateMapEvents_ = function() {
     this.googleEvents_.listenTo(this.mapView_, 'bounds_changed', function() {
       this.object_.trigger('load:reset');
+
+      // Map view fires 'idle' event when all layers are loaded.
+      google.maps.event.addListenerOnce(this.mapView_, 'idle', function() {
+        this.object_.trigger('load');
+      }.bind(this));
     }, this);
 
-    this.googleEvents_.listenTo(this.mapView_, 'zoom_changed', function() {
-      this.object_.trigger('load:reset');
+    this.googleEvents_.listenTo(this.getView(), 'load', function() {
+      this.object_.trigger('load');
     }, this);
 
     BaseLayerStrategy.prototype.delegateMapEvents_.apply(this, arguments);

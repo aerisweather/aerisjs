@@ -35,6 +35,10 @@ define([
     var type = this.getDataAttribute('report.type');
     var name = this.getDataAttribute('report.name');
 
+    if (!type || !name) {
+      return this.get('title');
+    }
+
     // Capitalize type
     type = type.charAt(0).toUpperCase() + type.slice(1);
 

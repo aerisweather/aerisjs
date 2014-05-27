@@ -1,0 +1,62 @@
+<h4 id="{{name}}" class="classTitle">
+  <small>{{namespace}}.</small>{{shortName this}}</h4>
+
+<ul class="classDocs">
+  <li>
+    {{#eachType name}}
+      <a href="{{link}}" class="ref">{{name}}</a>
+    {{/eachType}}
+  </li>
+  {{#if parent}}
+    <li>
+      extends
+      {{#eachType extends}}
+        <a href="{{link}}" class="ref">{{name}}</a>
+      {{/eachType}}
+    </li>
+  {{/if}}
+</ul>
+
+{{#if description }}
+  <p>
+    <pre>
+      {{~>eachtypeintext description~}}
+    </pre>
+  </p>
+{{/if}}
+
+
+<h5 id="{{name}}-constructor">constructor</h5>
+
+<code class="example">new {{name}}({{#joinEach params ', '}}{{name}}{{/joinEach}});</code>
+
+{{#if params}}
+  <table>
+    <thead>
+    <tr>
+      <td>Parameter</td>
+      <td>Type</td>
+      <td>Description</td>
+    </tr>
+    </thead>
+    {{#each params }}
+      <tr>
+        <td><code>{{name}}</code></td>
+        <td>{{>eachtypelink type}}</td>
+        <td>{{description}}</td>
+      </tr>
+    {{/each}}
+  </table>
+{{/if}}
+
+{{#ifHasLength methods}}
+  <h5 id="{{name}}-methods">methods</h5>
+
+  {{>methods }}
+{{/ifHasLength}}
+
+{{#ifHasLength events}}
+  <h5 id="{{name}}-events">events</h5>
+
+  {{>events}}
+{{/ifHasLength}}

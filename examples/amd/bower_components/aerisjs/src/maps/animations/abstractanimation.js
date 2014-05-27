@@ -8,8 +8,10 @@ define([
    * @param {Object} opt_options
    * @param {Date} opt_options.from Starting time for the animation.
    * @param {Date} opt_options.to Ending time for the animation.
+   * @param {number=} opt_options.limit Maximimum number of time intervals to load.
    * @param {number} opt_options.timestep
-   * @param {number} opt_options.speed
+   * @param {number} opt_options.speed Number of minutes of weather data
+   *        to display within a second.
    * @param {number} opt_options.endDelay Milliseconds to pause between animation loops.
    *
    * @constructor
@@ -21,7 +23,7 @@ define([
     var options = _.defaults(opt_options || {}, {
       from: 0,
       to: new Date().getTime(),
-      speed: 60 * 3,
+      speed: 30,
       timestep: 1000 * 60,
       endDelay: 1000
     });
@@ -111,6 +113,8 @@ define([
 
 
     AnimationInterface.call(this);
+
+    this.keepCurrentTimeInBounds_();
   };
 
   _.inherits(AbstractAnimation, AnimationInterface);
@@ -131,7 +135,9 @@ define([
     var multiplier = wait / 1000;
     var timeIncrement = this.timestep_ * this.speed_ * multiplier;      // in one second, animate on minute
 
-    if (this.isAnimating()) { return; }
+    if (this.isAnimating()) {
+      return;
+    }
 
 
     // Prevents using endDelay, if we're starting from
@@ -167,9 +173,40 @@ define([
   };
 
 
+  /**
+   * @method normalizeTimeBounds_
+   * @private
+   */
   AbstractAnimation.prototype.normalizeTimeBounds_ = function() {
-    if (_.isDate(this.from_)) { this.from_ = this.from_.getTime() }
-    if (_.isDate(this.to_)) { this.to_ = this.to_.getTime() }
+    if (_.isDate(this.from_)) {
+      this.from_ = this.from_.getTime();
+    }
+    if (_.isDate(this.to_)) {
+      this.to_ = this.to_.getTime();
+    }
+  };
+
+
+  /**
+   * Makes sure that the current time is always within
+   * the `from` and `to` bounds of the animation.
+   *
+   * @method keepCurrentTimeInBounds_
+   * @private
+   */
+  AbstractAnimation.prototype.keepCurrentTimeInBounds_ = function() {
+    this.listenTo(this, {
+      'change:to': function() {
+        if (this.getCurrentTime() > this.getTo()) {
+          this.goToTime(this.getTo());
+        }
+      },
+      'change:from': function() {
+        if (this.getCurrentTime() < this.getFrom()) {
+          this.goToTime(this.getFrom());
+        }
+      }
+    });
   };
 
 
@@ -183,7 +220,16 @@ define([
    * @method goToTime
    */
   AbstractAnimation.prototype.goToTime = function(time) {
-    this.currentTime_ = time;
+    this.currentTime_ = _.isDate(time) ? time.getTime() : time;
+  };
+
+
+  /**
+   * @method getCurrentTime
+   * @return {?Date}
+   */
+  AbstractAnimation.prototype.getCurrentTime = function() {
+    return _.isNull(this.currentTime_) ? null : new Date(this.currentTime_);
   };
 
 
@@ -255,6 +301,63 @@ define([
       this.pause();
       this.start();
     }
+  };
+
+
+  /**
+   * @method setFrom
+   * @param {Date|number} from
+   */
+  AbstractAnimation.prototype.setFrom = function(from) {
+    var isSame;
+
+    if (from instanceof Date) {
+      from = from.getTime();
+    }
+
+    isSame = (from === this.from_);
+
+    if (!isSame) {
+      this.from_ = from;
+      this.trigger('change:from', new Date(this.from_));
+    }
+  };
+
+
+  /**
+   * @method getFrom
+   * @return {Date}
+   */
+  AbstractAnimation.prototype.getFrom = function() {
+    return new Date(this.from_);
+  };
+
+
+  /**
+   * @method setTo
+   * @param {Date|number} to
+   */
+  AbstractAnimation.prototype.setTo = function(to) {
+    var isSame;
+
+    if (to instanceof Date) {
+      to = to.getTime();
+    }
+
+    isSame = (to === this.to_);
+
+    if (!isSame) {
+      this.to_ = to;
+      this.trigger('change:to', new Date(this.to_));
+    }
+  };
+
+
+  /**
+   * @method getTo
+   */
+  AbstractAnimation.prototype.getTo = function() {
+    return new Date(this.to_);
   };
 
 

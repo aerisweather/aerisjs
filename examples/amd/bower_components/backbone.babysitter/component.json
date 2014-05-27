@@ -1,9 +1,9 @@
 {
   "name": "backbone.babysitter",
   "description": "Manage child views in a Backbone.View",
-  "version": "0.1.0",
+  "version": "0.1.4",
   "repo": "marionettejs/backbone.babysitter",
-  "main": "lib/amd/backbone.babysitter.js",
+  "main": "lib/backbone.babysitter.js",
   "keywords": [
     "backbone",
     "plugin",
@@ -22,7 +22,7 @@
   ],
 
   "scripts": [
-    "lib/amd/backbone.babysitter.js"
+    "lib/backbone.babysitter.js"
   ],
 
   "author": {

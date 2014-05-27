@@ -57,11 +57,11 @@ define([
 
 
     /**
-     * @type {boolean}
+     * A hash of layers for times.
+     * @type {Object.<number,aeris.maps.layers.AerisTile>}
      * @private
-     * @property isSorted_
      */
-    this.isSorted_ = false;
+    this.timeLayers_ = {};
 
 
     /**
@@ -69,8 +69,11 @@ define([
      * @private
      * @property times_
      */
-    this.times_;
-    this.setTimes(times);
+    this.times_ = [];
+
+    if (times) {
+      this.setTimes(times);
+    }
   };
 
 
@@ -79,7 +82,45 @@ define([
    * @method setTimes
    */
   TimeLayersFactory.prototype.setTimes = function(times) {
-    this.times_ = _.clone(times);
+    var removedTimes = _.difference(this.times_, times);
+
+    // Clean up removed times
+    removedTimes.forEach(this.removeTime_, this);
+
+    this.times_ = times;
+  };
+
+
+  /**
+   * @method removeTime_
+   * @private
+   */
+  TimeLayersFactory.prototype.removeTime_ = function(time) {
+    this.times_ = _.without(this.times_, time);
+
+    // Clean the layer we made for this time
+    if (this.timeLayers_[time]) {
+      this.timeLayers_[time].destroy();
+      delete this.timeLayers_[time];
+    }
+  };
+
+
+  /**
+   * @method setFrom
+   * @param {number} from Timestamp.
+   */
+  TimeLayersFactory.prototype.setFrom = function(from) {
+    this.from_ = from;
+  };
+
+
+  /**
+   * @method setTo
+   * @param {number} to Timestamp.
+   */
+  TimeLayersFactory.prototype.setTo = function(to) {
+    this.to_ = to;
   };
 
 
@@ -97,8 +138,13 @@ define([
    * @method createTimeLayers
    */
   TimeLayersFactory.prototype.createTimeLayers = function() {
-    var timeLayers = {};
     this.prepareTimes_();
+
+    // Make sure we have at least one time layer.
+    if (!this.times_.length) {
+      this.timeLayers_[Date.now()] = this.createLayerForTime_(this.baseLayer_.get('time').getTime());
+      return this.timeLayers_;
+    }
 
     // We want random times for layer creation
     // So our layers are not loaded in sequential
@@ -106,12 +152,15 @@ define([
     this.shuffleTimes_();
 
     _.each(this.times_, function(time) {
-      var layer = this.createLayerForTime_(time);
-
-      timeLayers[time] = layer;
+      if (!this.timeLayers_[time]) {
+        this.timeLayers_[time] = this.createLayerForTime_(time);
+      }
     }, this);
 
-    return timeLayers;
+    // Make sure times are sorted
+    this.sortTimes_();
+
+    return this.timeLayers_;
   };
 
 
@@ -138,7 +187,8 @@ define([
   TimeLayersFactory.prototype.createLayerForTime_ = function(time) {
     return this.baseLayer_.clone({
       time: new Date(time),
-      map: null
+      map: null,
+      autoUpdate: false
     });
   };
 
@@ -160,8 +210,12 @@ define([
    * @method constrainTimes_
    */
   TimeLayersFactory.prototype.constrainTimes_ = function(minTime, maxTime) {
-    this.times_ = _.reject(this.times_, function(time) {
-      return time < minTime || time > maxTime;
+    this.times_.forEach(function(time) {
+      var isOutOfBounds = time < minTime || time > maxTime;
+
+      if (isOutOfBounds) {
+        this.removeTime_(time);
+      }
     }, this);
   };
 
@@ -172,24 +226,29 @@ define([
    * @method thinTimes_
    */
   TimeLayersFactory.prototype.thinTimes_ = function(limit) {
-    var overageRate;
+    var step, limitedTimes;
     var overage = this.times_.length - limit;
 
     // We are already within the limit
-    if (overage <= 0) { return; }
+    if (overage <= 0) {
+      return;
+    }
 
-    overageRate = this.times_.length / Math.floor(this.times_.length - this.limit_);
 
-    // Removes times at index-intervals
-    // so we keep the full time range,
-    // but thinned out some.
     this.sortTimes_();
 
-    for (var i = this.times_.length - 1; i >= 0; i -= overageRate) {
-      if (this.limit_ < this.times_.length) {
-        this.times_.splice(i, 1);
+    // Start out with first and last times
+    limitedTimes = [_.first(this.times_), _.last(this.times_)];
+
+    // Add some of the original times back to the array.
+    step = Math.floor(this.times_.length / limit);
+    for (var i = step; i < this.times_.length; i += step) {
+      if (limitedTimes.length < limit) {
+        limitedTimes.push(this.times_[i]);
       }
     }
+
+    this.setTimes(limitedTimes);
   };
 
 
@@ -199,8 +258,6 @@ define([
    */
   TimeLayersFactory.prototype.shuffleTimes_ = function() {
     this.times_ = _.sample(this.times_, this.times_.length);
-
-    this.isSorted_ = false;
   };
 
 
@@ -209,12 +266,15 @@ define([
    * @method sortTimes_
    */
   TimeLayersFactory.prototype.sortTimes_ = function() {
-    if (this.isSorted_) { return; }
+    this.times_ = _.sortBy(this.times_, _.identity);
+  };
 
-    this.times_ = _.sortBy(this.times_, function(time) {
-      return time;
-    });
-    this.isSorted_ = true;
+
+  /**
+   * @method destroy
+   */
+  TimeLayersFactory.prototype.destroy = function() {
+    this.times_.length = 0;
   };
 
 

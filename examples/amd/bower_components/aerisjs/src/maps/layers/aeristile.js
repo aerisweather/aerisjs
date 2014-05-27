@@ -80,10 +80,7 @@ define([
       /**
        * Whether to auto-update the tile.
        * Auto-updating mean that every this.autoUpdateInterval
-       * milliseconds, the tile's date property will reset.
-       *
-       * It's up to our strategy to handle changes in our
-       * date.
+       * milliseconds, the tile's time attribute will reset.
        */
       autoUpdate: true,
 
@@ -127,6 +124,14 @@ define([
 
 
     this.bindToApiKeys_();
+
+
+    /**
+     * The tile has automatically updated
+     * to the most current time.
+     *
+     * @event autoUpdate
+     */
   };
   _.inherits(AerisTile, BaseTile);
 
@@ -137,9 +142,13 @@ define([
    */
   AerisTile.prototype.initialize = function() {
     var setAutoUpdate = (function() {
-      var method = this.get('autoUpdate') ? this.startAutoUpdate_ : this.stopAutoUpdate_;
-      method.call(this);
-    }.bind(this));
+      if (this.get('autoUpdate')) {
+        this.startAutoUpdate_();
+      }
+      else {
+        this.stopAutoUpdate_();
+      }
+    }).bind(this);
     setAutoUpdate();      // Setup autoUpdate event on init
 
     // When autoUpdate property is toggled
@@ -168,16 +177,17 @@ define([
 
 
   AerisTile.prototype.startAutoUpdate_ = function() {
-    var self = this;
-
     this.autoUpdateIntervalTimer_ = window.setInterval(function() {
-      self.set('time', new Date(0));
-    }, this.get('autoUpdateInterval'));
+      this.set('time', new Date(0));
+      this.trigger('autoUpdate');
+    }.bind(this), this.get('autoUpdateInterval'));
   };
 
 
   AerisTile.prototype.stopAutoUpdate_ = function() {
-    if (!this.autoUpdateIntervalTimer_) { return; }
+    if (!this.autoUpdateIntervalTimer_) {
+      return;
+    }
 
     window.clearInterval(this.autoUpdateIntervalTimer_);
   };
@@ -234,10 +244,10 @@ define([
     this.ensureApiKeys_();
 
     return this.get('server') +
-        this.get('apiId') + '_' +
-        this.get('apiSecret') +
-        '/' + this.get('tileType') +
-        '/{z}/{x}/{y}/{t}.png';
+      this.get('apiId') + '_' +
+      this.get('apiSecret') +
+      '/' + this.get('tileType') +
+      '/{z}/{x}/{y}/{t}.png';
   };
 
 
@@ -315,12 +325,16 @@ define([
    * tile images are available on the AerisAPI server.
    *
    * @return {aeris.Promise} Resolves with arrary of timestamps.
+   * @throws {aeris.errors.MissingAPIKeyError}
    * @method loadTileTimes
    */
   AerisTile.prototype.loadTileTimes = function() {
+    var url;
     var TIMEOUT = 5000;
     var promiseToLoadTimes = new Promise();
-    var url = this.createTileTimesUrl_();
+
+    this.ensureApiKeys_();
+    url = this.createTileTimesUrl_();
 
     this.jsonp_.get(url, {}, _.bind(function(res) {
       var times;
@@ -365,8 +379,6 @@ define([
    */
   AerisTile.prototype.createTileTimesUrl_ = function() {
     var urlPattern = '{server}/{client_id}_{client_secret}/{tileType}.jsonp';
-
-    this.ensureApiKeys_();
 
     return urlPattern.
       replace('{server}', 'http://tile.aerisapi.com').

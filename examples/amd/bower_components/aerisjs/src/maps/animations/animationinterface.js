@@ -59,6 +59,22 @@ define(['aeris/util', 'aeris/events'], function(_, Events) {
      *                        for which animation frames
      *                        will be created.
      */
+
+    /**
+     * When current time of the animation changes.
+     *
+     * @event change:time
+     * @param {Date} time
+     */
+
+    /**
+     * @event change:from
+     * @param {Date} from
+     */
+    /**
+     * @event change:to
+     * @param {Date} to
+     */
   };
   _.extend(AnimationInterface.prototype, Events.prototype);
 
@@ -116,6 +132,48 @@ define(['aeris/util', 'aeris/events'], function(_, Events) {
    */
   AnimationInterface.prototype.goToTime = _.abstractMethod;
 
+
+  /**
+   * @method getCurrentTime
+   * @return {?Date} Current time of the animation.
+   *         Returns null if the animation has not yet initialized.
+   */
+  AnimationInterface.prototype.getCurrentTime = _.abstractMethod;
+
+
+  /**
+   * @method setFrom
+   * @param {Date|number} from
+   */
+  AnimationInterface.prototype.setFrom = _.abstractMethod;
+
+
+  /**
+   * @method setTo
+   * @param {Date|number} to
+   */
+  AnimationInterface.prototype.setTo = _.abstractMethod;
+
+
+  /**
+   * @method getFrom
+   * @return {Date}
+   */
+  AnimationInterface.prototype.getFrom = _.abstractMethod;
+
+
+  /**
+   * @method getTo
+   * @return {Date}
+   */
+  AnimationInterface.prototype.getFrom = _.abstractMethod;
+
+
+  /**
+   * @method isAnimating
+   * @return {Boolean}
+   */
+  AnimationInterface.prototype.isAnimating = _.abstractMethod;
 
   return AnimationInterface;
 });

@@ -1,0 +1,33 @@
+<table class="events">
+  <thead>
+  <tr>
+    <td>Event</td>
+    <td>Parameters</td>
+    <td>Description</td>
+  </tr>
+  </thead>
+
+{{#each events}}
+  <tr>
+    <td>
+      <code><strong>{{name}}</strong></code>
+    </td>
+    <td><code>{{#joinEach params '<br />'}}{{name}}:
+      {{#eachType type}}
+      <a href="{{link}}" class="ref{{#if ../description}} description{{/if}}"
+         title="<code>{{name}}</code>{{#if ../description}}<br>{{../../description}}{{/if}}"
+        {{#if isNative}}
+         target="_blank"
+                 >{{name}}</a>
+        {{else}}
+          >{{shortName name}}</a>
+        {{/if}}
+      {{/eachType}}
+    {{/joinEach}}</code></td>
+    <td>
+      {{description}}
+    </td>
+  </tr>
+{{/each}}
+
+</table>

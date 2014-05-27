@@ -1,0 +1,31 @@
+table {
+  margin: 10px 0;
+
+  &.methods, &.events {
+    width: 960px;
+  }
+
+  thead > tr {
+    @include font-header;
+    background-color: $highlightDark;
+    color: white;
+    font-size: 14px;
+    line-height: 1.5em;
+  }
+
+  tr {
+    background: white;
+    font-size: 12px;
+  }
+
+  tr:nth-child(2n) {
+    background: #f1f1f1;
+  }
+
+  tr {
+    td {
+      border: 1px solid #d4d4d4;
+      padding: 5px 10px;
+    }
+  }
+}

@@ -20,7 +20,7 @@ define([
   var StormReports = function(opt_models, opt_options) {
     var options = _.defaults(opt_options || {}, {
       params: {
-        from: new DateHelper().addDays(-2),
+        from: new DateHelper().addDays(-2).getDate(),
         to: new Date(),
         limit: 100
       },

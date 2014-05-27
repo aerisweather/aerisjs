@@ -30,7 +30,7 @@ define(['aeris/util'], function(_) {
   DateHelper.prototype.addMilliseconds = function(ms) {
     this.date_.setTime(this.date_.getTime() + ms);
 
-    return this.date_;
+    return this;
   };
 
 
@@ -83,6 +83,24 @@ define(['aeris/util'], function(_) {
     return this.addMilliseconds(weeks * WEEK);
   };
 
+  /**
+   * @method add
+   * @param {number} hours
+   * @param {number=} opt_minutes
+   * @param {number=} opt_seconds
+   * @param {number=} opt_milliseconds
+   */
+  DateHelper.prototype.addTime = function(hours, opt_minutes, opt_seconds, opt_milliseconds) {
+    var minutes = _.isUndefined(opt_minutes) ? 0 : opt_minutes;
+    var seconds = _.isUndefined(opt_seconds) ? 0 : opt_seconds;
+    var milliseconds = _.isUndefined(opt_milliseconds) ? 0 : opt_milliseconds;
+
+    return this.addHours(hours).
+      addMinutes(minutes).
+      addSeconds(seconds).
+      addMilliseconds(milliseconds);
+  };
+
 
   /**
    * @return {Date}
@@ -94,11 +112,21 @@ define(['aeris/util'], function(_) {
 
 
   /**
+   * @method getTime
+   */
+  DateHelper.prototype.getTime = function() {
+    return this.date_.getTime();
+  };
+
+
+  /**
    * @param {Date} opt_date Defaults to current date.
    * @method setDate
    */
   DateHelper.prototype.setDate = function(opt_date) {
     this.date_ = opt_date || new Date();
+
+    return this;
   };
 
 

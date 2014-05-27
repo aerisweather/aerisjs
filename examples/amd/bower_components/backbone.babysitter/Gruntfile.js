@@ -6,14 +6,14 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON('package.json'),
     meta: {
       version: '<%= pkg.version %>',
-      banner: 
+      banner:
         '// Backbone.BabySitter\n' +
-        '// -------------------\n' + 
+        '// -------------------\n' +
         '// v<%= pkg.version %>\n' +
-        '//\n' + 
+        '//\n' +
         '// Copyright (c)<%= grunt.template.today("yyyy") %> Derick Bailey, Muted Solutions, LLC.\n' +
         '// Distributed under MIT license\n' +
-        '//\n' + 
+        '//\n' +
         '// http://github.com/marionettejs/backbone.babysitter\n' +
         '\n'
     },
@@ -23,29 +23,31 @@ module.exports = function(grunt) {
     },
 
     preprocess: {
-      core_build: {
-        files: {
-          'lib/backbone.babysitter.js' : 'src/childviewcontainer.js'
+      umd: {
+        src: 'src/build/backbone.babysitter.js',
+        dest: 'lib/backbone.babysitter.js'
+      }
+    },
+
+    template: {
+      options: {
+        data: {
+          version: '<%= meta.version %>'
         }
       },
-      core_amd: {
-        files: {
-          'lib/amd/backbone.babysitter.js' : 'src/amd.js'
-        }
-      },
+      umd: {
+        src: '<%= preprocess.umd.dest %>',
+        dest: '<%= preprocess.umd.dest %>'
+      }
     },
 
     concat: {
       options: {
         banner: "<%= meta.banner %>"
       },
-      core: {
-        src: 'lib/backbone.babysitter.js',
-        dest: 'lib/backbone.babysitter.js'
-      },
-      amd: {
-        src: 'lib/amd/backbone.babysitter.js',
-        dest: 'lib/amd/backbone.babysitter.js'
+      umd: {
+        src: '<%= preprocess.umd.dest %>',
+        dest: '<%= preprocess.umd.dest %>'
       }
     },
 
@@ -53,17 +55,13 @@ module.exports = function(grunt) {
       options: {
         banner: "<%= meta.banner %>"
       },
-      amd : {
-        src : 'lib/amd/backbone.babysitter.js',
-        dest : 'lib/amd/backbone.babysitter.min.js',
-      },
-      core : {
+      umd : {
         src : 'lib/backbone.babysitter.js',
         dest : 'lib/backbone.babysitter.min.js',
         options : {
           sourceMap : 'lib/backbone.babysitter.map',
           sourceMappingURL : 'backbone.babysitter.map',
-          sourceMapPrefix : 2,
+          sourceMapPrefix : 2
         }
       }
     },
@@ -90,7 +88,7 @@ module.exports = function(grunt) {
         }
       },
       babysitter : {
-        src : ['src/*.js'],
+        src : ['src/*.js']
       }
     },
 
@@ -130,6 +128,7 @@ module.exports = function(grunt) {
   });
 
   grunt.loadNpmTasks('grunt-preprocess');
+  grunt.loadNpmTasks('grunt-template');
   grunt.loadNpmTasks('grunt-contrib-jasmine');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-jshint');
@@ -145,6 +144,6 @@ module.exports = function(grunt) {
   grunt.registerTask('server', ['jasmine:babysitter:build', 'connect:server', 'watch:server']);
 
   // Default task.
-  grunt.registerTask('default', ['jshint', 'jasmine:coverage', 'preprocess', 'concat', 'uglify']);
+  grunt.registerTask('default', ['jshint', 'jasmine:coverage', 'preprocess', 'template', 'concat', 'uglify']);
 
 };
