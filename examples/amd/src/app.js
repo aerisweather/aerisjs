@@ -1,10 +1,10 @@
 require.config({
   paths: {
     // Base directory of the aerisjs library.
-    aeris: '../../../src',
+    aeris: '../bower_components/aerisjs/src',
 
     // Set the map strategy to use
-    'aeris/maps/strategy': '../../../src/maps/leaflet',            // Use Leaflet
+    'aeris/maps/strategy': '../bower_components/aerisjs/src/maps/leaflet',            // Use Leaflet
     // 'aeris/maps/strategy': '../bower_components/aerisjs/src/maps/gmaps',           // Use Google Maps
 
     underscore: '../bower_components/underscore/underscore',
