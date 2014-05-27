@@ -1,6 +1,6 @@
 {
   "name": "Aeris.js: Example app using AMD and Bower",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "dependencies": {
     "aerisjs": "latest",
     "requirejs": "~2.1.8"
