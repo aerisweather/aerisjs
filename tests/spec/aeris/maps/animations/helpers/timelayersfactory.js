@@ -25,6 +25,11 @@ define([
     return new MockLayer(attrs, options);
   };
 
+
+  MockLayer.prototype.jasmineToString = function() {
+    return 'Layer_' + this.cid + '_t' + this.get('time').getTime();
+  };
+
   function sortChronologically(times) {
     return times.sort(function(a, b) {
       return a > b ? 1 : -1;
@@ -88,7 +93,6 @@ define([
         expect(timeLayers[10]).not.toBeDefined();
       });
 
-
     });
 
 
@@ -139,6 +143,33 @@ define([
 
         console.log('\nPerformance test: \n' +
           'Cloned ' + LAYER_COUNT + ' tile layers in ' + average.toFixed(2) + 'ms.\n');
+      });
+
+      describe('integration with `setTimes`', function() {
+
+        it('should create layers for the set times', function() {
+          var createdTimes;
+          times = times.map(function(time) {
+            return time + 3;
+          });
+          factory.setTimes(times);
+          factory.setLimit(times.length);
+
+          createdTimes = getTimesFromLayers(factory.createTimeLayers());
+          expect(createdTimes).toEqual(sortChronologically(times));
+        });
+
+        it('sould not create layers for duplicate times', function() {
+          var createdTimes;
+          var timesLength_orig = times.length;
+          times.push(times[0], times[1], times[2]);
+          factory.setTimes(times);
+          factory.setLimit(times.length);
+
+          createdTimes = getTimesFromLayers(factory.createTimeLayers());
+          expect(createdTimes.length).toEqual(timesLength_orig);
+        });
+
       });
 
 
@@ -398,11 +429,6 @@ define([
         clock.restore();
       });
 
-      describe('if the limit is less than three', function() {
-
-      });
-
-
       it('should not limit times if their are fewer times than the limit', function() {
         var TIMES_COUNT = 10;
         var LIMIT = TIMES_COUNT + 3;
@@ -428,6 +454,20 @@ define([
         factory.createTimeLayers();
 
         expect(times).toEqual(times_orig);
+      });
+
+      describe('when run a second time', function() {
+
+        it('should destroy and recreate all layers', function() {
+          var firstLayers = _.clone(factory.createTimeLayers());
+          var secondLayers = factory.createTimeLayers();
+
+          _.each(firstLayers, function(layer, time) {
+            expect(layer.destroy).toHaveBeenCalled();
+            expect(layer).not.toEqual(secondLayers[time]);
+          });
+        });
+
       });
     });
 

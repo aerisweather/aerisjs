@@ -125,10 +125,20 @@ define([
 
 
   /**
+   * @method setLimit
+   * @param {number} limit
+   */
+  TimeLayersFactory.prototype.setLimit = function(limit) {
+    this.limit_ = limit;
+  };
+
+
+  /**
    * @return {Object.<number,aeris.maps.layer.AerisTile>} A hash of timestamps to layers.
    * @method createTimeLayers
    */
   TimeLayersFactory.prototype.createTimeLayers = function() {
+    this.resetTimeLayers_();
     this.prepareTimes_();
 
     // Make sure we have at least one time layer.
@@ -143,15 +153,24 @@ define([
     this.shuffleTimes_();
 
     _.each(this.times_, function(time) {
-      if (!this.timeLayers_[time]) {
-        this.timeLayers_[time] = this.createLayerForTime_(time);
-      }
+      this.timeLayers_[time] = this.createLayerForTime_(time);
     }, this);
 
     // Make sure times are sorted
     this.sortTimes_();
 
     return this.timeLayers_;
+  };
+
+
+  /**
+   * @method resetTimeLayers_
+   * @private
+   */
+  TimeLayersFactory.prototype.resetTimeLayers_ = function() {
+    _.each(this.timeLayers_, function(layer, time) {
+      this.removeTime_(time);
+    }, this);
   };
 
 
