@@ -149,28 +149,15 @@ define([
 
     this.animationClock_ = _.interval(function() {
       var nextTime = this.currentTime_ + timeIncrement;
-      var isNearCurrentTime = Math.abs(Date.now() - nextTime) <= timeIncrement;
-
-      // We're somehow before the from time
-      // --> jump to from.
-      if (nextTime < this.from_) {
-        this.goToTime(this.from_);
-      }
 
       // If we're at the end, restart animation
-      else if (nextTime > this.to_) {
+      if (nextTime > this.to_) {
         this.restart_();
       }
-
-      // Pause at the current time.
-      else if (isNearCurrentTime) {
-        this.delay_(500, nextTime);
-      }
-
       else {
         this.goToTime(nextTime);
       }
-    }.bind(this), wait);
+    }, wait, this);
   };
 
 
@@ -179,21 +166,11 @@ define([
    * @method restart_
    */
   AbstractAnimation.prototype.restart_ = function() {
-    this.delay_(this.endDelay_, this.from_);
-  };
-
-
-  /**
-   * @method delay_
-   * @private
-   * @param {number} ms
-   */
-  AbstractAnimation.prototype.delay_ = function(ms, nextTime) {
     this.pause();
     _.delay(function() {
-      this.goToTime(nextTime);
+      this.goToTime(this.from_);
       this.start();
-    }.bind(this), ms);
+    }.bind(this), this.endDelay_);
   };
 
 

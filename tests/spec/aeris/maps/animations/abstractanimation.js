@@ -1,13 +1,13 @@
 define([
   'aeris/util',
   'aeris/maps/animations/abstractanimation',
-  'tests/lib/clock'
-], function(_, Animation, clock) {
+  'sinon'
+], function(_, Animation) {
+  var sinon = require('sinon');
 
   function TestFactory(opt_options) {
     var options = _.extend({
-      from: 1e10,
-      to: 2e10
+      to: new Date(99999999999)
     }, opt_options);
     var animationOptions = _.pick(options, [
       'timestep',
@@ -24,9 +24,10 @@ define([
   }
 
   describe('AbstractAnimation', function() {
+    var clock;
 
     beforeEach(function() {
-      clock.useFakeTimers();
+      clock = sinon.useFakeTimers();
     });
 
     afterEach(function() {
@@ -54,15 +55,12 @@ define([
     describe('start', function() {
 
       it('should animate at a specified speed (simple)', function() {
-        var FROM = 1e10;
         var options = {
-          from: 1e10,
-          to: 2e10,
-          timestep: 1000 * 60,
+          from: new Date(0),
+          timestep: 1000 * 60,      // one minute
           speed: 5                  // animates 5 timesteps per second
         };
         var test = new TestFactory(options);
-        var animtionIncrementPerSecond = options.timestep * options.speed;
 
 
         test.animation.start();
@@ -74,19 +72,17 @@ define([
           // Because our timer interval might not be divisible
           // by 1000, we may be off by a timestep.
           expect(test.animation.goToTime.mostRecentCall.args[0]).
-            toBeNear(options.from + animtionIncrementPerSecond * seconds, options.timestep);
+            toBeNear(options.timestep * options.speed * seconds, options.timestep);
         });
       });
 
       it('should animate at a specified speed (arbitrary)', function() {
         var options = {
-          from: 1e10,
-          to: 2e10,
+          from: new Date(0),
           timestep: 37,
-          speed: 1.7
+          speed: 57.6
         };
         var test = new TestFactory(options);
-        var animtionIncrementPerSecond = options.timestep * options.speed;
 
         test.animation.start();
 
@@ -95,7 +91,7 @@ define([
           clock.tick(1000);
           // After each second, should animate up by timestep * speed
           expect(test.animation.goToTime.mostRecentCall.args[0]).
-            toBeNear(options.from + animtionIncrementPerSecond * seconds, options.timestep);
+            toBeNear(options.timestep * options.speed * seconds, options.timestep);
         });
       });
 
@@ -127,26 +123,38 @@ define([
         expect(test.animation.goToTime.callCount).toBeGreaterThan(5);
       });
 
-      it('should not create duplicate animations loops', function() {
+      it('should not create duplicate animations', function() {
         var options = {
-          from: new Date(1e10),
-          to: new Date(2e10),
+          from: new Date(0),
+          to: new Date(5000),
           endDelay: 100,
           timestep: 1000,
           speed: 1
         };
-        var animation = new TestFactory(options).animation;
-        var expectedGoToTimeCount;
+        var test = new TestFactory(options);
+        var callsPerSecond;
+        var seconds = 0;
+
+        function checkCallCount() {
+          expect(test.animation.goToTime.callCount).toBeNear(callsPerSecond * seconds, 1);
+        }
+
+        function tickSeconds(s) {
+          clock.tick(1000 * s);
+          seconds += s;
+        }
+
+        test.animation.start();
 
 
-        // Get a baseline reading
-        animation.start();
-        clock.tick(100);
-        expectedGoToTimeCount = animation.goToTime.callCount;
+        // Get a baseline expectation for number of calls per second.
+        tickSeconds(1);
+        callsPerSecond = test.animation.goToTime.callCount;
 
-        animation.start();
-        clock.tick(100);
-        expect(animation.goToTime.callCount).toEqual(expectedGoToTimeCount * 2);
+        test.animation.start();
+
+        tickSeconds(1);
+        checkCallCount();
       });
 
     });
