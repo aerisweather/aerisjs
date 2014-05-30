@@ -44,17 +44,17 @@ define([
 
   describe('AerisBatchModel', function() {
     var batchModel;
-    var mockJSONP;
+    var jsonp;
     var SERVER_STUB = 'SERVER_STUB';
-    var mockModel_A, mockModel_B;
+    var modelA, modelB;
 
     beforeEach(function() {
-      mockJSONP = new MockJSONP();
-      mockModel_A = new MockApiModel();
-      mockModel_B = new MockApiModel();
+      jsonp = new MockJSONP();
+      modelA = new MockApiModel();
+      modelB = new MockApiModel();
 
       batchModel = new AerisBatchModel(null, {
-        jsonp: mockJSONP,
+        jsonp: jsonp,
         server: SERVER_STUB
       });
     });
@@ -66,8 +66,8 @@ define([
 
         beforeEach(function() {
           batchModel.set({
-            modelA: mockModel_A,
-            modelB: mockModel_B
+            modelA: modelA,
+            modelB: modelB
           });
         });
 
@@ -77,7 +77,7 @@ define([
           it('should target the \'batch\' endpoint on the AerisApi server', function() {
             batchModel.fetch();
 
-            expect(mockJSONP.getRequestedUrl()).toMatch(SERVER_STUB + '/batch');
+            expect(jsonp.getRequestedUrl()).toMatch(SERVER_STUB + '/batch');
           });
 
           describe('when an id is set', function() {
@@ -93,7 +93,7 @@ define([
               var actionRe = new RegExp('/[a-z]+/' + BATCH_ID_STUB);
               batchModel.fetch();
 
-              expect(mockJSONP.getRequestedUrl()).toMatch(actionRe);
+              expect(jsonp.getRequestedUrl()).toMatch(actionRe);
             });
 
           });
@@ -105,7 +105,7 @@ define([
               batchModel.unset('id');
               batchModel.fetch();
 
-              expect(mockJSONP.getRequestedUrl()).not.toMatch(hasActionRe);
+              expect(jsonp.getRequestedUrl()).not.toMatch(hasActionRe);
             });
 
           });
@@ -122,24 +122,24 @@ define([
                 foo: 'bar',
                 faz: 'baz'
               });
-              mockModel_A.getParams.andReturn(modelAParams);
+              modelA.getParams.andReturn(modelAParams);
 
               batchModel.fetch();
 
-              requestsParam = mockJSONP.getRequestedData().requests;
+              requestsParam = jsonp.getRequestedData().requests;
             });
 
             describe('each component model request', function() {
 
               it('should contain the endpoint for the model', function() {
-                [mockModel_A, mockModel_B].forEach(function(model) {
+                [modelA, modelB].forEach(function(model) {
                   expect(requestsParam).toMatch('/' + model.getEndpoint());
                 });
               });
 
               it('should contain serialized and encoded model params', function() {
                 expect(requestsParam).toMatch(
-                  mockModel_A.getEndpoint() +
+                  modelA.getEndpoint() +
                     // Note that request params order is not known,
                     // so we need to check in either order
                     '%3F(foo=bar%26faz=baz|faz=baz%26foo=bar)'
@@ -165,8 +165,8 @@ define([
 
           batchModel.fetch();
 
-          expect(mockJSONP.getRequestedData().foo).toEqual('bar');
-          expect(mockJSONP.getRequestedData().faz).toEqual('baz');
+          expect(jsonp.getRequestedData().foo).toEqual('bar');
+          expect(jsonp.getRequestedData().faz).toEqual('baz');
         });
 
       });
@@ -176,7 +176,7 @@ define([
         describe('when any batch model response contains an error', function() {
 
           beforeEach(function() {
-            mockJSONP.resolveWith({
+            jsonp.resolveWith({
               success: true,
               error: null,
               response: {
@@ -184,7 +184,9 @@ define([
                   {
                     success: true,
                     error: null,
-                    response: [{}]
+                    response: [
+                      {}
+                    ]
                   },
                   {
                     success: false,
@@ -205,7 +207,7 @@ define([
         describe('when the top level response contains an error', function() {
 
           beforeEach(function() {
-            mockJSONP.resolveWith({
+            jsonp.resolveWith({
               success: false,
               error: {
                 code: 'STUB_ERROR_CODE',
@@ -226,8 +228,8 @@ define([
 
       beforeEach(function() {
         batchModel.set({
-          modelA: mockModel_A,
-          modelB: mockModel_B
+          modelA: modelA,
+          modelB: modelB
         });
 
         modelResponse_A = { STUB: 'RESPONSE_A' };
@@ -254,9 +256,9 @@ define([
           commonAttr: 'COMMON_ATTR_STUB_B'
         };
 
-        mockModel_A.parse = jasmine.createSpy('parse_A').
+        modelA.parse = jasmine.createSpy('parse_A').
           andReturn(PARSED_STUB_A);
-        mockModel_B.parse = jasmine.createSpy('parse_A').
+        modelB.parse = jasmine.createSpy('parse_A').
           andReturn(PARSED_STUB_B);
 
 
@@ -267,8 +269,8 @@ define([
       it('should parse the response for each model, and set it on the model', function() {
         var attrs = batchModel.parse(batchResponse);
 
-        expect(mockModel_A.parse).toHaveBeenCalledWith(modelResponse_A);
-        expect(mockModel_B.parse).toHaveBeenCalledWith(modelResponse_B);
+        expect(modelA.parse).toHaveBeenCalledWith(modelResponse_A);
+        expect(modelB.parse).toHaveBeenCalledWith(modelResponse_B);
 
         expect(attrs.modelA.attributes).toEqual(PARSED_STUB_A);
         expect(attrs.modelB.attributes).toEqual(PARSED_STUB_B);
@@ -284,12 +286,12 @@ define([
       beforeEach(function() {
         json_A = { stub: 'modelAttr_A' };
         json_B = { stub: 'modelAttr_B' };
-        mockModel_A.toJSON.andReturn(json_A);
-        mockModel_B.toJSON.andReturn(json_B);
+        modelA.toJSON.andReturn(json_A);
+        modelB.toJSON.andReturn(json_B);
 
         batchModel.set({
-          modelA: mockModel_A,
-          modelB: mockModel_B,
+          modelA: modelA,
+          modelB: modelB,
           foo: 'bar'
         });
       });
