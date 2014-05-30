@@ -3,8 +3,9 @@ define([
   'aeris/model',
   'aeris/promise',
   'aeris/api/params/models/params',
-  'aeris/errors/invalidargumenterror'
-], function(_, Model, Promise,  Params, InvalidArgumentError) {
+  'aeris/errors/invalidargumenterror',
+  'aeris/errors/apiresponseerror'
+], function(_, Model, Promise,  Params, InvalidArgumentError, ApiResponseError) {
   /**
    * @class AerisApiBehavior
    * @namespace aeris.api.mixins
@@ -221,7 +222,7 @@ define([
 
       this.jsonp_.get(this.getEndpointUrl_(), data, _.bind(function(res) {
         if (!this.isSuccessResponse_(res)) {
-          promiseToSync.reject(res);
+          promiseToSync.reject(this.createErrorFromResponse_(res));
         }
         else {
           promiseToSync.resolve(res);
@@ -247,6 +248,27 @@ define([
      */
     isSuccessResponse_: function(res) {
       return res && res.success;
+    },
+
+
+    /**
+     * @method createErrorFromResponse_
+     * @protected
+     * @param {Object} response
+     * @return {Error}
+     */
+    createErrorFromResponse_: function(response) {
+      var error;
+      try {
+        error = new ApiResponseError(response.error.description);
+        error.code = response.error.code;
+        error.responseObject = response;
+      }
+      catch (e) {
+        error = new ApiResponseError(e.message);
+      }
+
+      return error;
     },
 
 

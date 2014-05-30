@@ -173,10 +173,36 @@ define([
 
       describe('response handling', function() {
 
-        describe('when any batch model response contains an error', function() {
+        function getFetchError() {
+          var error;
+
+          batchModel.fetch().
+            // Assuming fetch is stubbed to be synchronous
+            fail(function(err) {
+              error = err;
+            });
+
+          if (!error) {
+            throw 'Fetch did not throw an error.';
+          }
+
+          return error;
+        }
+
+        describe('when any individual model response contains an error', function() {
+          var ERROR_CODE_STUB, BATCH_RESPONSE_STUB, ERROR_RESPONSE_STUB;
 
           beforeEach(function() {
-            jsonp.resolveWith({
+            ERROR_CODE_STUB = 'ERROR_CODE_STUB';
+            ERROR_RESPONSE_STUB = {
+              success: false,
+              error: {
+                code: ERROR_CODE_STUB,
+                description: 'STUB_ERROR_DESCRIPTION'
+              },
+              response: []
+            };
+            BATCH_RESPONSE_STUB = {
               success: true,
               error: null,
               response: {
@@ -191,29 +217,59 @@ define([
                   {
                     success: false,
                     error: {
-                      code: 'STUB_ERROR_CODE',
+                      code: ERROR_CODE_STUB,
                       description: 'STUB_ERROR_DESCRIPTION'
                     },
                     response: []
                   }
                 ]
               }
-            });
+            };
+            jsonp.resolveWith(BATCH_RESPONSE_STUB);
+          });
+
+
+          it('should reject with an ApiResponseError', function() {
+            expect(getFetchError()).toBeInstanceOf(ApiResponseError);
+          });
+
+          it('should reject with the correct error code', function() {
+            expect(getFetchError().code).toEqual(ERROR_CODE_STUB);
+          });
+
+          it('should reject with the response object', function() {
+            expect(getFetchError().responseObject).toEqual(ERROR_RESPONSE_STUB);
           });
 
         });
 
 
         describe('when the top level response contains an error', function() {
+          var ERROR_CODE_STUB, BATCH_RESPONSE_STUB;
 
           beforeEach(function() {
-            jsonp.resolveWith({
+            ERROR_CODE_STUB = 'STUB_ERROR_CODE';
+            BATCH_RESPONSE_STUB = {
               success: false,
               error: {
-                code: 'STUB_ERROR_CODE',
+                code: ERROR_CODE_STUB,
                 description: 'STUB_ERROR_DESCRIPTION'
               }
-            });
+            };
+
+            jsonp.resolveWith(BATCH_RESPONSE_STUB);
+          });
+
+          it('should reject with an ApiResponseError', function() {
+            expect(getFetchError()).toBeInstanceOf(ApiResponseError);
+          });
+
+          it('should reject with the correct error code', function() {
+            expect(getFetchError().code).toEqual(ERROR_CODE_STUB);
+          });
+
+          it('should reject with the response object', function() {
+            expect(getFetchError().responseObject).toEqual(BATCH_RESPONSE_STUB);
           });
 
         });
@@ -308,6 +364,46 @@ define([
         var json = batchModel.toJSON();
 
         expect(json.foo).toEqual('bar');
+      });
+
+    });
+
+
+    describe('clear', function() {
+
+      it('should clear all nested models', function() {
+        batchModel.set({
+          modelA: modelA,
+          modelB: modelB
+        });
+        modelA.set({ foo: 'data' });
+        modelB.set({ faz: 'data' });
+
+        batchModel.clear();
+        expect(modelA.has('foo')).toEqual(false);
+        expect(modelB.has('faz')).toEqual(false);
+      });
+
+      it('should not remove nested models', function() {
+        batchModel.set({
+          modelA: modelA,
+          modelB: modelB
+        });
+
+        batchModel.clear();
+        expect(batchModel.get('modelA')).toEqual(modelA);
+        expect(batchModel.get('modelB')).toEqual(modelB);
+      });
+
+      it('should remove all non-model attributes', function() {
+        batchModel.set({
+          modelA: modelA,
+          modelB: modelB,
+          foo: 'bar'
+        });
+
+        batchModel.clear();
+        expect(batchModel.has('foo')).toEqual(false);
       });
 
     });

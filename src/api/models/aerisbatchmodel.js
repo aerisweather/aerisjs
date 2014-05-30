@@ -81,9 +81,18 @@ define([
    * @return {Array.<aeris.api.models.AerisApiModel>}
    */
   AerisBatchModel.prototype.getNestedModels_ = function() {
-    return this.values().filter(function(attr) {
-      return attr instanceof AerisApiModel;
-    });
+    return this.values().filter(this.isModel_.bind(this));
+  };
+
+
+  /**
+   * @method isModel_
+   * @private
+   * @param {Object} obj
+   * @return {Boolean}
+   */
+  AerisBatchModel.prototype.isModel_ = function(obj) {
+    return obj instanceof AerisApiModel;
   };
 
 
@@ -153,6 +162,40 @@ define([
 
 
   /**
+   * @method createErrorFromResponse_
+   * @protected
+   * @param {Object} res
+   * @return {Error}
+   */
+  AerisBatchModel.prototype.createErrorFromResponse_ = function(res) {
+    var isTopLevelError = !!res.error;
+
+    if (isTopLevelError) {
+      return AerisApiModel.prototype.createErrorFromResponse_.call(this, res);
+    }
+
+    return res.response.responses.reduce(function(lastError, response) {
+      var error;
+
+      if (lastError || !response.error) {
+        return lastError;
+      }
+
+      error = AerisApiModel.prototype.createErrorFromResponse_.call(this, response);
+
+      // Temporary fix for Aeris API bug:
+      // -- incorrect code for 'invalid_location' error when
+      //    using batch requests.
+      if (response.error.description === 'The requested location was not found.') {
+        error.code = 'invalid_location';
+      }
+
+      return error;
+    }, void 0);
+  };
+
+
+  /**
    * Sets batch response data onto nested models
    *
    * @override
@@ -204,6 +247,28 @@ define([
     });
 
     return json;
+  };
+
+
+  /**
+   * Clear data from each model.
+   *
+   * @override
+   */
+  AerisBatchModel.prototype.clear = function() {
+    this.keys().forEach(function(attr) {
+      var value = this.get(attr);
+
+      // Clear our all nested models
+      if (this.isModel_(value)) {
+        value.clear();
+      }
+
+      // Remove regular attributes
+      else {
+        this.unset(attr);
+      }
+    }, this);
   };
 
 
