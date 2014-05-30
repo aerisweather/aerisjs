@@ -57,10 +57,11 @@ require([
 
   canvasLayers = [];
 
-  animateLayer(radar, 99999, 1);
-  animateLayer(satellite, 99998, 1);
-  animateLayer(temps, 99996, 0.65);
-  animateLayer(advisories, 99997, 0.85);
+  var canvasLayer = new CanvasLayer(advisories);
+  canvasLayer.addTo(mapView);
+  canvasLayer.setZIndex(999);
+
+  //animateLayer(advisories, 99997, 0.85);
 
   function animateLayer(layer, zIndex, opacity) {
     var canvasLayer = new CanvasLayer(layer);
@@ -95,11 +96,8 @@ require([
 
   // Log progress
   var lastProgress = 0;
-  window.setInterval(function() {
+  /*window.setInterval(function() {
     var prog = (
-      radar.getProgress() +
-      satellite.getProgress() +
-      temps.getProgress() +
       advisories.getProgress()
     ) / 4;
 
@@ -107,7 +105,7 @@ require([
       console.log(prog.toFixed(2));
       lastProgress = prog;
     }
-  }, 100);
+  }, 100);*/
 
   start = function() {
     window.int = window.setInterval(next, 250);
@@ -123,7 +121,6 @@ require([
     window.clearInterval(int);
   };
 
-  start();
 });
 
 
