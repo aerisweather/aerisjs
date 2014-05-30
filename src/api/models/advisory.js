@@ -21,14 +21,5 @@ define([
   _.inherits(Advisory, AerisApiModel);
 
 
-  /**
-   * @method parse
-   */
-  Advisory.prototype.parse = function(resp) {
-    // Note that a request to the advisories endpoint using an
-    // an id returns an array of responses.
-    return resp.response ? resp.response[0] : resp;
-  };
-
   return _.expose(Advisory, 'aeris.api.models.Advisory');
 });
