@@ -61,6 +61,12 @@ require([
   canvasLayer.addTo(mapView);
   canvasLayer.setZIndex(999);
 
+  canvasLayer.on('click:color', function(evt) {
+    var color = evt.color;
+    console.log(color);
+    canvasLayer.filterByColor(color);
+  });
+
   //animateLayer(advisories, 99997, 0.85);
 
   function animateLayer(layer, zIndex, opacity) {

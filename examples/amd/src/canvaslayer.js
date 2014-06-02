@@ -85,19 +85,58 @@ define([
 
     function rgbToHex(r, g, b) {
       if (r > 255 || g > 255 || b > 255)
-        throw "Invalid color component";
+        throw 'Invalid color component';
       return ((r << 16) | (g << 8) | b).toString(16);
     }
 
-    $(canvas).mousemove(function(e) {
-      var pos = findPos(this);
+    $(canvas).click(function(e) {
+      var canvas = e.currentTarget;
+      var ctx = e.currentTarget.getContext('2d');
+      var pos = findPos(canvas);
       var x = e.pageX - pos.x;
       var y = e.pageY - pos.y;
-      var coord = 'x=' + x + ', y=' + y;
-      var c = this.getContext('2d');
-      var p = c.getImageData(x, y, 1, 1).data;
-      var hex = '#' + ('000000' + rgbToHex(p[0], p[1], p[2])).slice(-6);
-      console.log(coord, hex);
+      var p = ctx.getImageData(x, y, 1, 1).data;
+      this.fireEvent('click:color', { color: p });
+    }.bind(this));
+  };
+
+
+  /**
+   * @method filterByColor
+   */
+  CanvasLayer.prototype.filterByColor = function(color) {
+    var $canvasTiles = $(this.getContainer()).find('canvas');
+
+    function getEmptyPixel() {
+      return [0, 0, 0, 0];
+    }
+    function isSameColorPixel(pxA, pxB) {
+      return pxA.every(function(pxAColor, i) {
+        return pxAColor === pxB[i];
+      });
+    }
+
+    $canvasTiles.each(function() {
+      var canvas = $(this)[0];
+      var ctx = canvas.getContext('2d');
+      var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+
+      var pixelCount = imageData.width * imageData.height;
+      var pixels = imageData.data;
+
+      for (var i = 0; i < pixelCount; i++) {
+        var isSameColor;
+        if (!pixels[i]) { return; }
+        isSameColor = isSameColorPixel(pixels[i], color);
+
+        if (!isSameColor) {
+          pixels[i][3] = 0;
+        }
+      }
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.putImageData(imageData, 0, 0);
     });
   };
 
