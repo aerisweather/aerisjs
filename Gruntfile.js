@@ -408,10 +408,23 @@ module.exports = function(grunt) {
       'remove-gzip-files': {
         src: ['build/**/*.gz']
       }
+    },
+
+    'demo-rc': {
+      staging: {
+        expand: true,
+        src: ['**/*.*', '!**/', '!**/bower_components/**', '!**/sandbox/**'],
+        dest: '<%=buildDirs.demo %>',
+        cwd: 'examples/',
+        options: {
+          libPathTemplate: '//uat.hamweather.net/eschwartz/demo/lib/{{fileName}}'
+        }
+      }
     }
   });
 
   grunt.loadTasks('tasks/version');
+  grunt.loadTasks('tasks/demo-rc');
   grunt.loadNpmTasks('grunt-jasmine-legacy');
   grunt.loadNpmTasks('grunt-gjslint');
   grunt.loadNpmTasks('grunt-shell');
