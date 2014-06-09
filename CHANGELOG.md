@@ -1,3 +1,19 @@
+# 0.7.7
+
+* ADD: Precip tile layer
+* ADD: Support future (forecast) tiles and animation for for Radar, Precip, Satellite, SatelliteGlobal, and Winds
+* ADD: Map `scrollZoom` attribute. Allows disabling scroll-to-zoom functionality (Google Maps, Leaflet)
+* ADD: Model for /places Aeris API endpoint (`aeris.api.models.Place`, `aeris.api.collections.Places`)
+* MOD: AerisApiModel/Collection: Promise returned by `fetch()` is now resolved with an ApiResponseError object.
+* MOD: Api object params: accept strings as from/to params (eg. 'today', 'tomorrow')
+* FIX: Correct cdn paths to Aeris.js in demo files. Fix missing dependencies.
+* FIX: Fix invalid reference to Lightning model constructor.
+* FIX: Prevent collections from creating duplicate models
+* FIX: Improve performance when handling large collections of PointDataMarkers
+
+See git history for a full list of changes.
+
+
 # 0.7.6
 
 * FIX: ClusterStyles were failing to load if Aeris.js was loaded before the document
