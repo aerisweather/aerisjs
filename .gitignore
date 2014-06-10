@@ -5,7 +5,12 @@
 *.log
 
 # Sandbox
-examples/sandbox/
+examples/sandbox/*.*
+examples/sandox/js/*
+!examples/sandox/js/
+!examples/sandbox/index.html
+!examples/sandbox/js/main.js
+!examples/sandbox/js/init.js
 
 # environment specific files
 examples/apikeys.js
