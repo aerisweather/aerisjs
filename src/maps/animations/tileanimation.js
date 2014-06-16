@@ -131,9 +131,9 @@ define([
     this.animationLayerLoader_.once('load:times', function(times, timeLayers) {
       this.setTimeLayers_(timeLayers);
       this.updateTimeBounds_();
-      this.trigger('load:times', times, timeLayers);
+      this.refreshCurrentLayer_();
 
-      this.showInitialAnimationFrame_();
+      this.trigger('load:times', times, timeLayers);
     }, this);
 
     return this.animationLayerLoader_.load();
@@ -158,15 +158,11 @@ define([
 
 
   /**
-   * @method showInitialAnimationFrame_
+   * @method refreshCurrentLayer_
    * @private
    */
-  TileAnimation.prototype.showInitialAnimationFrame_ = function() {
-    var initialTime = Date.now();
-    var lastLayer = this.getLayerForTime_(initialTime);
-
-    this.goToTime(initialTime);
-    this.syncLayerToMaster_(lastLayer);
+  TileAnimation.prototype.refreshCurrentLayer_ = function() {
+    this.goToTime(this.getCurrentTime());
   };
 
 
@@ -213,6 +209,8 @@ define([
    */
   TileAnimation.prototype.goToTime = function(time) {
     var nextLayer;
+    var currentLayer;
+    var haveTimesBeenLoaded = !!this.getTimes().length;
 
     time = _.isDate(time) ? time.getTime() : time;
 
@@ -220,15 +218,24 @@ define([
       throw new InvalidArgumentError('Invalid animation time: time must be a Date or a timestamp (number).');
     }
 
+    currentLayer = this.getCurrentLayer();
     nextLayer = this.getLayerForTime_(time);
 
     // Set the new layer
     this.currentTime_ = time;
 
-    // Only transition if the layer is loaded
-    // to prevent gaps in animation.
-    if (nextLayer && nextLayer.isLoaded()) {
-      this.transition_(this.getCurrentLayer(), nextLayer);
+
+    // If no time layers have been created
+    // wait for time layers to be created,
+    // then try again. Otherwise, our first
+    // frame will  never show.
+    if (!haveTimesBeenLoaded) {
+      this.listenToOnce(this, 'load:times', function() {
+        this.goToTime(this.getCurrentTime());
+      });
+    }
+    else {
+      this.transition_(currentLayer, nextLayer);
     }
 
     this.trigger('change:time', new Date(this.currentTime_));
@@ -322,8 +329,6 @@ define([
   TileAnimation.prototype.setTimeLayers_ = function(timeLayers) {
     this.timeLayers_ = timeLayers;
     this.times_ = this.getOrderedTimesFromLayers_(timeLayers);
-
-    _.each(timeLayers, this.initializeLayerLoading_, this);
   };
 
 
@@ -334,17 +339,15 @@ define([
    * This method silently and temporarily sets a layer to the map,
    * to make sure loading is initialized.
    *
-   * @method initializeLayerLoading_
+   * @method preloadTimeLayer_
    * @private
    * @param {aeris.maps.layers.AerisTile} layer
    */
-  TileAnimation.prototype.initializeLayerLoading_ = function(layer) {
+  TileAnimation.prototype.preloadTimeLayer_ = function(layer) {
+    if (layer.isLoaded()) {
+      return;
+    }
     var triggerLayerLoad = (function() {
-      // Don't mess with the current layer.
-      if (this.isCurrentLayer_(layer)) {
-        return;
-      }
-
       layer.set({
         // Temporarily set to 0 opacity, so we don't see
         // the layer being added to the map
@@ -362,8 +365,12 @@ define([
       _.defer(triggerLayerLoad);
     }, 10);
 
-    triggerLayerLoad_non_blocking();
-    this.listenTo(this.masterLayer_, 'map:set', triggerLayerLoad_non_blocking);
+    if (this.masterLayer_.hasMap()) {
+      triggerLayerLoad_non_blocking();
+    }
+    else {
+      this.listenTo(this.masterLayer_, 'map:set', triggerLayerLoad_non_blocking);
+    }
   };
 
 
@@ -430,26 +437,65 @@ define([
    * @method transition_
    */
   TileAnimation.prototype.transition_ = function(oldLayer, newLayer) {
-    newLayer.stopListening(this.masterLayer_);
+    var isWithinTimeTolerance;
 
-    if (this.getTimeDeviation_(this.currentTime_) > this.timeTolerance_) {
-      newLayer.setOpacity(0);
-    }
-    else {
-      this.syncLayerToMaster_(newLayer);
+    this.preloadTimeLayer_(newLayer);
+
+    // If the new layer is not yet loaded,
+    // wait to transition until it is.
+    // This prevents displaying an "empty" tile layer,
+    // and makes it easier to start animations before all
+    // layers are loaded.
+    if (!newLayer.isLoaded()) {
+      this.transitionNotLoadedLayer_(oldLayer, newLayer);
+      return;
     }
 
+
+    // Hide all the layers
     // Sometime we have trouble with old layers sticking around.
     // especially when we need to reload layers for new bounds.
     // This a fail-proof way to handle that issue.
     _.each(this.timeLayers_, function(layer) {
+      layer.stopListening(this.masterLayer_);
+
       if (layer !== newLayer) {
-        // Note that removing the old layer from the map
-        // every time causes performance issues.
         layer.setOpacity(0);
-        layer.stopListening(this.masterLayer_);
       }
     }, this);
+
+    isWithinTimeTolerance = this.getTimeDeviation_(this.currentTime_) < this.timeTolerance_;
+    if (isWithinTimeTolerance) {
+      this.syncLayerToMaster_(newLayer);
+    }
+    else {
+      newLayer.setOpacity(0);
+    }
+  };
+
+
+  /**
+   * Handle transition for a layer which has not yet
+   * been loaded
+   *
+   * @param {aeris.maps.layers.AerisTile} oldLayer
+   * @param {aeris.maps.layers.AerisTile} newLayer
+   * @method transitionNotLoadedLayer_
+   * @private
+   */
+  TileAnimation.prototype.transitionNotLoadedLayer_ = function(oldLayer, newLayer) {
+    var isNewLayerStillActive = (function() {
+      return this.getCurrentLayer() === newLayer;
+    }).bind(this);
+
+    // Clear any old listeners from this transition
+    // (eg. if transition is called twice for the same layer)
+    this.stopListening(newLayer, 'load');
+    this.listenToOnce(newLayer, 'load', function() {
+      if (isNewLayerStillActive()) {
+        this.transition_(oldLayer, newLayer);
+      }
+    });
   };
 
 
