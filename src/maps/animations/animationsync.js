@@ -86,6 +86,15 @@ define([
     this.add(opt_animations || []);
 
 
+    this.listenTo(this, {
+      'change:to change:from': function() {
+        this.animations_.forEach(function(anim) {
+          anim.setTo(this.getTo());
+          anim.setFrom(this.getFrom());
+        }, this);
+      }
+    });
+
     /**
      * @event autoUpdate
      */
@@ -131,7 +140,6 @@ define([
     this.animations_.push(animation);
 
     this.listenTo(animation, {
-      'change:from change:to': this.updateTimeBounds_,
       'load:times': function() {
         if (!_.contains(this.animationsWhichHaveLoadedTimes_, animation)) {
           this.animationsWhichHaveLoadedTimes_.push(animation);
@@ -148,28 +156,17 @@ define([
       'load:reset': function(progress) {
         this.trigger('load:reset', progress);
       },
-      'autoUpdate': function() {
+      'autoUpdate': function(anim) {
+        this.setTo(anim.getTo());
+        this.setFrom(anim.getFrom());
         this.trigger('autoUpdate');
       }
     });
 
+    animation.setTo(this.getTo());
+    animation.setFrom(this.getFrom());
+
     this.triggerLoadProgress_();
-  };
-
-
-  AnimationSync.prototype.updateTimeBounds_ = function() {
-    var fromTimes = this.animations_.map(function(anim) {
-      return anim.getFrom().getTime();
-    });
-    var toTimes = this.animations_.map(function(anim) {
-      return anim.getTo().getTime();
-    });
-
-    // Set sync `from` to the earliest animation `from`
-    this.setFrom(Math.min.apply(Math, fromTimes));
-
-    // Set sync `to` to the latest animation `to`
-    this.setTo(Math.max.apply(Math, toTimes));
   };
 
 

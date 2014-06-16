@@ -130,7 +130,6 @@ define([
 
     this.animationLayerLoader_.once('load:times', function(times, timeLayers) {
       this.setTimeLayers_(timeLayers);
-      this.updateTimeBounds_();
       this.refreshCurrentLayer_();
 
       this.trigger('load:times', times, timeLayers);
@@ -371,23 +370,6 @@ define([
     else {
       this.listenTo(this.masterLayer_, 'map:set', triggerLayerLoad_non_blocking);
     }
-  };
-
-
-  /**
-   * @private
-   * @method updateTimeBounds_
-   */
-  TileAnimation.prototype.updateTimeBounds_ = function() {
-    if (!this.times_.length) {
-      return;
-    }
-
-    // Our tile loader already constrained our tile times
-    // for us, so we can reset our bounds.
-    this.setFrom(Math.min.apply(null, this.times_));
-    this.setTo(Math.max.apply(null, this.times_));
-    this.limit_ = this.times_.length;
   };
 
 

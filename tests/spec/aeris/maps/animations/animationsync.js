@@ -310,45 +310,26 @@ define([
             sync.add(animation);
             sync.on('autoUpdate', onAutoUpdate);
 
-            animation.trigger('autoUpdate');
+            animation.trigger('autoUpdate', animation);
 
             expect(onAutoUpdate).toHaveBeenCalled();
           });
 
           describe('when a layer changes it\'s bounds', function() {
-            var earlyAnim, middleAnim, lateAnim;
 
-            beforeEach(function() {
-              earlyAnim = new MockAnimation();
-              middleAnim = new MockAnimation();
-              lateAnim = new MockAnimation();
-
-              earlyAnim.getFrom.andReturn(new Date(10));
-              middleAnim.getFrom.andReturn(new Date(20));
-              lateAnim.getFrom.andReturn(new Date(30));
-
-              earlyAnim.getTo.andReturn(new Date(70));
-              middleAnim.getTo.andReturn(new Date(80));
-              lateAnim.getTo.andReturn(new Date(90));
-            });
-
-
-            it('should set the sync\'s `to` as the latest `to` among all the animations', function() {
+            it('should not change it\'s from/to times', function() {
               var sync = new TestFactory().sync;
-              sync.add([earlyAnim, middleAnim, lateAnim]);
+              var animation;
+              sync.setFrom(123);
+              sync.setTo(456);
 
-              middleAnim.trigger('change:to');
+              animation = new MockAnimation();
+              animation.setFrom(200);
+              animation.setTo(300);
+              sync.add([animation]);
 
-              expect(sync.getTo().getTime()).toEqual(lateAnim.getTo().getTime());
-            });
-
-            it('should set the sync\'s `from` as the earliest `from` among all the animations', function() {
-              var sync = new TestFactory().sync;
-              sync.add([earlyAnim, middleAnim, lateAnim]);
-
-              middleAnim.trigger('change:from');
-
-              expect(sync.getFrom().getTime()).toEqual(earlyAnim.getFrom().getTime());
+              expect(sync.getFrom().getTime()).toEqual(123);
+              expect(sync.getTo().getTime()).toEqual(456);
             });
 
           });
