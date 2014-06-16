@@ -75,6 +75,74 @@ define([
     });
 
 
+    describe('parse', function() {
+      var modelA, modelB, modelC;
+
+      beforeEach(function() {
+        modelA = {
+          model: 'A'
+        };
+        modelB = {
+          model: 'B'
+        };
+        modelC = {
+          model :'C'
+        };
+      });
+
+
+
+      describe('when the raw data is an array of models', function() {
+
+        it('should return the first model', function() {
+          var rawData = [modelA, modelB, modelC];
+
+          expect(apiModel.parse(rawData)).toEqual(modelA);
+        });
+      });
+
+      describe('when the raw data contains a `response` property', function() {
+
+        describe('when the `response` property is an array of models', function() {
+
+          it('should return the first model in the response array', function() {
+            var rawData = {
+              response: [modelA, modelB, modelC]
+            };
+
+            expect(apiModel.parse(rawData)).toEqual(modelA);
+          });
+        });
+
+        describe('when the `response` property is a single model', function() {
+
+          it('should return the response object', function() {
+            var rawData = {
+              response: modelA
+            };
+
+            expect(apiModel.parse(rawData)).toEqual(modelA);
+          });
+
+        });
+
+      });
+
+      describe('when the raw data is a single model', function() {
+        // For example, when the collection is using the model's
+        // #parse method to parse a raw data collection.
+
+        it('should return the raw data model', function() {
+          var rawData = modelA;
+
+          expect(apiModel.parse(rawData)).toEqual(modelA);
+        });
+
+      });
+
+    });
+
+
     describe('testFilter', function() {
 
       // It's the job of child classes to

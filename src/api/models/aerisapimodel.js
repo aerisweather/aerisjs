@@ -171,6 +171,9 @@ define([
         data = res.response;
       }
     }
+    else {
+      data = res;
+    }
 
     return data || {};
   };
