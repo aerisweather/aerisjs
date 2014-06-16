@@ -62,9 +62,12 @@ define([
       this.setTo(this.to_ + updateInterval);
       this.setFrom(this.from_ + updateInterval);
 
+      this.listenToOnce(this, 'load:times', function() {
+        this.trigger('autoUpdate', this);
+      });
+
       // Reload layers with new interval
-      this.loadAnimationLayers().
-        done(this.trigger.bind(this, 'autoUpdate'));
+      this.loadAnimationLayers();
     });
   };
 

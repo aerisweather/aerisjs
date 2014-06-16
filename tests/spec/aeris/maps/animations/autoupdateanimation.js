@@ -73,7 +73,7 @@ define([
         masterLayer.trigger('autoUpdate');
         expect(onAutoUpdate).not.toHaveBeenCalled();
 
-        promiseToLoadAnimationLayers.resolve([]);
+        autoUpdateAnimation.trigger('load:times', []);
         expect(onAutoUpdate).toHaveBeenCalled();
       });
 
