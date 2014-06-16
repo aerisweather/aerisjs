@@ -1,7 +1,8 @@
 define([
   'aeris/util',
-  'aeris/api/models/pointdata'
-], function(_, PointData) {
+  'aeris/api/models/pointdata',
+  'aeris/errors/apiresponseerror'
+], function(_, PointData, ApiResponseError) {
   /**
    * @publicApi
    * @class Fire
