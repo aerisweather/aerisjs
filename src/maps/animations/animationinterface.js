@@ -25,7 +25,7 @@ define(['aeris/util', 'aeris/events'], function(_, Events) {
      * this event is triggered will ensure
      * smooth animations.
      *
-     * If an anmimation is started before all
+     * If an animation is started before all
      * tile frames are loaded, tiles which are
      * not yet loaded will not render until
      * they are loaded.
