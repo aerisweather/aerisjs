@@ -62,7 +62,14 @@ define([
       tornado: stormRepStyles({
         url: config.get('assetPath') + 'stormrep_marker_tornado.png'
       }),
+      // as in, funnel cloud
+      funnel: stormRepStyles({
+        url: config.get('assetPath') + 'stormrep_marker_tornado.png'
+      }),
       wind: stormRepStyles({
+        url: config.get('assetPath') + 'stormrep_marker_highwind.png'
+      }),
+      downburst: stormRepStyles({
         url: config.get('assetPath') + 'stormrep_marker_highwind.png'
       }),
       winds: stormRepStyles({
