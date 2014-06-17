@@ -18,13 +18,16 @@ define([
    */
   var Lightning = function(opt_models, opt_options) {
     var options = _.defaults(opt_options || {}, {
-      params: {
-        limit: 100
-      },
+      params: {},
       model: LightningModel,
       endpoint: 'lightning',
       action: 'within',
       SourceCollectionType: PointDataCollection
+    });
+
+    _.defaults(options.params, {
+      limit: 100,
+      sort: 'dt'
     });
 
     AerisApiClientCollection.call(this, opt_models, options);
