@@ -1,8 +1,9 @@
 define([
   'aeris/util',
   'aeris/config',
-  'aeris/maps/markers/pointdatamarker'
-], function(_, config, PointDataMarker) {
+  'aeris/maps/markers/pointdatamarker',
+  'aeris/maps/markers/config/iconlookup'
+], function(_, config, PointDataMarker, iconLookup) {
   /**
    * @publicApi
    * @class LightningMarker
@@ -12,7 +13,9 @@ define([
    */
   var LightningMarker = function(opt_attrs, opt_options) {
     var attrs = _.extend({
-      url: config.get('assetPath') + 'lightning_white.png'
+      url: iconLookup.lightning.defaultStyles.url,
+      offsetX: iconLookup.lightning.defaultStyles.offsetX,
+      offsetY: iconLookup.lightning.defaultStyles.offsetY
     }, opt_attrs);
 
     PointDataMarker.call(this, attrs, opt_options);

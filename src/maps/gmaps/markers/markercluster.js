@@ -343,7 +343,7 @@ define([
     var clusterer;
     var clustererOptions = _.defaults({}, this.object_.getClusterOptions(), {
       clusterClass: 'aeris-cluster',
-      styles: this.object_.getClusterStyle(groupName),
+      styles: this.getClusterStyle_(groupName),
       averageCenter: true,
       zoomOnClick: true,
       gridSize: 60,
@@ -360,6 +360,19 @@ define([
     this.trigger('clusterer:create', clusterer);
 
     return clusterer;
+  };
+
+
+  /**
+   * @method getClusterStyle_
+   * @private
+   */
+  MarkerClusterStrategy.prototype.getClusterStyle_ = function(groupName) {
+    var style = _.clone(this.object_.getClusterStyle(groupName));
+
+    style.anchorIcon = [style.offsetX, style.offsetY];
+
+    return style;
   };
 
 

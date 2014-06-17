@@ -36,31 +36,60 @@ define([
   _.inherits(MockPointData, PointData);
 
 
-  describe('A PointDataMarker', function() {
+  describe('PointDataMarker', function() {
 
-    describe('constructor', function() {
+    describe('setting the marker icon from the report type', function() {
+      var iconLookup, marker;
 
-      it('should set the icon url, using the iconLookup option', function() {
-        var marker;
-
-        spyOn(PointDataMarker.prototype, 'getType').andReturn('snow');
-
-        marker = new PointDataMarker(undefined, {
-          data: new MockPointData({
-            report: {
-              type: 'snow'
-            }
-          }),
-          // Not necessary, as getType has been stubbed.
-          // Showing here only for demonstration
-          typeAttribute: 'data.report.type',
-          iconLookup: {
-            snow: 'snow_icon'
+      beforeEach(function() {
+        iconLookup = {
+          snow: {
+            url: 'snow_marker.png',
+            offsetX: 12,
+            offsetY: 14
           },
-          iconPath: 'icons/{name}.png'
+          wind: {
+            url: 'wind_marker.png',
+            offsetX: 6,
+            offsetY: 7
+          }
+        };
+        marker = new PointDataMarker(null, {
+          data: new MockPointData(),
+          typeAttribute: 'nested.type.attribute',
+          iconLookup: iconLookup,
+          iconPath: 'icons/{name}'
         });
 
-        expect(marker.get('url')).toEqual('icons/snow_icon.png');
+        marker.__setDataType = function(type) {
+          marker.getData().set({
+            nested: {
+              type: {
+                attribute: type
+              }
+            }
+          });
+        };
+      });
+
+
+      it('should set the icon url, using the iconLookup option', function() {
+        marker.__setDataType('snow');
+        expect(marker.get('url')).toEqual('icons/' + iconLookup.snow.url);
+
+        marker.__setDataType('wind');
+        expect(marker.get('url')).toEqual('icons/' + iconLookup.wind.url);
+      });
+
+
+      it('should set the icon offsets, using the iconLookup option', function() {
+        marker.__setDataType('snow');
+        expect(marker.get('offsetX')).toEqual(iconLookup.snow.offsetX);
+        expect(marker.get('offsetY')).toEqual(iconLookup.snow.offsetY);
+
+        marker.__setDataType('wind');
+        expect(marker.get('offsetX')).toEqual(iconLookup.wind.offsetX);
+        expect(marker.get('offsetY')).toEqual(iconLookup.wind.offsetY);
       });
 
     });

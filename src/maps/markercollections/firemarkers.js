@@ -2,8 +2,9 @@ define([
   'aeris/util',
   'aeris/maps/markercollections/pointdatamarkers',
   'aeris/maps/markers/firemarker',
-  'aeris/api/collections/fires'
-], function(_, PointDataMarkers, FireMarker, FireCollection) {
+  'aeris/api/collections/fires',
+  'aeris/maps/markercollections/config/clusterstyles'
+], function(_, PointDataMarkers, FireMarker, FireCollection, clusterStyles) {
   /**
    * @publicApi
    * @class FireMarkers
@@ -15,7 +16,8 @@ define([
   var FireMarkers = function(opt_markers, opt_options) {
     var options = _.extend({
       model: FireMarker,
-      data: new FireCollection()
+      data: new FireCollection(),
+      clusterStyles: clusterStyles.fire
     }, opt_options);
 
     PointDataMarkers.call(this, opt_markers, options);

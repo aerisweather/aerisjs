@@ -109,11 +109,12 @@ define([
    * @return {L.Icon}
    */
   MarkerCluster.prototype.createIconForCluster_ = function(cluster, type) {
-    var clusterStyle = this.object_.getClusterStyle(type);
+    var clusterStyle = this.getClusterStyle_(cluster, type);
 
     return new L.DivIcon({
       html: this.createHtmlForCluster_(cluster, type),
       iconSize: new Leaflet.Point(clusterStyle.width, clusterStyle.height),
+      iconAnchor: new Leaflet.Point(clusterStyle.offsetX, clusterStyle.offsetY),
       className: MarkerCluster.CLUSTER_CSS_CLASS_
     });
   };
@@ -130,12 +131,7 @@ define([
     var clusterStyle = this.getClusterStyle_(cluster, type);
 
     return clusterIconTemplate(_.extend({}, clusterStyle, {
-      count: cluster.getChildCount(),
-
-      // Center the marker icon above the point.
-      // This should at some point be configurable.
-      offsetX: -1 * clusterStyle.width / 2,
-      offsetY: -1 * clusterStyle.height / 2
+      count: cluster.getChildCount()
     }));
   };
 
