@@ -1,4 +1,6 @@
-define(function() {
+define([
+  'aeris/jsonp'
+], function(aerisJSONP) {
   /**
    * @class MockJSONP
    * @constructor
@@ -39,6 +41,19 @@ define(function() {
     this.get.andCallFake(function(url, params, callback) {
       callback(res);
     });
+  };
+
+
+  MockJSONP.prototype.stubAerisJSONP = function() {
+    this.get_orig = aerisJSONP.get;
+
+    aerisJSONP.get = (function() {
+      return this.get.apply(this, arguments);
+    }).bind(this);
+  };
+
+  MockJSONP.prototype.restore = function() {
+    aerisJSONP.get = this.get_orig;
   };
 
 
