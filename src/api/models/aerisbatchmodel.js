@@ -17,9 +17,8 @@ define([
    * @constructor
    * @override
    *
-   * @param {Object=} opt_attrs
+   * @param {Object=} opt_attrs Set models as attribute values to enable batch requests.
    * @param {Object=} opt_options
-   * @param {Object.<string,aeris.api.models.AerisApiModel>} opt_options.models See addModels documentation.
    *
    * @param {aeris.api.params.Params} opt_options.params
    */
