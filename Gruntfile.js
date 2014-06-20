@@ -395,6 +395,12 @@ module.exports = function(grunt) {
         dest: '<%=buildDirs.demo %>',
         cwd: 'examples/'
       },
+      'lib-for-demo-rc': {
+        expand: true,
+        src: ['**/*'],
+        dest: '<%=buildDirs.demo %>/lib',
+        cwd: 'build/lib'
+      },
       'demo-api-keys': {
         expand: true,
         src: 'apikeys.demo.js',
@@ -437,6 +443,14 @@ module.exports = function(grunt) {
   grunt.registerTask('test', [
     'jasmine-legacy',
     'gjslint'
+  ]);
+
+  // Prepare demo site to deploy to uat (staging)
+  // server.
+  grunt.registerTask('demo-uat', [
+    'build',
+    'demo-rc',
+    'copy:lib-for-demo-rc'
   ]);
 
   grunt.registerTask('build', [
