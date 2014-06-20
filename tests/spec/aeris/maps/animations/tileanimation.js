@@ -42,7 +42,7 @@ define([
   describe('TileAnimation', function() {
     var animation, layerLoader, masterLayer;
     var times, timeLayers;
-    var TIMES_COUNT = 10, CURRENT_TIME = 10e7 + 17;
+    var TIMES_COUNT = 10, CURRENT_TIME = 10e7;
     var map;
 
 
@@ -335,14 +335,18 @@ define([
           });
         });
 
+        function createTimeLayersFromTimes(times) {
+          return times.reduce(function(timeLayers, time) {
+            timeLayers[time] = new MockLayer();
+            return timeLayers;
+          }, {});
+        }
+
 
         it('should show only the layer for the closest available time', function() {
-          var timeLayers = {
-            10: new MockLayer(),
-            20: new MockLayer(),
-            30: new MockLayer()
-          };
-          resolveLayerLoader([10, 20, 30], timeLayers);
+          var times = [10, 20, 30];
+          var timeLayers = createTimeLayersFromTimes(times);
+          resolveLayerLoader(times, timeLayers);
 
           animation.goToTime(0);
           expect(timeLayers).toBeShowingLayerForTime(10);
@@ -364,6 +368,46 @@ define([
 
           animation.goToTime(9999);
           expect(timeLayers).toBeShowingLayerForTime(30);
+        });
+
+        describe('when choosing a closest available time', function() {
+
+          it('should choose a past time on goToTime(PAST_TIME), even if a future time is closer', function() {
+            var times = [
+              CURRENT_TIME - 100,
+              CURRENT_TIME + 10
+            ];
+            var timeLayers = createTimeLayersFromTimes(times);
+            resolveLayerLoader(times, timeLayers);
+
+            animation.goToTime(CURRENT_TIME - 1);
+            expect(timeLayers).toBeShowingLayerForTime(CURRENT_TIME - 100);
+          });
+
+          it('should choose a past time on goToTime(CURRENT_TIME), even if a future time is closer', function() {
+            var times = [
+              CURRENT_TIME - 100,
+              CURRENT_TIME + 10
+            ];
+            var timeLayers = createTimeLayersFromTimes(times);
+            resolveLayerLoader(times, timeLayers);
+
+            animation.goToTime(CURRENT_TIME);
+            expect(timeLayers).toBeShowingLayerForTime(CURRENT_TIME - 100);
+          });
+
+          it('should choose a future time on goToTime(FUTURE_TIME), even if a past future time is closer', function() {
+            var times = [
+              CURRENT_TIME - 10,
+              CURRENT_TIME + 100
+            ];
+            var timeLayers = createTimeLayersFromTimes(times);
+            resolveLayerLoader(times, timeLayers);
+
+            animation.goToTime(CURRENT_TIME + 1);
+            expect(timeLayers).toBeShowingLayerForTime(CURRENT_TIME + 100);
+          });
+
         });
 
         it('should set the current time to the specified time', function() {
@@ -390,13 +434,10 @@ define([
         });
 
         it('should not show the layer, if the layer is not loaded', function() {
-          var timeLayers = {
-            10: new MockLayer(),
-            20: new MockLayer(),
-            30: new MockLayer()
-          };
+          var times = [10, 20, 30];
+          var timeLayers = createTimeLayersFromTimes(times);
           timeLayers[20].isLoaded.andReturn(false);
-          resolveLayerLoader([10, 20, 30], timeLayers);
+          resolveLayerLoader(times, timeLayers);
 
           animation.goToTime(20);
           expect(timeLayers[20].isShown()).toEqual(false);
@@ -472,11 +513,8 @@ define([
           describe('when the set time is outside the timeTolerance', function() {
 
             it('should not show any layers', function() {
-              var timeLayers = {
-                100: new MockLayer(),
-                200: new MockLayer(),
-                300: new MockLayer()
-              };
+              var times = [100, 200, 300];
+              var timeLayers = createTimeLayersFromTimes(times);
               resolveLayerLoader([100, 200, 300], timeLayers);
               animation.setTimeTolerance(10);
 

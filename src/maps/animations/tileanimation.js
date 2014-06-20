@@ -2,8 +2,9 @@ define([
   'aeris/util',
   'aeris/maps/animations/abstractanimation',
   'aeris/maps/animations/helpers/animationlayerloader',
-  'aeris/errors/invalidargumenterror'
-], function(_, AbstractAnimation, AnimationLayerLoader, InvalidArgumentError) {
+  'aeris/errors/invalidargumenterror',
+  'aeris/util/findclosest'
+], function(_, AbstractAnimation, AnimationLayerLoader, InvalidArgumentError, findClosest) {
   /**
    * Animates a single {aeris.maps.layers.AerisTile} layer.
    *
@@ -389,24 +390,27 @@ define([
   /**
    * Returns the closes available time.
    *
+   * If provided time is in the past, will return
+   * the closest past time (and vice versa);
+   *
    * @param {number} targetTime UNIX timestamp.
    * @return {number}
    * @private
    * @method getClosestTime_
    */
   TileAnimation.prototype.getClosestTime_ = function(targetTime) {
-    var closest = this.times_[0];
-    var diff = Math.abs(targetTime - closest);
+    var isTargetInFuture = targetTime > Date.now();
 
-    _.each(this.times_, function(time) {
-      var newDiff = Math.abs(targetTime - time);
-      if (newDiff < diff) {
-        diff = newDiff;
-        closest = time;
-      }
-    }, this);
+    // Only look at times that are in the past, if
+    // the target is in the past, and vice versa.
+    var timesInSameTense = this.times_.filter(function(time) {
+      var isTimeInFuture = time > Date.now();
+      var isTimeInSameTenseAsTarget = isTimeInFuture && isTargetInFuture || !isTimeInFuture && !isTargetInFuture;
 
-    return closest;
+      return isTimeInSameTenseAsTarget;
+    });
+
+    return findClosest(targetTime, timesInSameTense);
   };
 
 
