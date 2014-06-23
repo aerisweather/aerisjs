@@ -1,6 +1,7 @@
 define([
   'aeris/jsonp'
 ], function(aerisJSONP) {
+  var get_orig = aerisJSONP.get;
   /**
    * @class MockJSONP
    * @constructor
@@ -45,15 +46,18 @@ define([
 
 
   MockJSONP.prototype.stubAerisJSONP = function() {
-    this.get_orig = aerisJSONP.get;
-
     aerisJSONP.get = (function() {
       return this.get.apply(this, arguments);
     }).bind(this);
   };
 
   MockJSONP.prototype.restore = function() {
-    aerisJSONP.get = this.get_orig;
+    aerisJSONP.get = get_orig;
+  };
+
+
+  MockJSONP.prototype.jasmineToString = function() {
+    return 'MockJSONP';
   };
 
 
