@@ -50,7 +50,11 @@ define([
     });
 
 
-    it('should perform well', function() {
+    // This isn't reliable enough to allow
+    // it to break a build.
+    // But if you want to test performance,
+    // you can reenable it temporarily.
+    xit('should perform well', function() {
       var startTime, endTime;
       var ITERATIONS = 1000;
       var NUMBERS_COUNT = 100;
