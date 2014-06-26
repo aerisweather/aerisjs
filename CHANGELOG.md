@@ -1,3 +1,62 @@
+# 0.7.8
+
+* ADD: Add a sandbox environment to the repo, to make it easier for contributing developers
+       to get started playing around with the library. See [`docs/usage.md`](/docs/usage.md)
+       for more.
+* MOD: Disable TileAnimation pre-loading. Automatically pre-loading all tile layers was causing
+       significant performance issues when creating several TileAnimations at once.
+       An interface for manually pre-loading animations is slated for a future release of Aeris.js.
+       See code snippet below for a temporary pre-loading solution.
+* MOD: TileAnimation and AnimationSync no longer changes the from/to bounds of the animation when
+       new times are loaded. See code snippet below to restore the previous behavior.
+* MOD: aeris.api.collections.Lightning sorts models by date/time. This results in a more geographically
+       distributed collection (by default, Aeris API sorts Lightning by distance).
+* FIX: Fix parsing of collection data for models which dynamically generate ids.
+* FIX: Configure styles for all point data marker clusters.
+* FIX: Remove invalid BatchModel documentation.
+* FIX: When an animation is set to the current actual time,
+       never display a forecast tile layer. (Previously, the animation
+       would should either a past or a future layer, depending on whichever
+       layer's time was closer to the current time).
+
+See git history for a full list of changes.
+
+
+
+### Temporary Solution For Pre-loading Animations
+
+```js
+var animation = new aeris.interactive.animations.TileAnimation(layer);
+
+animation.on('load:times', function(times) {
+  var currentTime = animation.getCurrentTime();
+
+  // Calling goToTime will trigger the time layer to load.
+  times.forEach(function(time) {
+    animation.goToTime(time);
+  });
+
+  // Revert back to the original time
+  animation.goToTime(currentTime);
+});
+```
+
+
+### Update animation from/to times when times are loaded
+
+```js
+var animation = new aeris.interactive.animations.TileAnimation(layer);
+
+animation.on('load:times', function(times) {
+  var earliestTime = Math.min.apply(Math, times);
+  var latestTime = Math.max.apply(Math, times);
+
+  animation.setFrom(earliestTime);
+  animation.setTo(latestTime);
+});
+```
+
+
 # 0.7.7
 
 * ADD: Precip tile layer
