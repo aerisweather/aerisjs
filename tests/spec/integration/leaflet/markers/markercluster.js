@@ -5,9 +5,10 @@ define([
   'aeris/maps/markers/marker',
   'tests/spec/integration/helpers/mapcanvas',
   'tests/spec/integration/helpers/triggermouseevent',
+  'tests/spec/integration/helpers/getmarkers',
   'jquery',
   'tests/lib/flag'
-], function(_, Map, MarkerCollection, Marker, MapCanvas, triggerMouseEvent, $, Flag) {
+], function(_, Map, MarkerCollection, Marker, MapCanvas, triggerMouseEvent, getMarkers, $, Flag) {
   var ASYNC_DELAY = 100;
 
   describe('A MarkerCollection (Leaflet)', function() {
@@ -18,6 +19,17 @@ define([
     var CLUSTER_CLASS = 'aeris-cluster';
     var MARKER_URL = 'http://cdn.aerisjs.com/assets/lightning_blue.png';
     var CLUSTER_URL = 'http://cdn.aerisjs.com/assets/poi.png';
+
+
+
+    var getMarkers_orig = getMarkers;
+    getMarkers = function(count, opt_position, opt_options) {
+      var options = _.defaults(opt_options || {}, {
+        url: MARKER_URL
+      });
+
+      return getMarkers_orig.call(this, count, opt_position, options);
+    };
 
     beforeEach(function() {
       mapCanvas = new MapCanvas();
@@ -600,6 +612,7 @@ define([
         });
 
       });
+
 
       describe('stopClustering', function() {
         var ctx, MARKER_COUNT_INIT = 10;
