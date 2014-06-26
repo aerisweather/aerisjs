@@ -50,14 +50,14 @@ define([
     });
 
 
-    it('should perform well', function() {
+    xit('should perform well', function() {
       var startTime, endTime;
       var ITERATIONS = 1000;
       var NUMBERS_COUNT = 100;
       var numbersSet = [];
       var targets = [];
 
-      if (!performance || !performance.now()) {
+      if (!performance || !performance.now) {
         return;
       }
 
