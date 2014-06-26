@@ -420,6 +420,16 @@ module.exports = function(grunt) {
           libPathTemplate: '//uat.hamweather.net/eschwartz/demo/lib/{{fileName}}'
         }
       }
+    },
+
+    // Use this task to set up git hooks
+    githooks: {
+      all: {
+        // The intent of this hook is to prevent
+        // build-breaking code from entering
+        // deployable branches.
+        'post-merge': 'test'
+      }
     }
   });
 
@@ -433,6 +443,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-requirejs');
   grunt.loadNpmTasks('grunt-contrib-compass');
   grunt.loadNpmTasks('grunt-contrib-compress');
+  grunt.loadNpmTasks('grunt-githooks');
+
+  // Also -- see githooks task.
 
   grunt.registerTask('test', [
     'jasmine-legacy',
