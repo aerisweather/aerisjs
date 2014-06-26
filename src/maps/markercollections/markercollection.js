@@ -109,22 +109,6 @@ define([
   _.extend(MarkerCollection.prototype, StrategyObject.prototype);
   _.extend(MarkerCollection.prototype, ToggleCollectionBehavior.prototype);
 
-
-  /**
-   * @method setMap
-   */
-  MarkerCollection.prototype.setMap = function(map, opt_options) {
-    var options = opt_options || {};
-    var topic = map ? 'map:set' : 'map:remove';
-    var isSameMapAsCurrentlySet = (map === this.map_);
-
-    this.map_ = map;
-
-    if (!isSameMapAsCurrentlySet && !options.silent) {
-      this.trigger(topic, this, map);
-    }
-  };
-
   /**
    * Returns a copy of the
    * cluster styles for the specified
