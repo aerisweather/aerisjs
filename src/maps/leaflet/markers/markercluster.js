@@ -72,8 +72,9 @@ define([
    * @private
    */
   MarkerCluster.prototype.beforeRemove_ = function() {
-    _.each(this.view_, this.mapView_.removeLayer,
-      this.mapView_);
+    _.each(this.view_, function(clusterView) {
+      this.mapView_.removeLayer(clusterView);
+    }, this);
   };
 
 
@@ -322,6 +323,22 @@ define([
     var latLon = mapUtil.toAerisLatLon(eventObj.latlng);
 
     this.object_.trigger(eventName, latLon);
+  };
+
+  /**
+   * @method destroy
+   */
+  MarkerCluster.prototype.destroy = function() {
+    // Put each marker view back on the map.
+    // --> we're destroying the clustering strategy,
+    //    but we still want the markers to be rendered.
+    this.object_.each(function(markerObj) {
+      if (this.mapView_) {
+        markerObj.getView().addTo(this.mapView_);
+      }
+    }, this);
+
+    AbstractStrategy.prototype.destroy.call(this);
   };
 
 

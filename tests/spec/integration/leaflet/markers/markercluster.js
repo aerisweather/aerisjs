@@ -25,9 +25,27 @@ define([
       mapCanvas.style.height = '800px';
 
       map = new Map(mapCanvas.id);
+      map.jasmineToString = _.constant('Map');
     });
     afterEach(function() {
       mapCanvas.remove();
+    });
+
+
+    // toHaveMarkerCount
+    beforeEach(function() {
+      this.addMatchers({
+        toHaveMarkerCount: function(count) {
+          var map = this.actual;
+
+          return findMarkers(map).length === count;
+        },
+        toHaveClusterCount: function(count) {
+          var map = this.actual;
+
+          return findClusters(map).length === count;
+        }
+      })
     });
 
 
@@ -67,8 +85,8 @@ define([
       markerCollection.reset();
 
       layersReadyFlag.then(function() {
-        expect(findMarkers().length).toEqual(0);
-        expect(findClusters().length).toEqual(0);
+        expect(map).toHaveMarkerCount(0);
+        expect(map).toHaveClusterCount(0);
       });
     });
 
@@ -81,8 +99,8 @@ define([
       markerCollection.setMap(map);
 
       layersReadyFlag.then(function() {
-        expect(findMarkers().length).toEqual(0);
-        expect(findClusters().length).toEqual(1);
+        expect(map).toHaveMarkerCount(0);
+        expect(map).toHaveClusterCount(1);
       });
     });
 
@@ -97,8 +115,8 @@ define([
       markerCollection.setMap(map);
 
       layersReadyFlag.then(function() {
-        expect(findMarkers().length).toEqual(2);
-        expect(findClusters().length).toEqual(0);
+        expect(map).toHaveMarkerCount(2);
+        expect(map).toHaveClusterCount(0);
       });
     });
 
@@ -116,13 +134,13 @@ define([
 
       it('should render a single cluster element', function() {
         layersReadyFlag.then(function() {
-          expect(findClusters().length).toEqual(1);
+          expect(map).toHaveClusterCount(1);
         });
       });
 
       it('should not render individual markers', function() {
         layersReadyFlag.then(function() {
-          expect(findMarkers().length).toEqual(0);
+          expect(map).toHaveMarkerCount(0);
         });
       });
 
@@ -152,13 +170,13 @@ define([
 
       it('should render a single cluster element', function() {
         delayFlag.then(function() {
-          expect(findClusters().length).toEqual(1);
+          expect(map).toHaveClusterCount(1);
         });
       });
 
       it('should not render individual markers', function() {
         delayFlag.then(function() {
-          expect(findMarkers().length).toEqual(0);
+          expect(map).toHaveMarkerCount(0);
         });
       });
 
@@ -184,13 +202,13 @@ define([
 
       it('should render cluster elements for each marker group', function() {
         delayFlag.then(function() {
-          expect(findClusters().length).toEqual(2);
+          expect(map).toHaveClusterCount(2);
         });
       });
 
       it('should not render individual markers', function() {
         delayFlag.then(function() {
-          expect(findMarkers().length).toEqual(0);
+          expect(map).toHaveMarkerCount(0);
         });
       });
 
@@ -217,13 +235,13 @@ define([
 
       it('should not create any cluster elements', function() {
         delayFlag.then(function() {
-          expect(findClusters().length).toEqual(0);
+          expect(map).toHaveClusterCount(0);
         });
       });
 
       it('should render marker icons for each marker', function() {
         delayFlag.then(function() {
-          expect(findMarkers().length).toEqual(4);
+          expect(map).toHaveMarkerCount(4);
         });
       });
 
@@ -239,7 +257,7 @@ define([
 
       it('should render the marker', function() {
         layersReadyFlag.then(function() {
-          expect(findMarkers().length).toEqual(1);
+          expect(map).toHaveMarkerCount(1);
         });
       });
 
@@ -255,7 +273,7 @@ define([
 
       it('should render a cluster element', function() {
         layersReadyFlag.then(function() {
-          expect(findClusters().length).toEqual(1);
+          expect(map).toHaveClusterCount(1);
         });
       });
 
@@ -273,7 +291,7 @@ define([
 
       it('should render a cluster element for each marker type', function() {
         layersReadyFlag.then(function() {
-          expect(findClusters().length).toEqual(2);
+          expect(map).toHaveClusterCount(2);
         });
       });
 
@@ -307,8 +325,8 @@ define([
           markerCollection.add(getMarkers(2));
 
           markerCollection.pop();
-          expect(findClusters().length).toEqual(0);
-          expect(findMarkers().length).toEqual(1);
+          expect(map).toHaveClusterCount(0);
+          expect(map).toHaveMarkerCount(1);
         });
       });
 
@@ -328,7 +346,7 @@ define([
           layersReadyFlag.then(function() {
             markerCollection.reset();
 
-            expect(findClusters().length).toEqual(0);
+            expect(map).toHaveClusterCount(0);
           });
         });
 
@@ -340,8 +358,8 @@ define([
           layersReadyFlag.then(function() {
             markerCollection.reset(getMarkers(1));
 
-            expect(findClusters().length).toEqual(0);
-            expect(findMarkers().length).toEqual(1);
+            expect(map).toHaveClusterCount(0);
+            expect(map).toHaveMarkerCount(1);
           });
         });
 
@@ -353,8 +371,8 @@ define([
           layersReadyFlag.then(function() {
             markerCollection.reset(getMarkers(5));
 
-            expect(findClusters().length).toEqual(1);
-            expect(findMarkers().length).toEqual(0);
+            expect(map).toHaveClusterCount(1);
+            expect(map).toHaveMarkerCount(0);
           });
         });
 
@@ -402,13 +420,13 @@ define([
 
       it('should remove cluster elements', function() {
         delayFlag.then(function() {
-          expect(findClusters().length).toEqual(0);
+          expect(map).toHaveClusterCount(0);
         });
       });
 
       it('should not render individual marker elements', function() {
         delayFlag.then(function() {
-          expect(findMarkers().length).toEqual(0);
+          expect(map).toHaveMarkerCount(0);
         });
       });
 
@@ -547,6 +565,166 @@ define([
     });
 
 
+    describe('toggling clustering behavior', function() {
+
+      describe('using the `cluster: false` option', function() {
+
+        it('should prevent markers from clustering (on init)', function() {
+          var MARKER_COUNT = 10;
+          var markersInSameArea = getMarkers(MARKER_COUNT, NE);
+          var markerCollection = new MarkerCollection(markersInSameArea, {
+            cluster: false
+          });
+          markerCollection.setMap(map);
+
+          layersReadyFlag.then(function() {
+            expect(map).toHaveClusterCount(0);
+            expect(findMarkers().length).toEqual(MARKER_COUNT);
+          });
+        });
+
+        it('should prevent markers from clustering (on init)', function() {
+          var MARKER_COUNT = 10;
+          var markersInSameArea = getMarkers(MARKER_COUNT, NE);
+          var markerCollection = new MarkerCollection([], {
+            cluster: false
+          });
+          markerCollection.setMap(map);
+
+          markerCollection.add(markersInSameArea);
+
+          layersReadyFlag.then(function() {
+            expect(map).toHaveClusterCount(0);
+            expect(findMarkers().length).toEqual(MARKER_COUNT);
+          });
+        });
+
+      });
+
+      describe('stopClustering', function() {
+        var ctx, MARKER_COUNT_INIT = 10;
+
+        beforeEach(function() {
+          ctx = {};
+        });
+
+        describe('when using the `cluster: true` option', function() {
+
+          beforeEach(function() {
+            ctx.markerCollection = new MarkerCollection(getMarkers(MARKER_COUNT_INIT), {
+              cluster: true
+            });
+            ctx.markerCollection.setMap(map);
+          });
+
+
+          itShouldStopClustering();
+
+          describe('toggling with #startClustering', function() {
+
+            beforeEach(function() {
+              ctx.markerCollection.stopClustering();
+              ctx.markerCollection.startClustering();
+            });
+
+            itShouldStopClustering();
+
+          });
+
+
+          function itShouldStopClustering() {
+
+            it('should replace all rendered clusters with individual markers', function() {
+              ctx.markerCollection.stopClustering();
+
+              expect(map).toHaveClusterCount(0);
+              expect(map).toHaveMarkerCount(MARKER_COUNT_INIT)
+            });
+
+            it('should render any new markers individually', function() {
+              ctx.markerCollection.stopClustering();
+
+              ctx.markerCollection.add(getMarkers(10, NE));
+              ctx.markerCollection.add(getMarkers(10, SW));
+
+              expect(map).toHaveClusterCount(0);
+              expect(map).toHaveMarkerCount(MARKER_COUNT_INIT + 10 + 10)
+            });
+
+          }
+
+        });
+
+      });
+
+
+      describe('startClustering', function() {
+        var ctx, MARKER_COUNT_INIT = 10, CLUSTER_POSITION_INIT = NE;
+
+        beforeEach(function() {
+          ctx = {};
+        });
+
+        describe('when used with the `cluster: false` option', function() {
+
+          beforeEach(function() {
+            var markers = getMarkers(MARKER_COUNT_INIT, CLUSTER_POSITION_INIT);
+            ctx.markerCollection = new MarkerCollection(markers, {
+              cluster: false
+            });
+            ctx.markerCollection.setMap(map);
+          });
+
+
+          itShouldStartClustering();
+
+          describe('toggling with #stopClustering', function() {
+
+            beforeEach(function() {
+              ctx.markerCollection.startClustering();
+              ctx.markerCollection.stopClustering();
+            });
+
+
+            itShouldStartClustering();
+
+          });
+
+          function itShouldStartClustering() {
+
+            it('should cluster groups of markers', function() {
+              ctx.markerCollection.startClustering();
+
+              expect(map).toHaveMarkerCount(0);
+              expect(map).toHaveClusterCount(1);
+            });
+
+            it('should add new markers to clusters', function() {
+              var somwhereElse = CLUSTER_POSITION_INIT.map(function(coord) {
+                return coord - 10;
+              });
+              ctx.markerCollection.startClustering();
+
+              // Add markers next to init markers
+              ctx.markerCollection.add(getMarkers(10, CLUSTER_POSITION_INIT));
+              expect(map).toHaveMarkerCount(0);
+              expect(map).toHaveClusterCount(1);
+
+              // Add markers somewhere else on the map
+              ctx.markerCollection.add(getMarkers(10, somwhereElse));
+              expect(map).toHaveMarkerCount(0);
+              expect(map).toHaveClusterCount(2);
+            });
+
+          }
+
+        });
+
+      });
+
+    });
+
+
     function getClusterCount() {
       return findClusters().text().
         match(/\b[0-9]+\b/g)[0];
@@ -573,22 +751,35 @@ define([
     }
 
 
-    function findClusters() {
-      return $('.' + CLUSTER_CLASS);
+    function findClusters(opt_map) {
+      var scopeMap = opt_map || map;
+      return $(scopeMap.getElement()).find('.' + CLUSTER_CLASS);
     }
 
-    function findMarkers() {
+    function findMarkers(opt_map) {
+      var scopeMap = opt_map || map;
       var selector = 'img[src$="{markerUrl}"]'.
         replace('{markerUrl}', MARKER_URL);
 
-      return $(selector);
+      return $(scopeMap.getElement()).find(selector);
     }
 
 
-    function getMarkers(count, opt_basePos, opt_options) {
+    /**
+     * Helper for getting a bunch of markers
+     * around the same lat lon.
+     *
+     * @param count
+     * @param {aeris.LatLon=} opt_position Lat lon location around which markers will be centered.
+     * @param {Object=} opt_options
+     * @param {String=} opt_options.type If specified, will be used to stub the marker's `getType` return value.
+     *
+     * @return {Array.aeris.markers.Marker}
+     */
+    function getMarkers(count, opt_position, opt_options) {
       var options = opt_options || {};
       var positions = [];
-      var basePos = opt_basePos || NW;
+      var basePos = opt_position || NW;
 
       _.times(count, function(i) {
         var offsetX = Math.random() > 0.5 ? Math.random() : Math.random() * -1;
