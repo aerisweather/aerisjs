@@ -1,31 +1,17 @@
 define([
   'aeris/util',
-  'aeris/maps/strategy/events'
-], function(_, GoogleEvents) {
-  var gEvent_orig;
-  var root = this;
-
-  root.google || (google = {});
-  google.maps || (google.maps = {});
-  google.maps.event || (google.maps.event = {});
-
-  gEvent_orig = google.maps.event;
-
-  beforeEach(function() {
-    google.maps.event = jasmine.createSpyObj('google events', [
-      'addListener',
-      'removeListener'
-    ]);
-  });
-
-
-  afterEach(function() {
-    google.maps.event = gEvent_orig;
-  });
+  'aeris/maps/strategy/events',
+  'googlemaps!'
+], function(_, GoogleEvents, gmaps) {
 
 
 
   describe('A GoogleEvents object', function() {
+
+    beforeEach(function() {
+      spyOn(gmaps.event, 'addListener');
+      spyOn(gmaps.event, 'removeListener');
+    });
 
     describe('listenTo', function() {
 
@@ -35,7 +21,7 @@ define([
         var spy = jasmine.createSpy('listen');
 
         event.listenTo(obj, 'talk', spy);
-        expect(google.maps.event.addListener).toHaveBeenCalledWith(obj, 'talk', spy);
+        expect(gmaps.event.addListener).toHaveBeenCalledWith(obj, 'talk', spy);
       });
 
       it('should listen to multiple events', function() {
@@ -48,9 +34,9 @@ define([
           dance: spies.watch,
           cook: spies.eat
         });
-        expect(google.maps.event.addListener).toHaveBeenCalledWith(obj, 'talk', spies.listen);
-        expect(google.maps.event.addListener).toHaveBeenCalledWith(obj, 'dance', spies.watch);
-        expect(google.maps.event.addListener).toHaveBeenCalledWith(obj, 'cook', spies.eat);
+        expect(gmaps.event.addListener).toHaveBeenCalledWith(obj, 'talk', spies.listen);
+        expect(gmaps.event.addListener).toHaveBeenCalledWith(obj, 'dance', spies.watch);
+        expect(gmaps.event.addListener).toHaveBeenCalledWith(obj, 'cook', spies.eat);
       });
 
     });
@@ -69,7 +55,7 @@ define([
         spies = jasmine.createSpyObj('handlers', ['listen', 'watch', 'eat', 'A', 'B', 'C']);
 
         // Mock addListener to return objects we can track;
-        google.maps.event.addListener.andCallFake(function(obj, topic, handler) {
+        gmaps.event.addListener.andCallFake(function(obj, topic, handler) {
           if (obj === objA) { return gListenerA; }
           if (obj === objB) { return gListenerB; }
 
@@ -91,27 +77,27 @@ define([
 
       it('should stop listening to events on an object', function() {
         event.stopListening(objA);
-        expect(google.maps.event.removeListener).toHaveBeenCalledWith(gListenerA);
-        expect(google.maps.event.removeListener).not.toHaveBeenCalledWith(gListenerB);
+        expect(gmaps.event.removeListener).toHaveBeenCalledWith(gListenerA);
+        expect(gmaps.event.removeListener).not.toHaveBeenCalledWith(gListenerB);
 
         event.stopListening(objB);
-        expect(google.maps.event.removeListener).toHaveBeenCalledWith(gListenerB);
+        expect(gmaps.event.removeListener).toHaveBeenCalledWith(gListenerB);
       });
 
       it('should stop listening to all events', function() {
         event.stopListening();
-        expect(google.maps.event.removeListener).toHaveBeenCalledWith(gListenerA);
-        expect(google.maps.event.removeListener).toHaveBeenCalledWith(gListenerB);
+        expect(gmaps.event.removeListener).toHaveBeenCalledWith(gListenerA);
+        expect(gmaps.event.removeListener).toHaveBeenCalledWith(gListenerB);
       });
 
       it('should not attempt to remove the same listeners twice', function() {
         var baseRemoveListenerCount;
 
         event.stopListening();
-        baseRemoveListenerCount = google.maps.event.removeListener.callCount;
+        baseRemoveListenerCount = gmaps.event.removeListener.callCount;
 
         event.stopListening();
-        expect(google.maps.event.removeListener.callCount).toEqual(baseRemoveListenerCount);
+        expect(gmaps.event.removeListener.callCount).toEqual(baseRemoveListenerCount);
       });
 
     });
