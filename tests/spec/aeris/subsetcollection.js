@@ -246,19 +246,19 @@ define([
       }
 
       it('adding and removing models', function() {
-        expect(speedTest(200, 20)).toBeLessThan(50);
+        expect(speedTest(200, 20)).toBeLessThan(200);
       });
 
       it('adding and removing models, with limit', function() {
         subsetCollection.setLimit(200);
-        expect(speedTest(200, 20)).toBeLessThan(50);
+        expect(speedTest(200, 20)).toBeLessThan(200);
       });
 
       it('adding and removing models, with filter', function() {
         subsetCollection.setFilter(function() {
           return Math.random() > 0.5;
         });
-        expect(speedTest(200, 20)).toBeLessThan(50);
+        expect(speedTest(200, 20)).toBeLessThan(200);
       });
 
       it('adding and removing models, with limit and filter', function() {
@@ -266,7 +266,7 @@ define([
         subsetCollection.setFilter(function() {
           return Math.random() > 0.5;
         });
-        expect(speedTest(200, 20)).toBeLessThan(50);
+        expect(speedTest(200, 20)).toBeLessThan(200);
       });
 
     });
