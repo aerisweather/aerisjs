@@ -364,6 +364,10 @@ module.exports = function(grunt) {
           'mkdir examples/amd/bower_components/aerisjs',
           'cp -r src examples/amd/bower_components/aerisjs'
         ].join('&&')
+      },
+
+      'ignore-closer-linter-changes': {
+        command: 'git co -- node_modules/closure-linter-wrapper/'
       }
     },
 
@@ -455,7 +459,11 @@ module.exports = function(grunt) {
 
   grunt.registerTask('test', [
     'jasmine-legacy',
-    'gjslint'
+    'gjslint',
+
+    // gjslint modifies files in the closure-linter-wrapper node module
+    // every time you run it. This will remove those changes.
+    'shell:ignore-closer-linter-changes'
   ]);
 
   // Prepare demo site to deploy to uat (staging)
