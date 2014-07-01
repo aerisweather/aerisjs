@@ -6,10 +6,23 @@ define([
    * Lookup objects to match a
    * marker type to its icon file name.
    *
-   * @class iconLookup
+   * @property iconLookup
    * @namespace aeris.maps.markers.config
    * @static
    */
+  var stormReportDefaults = {
+    offsetX: 12,
+    offsetY: 11,
+    width: 25,
+    height: 25
+  };
+  var lightningDefaults = {
+    offsetX: 8,
+    offsetY: 17,
+    width: 15,
+    height: 34,
+    anchorText: [-17, 10]
+  };
 
   function stormRepStyles(styles) {
     var stormReportMarkerDefaults = {
@@ -21,60 +34,64 @@ define([
     return _.extend(stormReportMarkerDefaults, styles);
   }
 
+  function lightningStyles(styles) {
+
+  }
+
   return {
     stormReport: {
-      avalanche: stormRepStyles({
+      avalanche: _.defaults({
         url: config.get('assetPath') + 'stormrep_marker_avalanche.png'
-      }),
-      blizzard: stormRepStyles({
+      }, stormReportDefaults),
+      blizzard: _.defaults({
         url: config.get('assetPath') + 'stormrep_marker_snow.png'
-      }),
-      sleet: stormRepStyles({
+      }, stormReportDefaults),
+      sleet: _.defaults({
         url: config.get('assetPath') + 'stormrep_marker_ice.png'
-      }),
-      flood: stormRepStyles({
+      }, stormReportDefaults),
+      flood: _.defaults({
         url: config.get('assetPath') + 'stormrep_marker_flood.png'
-      }),
-      fog: stormRepStyles({
+      }, stormReportDefaults),
+      fog: _.defaults({
         url: config.get('assetPath') + 'stormrep_marker_densefog.png'
-      }),
-      ice: stormRepStyles({
+      }, stormReportDefaults),
+      ice: _.defaults({
         url: config.get('assetPath') + 'stormrep_marker_ice.png'
-      }),
-      hail: stormRepStyles({
+      }, stormReportDefaults),
+      hail: _.defaults({
         url: config.get('assetPath') + 'stormrep_marker_hail.png'
-      }),
-      lightning: stormRepStyles({
+      }, stormReportDefaults),
+      lightning: _.defaults({
         url: config.get('assetPath') + 'stormrep_marker_lightning.png'
-      }),
-      rain: stormRepStyles({
+      }, stormReportDefaults),
+      rain: _.defaults({
         url: config.get('assetPath') + 'stormrep_marker_rain.png'
-      }),
-      snow: stormRepStyles({
+      }, stormReportDefaults),
+      snow: _.defaults({
         url: config.get('assetPath') + 'stormrep_marker_snow.png'
-      }),
-      tides: stormRepStyles({
+      }, stormReportDefaults),
+      tides: _.defaults({
         url: config.get('assetPath') + 'stormrep_marker_highsurf.png'
-      }),
-      spout: stormRepStyles({
+      }, stormReportDefaults),
+      spout: _.defaults({
         url: config.get('assetPath') + 'stormrep_marker_tornado.png'
-      }),
-      tornado: stormRepStyles({
+      }, stormReportDefaults),
+      tornado: _.defaults({
         url: config.get('assetPath') + 'stormrep_marker_tornado.png'
-      }),
+      }, stormReportDefaults),
       // as in, funnel cloud
-      funnel: stormRepStyles({
+      funnel: _.defaults({
         url: config.get('assetPath') + 'stormrep_marker_tornado.png'
-      }),
-      wind: stormRepStyles({
+      }, stormReportDefaults),
+      wind: _.defaults({
         url: config.get('assetPath') + 'stormrep_marker_highwind.png'
-      }),
-      downburst: stormRepStyles({
+      }, stormReportDefaults),
+      downburst: _.defaults({
         url: config.get('assetPath') + 'stormrep_marker_highwind.png'
-      }),
-      winds: stormRepStyles({
+      }, stormReportDefaults),
+      winds: _.defaults({
         url: config.get('assetPath') + 'stormrep_marker_highwind.png'
-      })
+      }, stormReportDefaults)
     },
     earthquake: {
       mini: {
@@ -138,14 +155,23 @@ define([
       }
     },
     lightning: {
-      defaultStyles: {
-        url: config.get('assetPath') + 'lightning_yellow.png',
-        offsetX: 8,
-        offsetY: 17,
-        width: 15,
-        height: 34,
-        anchorText: [-17, 10]
-      }
+      // by how old the lightning report is,
+      // in minutes.
+      15: _.defaults({
+        url: config.get('assetPath') + 'lightning_white.png'
+      }, lightningDefaults),
+      30: _.defaults({
+        url: config.get('assetPath') + 'lightning_yellow.png'
+      }, lightningDefaults),
+      45: _.defaults({
+        url: config.get('assetPath') + 'lightning_red.png'
+      }, lightningDefaults),
+      60: _.defaults({
+        url: config.get('assetPath') + 'lightning_orange.png'
+      }, lightningDefaults),
+      999999: _.defaults({
+        url: config.get('assetPath') + 'lightning_blue.png'
+      }, lightningDefaults)
     },
     fire: {
       defaultStyles: {
