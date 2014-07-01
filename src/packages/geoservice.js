@@ -1,4 +1,5 @@
 define([
+  'aeris/geolocate/aerisgeolocateservice',
   'aeris/geolocate/freegeoipgeolocateservice',
   'aeris/geolocate/html5geolocateservice',
 
