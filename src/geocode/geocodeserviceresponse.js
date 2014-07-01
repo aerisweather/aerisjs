@@ -8,7 +8,7 @@ define(function() {
    */
   var GeocodeServiceResponse = function(responseObj) {
     /**
-     * @type {Array.<number>|undefined} latLon Geocoded lat/Lon coordinates.
+     * @type {aeris.LatLon|undefined} latLon Geocoded lat/Lon coordinates.
      */
 
     /**
