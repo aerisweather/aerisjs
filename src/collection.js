@@ -41,7 +41,7 @@ define([
     this.modelOptions_ = options.modelOptions;
 
 
-    Backbone.Collection.call(this, opt_models, options);
+    Backbone.Collection.call(this, opt_models, _.pick(options, ['model', 'comparator']));
     Events.call(this);
 
     if (options.validate) {

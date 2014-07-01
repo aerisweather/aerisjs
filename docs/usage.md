@@ -5,6 +5,7 @@ This document is only an introduction to the features of Aeris.js. Check out the
 
 - [Demos](#demos)
 - [Supported Mapping Libraries](#supported-mapping-libraries)
+- [Sandbox Environment](#sandbox-environment)
 - [Overview of Features](#overview-of-features)
     - [Data and Weather API](#data-and-weather-api)
         - [Batch Requests](#batch-requests)
@@ -50,6 +51,21 @@ There is currently some variation in feature support between the mapping library
 **Polylines**                          | ✓           |         |
 
 
+## Sandbox Environment
+
+The Aeris.js repo includes a [sandbox environment](https://github.com/hamweather/aerisjs/tree/dev/examples/sandbox) to make it easier for contributers to get started playing around with the library. To get started using the sandbox:
+
+- Clone the Aeris.js repo.
+- Copy [`/examples/apikeys.example.js`](/examples/apikeys.example.js) to `/examples/apikeys.js`, using [your Aeris API keys](http://www.hamweather.com/account/signup/).
+- If you want to change the map library (Leaflet is default) change the config in [`init.js`](/examples/sandbox/js/init.js) as described [here](/docs/install.md#specifying-a-map-library).
+- Write your own code in [`main.js`](/examples/sandbox/js/main.js)
+- Open [`/examples/sandbox/index.html`](/examples/sandbox/index.html) to run your application.
+
+
+There is also a [jsFiddle](http://jsfiddle.net/zCr2f/5/) sandbox.
+
+
+# Overview of Features
 
 ## Data and Weather API
 

@@ -364,6 +364,10 @@ module.exports = function(grunt) {
           'mkdir examples/amd/bower_components/aerisjs',
           'cp -r src examples/amd/bower_components/aerisjs'
         ].join('&&')
+      },
+
+      'ignore-closer-linter-changes': {
+        command: 'git co -- node_modules/closure-linter-wrapper/'
       }
     },
 
@@ -426,6 +430,16 @@ module.exports = function(grunt) {
           libPathTemplate: '//uat.hamweather.net/eschwartz/demo/lib/{{fileName}}'
         }
       }
+    },
+
+    // Use this task to set up git hooks
+    githooks: {
+      all: {
+        // The intent of this hook is to prevent
+        // build-breaking code from entering
+        // deployable branches.
+        'post-merge': 'test'
+      }
     }
   });
 
@@ -439,10 +453,17 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-requirejs');
   grunt.loadNpmTasks('grunt-contrib-compass');
   grunt.loadNpmTasks('grunt-contrib-compress');
+  grunt.loadNpmTasks('grunt-githooks');
+
+  // Also -- see githooks task.
 
   grunt.registerTask('test', [
     'jasmine-legacy',
-    'gjslint'
+    'gjslint',
+
+    // gjslint modifies files in the closure-linter-wrapper node module
+    // every time you run it. This will remove those changes.
+    'shell:ignore-closer-linter-changes'
   ]);
 
   // Prepare demo site to deploy to uat (staging)

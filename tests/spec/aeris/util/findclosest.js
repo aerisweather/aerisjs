@@ -61,7 +61,7 @@ define([
       var numbersSet = [];
       var targets = [];
 
-      if (!performance || !performance.now()) {
+      if (!performance || !performance.now) {
         return;
       }
 

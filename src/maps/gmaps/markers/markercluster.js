@@ -190,16 +190,6 @@ define([
 
 
   /**
-   * @method destroy
-   */
-  MarkerClusterStrategy.prototype.destroy = function() {
-    AbstractStrategy.prototype.destroy.apply(this, arguments);
-
-    this.clearClusters();
-  };
-
-
-  /**
    * Add a set of markers to the
    * appropriate {MarkerClusterer} views.
    *
@@ -448,6 +438,25 @@ define([
     return _.reduce(this.getView(), function(memo, clusterer) {
       return memo.concat(clusterer.getMarkers());
     }, [], this);
+  };
+
+
+  /**
+   * @method destroy
+   */
+  MarkerClusterStrategy.prototype.destroy = function() {
+    this.clearClusters();
+
+    // Put each marker view back on the map.
+    // --> we're destroying the clustering strategy,
+    //    but we still want the markers to be rendered.
+    this.object_.each(function(markerObj) {
+      if (this.mapView_) {
+        markerObj.getView().setMap(this.mapView_);
+      }
+    }, this);
+
+    AbstractStrategy.prototype.destroy.call(this);
   };
 
 

@@ -18,13 +18,6 @@ define([
     beforeEach(function() {
       aerisMap = new AerisMap(mapCanvas.id);
       googleMap = aerisMap.getView();
-
-
-      tilesLoaded = new Flag();
-      gmaps.event.addListener(googleMap, 'tilesloaded', function() {
-        debugger;
-        tilesLoaded.set();
-      });
     });
 
 
