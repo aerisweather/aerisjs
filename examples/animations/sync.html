@@ -82,8 +82,8 @@
     radar,
     satellite
   ], {
-    // How far back to animate.
-    timespan: 1000 * 60 * 60 * 2    // 2 hours
+    from: Date.now() - 1000 * 60 * 60 * 2,    // 2 hours ago
+    to: Date.now()
   });
 
   radar.setMap(map);
@@ -123,6 +123,17 @@
 
     'load:error': function(err) {
       throw err;
+    },
+
+    // The AnimationSync object request a list of
+    // available times from the Aeris API, so it knows what tile layers
+    // are available.
+    // This event is fired upon receiving available times.
+    // We're going to use this to update the min/max bounds for
+    // our time range input.
+    'load:times': function(times) {
+      $('#time').attr('min', times[0]);
+      $('#time').attr('max', times[times.length - 1]);
     }
   });
 
@@ -169,8 +180,6 @@
     animationSync.previous(1000 * 60 * 15);
   });
   $('#next').click(function() {
-    var HOUR = 1000 * 60 * 60;
-
     animationSync.pause();
 
     // Go forward 15 minutes
