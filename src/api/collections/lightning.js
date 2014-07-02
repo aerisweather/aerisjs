@@ -26,8 +26,10 @@ define([
     });
 
     _.defaults(options.params, {
-      limit: 100,
-      sort: 'dt'
+      limit: 250,
+
+      // Sort to show newest lightning strikes first
+      sort: 'dt:-1'
     });
 
     AerisApiClientCollection.call(this, opt_models, options);
