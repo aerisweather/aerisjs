@@ -34,7 +34,5 @@ define([
     '  </div>' +
     '</div>';
 
-  return function clusterIconTemplate(data) {
-    return _.template(templateString, data);
-  };
+  return _.template(templateString);
 });
