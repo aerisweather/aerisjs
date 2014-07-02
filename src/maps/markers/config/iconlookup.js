@@ -157,19 +157,24 @@ define([
     lightning: {
       // by how old the lightning report is,
       // in minutes.
+      // Up to 15 minutes old
       15: _.defaults({
         url: config.get('assetPath') + 'lightning_white.png'
       }, lightningDefaults),
+      // Up to 30 minutes old
       30: _.defaults({
         url: config.get('assetPath') + 'lightning_yellow.png'
       }, lightningDefaults),
+      // Up to 45 minutes old
       45: _.defaults({
         url: config.get('assetPath') + 'lightning_red.png'
       }, lightningDefaults),
+      // Up to 60 minutes old
       60: _.defaults({
         url: config.get('assetPath') + 'lightning_orange.png'
       }, lightningDefaults),
-      999999: _.defaults({
+      // Up to 99999 minutes old (catch-all)
+      99999: _.defaults({
         url: config.get('assetPath') + 'lightning_blue.png'
       }, lightningDefaults)
     },

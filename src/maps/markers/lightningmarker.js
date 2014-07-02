@@ -2,8 +2,9 @@ define([
   'aeris/util',
   'aeris/config',
   'aeris/maps/markers/pointdatamarker',
-  'aeris/maps/markers/config/iconlookup'
-], function(_, config, PointDataMarker, iconLookup) {
+  'aeris/maps/markers/config/iconlookup',
+  'aeris/util/findclosest'
+], function(_, config, PointDataMarker, iconLookup, findClosest) {
   var lightningStyles = iconLookup.lightning;
   /**
    * @publicApi
@@ -13,9 +14,44 @@ define([
    * @constructor
    */
   var LightningMarker = function(opt_attrs, opt_options) {
-    PointDataMarker.call(this, opt_attrs, opt_options);
+    var options = _.defaults(opt_options || {}, {
+      iconLookup: lightningStyles
+    });
+
+    PointDataMarker.call(this, opt_attrs, options);
   };
   _.inherits(LightningMarker, PointDataMarker);
+
+
+  /**
+   * @method lookupType_
+   * @private
+   */
+  LightningMarker.prototype.lookupType_ = function() {
+    var styleTimes, lightningTimeAgo, lightningTimeAgo_minutes;
+    styleTimes = Object.keys(this.iconLookup_).sort();
+
+    if (!this.getDataAttribute('obTimestamp')) {
+      return _.last(styleTimes);
+    }
+
+    lightningTimeAgo = Date.now() - this.getDataAttribute('obTimestamp') * 1000;
+    lightningTimeAgo_minutes = lightningTimeAgo / (1000 * 60);
+
+
+    var matchingStyleTime = styleTimes.reduceRight(function(matchingStyleTime, maxMinutesAgo) {
+        maxMinutesAgo = parseInt(maxMinutesAgo);
+
+        if (lightningTimeAgo_minutes <= maxMinutesAgo) {
+          return maxMinutesAgo;
+        }
+        else {
+          return matchingStyleTime;
+        }
+      }, styleTimes[0]);
+
+    return parseInt(matchingStyleTime);
+  };
 
 
   /**
@@ -25,54 +61,6 @@ define([
    */
   LightningMarker.prototype.lookupTitle_ = function() {
     return 'Lightning';
-  };
-
-
-  /**
-   * @method lookupUrl_
-   * @private
-   */
-  LightningMarker.prototype.lookupUrl_ = function() {
-    return this.lookupIconStyles_().url;
-  };
-
-
-  /**
-   * @method lookupOffsetX_
-   * @private
-   */
-  LightningMarker.prototype.lookupOffsetX_ = function() {
-    return this.lookupIconStyles_().offsetX;
-  };
-
-
-  /**
-   * @method lookupOffsetY_
-   * @private
-   */
-  LightningMarker.prototype.lookupOffsetY_ = function() {
-    return this.lookupIconStyles_().offsetY;
-  };
-
-
-  /**
-   * @method lookupIconStyles_
-   * @private
-   */
-  LightningMarker.prototype.lookupIconStyles_ = function() {
-    var lightningTimeAgo = Date.now() - this.getDataAttribute('obTimestamp') * 1000;
-    var times = Object.keys(lightningStyles).sort();
-    var styles = lightningStyles[times[0]];
-
-    times.forEach(function(minutes) {
-      var styleTime = parseInt(minutes) * 60 * 1000;
-
-      if (lightningTimeAgo <= styleTime) {
-        styles = lightningStyles[minutes];
-      }
-    });
-
-    return styles;
   };
 
 
