@@ -170,22 +170,6 @@ define([
 
 
   /**
-   * @method addMarker_
-   * @private
-   * @param {aeris.maps.Marker} marker
-   */
-  MarkerCluster.prototype.addMarker_ = function(marker) {
-    var type = this.getMarkerType_(marker);
-
-    this.hideMarkerView_(marker);
-
-    this.ensureClusterGroup_(type);
-
-    this.view_[type].addLayer(marker.getView());
-  };
-
-
-  /**
    * @method addBulkMarkers_
    * @param {Array.<aeris.maps.Marker>} markers
    * @private
@@ -287,7 +271,9 @@ define([
    */
   MarkerCluster.prototype.bindObjectToView_ = function() {
     this.listenTo(this.object_, {
-      'add': this.addMarker_,
+      'add': function() {
+        this.addBulkMarkers_(this.object_.models);
+      },
       'remove': this.removeMarker_,
       'reset': function() {
         this.resetMarkers_(this.object_.models);

@@ -49,15 +49,25 @@ define([
       this.addMatchers({
         toHaveMarkerCount: function(count) {
           var map = this.actual;
+          var actualMarkerCount = findMarkers(map).length;
 
-          return findMarkers(map).length === count;
+          this.message = this.isNot ?
+            _.constant('Expect map not to have ' + count + ' markers.') :
+            _.constant('Expect map to have ' + count + ' markers, but it has ' + actualMarkerCount);
+
+          return actualMarkerCount === count;
         },
         toHaveClusterCount: function(count) {
           var map = this.actual;
+          var actualClusterCount = findClusters(map).length;
 
-          return findClusters(map).length === count;
+          this.message = this.isNot ?
+            _.constant('Expect map not to have ' + count + ' clusters.') :
+            _.constant('Expect map to have ' + count + ' clusters, but it has ' + actualClusterCount);
+
+          return actualClusterCount === count;
         }
-      })
+      });
     });
 
 
@@ -164,97 +174,44 @@ define([
 
     });
 
-    describe('when nearby markers are added to the collection after a delay', function() {
-      var delayFlag;
-
-      beforeEach(function() {
-        delayFlag = new Flag();
-
-        _.delay(function() {
-          markerCollection.add(getMarkers(10));
-
-          delayFlag.set();
-        }, ASYNC_DELAY);
-
-        markerCollection.setMap(map);
-      });
-
-
-      it('should render a single cluster element', function() {
-        delayFlag.then(function() {
-          expect(map).toHaveClusterCount(1);
-        });
-      });
-
-      it('should not render individual markers', function() {
-        delayFlag.then(function() {
-          expect(map).toHaveMarkerCount(0);
-        });
-      });
-
-
-    });
-
     describe('when markers groups are added in two different locations', function() {
-      var delayFlag;
 
       beforeEach(function() {
-        delayFlag = new Flag();
-
-        _.delay(function() {
-          markerCollection.add(getMarkers(5, NE));
-          markerCollection.add(getMarkers(5, SW));
-
-          delayFlag.set();
-        }, ASYNC_DELAY);
+        markerCollection.add(getMarkers(5, NE));
+        markerCollection.add(getMarkers(5, SW));
 
         markerCollection.setMap(map);
       });
 
 
       it('should render cluster elements for each marker group', function() {
-        delayFlag.then(function() {
-          expect(map).toHaveClusterCount(2);
-        });
+        expect(map).toHaveClusterCount(2);
       });
 
       it('should not render individual markers', function() {
-        delayFlag.then(function() {
-          expect(map).toHaveMarkerCount(0);
-        });
+        expect(map).toHaveMarkerCount(0);
       });
 
     });
 
     describe('when markers are added in faraway locations', function() {
-      var delayFlag;
 
       beforeEach(function() {
-        delayFlag = new Flag();
-
-        _.delay(function() {
-          markerCollection.add(getMarkers(1, NE));
-          markerCollection.add(getMarkers(1, NW));
-          markerCollection.add(getMarkers(1, SE));
-          markerCollection.add(getMarkers(1, SW));
-
-          delayFlag.set();
-        }, ASYNC_DELAY);
+        markerCollection.add(getMarkers(1, NE));
+        markerCollection.add(getMarkers(1, NW));
+        markerCollection.add(getMarkers(1, SE));
+        markerCollection.add(getMarkers(1, SW));
 
         markerCollection.setMap(map);
       });
 
 
       it('should not create any cluster elements', function() {
-        delayFlag.then(function() {
-          expect(map).toHaveClusterCount(0);
-        });
+        expect(map).toHaveClusterCount(0);
       });
 
       it('should render marker icons for each marker', function() {
-        delayFlag.then(function() {
-          expect(map).toHaveMarkerCount(4);
-        });
+        expect(map).toHaveMarkerCount(4);
       });
 
     });
@@ -651,7 +608,7 @@ define([
               ctx.markerCollection.stopClustering();
 
               expect(map).toHaveClusterCount(0);
-              expect(map).toHaveMarkerCount(MARKER_COUNT_INIT)
+              expect(map).toHaveMarkerCount(MARKER_COUNT_INIT);
             });
 
             it('should render any new markers individually', function() {
@@ -661,7 +618,7 @@ define([
               ctx.markerCollection.add(getMarkers(10, SW));
 
               expect(map).toHaveClusterCount(0);
-              expect(map).toHaveMarkerCount(MARKER_COUNT_INIT + 10 + 10)
+              expect(map).toHaveMarkerCount(MARKER_COUNT_INIT + 10 + 10);
             });
 
           }
