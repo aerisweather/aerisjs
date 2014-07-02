@@ -25,30 +25,22 @@ define([
    */
   Lightning.prototype.parse = function(attrs) {
     try {
-      attrs.id = this.generateId_(attrs);
+      // The lightning endpoint does not provide an id
+      // Create a unique identifier here, so that we
+      // can determine which models from the server
+      // we already have in a collection.
+      attrs.id = '' + attrs.loc.lat + attrs.loc.long + attrs.obTimestamp;
     }
     catch (e) {
       if (e instanceof ReferenceError) {
         throw new ApiResponseError('Unable to determine Lightning id: ' + e.message);
       }
+      else {
+        throw e;
+      }
     }
 
     return attrs;
-  };
-
-
-  /**
-   * @method generateId_
-   * @private
-   * @param {Object} attrs Raw response object.
-   * @return {string} Generated id value
-   */
-  Lightning.prototype.generateId_ = function(attrs) {
-    // The lightning endpoint does not provide an id
-    // Create a unique identifier here, so that we
-    // can determine which models from the server
-    // we already have in a collection.
-    return '' + attrs.loc.lat + attrs.loc.long + attrs.obTimestamp;
   };
 
 
