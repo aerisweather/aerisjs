@@ -367,7 +367,7 @@ module.exports = function(grunt) {
       },
 
       'ignore-closer-linter-changes': {
-        command: 'git co -- node_modules/closure-linter-wrapper/'
+        command: 'git checkout -- node_modules/closure-linter-wrapper/'
       }
     },
 
