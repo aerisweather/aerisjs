@@ -1,3 +1,16 @@
+# 0.7.9
+
+* ADD: AerisGeocodeService
+* ADD: AerisGeolocateService
+* MOD: Lightning Markers change color by age of report
+* MOD: LightningCollection defaults: sorts by most recent, and has a higher limit (250)
+* FIX: Lightning Model id attribute generation -- prevents duplicate models in a Lightning Collection
+* FIX: MarkerCollection `cluster: false` option (to disable clustering)
+* FIX: MarkerCollection#start/stopClustering
+* FIX: Add missing `aeris.api` objects to the aeris.js build package
+* FIX: Fix multi-layers and animation sync demos.
+
+
 # 0.7.8
 
 * ADD: Add a sandbox environment to the repo, to make it easier for contributing developers
