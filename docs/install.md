@@ -25,15 +25,29 @@ There are several hosted versions of the Aeris.js library, each with a varying s
 
 * **Aeris.js**
 
-    The default library includes all of the Aeris.js features, excluding the Map AppBuilder. Google Maps is used as the default mapping library.
+    The default library includes all of the Aeris.js features, excluding the Map AppBuilder. Leaflet is used as the default mapping library.
 
     [//cdn.aerisjs.com/aeris.min.js](//cdn.aerisjs.com/aeris.min.js)
+
+    For this package, you will also need to include the Leaflet library and stylesheet:
+
+    ```js
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.2/leaflet.css"/>
+<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.2/leaflet.js"></script>
+    ```
 
 * **Weather for Google Maps**
 
     Render weather tile layers and data using [Google Maps](https://developers.google.com/maps/).
 
     [//cdn.aerisjs.com/gmaps.min.js](//cdn.aerisjs.com/gmaps.min.js)
+
+
+* **Weather for Leaflet**
+
+    Render weather tile layers and data using [Leaflet](http://leafletjs.com/).
+
+    [//cdn.aerisjs.com/leaflet.min.js](//cdn.aerisjs.com/leaflet.min.js)
 
 * **Weather for OpenLayers**
 
@@ -54,6 +68,12 @@ There are several hosted versions of the Aeris.js library, each with a varying s
     Includes additional APIs for [`geolocation`](http://docs.aerisjs.com#aeris.geolocate), [`geocoding`](http://docs.aerisjs.com#aeris.geocode), and [`directions`](http://docs.aerisjs.com/api/classes/aeris.directions.DirectionsServiceInterface.html).
 
     [//cdn.aerisjs.com/gmaps-plus.min.js](//cdn.aerisjs.com/gmaps-plus.min.js)
+
+* **Weather for Leaflet + Geo Services**
+
+    Includes additional APIs for [`geolocation`](http://docs.aerisjs.com#aeris.geolocate), [`geocoding`](http://docs.aerisjs.com#aeris.geocode), and [`directions`](http://docs.aerisjs.com/api/classes/aeris.directions.DirectionsServiceInterface.html).
+
+    [//cdn.aerisjs.com/leaflet-plus.min.js](//cdn.aerisjs.com/leaflet-plus.min.js)
     
 
 
