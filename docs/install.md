@@ -62,7 +62,7 @@ There are several hosted versions of the Aeris.js library, each with a varying s
 In order to use weather data from the Aeris API, you must provide an Aeris API client id and secret (visit [hamweather.com](http://www.hamweather.com/products/aeris-api/pricing/) to sign up for a free devleoper account). API keys may be set globally using the [`aeris.config`](http://docs.aerisjs.com#aeris.config) object:
 
 ```javascript
-aeris.config.setApiKey('abcd1234');
+aeris.config.setApiId('abcd1234');
 aeris.config.setApiSecret('wxyz6789');
 ```
 
@@ -142,7 +142,7 @@ See [the AMD/Bower.js example app](https://github.com/hamweather/aerisjs/tree/ma
 
 #### Specifying a Map Library
 
-By default,tThe Aeris.js library uses [Leaflet](http://leafletjs.com/) as it core mapping library. You can change which mapping library is used by overriding the `aeris/maps/strategy` AMD path.
+By default, The Aeris.js library uses [Leaflet](http://leafletjs.com/) as it core mapping library. You can change which mapping library is used by overriding the `aeris/maps/strategy` AMD path.
 
 ```javascript
 require.config({
