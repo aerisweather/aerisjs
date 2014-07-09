@@ -4,7 +4,7 @@ define([
   'aeris/util',
   'underscore'
 ], function(sinon, _, underscore) {
-  describe('The Aeris Utility Library', function() {
+  describe('util', function() {
 
     describe('expose method', function() {
       var aeris_orig = window.aeris;
@@ -321,6 +321,74 @@ define([
       });
 
     });
+
+
+    describe('bindAllMethods', function() {
+      var ctx, fooSpy, barSpy, shazaamSpy;
+
+      beforeEach(function() {
+        ctx = { STUB: 'CONTEXT' };
+
+        fooSpy = jasmine.createSpy('foo');
+        barSpy = jasmine.createSpy('bar');
+        shazaamSpy = jasmine.createSpy('shazaam');
+      });
+
+      it('should bind all methods in the object to the specified context', function() {
+        var myBar;
+        var obj = {
+          foo: fooSpy,
+          bar: barSpy,
+          shazaam: shazaamSpy
+        };
+
+        _.bindAllMethods(obj, ctx);
+
+        // Call in scope of object
+        obj.foo();
+        expect(fooSpy).toHaveBeenCalledInTheContextOf(ctx);
+
+        // Call without scope
+        myBar = obj.bar;
+        myBar();
+        expect(barSpy).toHaveBeenCalledInTheContextOf(ctx);
+
+        // Call in scope of a different object
+        ({
+          myShazaam: obj.shazaam
+        }).myShazaam();
+        expect(shazaamSpy).toHaveBeenCalledInTheContextOf(ctx);
+      });
+
+      it('should accept objects which contain values which are not functions', function() {
+        var obj = {
+          foo: fooSpy,
+          bar: barSpy,
+          someNumber: 32,
+          someString: 'a string',
+          someObj: { some: 'obj' }
+        };
+
+        expect(function() {
+          _.bindAllMethods(obj, ctx);
+        }).not.toThrow();
+      });
+
+      it('should use the object as the default context', function() {
+        var obj = {
+          foo: fooSpy
+        };
+
+        _.bindAllMethods(obj);
+
+        ({
+          myFoo: obj.foo
+        }).myFoo();
+        expect(fooSpy).toHaveBeenCalledInTheContextOf(obj);
+      });
+
+    });
+
 
     describe('extending underscore', function() {
 

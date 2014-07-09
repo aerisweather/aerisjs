@@ -18,6 +18,23 @@ define([
     abstractMethod: function() {
     },
 
+    /**
+     * Bind all methods in an object
+     * to be run in the specified context.
+     *
+     * @param {Object} object
+     * @param {Object=} opt_ctx Defaults to the object.
+     */
+    bindAllMethods: function(object, opt_ctx) {
+      var ctx = opt_ctx || object;
+
+      _.each(object, function(val, key) {
+        if (_.isFunction(val)) {
+          object[key] = val.bind(ctx);
+        }
+      });
+    },
+
 
     /**
      * Inherit the prototype methods from one constructor into another.
