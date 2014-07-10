@@ -337,7 +337,9 @@ define([
 
         function createTimeLayersFromTimes(times) {
           return times.reduce(function(timeLayers, time) {
-            timeLayers[time] = new MockLayer();
+            timeLayers[time] = new MockLayer({
+              time: new Date(time)
+            });
             return timeLayers;
           }, {});
         }
@@ -408,6 +410,22 @@ define([
             expect(timeLayers).toBeShowingLayerForTime(CURRENT_TIME + 100);
           });
 
+          describe('when the animation has no future times', function() {
+
+            it('should show no time, if the provided time is in the future', function() {
+              var pastTimes = _.range(Date.now(), Date.now() - 1000, -10);
+              var timeLayers = createTimeLayersFromTimes(pastTimes);
+              resolveLayerLoader(times, timeLayers);
+
+              animation.goToTime(Date.now() + 1e3);
+
+              pastTimes.forEach(function(time) {
+                expect(timeLayers).not.toBeShowingLayerForTime(time);
+              });
+            });
+
+          });
+
         });
 
         it('should set the current time to the specified time', function() {
@@ -431,6 +449,113 @@ define([
 
           animation.goToTime(9999);
           expect(animation.getCurrentTime().getTime()).toEqual(9999);
+        });
+
+        describe('when the layer is not loaded', function() {
+          var times, timeLayers, NOW;
+
+          beforeEach(function() {
+            NOW = Date.now();
+
+            times = _.range(NOW - 10, NOW + 10, 1);
+            timeLayers = createTimeLayersFromTimes(times);
+
+            // mark all layers as not loaded, to start
+            times.forEach(function(t) {
+              setIsTimeLoaded(t, false);
+            });
+
+            resolveLayerLoader(times, timeLayers);
+          });
+
+          function setIsTimeLoaded(time, isLoaded) {
+            timeLayers[time].isLoaded.andReturn(isLoaded);
+
+            if (isLoaded) {
+              timeLayers[time].trigger('load');
+            }
+          }
+
+
+          it('should not show the layer', function() {
+            setIsTimeLoaded(NOW - 1, false);
+            setIsTimeLoaded(NOW - 2, true);
+
+            // go to not-loaded time
+            animation.goToTime(Date.now() - 1);
+
+            expect(timeLayers).not.toBeShowingLayerForTime(Date.now() - 1);
+          });
+
+          it('should show the closest loaded layer, in the same tense (past)', function() {
+            setIsTimeLoaded(NOW - 1, false);
+            setIsTimeLoaded(NOW - 7, true);
+            setIsTimeLoaded(NOW - 8, true);
+
+            // A closer time is available in future
+            setIsTimeLoaded(NOW + 1, true);
+
+            // go to not-loaded time (past)
+            animation.goToTime(NOW - 1);
+            // --> should show loaded time
+            expect(timeLayers).toBeShowingLayerForTime(NOW - 7);
+            expect(timeLayers).not.toBeShowingLayerForTime(NOW - 1);
+          });
+
+          it('should show the closest loaded layer, in the same tense (future)', function() {
+            setIsTimeLoaded(NOW + 1, false);
+            setIsTimeLoaded(NOW + 7, true);
+            setIsTimeLoaded(NOW + 8, true);
+
+            // A closer time is available in past
+            setIsTimeLoaded(NOW - 1, true);
+
+            // go to not+loaded time (past)
+            animation.goToTime(NOW + 1);
+            // ++> should show loaded time
+            expect(timeLayers).toBeShowingLayerForTime(Date.now() + 7);
+            expect(timeLayers).not.toBeShowingLayerForTime(Date.now() + 1);
+          });
+
+            describe('when the layer loads', function() {
+
+            it('should switch to showing the loaded layer', function() {
+              setIsTimeLoaded(NOW - 1, false);
+              setIsTimeLoaded(NOW - 2, true);
+              animation.goToTime(NOW - 1);
+
+              setIsTimeLoaded(NOW - 1, true);
+              expect(timeLayers).toBeShowingLayerForTime(NOW - 1);
+              expect(timeLayers).not.toBeShowingLayerForTime(NOW - 2);
+            });
+
+            it('should not show the layer, if it\'s no longer the current layer', function() {
+              setIsTimeLoaded(NOW - 1, false);
+              animation.goToTime(NOW - 1);
+
+              setIsTimeLoaded(NOW - 5, true);
+              animation.goToTime(NOW - 5);
+
+              setIsTimeLoaded(NOW - 1, true);
+              expect(timeLayers).not.toBeShowingLayerForTime(NOW - 1);
+              expect(timeLayers).toBeShowingLayerForTime(NOW - 5);
+            });
+
+          });
+
+          describe('when there are no layers loaded in the same tense', function() {
+
+            it('should show no layers', function() {
+              setIsTimeLoaded(NOW + 1);
+
+              animation.goToTime(NOW - 1);
+
+              times.forEach(function(time) {
+                expect(timeLayers).not.toBeShowingLayerForTime(time);
+              });
+            });
+          });
+
         });
 
         it('should not show the layer, if the layer is not loaded', function() {
@@ -469,13 +594,10 @@ define([
           var map;
 
           beforeEach(function() {
-            var timeLayers;
-
-            shownLayer = new MockLayer();
+            var timeLayers = createTimeLayersFromTimes([10]);
+            shownLayer = timeLayers[10];
             spyOn(shownLayer, 'bindAttributesTo');
-            timeLayers = {
-              10: shownLayer
-            };
+
             resolveLayerLoader([10], timeLayers);
 
             map = new MockMap();
@@ -530,11 +652,7 @@ define([
           describe('when the set time is within the timeTolerance', function() {
 
             it('should show the set time layer', function() {
-              var timeLayers = {
-                100: new MockLayer(),
-                200: new MockLayer(),
-                300: new MockLayer()
-              };
+              var timeLayers = createTimeLayersFromTimes([100, 200, 300]);
               resolveLayerLoader([100, 200, 300], timeLayers);
               animation.setTimeTolerance(10);
 

@@ -56,6 +56,14 @@ define([
 
 
     /**
+     * @property currentLayer_
+     * @private
+     * @type {?aeris.maps.layers.AerisTile}
+    */
+    this.currentLayer_ = null;
+
+
+    /**
      * A hash of {aeris.maps.layers.AerisTile},
      * listed by timestamp.
      *
@@ -219,7 +227,7 @@ define([
     }
 
     currentLayer = this.getCurrentLayer();
-    nextLayer = this.getLayerForTime_(time);
+    nextLayer = this.getLayerForTimeInSameTense_(time);
 
     // Set the new layer
     this.currentTime_ = time;
@@ -234,7 +242,11 @@ define([
         this.goToTime(this.getCurrentTime());
       });
     }
+    else if (!nextLayer) {
+      this.transitionOut_(currentLayer);
+    }
     else {
+      this.currentLayer_ = nextLayer;
       this.transition_(currentLayer, nextLayer);
     }
 
@@ -374,6 +386,12 @@ define([
   };
 
 
+  /**
+   *
+   * @param {Object.<number, aeris.maps.layers.AerisTile>} timeLayers
+   * @return {Array.<Number>}
+   * @private
+   */
   TileAnimation.prototype.getOrderedTimesFromLayers_ = function(timeLayers) {
     var times = _.map(_.keys(timeLayers), function(time) {
       return parseInt(time);
@@ -382,8 +400,40 @@ define([
   };
 
 
+  /**
+   * @method getLayerForTime_
+   * @param {Number} time
+   * @return {aeris.maps.layers.AerisTile}
+   * @private
+   */
   TileAnimation.prototype.getLayerForTime_ = function(time) {
     return this.timeLayers_[this.getClosestTime_(time)];
+  };
+
+
+  /**
+   * @method getLayerForTimeInSameTense_
+   * @private
+   * @param {Number} time
+   * @return {aeris.maps.layers.AerisTile}
+   */
+  TileAnimation.prototype.getLayerForTimeInSameTense_ = function(time) {
+    return this.timeLayers_[this.getClosestTimeInSameTense_(time)];
+  };
+
+
+  /**
+   * Returns the closes available time.
+   *
+   * @param {number} targetTime UNIX timestamp.
+   * @param {Array.<Number>} opt_times Defaults to loaded animation times.
+   * @return {number}
+   * @private
+   * @method getClosestTime_
+   */
+  TileAnimation.prototype.getClosestTime_ = function(targetTime, opt_times) {
+    var times = opt_times || this.times_;
+    return findClosest(targetTime, times);
   };
 
 
@@ -393,17 +443,20 @@ define([
    * If provided time is in the past, will return
    * the closest past time (and vice versa);
    *
-   * @param {number} targetTime UNIX timestamp.
-   * @return {number}
+   * @method getClosestTimeInSameTense_
    * @private
-   * @method getClosestTime_
+   *
+   * @param {number} targetTime UNIX timestamp.
+   * @param {Array.<Number>} opt_times Defaults to loaded animation times.
+   * @return {number}
    */
-  TileAnimation.prototype.getClosestTime_ = function(targetTime) {
+  TileAnimation.prototype.getClosestTimeInSameTense_ = function(targetTime, opt_times) {
     var isTargetInFuture = targetTime > Date.now();
+    var times = opt_times || this.times_;
 
     // Only look at times that are in the past, if
     // the target is in the past, and vice versa.
-    var timesInSameTense = this.times_.filter(function(time) {
+    var timesInSameTense = times.filter(function(time) {
       var isTimeInFuture = time > Date.now();
       var isTimeInSameTenseAsTarget = isTimeInFuture && isTargetInFuture || !isTimeInFuture && !isTargetInFuture;
 
@@ -425,7 +478,6 @@ define([
   TileAnimation.prototype.transition_ = function(oldLayer, newLayer) {
     var isWithinTimeTolerance;
 
-    this.preloadTimeLayer_(newLayer);
 
     // If the new layer is not yet loaded,
     // wait to transition until it is.
@@ -433,8 +485,8 @@ define([
     // and makes it easier to start animations before all
     // layers are loaded.
     if (!newLayer.isLoaded()) {
-      this.transitionNotLoadedLayer_(oldLayer, newLayer);
-      return;
+      this.preloadTimeLayer_(newLayer);
+      this.transitionWhenLoaded_(oldLayer, newLayer);
     }
 
 
@@ -442,21 +494,37 @@ define([
     // Sometime we have trouble with old layers sticking around.
     // especially when we need to reload layers for new bounds.
     // This a fail-proof way to handle that issue.
-    _.each(this.timeLayers_, function(layer) {
-      layer.stopListening(this.masterLayer_);
-
-      if (layer !== newLayer) {
-        layer.setOpacity(0);
-      }
-    }, this);
+    _.without(this.timeLayers_, newLayer).
+      forEach(this.transitionOut_, this);
 
     isWithinTimeTolerance = this.getTimeDeviation_(this.currentTime_) < this.timeTolerance_;
     if (isWithinTimeTolerance) {
-      this.syncLayerToMaster_(newLayer);
+      this.transitionInClosestLoadedLayer_(newLayer);
     }
     else {
-      newLayer.setOpacity(0);
+      this.transitionOut_(newLayer);
     }
+  };
+
+
+  /**
+   * @param {aeris.maps.layers.AerisTile} layer
+   * @method transitionIn_
+   * @private
+   */
+  TileAnimation.prototype.transitionIn_ = function(layer) {
+    this.syncLayerToMaster_(layer);
+  };
+
+
+  /**
+   * @param {aeris.maps.layers.AerisTile} layer
+   * @method transitionOut_
+   * @private
+   */
+  TileAnimation.prototype.transitionOut_ = function(layer) {
+    layer.stopListening(this.masterLayer_);
+    layer.setOpacity(0);
   };
 
 
@@ -466,22 +534,37 @@ define([
    *
    * @param {aeris.maps.layers.AerisTile} oldLayer
    * @param {aeris.maps.layers.AerisTile} newLayer
-   * @method transitionNotLoadedLayer_
+   * @method transitionWhenLoaded_
    * @private
    */
-  TileAnimation.prototype.transitionNotLoadedLayer_ = function(oldLayer, newLayer) {
-    var isNewLayerStillActive = (function() {
-      return this.getCurrentLayer() === newLayer;
-    }).bind(this);
-
+  TileAnimation.prototype.transitionWhenLoaded_ = function(oldLayer, newLayer) {
     // Clear any old listeners from this transition
     // (eg. if transition is called twice for the same layer)
     this.stopListening(newLayer, 'load');
     this.listenToOnce(newLayer, 'load', function() {
-      if (isNewLayerStillActive()) {
+      if (this.getCurrentLayer() === newLayer) {
         this.transition_(oldLayer, newLayer);
       }
     });
+  };
+
+
+  /**
+   * @method transitionInClosestLoadedLayer_
+   * @private
+   */
+  TileAnimation.prototype.transitionInClosestLoadedLayer_ = function(layer) {
+    var loadedTimes = _.keys(this.timeLayers_).filter(function(time) {
+      return this.timeLayers_[time].isLoaded();
+    }, this);
+    var closestLoadedTime = this.getClosestTimeInSameTense_(layer.get('time').getTime(), loadedTimes);
+
+    if (!closestLoadedTime) {
+      return;
+    }
+
+
+    this.transitionIn_(this.timeLayers_[closestLoadedTime]);
   };
 
 
@@ -510,12 +593,16 @@ define([
       'opacity',
       'zIndex'
     ];
+
+    // clear any old bindings
+    layer.stopListening(this.masterLayer_);
+
     layer.bindAttributesTo(this.masterLayer_, boundAttrs);
   };
 
 
   TileAnimation.prototype.getCurrentLayer = function() {
-    return this.getLayerForTime_(this.currentTime_);
+    return this.currentLayer_;
   };
 
 
