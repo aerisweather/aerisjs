@@ -1,4 +1,6 @@
-define(function() {
+define([
+  'aeris/util'
+], function(_) {
   /**
    * Find the number closet to a target number.
    *
@@ -9,7 +11,7 @@ define(function() {
    * @param {Array.<number>} numbers
    */
   return function findClosest(target, numbers) {
-    var numbersInOrderOfDistance = numbers.sort(function(a, b) {
+    var numbersInOrderOfDistance = _.clone(numbers).sort(function(a, b) {
       var isAMoreDistantThanB = isMoreDistantThan(a, b, target);
 
       if (isAMoreDistantThanB) {

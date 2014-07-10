@@ -49,6 +49,14 @@ define([
       expect(findClosest(-7, numbers)).toEqual(-12);
     });
 
+    it('should not change the original array', function() {
+      var numbers = _.range(10, 100, 10);
+
+      findClosest(37, numbers);
+
+      expect(numbers).toEqual(_.range(10, 100, 10));
+    });
+
 
     // This isn't reliable enough to allow
     // it to break a build.
