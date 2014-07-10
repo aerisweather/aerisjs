@@ -1,3 +1,11 @@
+# 0.7.10
+
+* FIX: Fix bug where setting a future time on an animation with no future times
+       would throw an error.
+* FIX: Fix various documentation errors
+
+See git history for a full list of changes.
+
 # 0.7.9
 
 * ADD: AerisGeocodeService
