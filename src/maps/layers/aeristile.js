@@ -397,7 +397,7 @@ define([
     this.jsonp_.get(url, {}, function(res) {
       var times;
 
-      if (!res.files || !res.files.length) {
+      if (!res.files) {
         promiseToLoadTimes.reject(new Error('Failed to load tile times: no time data was returned.'));
       }
 
