@@ -144,7 +144,10 @@ define([
       this.trigger('load:times', times, timeLayers);
     }, this);
 
-    return this.animationLayerLoader_.load();
+    return this.animationLayerLoader_.load().
+      fail(function(err) {
+        throw err;
+      });
   };
 
 
