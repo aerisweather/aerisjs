@@ -227,7 +227,9 @@ define([
     }
 
     currentLayer = this.getCurrentLayer();
-    nextLayer = this.getLayerForTimeInSameTense_(time);
+    // Note that we may not be able to find a layer in the same tense,
+    // in which case this value is null.
+    nextLayer = this.getLayerForTimeInSameTense_(time) || null;
 
     // Set the new layer
     this.currentTime_ = time;
@@ -242,14 +244,15 @@ define([
         this.goToTime(this.getCurrentTime());
       });
     }
-    else if (!nextLayer) {
-      this.transitionOut_(currentLayer);
-    }
-    else {
-      this.currentLayer_ = nextLayer;
+
+    if (currentLayer && nextLayer) {
       this.transition_(currentLayer, nextLayer);
     }
+    else if (currentLayer) {
+      this.transitionOut_(currentLayer);
+    }
 
+    this.currentLayer_ = nextLayer;
     this.trigger('change:time', new Date(this.currentTime_));
   };
 
