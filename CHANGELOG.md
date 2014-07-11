@@ -1,3 +1,7 @@
+# 0.7.11
+
+* FIX: Fix animation error related to uninitialized time layers.
+
 # 0.7.10
 
 * FIX: Fix bug where setting a future time on an animation with no future times
