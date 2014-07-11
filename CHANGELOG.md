@@ -1,6 +1,7 @@
 # 0.7.11
 
 * FIX: Fix animation error related to uninitialized time layers.
+* FIX: Handle tile animations with no available times from API.
 
 # 0.7.10
 
