@@ -19,10 +19,10 @@ define([
 
     this.bindMapEvents_();
 
-    // Sycn map view with map object.
+    // Sync map view with map object.
     this.listenTo(this.object_, {
-      'change:center': this.setCenter_,
-      'change:zoom': this.setZoom_
+      'change:center': this.updateCenter_,
+      'change:zoom': this.updateZoom_
     }, this);
 
 
@@ -40,6 +40,8 @@ define([
       // Hacks are fun, no?
       aeris.maps.Map.prototype.on.apply(this, arguments);
     };
+
+
   };
   _.inherits(GoogleMapStrategy, AbstractStrategy);
 
@@ -105,9 +107,9 @@ define([
 
   /**
    * @private
-   * @method setCenter_
+   * @method updateCenter_
    */
-  GoogleMapStrategy.prototype.setCenter_ = function() {
+  GoogleMapStrategy.prototype.updateCenter_ = function() {
     var latLng = mapUtil.arrayToLatLng(this.object_.get('center'));
 
     this.getView().setCenter(latLng);
@@ -116,9 +118,9 @@ define([
 
   /**
    * @private
-   * @method setZoom_
+   * @method updateZoom_
    */
-  GoogleMapStrategy.prototype.setZoom_ = function() {
+  GoogleMapStrategy.prototype.updateZoom_ = function() {
     var zoom = this.object_.get('zoom');
     this.getView().setZoom(zoom);
   };
