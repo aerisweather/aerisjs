@@ -19,6 +19,8 @@ define([
       mapCanvas.parentNode.removeChild(mapCanvas);
     };
 
+    mapCanvas.jasmineToString = _.constant('MapCanvas');
+
     return mapCanvas;
   };
 
