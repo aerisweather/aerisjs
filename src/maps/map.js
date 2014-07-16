@@ -216,6 +216,10 @@ define([
 
 
   /**
+   * Note that this may return unexpected results
+   * when the map was created with a view instance,
+   * instead of an {HTMLElement}.
+   *
    * @method getElement
    * @return {HTMLElement} The map canvas element
    */

@@ -25,6 +25,8 @@ define([
     var leafletMap, aerisMap;
     var mapCanvas;
 
+    L.Map.prototype.jasmineToString = _.constant('LeafletMap');
+
     function createTestObjects(opt_mapOptions) {
       var test;
 
@@ -64,14 +66,6 @@ define([
         expect(leafletMap.options.scrollWheelZoom).toEqual(false);
       });
 
-      it('should accept a Leaflet map as the element', function() {
-        var mapCanvas = new MapCanvas();
-        var leafletMap = new Leaflet.Map(mapCanvas);
-        var aerisMap = new Map(leafletMap);
-
-        expect(aerisMap.getView()).toEqual(leafletMap);
-      });
-
       describe('the created Leaflet map', function() {
 
         describe('should have the correct properties:', function() {
@@ -101,6 +95,35 @@ define([
           ]);
         });
 
+      });
+
+    });
+
+    describe('when an Aeris map is created with a L.Map object', function() {
+
+      it('should accept a Leaflet map as the element', function() {
+        var mapCanvas = new MapCanvas();
+        var leafletMap = new Leaflet.Map(mapCanvas, {
+          center: new L.LatLng(12, 34),
+          zoom: 14
+        });
+        var aerisMap = new Map(leafletMap);
+
+        expect(aerisMap.getView()).toEqual(leafletMap);
+      });
+
+      it('should update the Aeris map with the Leaflet map attributes', function() {
+        var mapCanvas = new MapCanvas();
+        var leafletMap = new L.Map(mapCanvas, {
+          center: new L.LatLng(12, 34),
+          zoom: 14,
+          scrollWheelZoom: false
+        });
+        var aerisMap = new Map(leafletMap);
+
+        expect(aerisMap.getCenter()).toEqual([12, 34]);
+        expect(aerisMap.getZoom()).toEqual(14);
+        expect(aerisMap.get('scrollZoom')).toEqual(false);
       });
 
     });

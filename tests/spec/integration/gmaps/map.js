@@ -1,27 +1,30 @@
 define([
+  'aeris/util',
   'aeris/maps/map',
   'googlemaps!',
   'tests/spec/integration/helpers/mapcanvas',
   'tests/lib/flag',
   'aeris/util/gmaps'
-], function(AerisMap, gmaps, MapCanvas, Flag, mapUtil) {
+], function(_, AerisMap, gmaps, MapCanvas, Flag, mapUtil) {
 
   describe('Maps with Google Maps', function() {
     var aerisMap, googleMap;
-    var mapCanvas, tilesLoaded;
+    var mapCanvas;
+
+    google.maps.Map.prototype.jasmineToString = _.constant('GoogleMap');
 
     beforeEach(function() {
       mapCanvas = new MapCanvas();
     });
 
 
-    beforeEach(function() {
-      aerisMap = new AerisMap(mapCanvas.id);
-      googleMap = aerisMap.getView();
-    });
-
-
     describe('when an Aeris map is created', function() {
+
+
+      beforeEach(function() {
+        aerisMap = new AerisMap(mapCanvas.id);
+        googleMap = aerisMap.getView();
+      });
 
       it('should create a google.maps.Map', function() {
         expect(googleMap).toBeInstanceOf(gmaps.Map);
@@ -59,15 +62,47 @@ define([
 
       });
 
-      it('should accept a view object', function() {
-        var mapView = new google.maps.Map(mapCanvas);
+    });
+
+
+    describe('when an Aeris map is created with a google.maps.Map instance', function() {
+
+      it('should use the google.maps.Map object as the map view', function() {
+        var mapView = new google.maps.Map(mapCanvas, {
+          center: { lat: 12, lng: 34 },
+          zoom: 14
+        });
         var aerisMap = new AerisMap(mapView);
 
         expect(aerisMap.getView()).toEqual(mapView);
       });
 
-    });
+      it('should update the Aeris map with the google map attributes', function() {
+        var mapView = new google.maps.Map(mapCanvas, {
+          center: { lat: 12, lng: 34 },
+          zoom: 14,
+          scrollwheel: false
+        });
+        var aerisMap = new AerisMap(mapView);
 
+        expect(aerisMap.getCenter()).toEqual([12, 34]);
+        expect(aerisMap.getZoom()).toEqual(14);
+        expect(aerisMap.get('scrollZoom')).toEqual(false);
+      });
+
+      // This is a failing test, and a known issue
+      xit('should update the Aeris map\'s element', function() {
+        var mapView = new google.maps.Map(mapCanvas, {
+          center: { lat: 12, lng: 34 },
+          zoom: 14,
+          scrollwheel: false
+        });
+        var aerisMap = new AerisMap(mapView);
+
+        expect(aerisMap.getElement()).toEqual(mapCanvas);
+      });
+
+    });
 
   });
 

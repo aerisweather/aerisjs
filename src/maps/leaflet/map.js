@@ -30,8 +30,8 @@ define([
      * @override
      */
 
+    this.updateObjectFromView_();
     this.updateLeafletMapPosition_();
-    this.updateAerisMapPosition_();
 
     this.proxyLeafletMapEvents_();
     this.bindToLeafletMapState_();
@@ -67,6 +67,8 @@ define([
     }
 
     map = new Leaflet.Map(el, {
+      center: mapUtil.toLeafletLatLng(this.object_.getCenter()),
+      zoom: this.object_.getZoom(),
       scrollWheelZoom: this.object_.get('scrollZoom')
     });
 
@@ -88,14 +90,15 @@ define([
 
 
   /**
-   * @method updateAerisMapPosition_
+   * @method updateObjectFromView_
    * @private
    */
-  LeafletMapStrategy.prototype.updateAerisMapPosition_ = function() {
+  LeafletMapStrategy.prototype.updateObjectFromView_ = function() {
     this.object_.set({
       center: mapUtil.toAerisLatLon(this.view_.getCenter()),
       bounds: mapUtil.toAerisBounds(this.view_.getBounds()),
-      zoom: this.view_.getZoom()
+      zoom: this.view_.getZoom(),
+      scrollZoom: this.view_.options.scrollWheelZoom
     }, { validate: true });
   };
 
@@ -136,7 +139,7 @@ define([
    */
   LeafletMapStrategy.prototype.bindToLeafletMapState_ = function() {
     this.view_.addEventListener({
-      moveend: this.updateAerisMapPosition_.bind(this)
+      moveend: this.updateObjectFromView_.bind(this)
     });
 
     this.listenTo(this.object_, {
