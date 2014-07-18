@@ -2,6 +2,7 @@
 
 * ADD: New tile layer: `aeris.maps.layers.QPF` (Quantitative Precipitation Forecast)
 * ADD: New tile layer: `aeris.maps.layers.LightningStrikeDensity`
+* ADD: Add `aeris.VERSION` property to builds.
 * MOD: Use 4kname as the default Tile Layer forecast model, where available
 * FIX: When creating an `aeris.maps.Map` using an existing view (eg. `google.maps.Map`),
        the aeris map will update its own attributes using the attributes of the view.
