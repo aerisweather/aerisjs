@@ -25,7 +25,7 @@ There are several hosted versions of the Aeris.js library, each with a varying s
 
 * **Aeris.js**
 
-    The default library includes all of the Aeris.js features, excluding the Map AppBuilder. Leaflet is used as the default mapping library.
+    The default library includes all of the Aeris.js features. Leaflet is used as the default mapping library.
 
     [//cdn.aerisjs.com/aeris.min.js](//cdn.aerisjs.com/aeris.min.js)
 

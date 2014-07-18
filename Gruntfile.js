@@ -95,14 +95,21 @@ module.exports = function(grunt) {
       }
     },
     version: {
+      options: {
+        version: '<%=pkg.version %>'
+      },
       aeris: {
         src: [
           'package.json',
           'bower.json',
           'docs/yuidoc.json'
-        ],
+        ]
+      },
+      'aeris.VERSION': {
+        src: ['deployment/scripts/templates/start.js.frag.hbs'],
         options: {
-          version: '<%=pkg.version %>'
+          version: '<%=pkg.version %>',
+          versionPattern: /aeris\.VERSION\s=\s'(.*?)'/g
         }
       }
     },
@@ -421,6 +428,8 @@ module.exports = function(grunt) {
     },
 
     'demo-rc': {
+      // Creates a copy of the /examples dir,
+      // with script paths linking to files on the uat server.
       staging: {
         expand: true,
         src: ['**/*.*', '!**/', '!**/bower_components/**', '!**/sandbox/**'],
@@ -467,7 +476,7 @@ module.exports = function(grunt) {
   ]);
 
   // Prepare demo site to deploy to uat (staging)
-  // server.
+  // server (in build/demo
   grunt.registerTask('demo-uat', [
     'build',
     'demo-rc',
@@ -475,6 +484,7 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('build', [
+    'version',
     'test',
     'shell:removeBuildDir',
     'requirejs',
@@ -499,7 +509,6 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('deploy', [
-    'version:aeris',
     'build',
     'buildDemo',
     'shell:deployS3-lib',
