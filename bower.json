@@ -7,7 +7,7 @@
     "weathernation",
     "backbone"
   ],
-  "version": "0.7.11",
+  "version": "0.7.12",
   "homepage": "https://github.com/hamweather/aerisjs",
   "main": "src",
   "ignore": [
