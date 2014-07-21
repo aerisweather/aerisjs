@@ -31,22 +31,7 @@ define([
     // object is updated.
     this.updateObjectFromView_();
 
-    // A hack to prevent zoom on dblclick
-    // Only if a handler is bound to the 'dblclick' event
-    this.object_.on = function(topic, handler) {
-      if (_.isString(topic) && topic === 'dblclick' ||
-        _.isObject(topic) && _.has(topic, 'dblclick')
-        ) {
-        this.getView().set('disableDoubleClickZoom', true);
-      }
-
-      // Note that we can't pull this in with ReqJS,
-      // because we would create a circular dependency.
-      // Hacks are fun, no?
-      aeris.maps.Map.prototype.on.apply(this, arguments);
-    };
-
-
+    this.preventZoomOnDblClick_();
   };
   _.inherits(GoogleMapStrategy, AbstractStrategy);
 
@@ -147,6 +132,28 @@ define([
   GoogleMapStrategy.prototype.fitToBounds = function(bounds) {
     var gBounds = mapUtil.arrayToBounds(bounds);
     this.view_.fitBounds(gBounds);
+  };
+
+
+  /**
+   * @method preventZoomOnDblClick_
+   * @private
+   */
+  GoogleMapStrategy.prototype.preventZoomOnDblClick_ = function() {
+    // A hack to prevent zoom on dblclick
+    // Only if a handler is bound to the 'dblclick' event
+    this.object_.on = function(topic, handler) {
+      if (_.isString(topic) && topic === 'dblclick' ||
+        _.isObject(topic) && _.has(topic, 'dblclick')
+        ) {
+        this.getView().set('disableDoubleClickZoom', true);
+      }
+
+      // Note that we can't pull this in with ReqJS,
+      // because we would create a circular dependency.
+      // Hacks are fun, no?
+      aeris.maps.Map.prototype.on.apply(this, arguments);
+    };
   };
 
 
