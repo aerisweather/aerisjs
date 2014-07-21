@@ -1,3 +1,15 @@
+# 0.7.12
+
+* ADD: New tile layer: `aeris.maps.layers.QPF` (Quantitative Precipitation Forecast)
+* ADD: New tile layer: `aeris.maps.layers.LightningStrikeDensity`
+* ADD: Add `aeris.VERSION` property to builds.
+* MOD: Use 4kname as the default Tile Layer forecast model, where available
+* FIX: When creating an `aeris.maps.Map` using an existing view (eg. `google.maps.Map`),
+       the aeris map will update its own attributes using the attributes of the view.
+
+See git history for a full list of changes.
+
+
 # 0.7.11
 
 * FIX: Fix animation error related to uninitialized time layers.
