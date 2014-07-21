@@ -66,19 +66,18 @@ define([
     };
   }
 
-  beforeEach(function() {
-    spyOn(google.maps, 'Size');
-  });
-
-
-  afterEach(function() {
-    window.google = google_orig;
-  });
-
   describe('A Google TileStrategy', function() {
-    it('should work', function() {
-      expect(true).toEqual(true);
+
+    beforeEach(function() {
+      spyOn(google.maps, 'Size');
     });
+
+
+    afterEach(function() {
+      window.google = google_orig;
+    });
+
+
     describe('getView', function() {
       it('should return a google ImageMapType instance', function() {
         var test = testFactory();
