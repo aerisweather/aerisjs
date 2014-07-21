@@ -30,6 +30,7 @@ define([
      * @override
      */
 
+    this.ensureBaseLayer_();
     this.updateObjectFromView_();
     this.updateLeafletMapPosition_();
 
@@ -57,7 +58,6 @@ define([
    * @return {L.Map}
    */
   LeafletMapStrategy.prototype.createView_ = function() {
-    var baseLayer;
     var map;
     var el = this.object_.getElement();
 
@@ -72,11 +72,60 @@ define([
       scrollWheelZoom: this.object_.get('scrollZoom')
     });
 
-    // Add a baseLayer to the map.
-    baseLayer = new OSMLayer();
-    baseLayer.getView().addTo(map);
-
     return map;
+  };
+
+
+  /**
+   * Sets a base layer, if none is already set.
+   *
+   * @method ensureBaseLayer_
+   * @private
+   */
+  LeafletMapStrategy.prototype.ensureBaseLayer_ = function() {
+    var baseLayer;
+    var insertAtBottom;
+
+    if (!this.getLayerCount_()) {
+      baseLayer = this.getBaseLayer_();
+      this.view_.addLayer(baseLayer.getView(), insertAtBottom = true);
+    }
+  };
+
+
+  /**
+   * @method getBaseLayer_
+   * @private
+   * @return {aeris.maps.layers.Layer}
+   */
+  LeafletMapStrategy.prototype.getBaseLayer_ = function() {
+    return this.object_.get('baseLayer') || new LeafletMapStrategy.DEFAULT_BASE_LAYER_TYPE_();
+  };
+
+
+  /**
+   * @property DEFAULT_BASE_LAYER_TYPE_
+   * @static
+   * @type {function():aeris.maps.layers.Layer}
+   * @private
+   */
+  LeafletMapStrategy.DEFAULT_BASE_LAYER_TYPE_ = OSMLayer;
+
+
+  /**
+   * @method getLayerCount_
+   * @private
+   */
+  LeafletMapStrategy.prototype.getLayerCount_ = function() {
+    var count = 0;
+
+    // We have indirect access to the
+    // maps layers via the #eachLayer method.
+    this.view_.eachLayer(function() {
+      count++;
+    });
+
+    return count;
   };
 
 
@@ -86,20 +135,6 @@ define([
    */
   LeafletMapStrategy.prototype.updateLeafletMapPosition_ = function() {
     this.view_.setView(this.object_.getCenter(), this.object_.getZoom());
-  };
-
-
-  /**
-   * @method updateObjectFromView_
-   * @private
-   */
-  LeafletMapStrategy.prototype.updateObjectFromView_ = function() {
-    this.object_.set({
-      center: mapUtil.toAerisLatLon(this.view_.getCenter()),
-      bounds: mapUtil.toAerisBounds(this.view_.getBounds()),
-      zoom: this.view_.getZoom(),
-      scrollZoom: this.view_.options.scrollWheelZoom
-    }, { validate: true });
   };
 
 
@@ -143,8 +178,41 @@ define([
     });
 
     this.listenTo(this.object_, {
-      'change:center change:zoom': this.updateLeafletMapPosition_
+      'change:center change:zoom': this.updateLeafletMapPosition_,
+      'change:baseLayer': this.updateBaseLayer_
     });
+  };
+
+
+  /**
+   * @method updateObjectFromView_
+   * @private
+   */
+  LeafletMapStrategy.prototype.updateObjectFromView_ = function() {
+    this.object_.set({
+      center: mapUtil.toAerisLatLon(this.view_.getCenter()),
+      bounds: mapUtil.toAerisBounds(this.view_.getBounds()),
+      zoom: this.view_.getZoom(),
+      scrollZoom: this.view_.options.scrollWheelZoom
+    }, { validate: true });
+  };
+
+
+  /**
+   * @method updateBaseLayer_
+   * @private
+   */
+  LeafletMapStrategy.prototype.updateBaseLayer_ = function() {
+    var baseLayer = this.object_.getBaseLayer();
+    var previousBaseLayer = this.object_.previousAttributes().baseLayer;
+    var isSameBaseLayer = baseLayer === previousBaseLayer;
+
+    if (isSameBaseLayer) {
+      return;
+    }
+
+    this.view_.removeLayer(previousBaseLayer.getView());
+    this.view_.addLayer(baseLayer.getView(), true);
   };
 
 

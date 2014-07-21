@@ -81,7 +81,18 @@ define([
        * @attribute scrollZoom
        * @type {Boolean}
        */
-      scrollZoom: true
+      scrollZoom: true,
+
+
+      /**
+       * The base map layer.
+       * Note that different mapping libraries have
+       * different default base layers.
+       *
+       * @attribute baseLayer
+       * @type {aeris.maps.layers.Layer}
+       */
+      baseLayer: null
     }, opt_attrs);
 
     var options = _.extend({
@@ -171,6 +182,23 @@ define([
    */
   Map.prototype.getZoom = function() {
     return this.get('zoom');
+  };
+
+
+  /**
+   * @method setBaseLayer
+   * @param {aeris.maps.layers.Layer} baseLayer
+   */
+  Map.prototype.setBaseLayer = function(baseLayer) {
+    this.set('baseLayer', baseLayer, { validate: true });
+  };
+
+  /**
+   * @method getBaseLayer
+   * @return {aeris.maps.layers.Layer}
+   */
+  Map.prototype.getBaseLayer = function() {
+    return this.get('baseLayer');
   };
 
 
