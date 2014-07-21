@@ -30,7 +30,11 @@ define([
      * @override
      */
 
+      // We need to allow the map view to finish initializing
+      // before asking a layer to be set on it.
     this.ensureBaseLayer_();
+
+
     this.updateObjectFromView_();
     this.updateLeafletMapPosition_();
 
@@ -39,7 +43,6 @@ define([
 
     this.bindMapToElementDimensions_();
     this.bindElReadyEvent_();
-
     /**
      * Triggered when the element is
      * has non-zero dimensions set on it.
@@ -83,23 +86,15 @@ define([
    * @private
    */
   LeafletMapStrategy.prototype.ensureBaseLayer_ = function() {
-    var baseLayer;
-    var insertAtBottom;
+    var baseLayer = this.object_.getBaseLayer();
+    if (!baseLayer) {
+      baseLayer = new LeafletMapStrategy.DEFAULT_BASE_LAYER_TYPE_();
+      this.object_.setBaseLayer(baseLayer);
+    }
 
     if (!this.getLayerCount_()) {
-      baseLayer = this.getBaseLayer_();
-      this.view_.addLayer(baseLayer.getView(), insertAtBottom = true);
+      this.renderBaseLayer_(baseLayer);
     }
-  };
-
-
-  /**
-   * @method getBaseLayer_
-   * @private
-   * @return {aeris.maps.layers.Layer}
-   */
-  LeafletMapStrategy.prototype.getBaseLayer_ = function() {
-    return this.object_.get('baseLayer') || new LeafletMapStrategy.DEFAULT_BASE_LAYER_TYPE_();
   };
 
 
@@ -210,9 +205,26 @@ define([
     if (isSameBaseLayer) {
       return;
     }
+    if (previousBaseLayer) {
+      this.view_.removeLayer(previousBaseLayer.getView());
+      previousBaseLayer.set('map', null, { silent: true });
+    }
 
-    this.view_.removeLayer(previousBaseLayer.getView());
+    this.renderBaseLayer_(baseLayer);
+  };
+
+
+  /**
+   * @method renderBaseLayer_
+   * @private
+   * @param {aeris.maps.layers.Layer} baseLayer
+   */
+  LeafletMapStrategy.prototype.renderBaseLayer_ = function(baseLayer) {
     this.view_.addLayer(baseLayer.getView(), true);
+
+    // Manually update map attribute, without the base layer
+    // trying to update the view itself.
+    baseLayer.set('map', this.object_, { silent: true });
   };
 
 

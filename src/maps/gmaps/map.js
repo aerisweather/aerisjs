@@ -22,7 +22,8 @@ define([
     // Sync map view with map object.
     this.listenTo(this.object_, {
       'change:center': this.updateCenter_,
-      'change:zoom': this.updateZoom_
+      'change:zoom': this.updateZoom_,
+      'change:baseLayer': this.updateBaseLayer_
     }, this);
 
     // Make sure all attributes are in sync
@@ -41,6 +42,7 @@ define([
    */
   GoogleMapStrategy.prototype.createView_ = function() {
     var el = this.object_.getElement();
+    var baseLayer = this.object_.getBaseLayer();
     var view;
 
     // Accept a predefined google.maps.Map
@@ -55,6 +57,12 @@ define([
       zoom: this.object_.get('zoom'),
       scrollwheel: this.object_.get('scrollZoom')
     });
+
+    if (baseLayer) {
+      _.defer(function() {
+        baseLayer.setMap(this.object_);
+      }.bind(this));
+    }
 
     return view;
   };
@@ -126,6 +134,17 @@ define([
   GoogleMapStrategy.prototype.updateZoom_ = function() {
     var zoom = this.object_.get('zoom');
     this.getView().setZoom(zoom);
+  };
+
+  /**
+   * @method updateBaseLayer_
+   * @private
+   */
+  GoogleMapStrategy.prototype.updateBaseLayer_ = function() {
+    var baseLayer = this.object_.getBaseLayer();
+    if (baseLayer) {
+      baseLayer.setMap(this.object_);
+    }
   };
 
 

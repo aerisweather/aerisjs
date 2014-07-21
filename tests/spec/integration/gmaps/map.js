@@ -2,16 +2,19 @@ define([
   'aeris/util',
   'aeris/maps/map',
   'googlemaps!',
+  'aeris/maps/layers/osm',
   'tests/spec/integration/helpers/mapcanvas',
   'tests/lib/flag',
-  'aeris/util/gmaps'
-], function(_, AerisMap, gmaps, MapCanvas, Flag, mapUtil) {
+  'aeris/util/gmaps',
+  'tests/lib/clock'
+], function(_, AerisMap, gmaps, OSMLayer, MapCanvas, Flag, mapUtil, clock) {
 
   describe('Maps with Google Maps', function() {
     var aerisMap, googleMap;
     var mapCanvas;
 
     google.maps.Map.prototype.jasmineToString = _.constant('GoogleMap');
+    AerisMap.prototype.jasmineToString = _.constant('AerisMap');
 
     beforeEach(function() {
       mapCanvas = new MapCanvas();
@@ -101,6 +104,40 @@ define([
 
         expect(aerisMap.getElement()).toEqual(mapCanvas);
       });
+
+    });
+
+
+    describe('using base layers', function() {
+
+      beforeEach(function() {
+        clock.useFakeTimers();
+      });
+
+
+      it('should set a base layer to the map', function() {
+        var osmLayer = new OSMLayer();
+        var map = new AerisMap(mapCanvas, {
+          baseLayer: osmLayer
+        });
+
+        clock.tick(1);
+
+        expect(osmLayer.getMap()).toEqual(map);
+        expect(map.getView().getMapTypeId()).toEqual(osmLayer.get('name'));
+      });
+
+      it('should respond to changing base layers', function() {
+        var map = new AerisMap(mapCanvas);
+        var osmLayer = new OSMLayer();
+        map.setBaseLayer(osmLayer);
+
+        clock.tick(1);
+
+        expect(osmLayer.getMap()).toEqual(map);
+        expect(map.getView().getMapTypeId()).toEqual(osmLayer.get('name'));
+      });
+
 
     });
 

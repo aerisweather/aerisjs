@@ -4,10 +4,13 @@ define([
   'aeris/maps/layers/mapbox',
   'leaflet',
   'tests/spec/integration/helpers/mapcanvas',
-  'mapbox'
-], function(_, Map, MapBoxLayer, Leaflet, MapCanvas, MapBox) {
+  'mapbox',
+  'tests/lib/clock'
+], function(_, Map, MapBoxLayer, Leaflet, MapCanvas, MapBox, clock) {
 
   describe('MapBox layer integration using Leaflet', function() {
+
+    Map.prototype.jasmineToString = _.constant('AerisMap');
 
     beforeEach(function() {
       this.addMatchers({
@@ -27,10 +30,10 @@ define([
           }
           catch (err) {
             this.message = _.constant(
-              'Expected map {not?} to have {count}  layers, but ' +
+              'Expected map {not?} to have {expectedCount}  layers, but ' +
                 'an error was thrown while trying to count them: {err}'.
                   replace('{not?}', this.isNot ? 'not' : '').
-                  replace('{count}', expectedCount).
+                  replace('{expectedCount}', expectedCount).
                   replace('{err}', err.toString())
             );
           }
@@ -38,7 +41,7 @@ define([
           return expectedCount === actualCount;
         },
 
-        toHaveLayer: function(layer) {
+        toHaveLayersView: function(layer) {
           var map = this.actual;
 
           map.jasmineToString = map.jasmineToString || _.constant('Map');
@@ -68,10 +71,23 @@ define([
 
     });
 
+    it('should add the layer view to the map view', function() {
+      var map = new Map(new MapCanvas());
+      var mapBoxLayer = new MapBoxLayer({
+        mapBoxId: 'examples.bike-lanes'
+      });
+
+      mapBoxLayer.setMap(map);
+
+      expect(map).toHaveLayersView(mapBoxLayer);
+    });
+
     describe('using a MapBox layer as the base map layer', function() {
       var map, mapBoxLayer;
 
       beforeEach(function() {
+        clock.useFakeTimers();
+
         mapBoxLayer = new MapBoxLayer({
           mapBoxId: 'examples.bike-lanes'
         });
@@ -79,18 +95,26 @@ define([
         map = new Map(new MapCanvas(), {
           baseLayer: mapBoxLayer
         });
+
+        // Base layer initialization object is deferred.
+        clock.tick(1);
+      });
+
+      afterEach(function() {
+        clock.restore();
       });
 
 
-      it('should add the MapBox layer to the map', function() {
-        mapBoxLayer.setMap(map);
 
-        expect(map).toHaveLayer(mapBoxLayer);
+      it('should add the MapBox layer view to the map view', function() {
+        expect(map).toHaveLayersView(mapBoxLayer);
+      });
+
+      it('should updated the base layer\'s map attribute', function() {
+        expect(mapBoxLayer.getMap()).toEqual(map);
       });
 
       it('should not add any other layers to the map', function() {
-        mapBoxLayer.setMap(map);
-
         expect(map).toHaveLayerCount(1);
       });
 
@@ -100,8 +124,11 @@ define([
         });
         map.setBaseLayer(differentBaseLayer);
 
-        expect(map).toHaveLayer(differentBaseLayer);
-        expect(map).not.toHaveLayer(mapBoxLayer);
+        clock.tick(1);
+
+        expect(map).toHaveLayersView(differentBaseLayer);
+        expect(differentBaseLayer.getMap()).toEqual(map);
+        expect(map).not.toHaveLayersView(mapBoxLayer);
       });
 
     });
