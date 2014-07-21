@@ -16,6 +16,7 @@ require.config({
     flag: 'tests/flag',
     googlemaps: 'tests/mocks/googlemaps',
     leaflet: 'tests/lib/leaflet',
+    mapbox: 'tests/lib/mapbox.standalone',
     openlayers: 'tests/lib/openlayers'
   },
   shim: {
