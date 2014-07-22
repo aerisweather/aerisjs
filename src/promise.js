@@ -4,7 +4,6 @@ define([
 ], function(_, InvalidArgumentError) {
 
 
-
   /**
    * Create a lightweight Promise for async related work.
    *
@@ -160,7 +159,7 @@ define([
     // Enforce state is 'rejected' or 'resolved'
     if (state !== 'rejected' && state !== 'resolved') {
       throw new Error('Invalid promise state: \'' + state + '\'. +' +
-                      'Valid states are \'resolved\' and \'rejected\'');
+        'Valid states are \'resolved\' and \'rejected\'');
     }
 
     if (this.state === 'pending') {
@@ -249,6 +248,53 @@ define([
     }
 
     return masterPromise;
+  };
+
+
+  /**
+   * Calls the promiseFn with each member in `objects`.
+   * Each call to the promiseFn will be postponed until the promise
+   * returned by the previous call is resolved.
+   *
+   * @param {Array<*>} objects
+   * @param {function():aeris.Promise} promiseFn
+   * @return {aeris.Promise}
+   *         Resolves with an array containing the resolution value of each
+   *         call to the promiseFn.
+   */
+  Promise.sequence = function(objects, promiseFn) {
+    var promiseToResolveAll = new Promise();
+    var resolvedArgs = [];
+    var rejectSequence = promiseToResolveAll.reject.
+      bind(promiseToResolveAll);
+    var resolveSequence = promiseToResolveAll.resolve.
+      bind(promiseToResolveAll, resolvedArgs);
+
+    var nextAt = function(i) {
+      var next = _.partial(nextAt, i + 1);
+      var obj = objects[i];
+
+      if (obj) {
+        // Call the promiseFn with the object
+        promiseFn(obj).
+          done(function(arg) {
+            // When the promiseFn resolves,
+            // Save the resolution data
+            // and run again with the next object.
+            resolvedArgs.push(arg);
+            next();
+          }).
+          fail(rejectSequence);
+      }
+      else {
+        // No more objects exist,
+        // --> we're done.
+        resolveSequence();
+      }
+    };
+    nextAt(0);
+
+    return promiseToResolveAll;
   };
 
 
