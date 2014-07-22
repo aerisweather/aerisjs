@@ -286,6 +286,10 @@ define([
   };
 
 
+  // Instead of mixing our methods into underscore (which
+  // would overwrite the client's window._ object), we
+  // are creating a clone of underscore.
+  //
   // Create a proxy _() wrapper function
   var util = function(var_args) {
     // Call the underscore wrapper with supplied
