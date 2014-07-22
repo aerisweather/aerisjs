@@ -60,7 +60,7 @@ define([
      * @property currentLayer_
      * @private
      * @type {?aeris.maps.layers.AerisTile}
-    */
+     */
     this.currentLayer_ = null;
 
 

@@ -79,7 +79,7 @@ define([
      * @property animationsWhichHaveLoadedTimes_
      * @private
      * @type {Array.<aeris.maps.animations.AnimationInterface}
-    */
+     */
     this.animationsWhichHaveLoadedTimes_ = [];
 
 

@@ -36,9 +36,6 @@ define([
   };
 
 
-
-
-
   describe('TileAnimation', function() {
     var animation, layerLoader, masterLayer;
     var times, timeLayers;
@@ -52,7 +49,6 @@ define([
     afterEach(function() {
       clock.restore();
     });
-
 
 
     beforeEach(function() {
@@ -522,7 +518,7 @@ define([
             expect(timeLayers).not.toBeShowingLayerForTime(Date.now() + 1);
           });
 
-            describe('when the layer loads', function() {
+          describe('when the layer loads', function() {
 
             it('should switch to showing the loaded layer', function() {
               setIsTimeLoaded(NOW - 1, false);
