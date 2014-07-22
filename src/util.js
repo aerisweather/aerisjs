@@ -260,6 +260,28 @@ define([
       _.templateSettings = settings_orig;
 
       return res;
+    },
+
+    /**
+     * Invokes a callback with each object in an array.
+     * Waits `interval` ms between each invocation.
+     *
+     * @param {Array} objects
+     * @param {Function} cb
+     * @param {Number} interval
+     */
+    eachAtInterval: function(objects, cb, interval) {
+      var next = function(i) {
+        var obj = objects[i];
+        var nextIncremented = _.partial(next, i + 1);
+
+        if (obj) {
+          cb(obj);
+          _.delay(nextIncremented, interval);
+        }
+      };
+
+      next(0);
     }
   };
 

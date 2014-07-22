@@ -2,8 +2,9 @@ var underscore_orig = window._ || (window._ = { STUB: 'UNDERSCORE_ORIG' });
 define([
   'sinon',
   'aeris/util',
-  'underscore'
-], function(sinon, _, underscore) {
+  'underscore',
+  'tests/lib/clock'
+], function(sinon, _, underscore, clock) {
   describe('util', function() {
 
     describe('expose method', function() {
@@ -143,6 +144,53 @@ define([
         clock.tick(200);
         expect(fn.callCount).toEqual(2);
       });
+    });
+
+
+    describe('eachAtInterval', function() {
+
+      beforeEach(function() {
+        clock.useFakeTimers(0);
+      });
+      afterEach(function() {
+        clock.restore();
+      });
+
+
+
+      it('should invoke the callback with each object, waiting INTERVAL between each call', function() {
+        var objects = ['A', 'B', 'C'];
+        var cb = jasmine.createSpy('cb');
+        var INTERVAL = 100;
+
+        _.eachAtInterval(objects, cb, INTERVAL);
+
+        // Only called with 'A'
+        expect(cb).toHaveBeenCalledWith('A');
+        expect(cb.callCount).toEqual(1);
+
+        clock.tick(INTERVAL);
+        // Called with 'A' and 'B'
+        expect(cb).toHaveBeenCalledWith('B');
+        expect(cb.callCount).toEqual(2);
+
+        clock.tick(INTERVAL);
+        // Called with 'A', 'B', and 'C'
+        expect(cb).toHaveBeenCalledWith('C');
+        expect(cb.callCount).toEqual(3);
+      });
+
+      it('should not invoke the callback more times than there are objects', function() {
+        var objects = ['A', 'B', 'C'];
+        var cb = jasmine.createSpy('cb');
+        var INTERVAL = 100;
+
+        _.eachAtInterval(objects, cb, INTERVAL);
+
+        clock.tick(INTERVAL * 10);
+        expect(cb.callCount).toEqual(3);
+      });
+
     });
 
 
