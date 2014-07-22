@@ -246,6 +246,17 @@ define([
       });
     },
 
+
+    /**
+     * Throw an error.
+     *
+     * @param {Error} err
+     */
+    throwError: function(err) {
+      throw err;
+    },
+
+
     template: function() {
       // Temporarily change templateSettings
       // so we don't overwrite global settings
