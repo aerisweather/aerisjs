@@ -673,6 +673,88 @@ define([
     });
 
 
+    describe('preload', function() {
+      var timeLayers;
+
+      beforeEach(function() {
+        timeLayers = new MockTimeLayers([0, 1, 2]);
+      });
+
+      function loadAll(timeLayers) {
+        _.each(timeLayers, function(lyr) {
+          lyr.promiseToPreload.resolve();
+        });
+      }
+
+
+      it('should wait for times to load, before trying to preload layers', function() {
+        animation.preload();
+
+        _.each(timeLayers, function(layer) {
+          expect(layer.preload).not.toHaveBeenCalled();
+        });
+      });
+
+      describe('after times are loaded', function() {
+
+        beforeEach(function() {
+          resolveLayerLoader(timeLayers);
+        });
+
+
+        it('should preload each timeLayer, using the master layer\'s map', function() {
+          animation.preload();
+
+          loadAll(timeLayers);
+
+          _.each(timeLayers, function(lyr) {
+            expect(lyr.preload).toHaveBeenCalled();
+          });
+        });
+
+        it('should wait to load a layer until the previous layer is loaded', function() {
+          animation.preload();
+
+          expect(timeLayers[0].preload).toHaveBeenCalled();
+          expect(timeLayers[1].preload).not.toHaveBeenCalled();
+
+          timeLayers[0].promiseToPreload.resolve();
+          expect(timeLayers[1].preload).toHaveBeenCalled();
+          expect(timeLayers[2].preload).not.toHaveBeenCalled();
+        });
+
+        it('should resolve once all the layers are preloaded', function() {
+          var onResolve = jasmine.createSpy('onResolve');
+
+          animation.preload().
+            done(onResolve).
+            fail(_.throwError);
+
+          expect(onResolve).not.toHaveBeenCalled();
+
+          loadAll(timeLayers);
+
+          expect(onResolve).toHaveBeenCalled();
+        });
+
+        it('should reject if any layer fails to preload', function() {
+          var onReject = jasmine.createSpy('onReject');
+
+          animation.preload().
+            fail(onReject);
+
+          timeLayers[0].promiseToPreload.resolve();
+          timeLayers[1].promiseToPreload.reject();
+
+          expect(onReject).toHaveBeenCalled();
+        });
+
+      });
+
+
+    });
+
+
     describe('getLoadProgress', function() {
 
       it('should return the load progress, using the AnimationLayerLoader', function() {

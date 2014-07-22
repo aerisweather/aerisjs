@@ -2,8 +2,9 @@ define([
   'aeris/util',
   'aeris/maps/animations/abstractanimation',
   'aeris/maps/layers/animationlayer',
-  'aeris/maps/animations/autoupdateanimation'
-], function(_, AbstractAnimation, AnimationLayer, AutoUpdateAnimation) {
+  'aeris/maps/animations/autoupdateanimation',
+  'aeris/promise'
+], function(_, AbstractAnimation, AnimationLayer, AutoUpdateAnimation, Promise) {
   /**
    * Animates multiple layers along a single timeline.
    * Works by running a single 'master' animation, and having
@@ -101,6 +102,21 @@ define([
   };
 
   _.inherits(AnimationSync, AbstractAnimation);
+
+
+  /**
+   * @method preload
+   */
+  AnimationSync.prototype.preload = function() {
+    var activeAnimations = this.animations_.filter(function(anim) {
+      return anim.hasMap();
+    });
+
+    // Preload each animation, in sequence.
+    return Promise.sequence(activeAnimations, function(animation) {
+      return animation.preload();
+    });
+  };
 
 
   /**
@@ -219,25 +235,21 @@ define([
 
 
   /**
+   * Get the total loading progress of animations within the animation
+   * sync. Only considers animations which are set to the map.
+   *
    * @method getLoadProgress
    * @return {number}
    */
   AnimationSync.prototype.getLoadProgress = function() {
-    var progressArr = [];
-    var progress;
+    var activeAnimations = this.animations_.filter(function(anim) {
+      return anim.hasMap();
+    });
+    var progressCounts = activeAnimations.map(function(anim) {
+      return anim.getLoadProgress();
+    });
 
-    _.each(this.animations_, function(anim) {
-      progressArr.push(anim.getLoadProgress());
-    }, this);
-
-    progress = _.average(progressArr);
-
-    if (progress >= 1) {
-      this.trigger('load:complete');
-    }
-    this.trigger('load:progress', progress);
-
-    return progress;
+    return _.average(progressCounts);
   };
 
 

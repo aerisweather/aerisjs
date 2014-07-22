@@ -80,6 +80,15 @@ define(['aeris/util', 'aeris/events'], function(_, Events) {
 
 
   /**
+   * Begin preloading assets required to run the animation.
+   *
+   * @method preload
+   * @return {aeris.Promise} Resolves when preloading is complete.
+   */
+  AnimationInterface.prototype.preload = _.abstractMethod;
+
+
+  /**
    * Start the animation.
    *
    * @return {undefined}
@@ -174,6 +183,15 @@ define(['aeris/util', 'aeris/events'], function(_, Events) {
    * @return {Boolean}
    */
   AnimationInterface.prototype.isAnimating = _.abstractMethod;
+
+
+  /**
+   * Is the animated object set to a map?
+   *
+   * @method hasMap
+   * @return {Boolean}
+   */
+  AnimationInterface.prototype.hasMap = _.abstractMethod;
 
   return AnimationInterface;
 });

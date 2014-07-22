@@ -2,9 +2,10 @@ define([
   'aeris/util',
   'aeris/maps/animations/abstractanimation',
   'aeris/maps/animations/helpers/animationlayerloader',
+  'aeris/promise',
   'aeris/errors/invalidargumenterror',
   'aeris/util/findclosest'
-], function(_, AbstractAnimation, AnimationLayerLoader, InvalidArgumentError, findClosest) {
+], function(_, AbstractAnimation, AnimationLayerLoader, Promise, InvalidArgumentError, findClosest) {
   /**
    * Animates a single {aeris.maps.layers.AerisTile} layer.
    *
@@ -150,6 +151,74 @@ define([
       });
   };
 
+  /**
+   * @method preload
+   */
+  TileAnimation.prototype.preload = function() {
+    var promiseToPreload = new Promise();
+    var resolvePreload = function() {
+      promiseToPreload.resolve();
+    };
+    var rejectPreload = function() {
+      promiseToPreload.reject();
+    };
+
+
+    // We need our times (and timeLayers)
+    // to be loaded, before we can preload layers
+    this.whenTimesAreLoaded_().
+      done(function() {
+        var layers = _.values(this.timeLayers_);
+
+        // Preload each layer in sequece
+        Promise.sequence(layers, this.preloadLayer_.bind(this)).
+          done(resolvePreload).
+          fail(rejectPreload);
+      }, this).
+      fail(rejectPreload);
+
+    return promiseToPreload;
+  };
+
+
+  /**
+   * Preloads a single tile layer.
+   *
+   * @method preloadLayer_
+   * @private
+   * @param {aeris.maps.layers.AerisTile} layer
+   * @return {aeris.Promise} Promise to load the layer
+   */
+  TileAnimation.prototype.preloadLayer_ = function(layer) {
+    return layer.preload(this.masterLayer_.getMap());
+  };
+
+
+  /**
+   * @method whenTimesAreLoaded_
+   * @private
+   * @return {aeris.Promise} A promise to load tile layer times.
+   *                         Resolves immediately if times are already loaded.
+   */
+  TileAnimation.prototype.whenTimesAreLoaded_ = function() {
+    var promiseToLoadTimes = new Promise();
+    var areTimesLoaded = !!this.times_.length;
+
+    if (areTimesLoaded) {
+      promiseToLoadTimes.resolve(this.getTimes());
+    }
+    else {
+      this.listenToOnce(this, {
+        'load:times': promiseToLoadTimes.resolve.
+          bind(promiseToLoadTimes),
+        'load:error': promiseToLoadTimes.reject.
+          bind(promiseToLoadTimes)
+      });
+    }
+
+    return promiseToLoadTimes;
+  };
+
 
   /**
    * Convert master layer into a "dummy" view model,
@@ -270,6 +339,14 @@ define([
 
 
   /**
+   * @method hasMap
+   */
+  TileAnimation.prototype.hasMap = function() {
+    return this.masterLayer_.hasMap();
+  };
+
+
+  /**
    * Destroys the tile animation object,
    * clears animation frames from memory.
    *
@@ -347,48 +424,6 @@ define([
   TileAnimation.prototype.setTimeLayers_ = function(timeLayers) {
     this.timeLayers_ = timeLayers;
     this.times_ = this.getOrderedTimesFromLayers_(timeLayers);
-  };
-
-
-  /**
-   * Some mapping libraries will not load a layer
-   * until it has been set to the map.
-   *
-   * This method silently and temporarily sets a layer to the map,
-   * to make sure loading is initialized.
-   *
-   * @method preloadTimeLayer_
-   * @private
-   * @param {aeris.maps.layers.AerisTile} layer
-   */
-  TileAnimation.prototype.preloadTimeLayer_ = function(layer) {
-    if (layer.isLoaded()) {
-      return;
-    }
-    var triggerLayerLoad = (function() {
-      layer.set({
-        // Temporarily set to 0 opacity, so we don't see
-        // the layer being added to the map
-        opacity: 0,
-
-        // Trigger loading, by setting to the map
-        map: this.masterLayer_.getMap()
-      });
-    }).bind(this);
-
-    // Prevent layer initialization from
-    // blocking the call stack.
-    // (this is a CPU intensive method)
-    var triggerLayerLoad_non_blocking = _.throttle(function() {
-      _.defer(triggerLayerLoad);
-    }, 10);
-
-    if (this.masterLayer_.hasMap()) {
-      triggerLayerLoad_non_blocking();
-    }
-    else {
-      this.listenTo(this.masterLayer_, 'map:set', triggerLayerLoad_non_blocking);
-    }
   };
 
 
@@ -491,7 +526,7 @@ define([
     // and makes it easier to start animations before all
     // layers are loaded.
     if (!newLayer.isLoaded()) {
-      this.preloadTimeLayer_(newLayer);
+      this.preloadLayer_(newLayer);
       this.transitionWhenLoaded_(oldLayer, newLayer);
     }
 
