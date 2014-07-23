@@ -1,3 +1,7 @@
+## 1.1.0
+
+* Output spec description when using `--verbose` flag
+
 ## 1.0.5
 
 * Update grunt-lib-phantomjs version to 0.6.0

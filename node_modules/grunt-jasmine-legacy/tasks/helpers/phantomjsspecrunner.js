@@ -72,7 +72,16 @@ module.exports = {
         }
 
         function logSpecResult(specDescr, isPassing) {
-          grunt.log.write(isPassing ? chalk.green('.') : chalk.red('X'));
+          var isVerbose = !!grunt.option('verbose');
+          var chalkWrite = (isPassing ? chalk.green : chalk.red).bind(chalk);
+
+          if (isVerbose) {
+            grunt.verbose.writeln(chalkWrite(specDescr));
+          }
+          else {
+            var mark = isPassing ? '.' : 'X';
+            grunt.log.write(chalkWrite(mark));
+          }
         }
 
 
