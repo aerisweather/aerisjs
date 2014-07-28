@@ -2,7 +2,9 @@ define([
   'aeris/util',
   'aeris/promise'
 ], function(_, Promise) {
-  describe('A Promise', function() {
+  Promise.prototype.jasmineToString = _.constant('Promise');
+
+  describe('Promise', function() {
     var promise;
     var flag;
 
@@ -167,6 +169,33 @@ define([
       promise.done(function() {
         calledSecond = true;
       });
+    });
+
+
+    it('should bind `resolve` to the promise', function() {
+      var promise, resolve;
+
+      spyOn(Promise.prototype, 'resolve');
+      promise = new Promise();
+
+      // Call resolve outside of context
+      resolve = promise.resolve;
+      resolve();
+
+      expect(Promise.prototype.resolve).toHaveBeenCalledInTheContextOf(promise);
+    });
+
+    it('should bind `reject` to the promise', function() {
+      var promise, reject;
+
+      spyOn(Promise.prototype, 'reject');
+      promise = new Promise();
+
+      // Call reject outside of context
+      reject = promise.reject;
+      reject();
+
+      expect(Promise.prototype.reject).toHaveBeenCalledInTheContextOf(promise);
     });
 
 

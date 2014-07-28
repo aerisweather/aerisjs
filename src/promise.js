@@ -49,6 +49,10 @@ define([
       resolved: [],
       rejected: []
     };
+
+    // Bind resolve/reject to the promise instance
+    this.resolve = this.resolve.bind(this);
+    this.reject = this.reject.bind(this);
   };
 
 
