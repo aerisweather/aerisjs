@@ -156,12 +156,6 @@ define([
    */
   TileAnimation.prototype.preload = function() {
     var promiseToPreload = new Promise();
-    var resolvePreload = function() {
-      promiseToPreload.resolve();
-    };
-    var rejectPreload = function() {
-      promiseToPreload.reject();
-    };
 
 
     // We need our times (and timeLayers)
@@ -172,10 +166,10 @@ define([
 
         // Preload each layer in sequece
         Promise.sequence(layers, this.preloadLayer_.bind(this)).
-          done(resolvePreload).
-          fail(rejectPreload);
+          done(promiseToPreload.resolve).
+          fail(promiseToPreload.reject);
       }, this).
-      fail(rejectPreload);
+      fail(promiseToPreload.reject);
 
     return promiseToPreload;
   };
