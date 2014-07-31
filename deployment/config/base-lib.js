@@ -7,7 +7,8 @@ module.exports = {
 
   paths: {
     'aeris/maps/strategy': 'src/maps/gmaps',
-    'leaflet': 'src/maps/leaflet/leaflet-amd'
+    'leaflet': 'src/maps/leaflet/leaflet-amd',
+    'mapbox': 'src/maps/leaflet/mapbox-amd'
   },
 
   optimize: 'none',
