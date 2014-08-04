@@ -95,10 +95,15 @@
   // You can start the animation right away.
   // The animation may start out choppy, but as layers are
   // loaded, they will be added to the animation.
-  //
-  // Alternatively, you can wait for the 'load:complete' event
-  // to fire.
   animationSync.start();
+
+  // Alternatively, you could preload the animation:
+  /*animationSync.preload();
+  animationSyc.on('load:progress', function(progress) {
+    if (progress >= 0.75) {
+      animationSync.start();
+    }
+  });*/
 
 
   // The animation object triggers
