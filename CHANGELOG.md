@@ -1,3 +1,13 @@
+# 0.7.13
+
+* ADD: New tile layer: `aeris.maps.layers.RadarSat` (combined radar and satellite)
+* ADD: `aeris.maps.Map` accepts a `baseLayer` option
+* ADD: New tile layer: `aeris.maps.layers.MapBox`, supporting custom MapBox tile layers.
+* ADD: Animations may be preloaded using the `preload()` method
+
+See git history for a full list of changes.
+
+
 # 0.7.12
 
 * ADD: New tile layer: `aeris.maps.layers.QPF` (Quantitative Precipitation Forecast)
