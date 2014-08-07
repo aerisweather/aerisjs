@@ -677,9 +677,11 @@ define([
       });
 
       function loadAll(timeLayers) {
-        _.each(timeLayers, function(lyr) {
-          lyr.promiseToPreload.resolve();
-        });
+        _.each(timeLayers, loadLayer);
+      }
+
+      function loadLayer(layer) {
+        layer.promiseToPreload.resolve();
       }
 
 
@@ -743,6 +745,20 @@ define([
           timeLayers[1].promiseToPreload.reject();
 
           expect(onReject).toHaveBeenCalled();
+        });
+
+        describe('if the masterLayer\'s map is unset during preloading', function() {
+
+          it('should continue to use the original map object for preloading', function() {
+            masterLayer.setMap(map);
+            animation.preload();
+
+            masterLayer.setMap(null);
+            loadLayer(timeLayers[0]);
+
+            expect(timeLayers[1].preload).toHaveBeenCalledWith(map);
+          });
+
         });
 
       });

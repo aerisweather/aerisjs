@@ -156,7 +156,7 @@ define([
    */
   TileAnimation.prototype.preload = function() {
     var promiseToPreload = new Promise();
-
+    var mapToUseForPreloading = this.masterLayer_.getMap();
 
     // We need our times (and timeLayers)
     // to be loaded, before we can preload layers
@@ -165,7 +165,9 @@ define([
         var layers = _.values(this.timeLayers_);
 
         // Preload each layer in sequece
-        Promise.sequence(layers, this.preloadLayer_.bind(this)).
+        Promise.sequence(layers, function(layer) {
+          return layer.preload(mapToUseForPreloading);
+        }).
           done(promiseToPreload.resolve).
           fail(promiseToPreload.reject);
       }, this).
