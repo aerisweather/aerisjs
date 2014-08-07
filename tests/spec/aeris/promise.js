@@ -436,6 +436,20 @@ define([
         expect(onResolve).toHaveBeenCalled();
       });
 
+      it('should throw an error if the promiseFn does not return a promise', function() {
+        expect(function() {
+          Promise.sequence([1, 2, 3], function() {
+            return void 0;
+          });
+        }).toThrowType('InvalidArgumentError');
+
+        expect(function() {
+          Promise.sequence([1, 2, 3], function() {
+            return new Date();
+          });
+        }).toThrowType('InvalidArgumentError');
+      });
+
     });
   });
 

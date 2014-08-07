@@ -279,8 +279,7 @@ define([
       var obj = objects[i];
 
       if (obj) {
-        // Call the promiseFn with the object
-        promiseFn(obj).
+        Promise.callPromiseFn_(promiseFn, obj).
           done(function(arg) {
             // When the promiseFn resolves,
             // Save the resolution data
@@ -299,6 +298,25 @@ define([
     nextAt(0);
 
     return promiseToResolveAll;
+  };
+
+
+  /**
+   *
+   * @param {function():Promise} promiseFn
+   * @param {*...} var_args
+   * @private
+   */
+  Promise.callPromiseFn_ = function(promiseFn, var_args) {
+    var args = Array.prototype.slice.call(arguments, 1);
+    var promise = promiseFn.apply(null, args);
+
+    if (!(promise instanceof Promise)) {
+      throw new InvalidArgumentError('Promise.sequence expects the promiseFn ' +
+        'argument to return an aeris.Promise object.');
+    }
+
+    return promise;
   };
 
 
