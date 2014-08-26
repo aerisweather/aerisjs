@@ -202,6 +202,21 @@ define([
 
 
   /**
+   * Resolve/reject the promise
+   * when the proxy promise is resolved/rejected.
+   *
+   * @method {aeris.Promise} proxy
+   */
+  Promise.prototype.proxy = function(proxyPromise) {
+    proxyPromise.
+      done(this.resolve).
+      fail(this.reject);
+
+    return this;
+  };
+
+
+  /**
    * Create a master promise from a combination of promises.
    * Master promise is resolved when all component promises are resolved,
    * or rejected when any single component promise is rejected.
@@ -317,6 +332,30 @@ define([
     }
 
     return promise;
+  };
+
+
+  /**
+   * Similar to Promise#when, but accepts a map function
+   * which transforms array members into promises.
+   *
+   * eg.
+   *
+   *  var apiEndpoints = [ '/endpointA', '/endpointB' ];
+   *
+   *  function request(endpoint) {
+   *  // .. returns a promise
+   *  }
+   *
+   *  // Resolves when requests have completed for all endpoints.
+   *  Promise.map(apiEndpoints, request);
+   *
+   * @param {Array} arr
+   * @param {function(*):aeris.Promise} mapFn
+   * @return {aeris.Promise}
+   */
+  Promise.map = function(arr, mapFn, opt_ctx) {
+    return Promise.when(arr.map(mapFn, opt_ctx));
   };
 
 

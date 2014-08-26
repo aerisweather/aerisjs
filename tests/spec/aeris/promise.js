@@ -451,6 +451,89 @@ define([
       });
 
     });
+
+
+    describe('proxy', function() {
+
+      it('should proxy another promise\'s resolution state', function() {
+        var onResolve = jasmine.createSpy('onResolve');
+        var basePromise = new Promise();
+        var proxyPromise = new Promise();
+
+        proxyPromise.done(onResolve);
+        proxyPromise.proxy(basePromise);
+
+        basePromise.resolve('foo');
+        expect(onResolve).toHaveBeenCalledWith('foo');
+      });
+
+      it('should proxy another promise\'s failure state', function() {
+        var onReject = jasmine.createSpy('onReject');
+        var basePromise = new Promise();
+        var proxyPromise = new Promise();
+
+        proxyPromise.fail(onReject);
+        proxyPromise.proxy(basePromise);
+
+        basePromise.reject('foo');
+        expect(onReject).toHaveBeenCalledWith('foo');
+      });
+
+    });
+
+
+    describe('map', function() {
+
+      it('should provide a callback, with each array member', function() {
+        var arr = ['foo', 'bar'];
+        var mapFn = jasmine.createSpy('mapFn').andReturn(new Promise());
+
+        Promise.map(arr, mapFn);
+
+        expect(mapFn.argsForCall[0][0]).toEqual('foo');
+        expect(mapFn.argsForCall[1][0]).toEqual('bar');
+      });
+
+      it('should call the mapFn in the provided ctx', function() {
+        var mapFn = jasmine.createSpy('mapFn').andReturn(new Promise());
+        var ctx = { some: 'ctx' };
+
+        Promise.map(['a', 'b'], mapFn, ctx);
+
+        expect(mapFn).toHaveBeenCalledInTheContextOf(ctx);
+      });
+
+      it('should resolve when all of the returned promises resolve', function() {
+        var promiseA = new Promise(), promiseB = new Promise();
+        var onResolve = jasmine.createSpy('onResolve');
+
+        Promise.map(['a', 'b'], function(item) {
+          return item === 'a' ? promiseA : promiseB;
+        }).
+          done(onResolve);
+
+        promiseA.resolve();
+        expect(onResolve).not.toHaveBeenCalled();
+
+        promiseB.resolve();
+        expect(onResolve).toHaveBeenCalled();
+      });
+
+      it('should fail if any of the returned promises fail', function() {
+        var promiseA = new Promise(), promiseB = new Promise();
+        var onReject = jasmine.createSpy('onReject');
+
+        Promise.map(['a', 'b'], function(item) {
+          return item === 'a' ? promiseA : promiseB;
+        }).
+          fail(onReject);
+
+        promiseA.reject();
+        expect(onReject).toHaveBeenCalled();
+      });
+
+    });
+
   });
 
 
