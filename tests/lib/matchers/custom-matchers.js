@@ -158,6 +158,14 @@ require([
         }, this);
 
         return isPassing;
+      },
+
+
+      toHaveBeenCalledWithInstanceOf: function(Type) {
+        return this.actual.argsForCall.
+          some(function(callArgs) {
+            return callArgs[0] instanceof Type;
+          });
       }
     });
   });
