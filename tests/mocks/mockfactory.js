@@ -48,6 +48,22 @@ define(['aeris/util'], function(_) {
       return this.mockName_;
     };
 
+
+    /**
+     * Sets name used in jasmineToString.
+     * eg:
+     *  var myMock = new SomeMock().withName('myMock');
+     *
+     * @param {String} name
+     * @returns {MockFactory}
+     * @chainable
+     */
+    Mock.prototype.withName = function(name) {
+      this.mockName_ = name;
+      return this;
+    };
+
+
     options.methods.forEach(function(methodName) {
       Mock.prototype[methodName] = function() {};
     });
