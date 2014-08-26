@@ -21,8 +21,6 @@ define([
     };
     Person.prototype.eavesdrop = function() {};
 
-    describe('off', function() {
-    });
 
     describe('Event hash', function() {
       var evtObj;
