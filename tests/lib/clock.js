@@ -12,6 +12,12 @@ define(['sinon', 'underscore'], function(sinon, _) {
   return {
     useFakeTimers: function(var_args) {
       _.now = function() { return Date.now(); };
+
+      // Clean up any existing clocks.
+      if (clock) {
+        clock.restore();
+      }
+
       clock = sinon.useFakeTimers.apply(sinon, arguments);
     },
     restore: function() {
