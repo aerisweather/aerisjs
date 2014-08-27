@@ -116,17 +116,26 @@ define([
 
           describe('the \'requests\' parameter', function() {
             var requestsParam, modelAParams;
+            var CLIENT_ID_STUB = 'CLIENT_ID_STUB', CLIENT_SECRET_STUB = 'CLIENT_SECRET_STUB';
 
             beforeEach(function() {
               modelAParams = new Model({
                 foo: 'bar',
-                faz: 'baz'
+                faz: 'baz',
+                client_id: CLIENT_ID_STUB,
+                client_secret: CLIENT_SECRET_STUB
               });
               modelA.getParams.andReturn(modelAParams);
 
               batchModel.fetch();
 
               requestsParam = jsonp.getRequestedData().requests;
+            });
+
+
+            it('should include a client_id and client_secret param, copied from any model', function() {
+              expect(jsonp.getRequestedData().client_id).toEqual(CLIENT_ID_STUB);
+              expect(jsonp.getRequestedData().client_secret).toEqual(CLIENT_SECRET_STUB);
             });
 
             describe('each component model request', function() {
@@ -151,7 +160,15 @@ define([
                 expect(requestsParam).toMatch(/\/.*,\/.*/i);
               });
 
+              // Duplicating the client_id/client_secret for every model can
+              // potentially cause the url length to exceed the limit.
+              it('should not include the client_id/client_secret params in individual model params', function() {
+                expect(requestsParam).not.toMatch(CLIENT_ID_STUB);
+                expect(requestsParam).not.toMatch(CLIENT_SECRET_STUB);
+              });
+
             });
+
 
           });
 

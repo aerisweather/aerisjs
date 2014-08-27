@@ -67,7 +67,7 @@ define([
 
     return _.extend(params.toJSON(), {
       requests: this.getEncodedEndpoints_(this.modelsInOrder_)
-    });
+    }, this.getApiKeyParams_());
   };
 
 
@@ -99,6 +99,7 @@ define([
    * @method getEncodedEndpoints_
    * @private
    * @param {Array.<aeris.api.models.AerisApiModel>} apiModels
+   * @return {string}
    */
   AerisBatchModel.prototype.getEncodedEndpoints_ = function(apiModels) {
     var requests = apiModels.map(function(model) {
@@ -121,8 +122,12 @@ define([
    * @return {string} Encoded model params.
    */
   AerisBatchModel.prototype.encodeModelParams_ = function(model) {
+    var paramsStr;
     var params = model.getParams().toJSON();
-    var paramsStr = _.map(params, function(val, key) {
+
+    this.removeApiKeysFromParams_(params);
+
+    paramsStr = _.map(params, function(val, key) {
       return key + '=' + val;
     }).join('&');
 
@@ -139,6 +144,46 @@ define([
     return string.
       replace('?', '%3F').
       replace('&', '%26');
+  };
+
+
+  /**
+   * It is likely that each model contains idential
+   * client_id/client_secret params. This will result in the
+   * params being serialized into the query string for every model.
+   *
+   * For batch queries with many model, this could potentially
+   * exceed the url limit.
+   *
+   * @method removeApiKeysFromParams_
+   * @private
+   * @param {Object} serializedParams
+   */
+  AerisBatchModel.prototype.removeApiKeysFromParams_ = function(serializedParams) {
+    delete serializedParams.client_id;
+    delete serializedParams.client_secret;
+  };
+
+
+  /**
+   * Find the Aeris client_id and client_secret params
+   * by searching through component models.
+   *
+   * @method getApiKeyParams_
+   * @private
+   * @return {Object}
+   */
+  AerisBatchModel.prototype.getApiKeyParams_ = function() {
+    var apiKeyParams = {};
+
+    this.modelsInOrder_.some(function(model) {
+      apiKeyParams = model.getParams().pick('client_id', 'client_secret');
+
+      // Stop looping once we've found the params.
+      return apiKeyParams.client_id && apiKeyParams.client_secret;
+    }, this);
+
+    return apiKeyParams;
   };
 
 
