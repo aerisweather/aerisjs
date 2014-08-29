@@ -1,3 +1,18 @@
+# 0.7.14
+
+* ADD: Promise.sequence method
+* ADD: Promise.map method
+* ADD: Promise#proxy method
+* MOD: Remove duplication Aeris API keys from BatchModel requests.
+* FIX: Fix error thrown by TileAnimation, if a layer is
+       removed from the map while preloading.
+* FIX: Fix possible error with L.mapbox, in build.
+       AMD wrapper was not returning the correct global property.
+* FIX: Avoid overriding base `aeris` namespace in build.
+
+See git history for a full list of changes.
+
+
 # 0.7.13
 
 * ADD: New tile layer: `aeris.maps.layers.RadarSat` (combined radar and satellite)
