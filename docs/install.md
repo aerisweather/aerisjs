@@ -40,14 +40,14 @@ There are several hosted versions of the Aeris.js library, each with a varying s
 
     Render weather tile layers and data using [Google Maps](https://developers.google.com/maps/).
 
-    [//cdn.aerisjs.com/gmaps.min.js](//cdn.aerisjs.com/gmaps.min.js)
+    [//cdn.aerisjs.com/aeris-gmaps.min.js](//cdn.aerisjs.com/aeris-gmaps.min.js)
 
 
 * **Weather for Leaflet**
 
     Render weather tile layers and data using [Leaflet](http://leafletjs.com/).
 
-    [//cdn.aerisjs.com/leaflet.min.js](//cdn.aerisjs.com/leaflet.min.js)
+    [//cdn.aerisjs.com/aeris-leaflet.min.js](//cdn.aerisjs.com/aeris-leaflet.min.js)
 
 * **Weather for OpenLayers**
 
@@ -61,19 +61,19 @@ There are several hosted versions of the Aeris.js library, each with a varying s
 
     A javascript interface for the [Aeris Weather API](http://www.hamweather.com/support/documentation/aeris).
 
-    [//cdn.aerisjs.com/api.min.js](//cdn.aerisjs.com/api.min.js)
+    [//cdn.aerisjs.com/api.min.js](//cdn.aerisjs.com/aeris-api.min.js)
 
 * **Weather for Google Maps + Geo Services**
 
     Includes additional APIs for [`geolocation`](http://docs.aerisjs.com#aeris.geolocate), [`geocoding`](http://docs.aerisjs.com#aeris.geocode), and [`directions`](http://docs.aerisjs.com/api/classes/aeris.directions.DirectionsServiceInterface.html).
 
-    [//cdn.aerisjs.com/gmaps-plus.min.js](//cdn.aerisjs.com/gmaps-plus.min.js)
+    [//cdn.aerisjs.com/aeris-gmaps-plus.min.js](//cdn.aerisjs.com/aeris-gmaps-plus.min.js)
 
 * **Weather for Leaflet + Geo Services**
 
     Includes additional APIs for [`geolocation`](http://docs.aerisjs.com#aeris.geolocate), [`geocoding`](http://docs.aerisjs.com#aeris.geocode), and [`directions`](http://docs.aerisjs.com/api/classes/aeris.directions.DirectionsServiceInterface.html).
 
-    [//cdn.aerisjs.com/leaflet-plus.min.js](//cdn.aerisjs.com/leaflet-plus.min.js)
+    [//cdn.aerisjs.com/aeris-leaflet-plus.min.js](//cdn.aerisjs.com/aeris-leaflet-plus.min.js)
     
 
 
