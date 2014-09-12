@@ -157,7 +157,6 @@ define([
       });
 
 
-
       it('should invoke the callback with each object, waiting INTERVAL between each call', function() {
         var objects = ['A', 'B', 'C'];
         var cb = jasmine.createSpy('cb');
