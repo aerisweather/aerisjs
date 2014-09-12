@@ -3,7 +3,7 @@ module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-contrib-requirejs');
 
-  return {
+  return grunt.config.merge({
     requirejs: {
       options: {
         logLevel: grunt.option('verbose') ? 0 : 2     // 0 = TRACE, 2 = WARN
@@ -122,5 +122,5 @@ module.exports = function(grunt) {
 
       }
     }
-  };
+  });
 };

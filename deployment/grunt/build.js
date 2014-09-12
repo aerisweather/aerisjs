@@ -1,13 +1,29 @@
 module.exports = function(grunt) {
-  grunt.registerTask('copyBuild', [
+
+  grunt.registerTask('build', [
+    'version',
+    'test',
+    'shell:removeBuildDir',
+    'requirejs',
+    'docs',
+
     'shell:copyAssets',
     'shell:copyAerisJs',
     'shell:copyLibToVersionDir',
     'shell:copyDocsToVersionDir'
   ]);
 
+
   grunt.config.merge({
     shell: {
+      removeBuildDir: {
+        command: 'rm -r build',
+        options: {
+          // Should not fail if build dir does not exist
+          failOnError: false
+        }
+      },
+
       copyAerisJs: {
         command: [
           'cp <%=buildDirs.lib %>/aeris-leaflet-plus.js <%=buildDirs.lib %>/aeris.js',

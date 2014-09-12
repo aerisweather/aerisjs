@@ -1,5 +1,5 @@
 module.exports = function(grunt) {
-  return {
+  grunt.config.merge({
     buildDirs: {
       lib: 'build/lib',
       docs: 'build/docs',
@@ -25,5 +25,5 @@ module.exports = function(grunt) {
       docs: '//staging.aerisjs.com/docs',
       demo: '//staging.aerisjs.com/demo'
     }
-  };
+  });
 };
