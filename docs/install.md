@@ -61,7 +61,7 @@ There are several hosted versions of the Aeris.js library, each with a varying s
 
     A javascript interface for the [Aeris Weather API](http://www.hamweather.com/support/documentation/aeris).
 
-    [//cdn.aerisjs.com/api.min.js](//cdn.aerisjs.com/aeris-api.min.js)
+    [//cdn.aerisjs.com/aeris-api.min.js](//cdn.aerisjs.com/aeris-api.min.js)
 
 * **Weather for Google Maps + Geo Services**
 

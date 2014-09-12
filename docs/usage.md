@@ -22,7 +22,7 @@ For example, [`aeris.maps.layers.Radar`](http://docs.aerisjs.com#aeris.maps.laye
 
 ## Demos
 
-In the interest of providing clear and concise demonstration code, not all of the examples in this document can run as-is. If you would like to see full working examples of Aeris.js code, visit our [Demos](demo.md) page.
+In the interest of providing clear and concise demonstration code, not all of the examples in this document can run as-is. If you would like to see full working examples of Aeris.js code, visit our [Demos](http://demo.aerisjs.com/ page.
 
 
 ## Supported Mapping Libraries
