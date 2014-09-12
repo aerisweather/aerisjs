@@ -103,7 +103,7 @@ define([
     /**
      * @property mapEl_
      * @private
-     * @type {string|HTMLElement|{}} Map element be also be a reference to a pre-existing map view
+     * @type {HTMLElement} Map element be also be a reference to a pre-existing map view
      */
     this.mapEl_ = this.normalizeElement_(el);
 
