@@ -293,6 +293,20 @@ define([
       };
 
       next(0);
+    },
+
+    /**
+     * @method tryCatch
+     * @param {function()} tryFn
+     * @param {function(Error)} catchFn
+     */
+    tryCatch: function(tryFn, catchFn) {
+      try {
+        tryFn();
+      }
+      catch (err) {
+        catchFn(err);
+      }
     }
   };
 

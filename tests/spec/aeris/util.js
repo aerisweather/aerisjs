@@ -438,6 +438,41 @@ define([
     });
 
 
+    describe('tryCatch', function() {
+      var tryFn, catchFn;
+
+      beforeEach(function() {
+        tryFn = jasmine.createSpy('tryFn');
+        catchFn = jasmine.createSpy('catchFn');
+      });
+
+
+      it('should call the `try` function', function() {
+        _.tryCatch(tryFn, catchFn);
+
+        expect(tryFn).toHaveBeenCalled();
+      });
+
+      it('should call the `catch` function with errors thrown in try', function() {
+        var error = new Error('ERROR_THROWN_IN_TRY_FN');
+        tryFn.andCallFake(function() {
+          throw error;
+        });
+
+        _.tryCatch(tryFn, catchFn);
+
+        expect(catchFn).toHaveBeenCalledWith(error);
+      });
+
+      it('should not call the `catch` function if now errors are thrown in try', function() {
+        _.tryCatch(tryFn, catchFn);
+
+        expect(catchFn).not.toHaveBeenCalled();
+      });
+
+    });
+
+
     describe('extending underscore', function() {
 
       it('should not effect the underscore AMD module', function() {
