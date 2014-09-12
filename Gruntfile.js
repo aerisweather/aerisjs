@@ -3,11 +3,6 @@ module.exports = function(grunt) {
 
   // Project configuration.
   var config = _.extend({
-      buildDirs: {
-        lib: 'build/lib',
-        docs: 'build/docs',
-        demo: 'build/demo'
-      },
       pkg: grunt.file.readJSON('package.json'),
 
       shell: _.extend({
@@ -24,14 +19,23 @@ module.exports = function(grunt) {
           },
 
 
-
           'ignore-closer-linter-changes': {
             command: 'git checkout -- node_modules/closure-linter-wrapper/'
+          },
+
+          // Manually update bower compoments
+          // for demo, so we can use the lastest Aerisjs version
+          // before it has been released publicly
+          'update-amd-demo-aerisjs-bower-component': {
+            command: [
+              'cp -rf src <% buildDirs.demo %>/amd/bower_components/aerisjs'
+            ].join('&&')
           }
         },
-        require('./deployment/shell-deploy-s3')(grunt),
-        require('./deployment/shell-generate-docs')(grunt),
-        require('./deployment/shell-copy-build')(grunt)
+        require('./deployment/grunt/shell-deploy-s3')(grunt),
+        require('./deployment/grunt/shell-deploy-s3-staging')(grunt),
+        require('./deployment/grunt/shell-generate-docs')(grunt),
+        require('./deployment/grunt/shell-copy-build')(grunt)
       ),
 
       compress: {
@@ -56,24 +60,24 @@ module.exports = function(grunt) {
           dest: '<%=buildDirs.lib %>',
           cwd: '<%=buildDirs.lib %>'
         },
-        demo: {
-          expand: true,
-          src: ['**/*', '!apikeys.*'],
-          dest: '<%=buildDirs.demo %>',
-          cwd: 'examples/'
-        },
-        'lib-for-demo-rc': {
-          expand: true,
-          src: ['**/*'],
-          dest: '<%=buildDirs.demo %>/lib',
-          cwd: 'build/lib'
-        },
         'demo-api-keys': {
           expand: true,
           src: 'apikeys.demo.js',
           dest: '<%=buildDirs.demo %>',
           ext: '.js',
           cwd: 'examples/'
+        },
+        'examples-to-demo': {
+          expand: true,
+          src: '**/*',
+          dest: '<%=buildDirs.demo %>',
+          cwd: 'examples/'
+        },
+        'aeris-to-amd-demo-bower-component': {
+          expand: true,
+          src: '**/*',
+          dest: '<%=buildDirs.demo %>/amd/bower_components/aerisjs/src',
+          cwd: 'src/'
         }
       },
 
@@ -83,19 +87,10 @@ module.exports = function(grunt) {
         }
       },
 
-      'demo-rc': {
-        // Creates a copy of the /examples dir,
-        // with script paths linking to files on the uat server.
-        staging: {
-          expand: true,
-          src: ['**/*.*', '!**/', '!**/bower_components/**', '!**/sandbox/**'],
-          dest: '<%=buildDirs.demo %>',
-          cwd: 'examples/',
-          options: {
-            libPathTemplate: '//uat.hamweather.net/eschwartz/demo/lib/{{fileName}}'
-          }
-        }
-      },
+      replace: _.extend({},
+        require('./deployment/grunt/replace-version')(grunt),
+        require('./deployment/grunt/replace-demo-to-use-staging-version-of-aerisjs')(grunt)
+      ),
 
       // Use this task to set up git hooks
       githooks: {
@@ -108,19 +103,20 @@ module.exports = function(grunt) {
       }
     },
     require('./deployment/grunt/jasmine-legacy')(grunt),
-    require('./deployment/grunt/version')(grunt),
-    require('./deployment/grunt/gjslilnt')(grunt),
-    require('./deployment/grunt/requirejs')(grunt)
+    require('./deployment/grunt/gjslint')(grunt),
+    require('./deployment/grunt/requirejs')(grunt),
+    require('./deployment/grunt/compass')(grunt),
+    require('./deployment/grunt/config-paths')(grunt)
   );
 
   grunt.initConfig(config);
 
-  grunt.loadTasks('tasks/demo-rc');
   grunt.loadNpmTasks('grunt-shell');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-compress');
   grunt.loadNpmTasks('grunt-githooks');
+  grunt.loadNpmTasks('grunt-text-replace');
 
   // Also -- see githooks task.
 
@@ -131,14 +127,6 @@ module.exports = function(grunt) {
     // gjslint modifies files in the closure-linter-wrapper node module
     // every time you run it. This will remove those changes.
     'shell:ignore-closer-linter-changes'
-  ]);
-
-  // Prepare demo site to deploy to uat (staging)
-  // server (in build/demo
-  grunt.registerTask('demo-uat', [
-    'build',
-    'demo-rc',
-    'copy:lib-for-demo-rc'
   ]);
 
   grunt.registerTask('build', [
@@ -152,13 +140,23 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('buildDemo', [
-    'copy:demo',
+    'copy:examples-to-demo',
+    'copy:aeris-to-amd-demo-bower-component',
     'copy:demo-api-keys'
+  ]);
+
+  grunt.registerTask('deploy-staging', [
+    'build',
+    'buildDemo',
+    'replace:demo-to-use-staging-version-of-aerisjs',
+    'gzip',
+    'deployS3-staging'
   ]);
 
   grunt.registerTask('deploy', [
     'build',
     'buildDemo',
+    'gzip',
     'shell:deployS3-lib',
     'shell:deployS3-docs',
     'shell:deployS3-demo'
@@ -180,7 +178,7 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('travis', [
-    'version:aeris',
+    'version',
     'build',
     'buildDemo',
     'gzip'

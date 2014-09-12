@@ -1,5 +1,5 @@
 module.exports = function(grunt) {
-  var createRjsConfig = require('./scripts/createrjsconfig');
+  var createRjsConfig = require('../scripts/createrjsconfig');
 
   grunt.loadNpmTasks('grunt-contrib-requirejs');
 

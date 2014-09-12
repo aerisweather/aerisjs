@@ -7,23 +7,23 @@ module.exports = function(grunt) {
   ]);
 
   return {
-    'deployS3-docs': {
-      command: 'aws s3 cp <%=buildDirs.docs %> s3://aerisjs-docs ' +
-        '--recursive ' +
-        '--cache-control max-age=1800 ' +
-        '--quiet'
-    },
-
     'deployS3-lib': {
-      command: 'aws s3 cp <%=buildDirs.lib %> s3://aerisjs-cdn ' +
+      command: 'aws s3 cp <%=buildDirs.lib %> <%=deployBuckets.lib %> ' +
         '--recursive  ' +
         '--content-encoding gzip ' +
         '--cache-control max-age=1800 ' +
         '--quiet'
     },
 
+    'deployS3-docs': {
+      command: 'aws s3 cp <%=buildDirs.docs %> <%=deployBuckets.docs %> ' +
+        '--recursive ' +
+        '--cache-control max-age=1800 ' +
+        '--quiet'
+    },
+
     'deployS3-demo': {
-      command: 'aws s3 cp <%=buildDirs.demo %> s3://demo.aerisjs.com ' +
+      command: 'aws s3 cp <%=buildDirs.demo %> <%=deployBuckets.lib %> ' +
         '--recursive ' +
         '--cache-control max-age=1800 ' +
         '--quiet'
