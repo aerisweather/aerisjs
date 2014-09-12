@@ -18,21 +18,26 @@ module.exports = function(grunt) {
   });
 
   // External config files
-  require('./deployment/grunt/config-paths')(grunt);
+  var configFiles = [
+    'config-paths',
 
-  require('./deployment/grunt/test')(grunt);
-  require('./deployment/grunt/requirejs')(grunt);
-  require('./deployment/grunt/docs')(grunt);
-  require('./deployment/grunt/build')(grunt);
-  require('./deployment/grunt/build-demo')(grunt);
+    'test',
+    'requirejs',
+    'docs',
+    'build',
+    'build-demo',
 
-  require('./deployment/grunt/deploy')(grunt);
-  require('./deployment/grunt/deploy-staging')(grunt);
+    'deploy',
+    'deploy-staging',
 
-  require('./deployment/grunt/version')(grunt);
-  require('./deployment/grunt/gzip')(grunt);
-  require('./deployment/grunt/githooks')(grunt);
-  require('./deployment/grunt/travis')(grunt);
+    'version',
+    'gzip',
+    'githooks',
+    'travis'
+  ];
+  configFiles.forEach(function(fileName) {
+    require('./deployment/grunt/' + fileName)(grunt);
+  });
 
 
   grunt.registerTask('default', [
