@@ -1,0 +1,177 @@
+comments, declaration order
+#237 - wrong order after function
+#181 - split var dec. and func dec.
+#3
+#145 - comments are nested wrong, within closures if commment is last line
+
+keywords as attribues 
+#234 - instanceof
+#157 - delete
+#106 - default
+#179 - _eval 
+#171 - _arguments 
+#154 - _arguments 
+#167 - _on
+#153 - yield
+
+if/unless
+#233 - switches with >2 cases
+#121
+#213 - wrong translation
+#226 - unbracketed then/else
+#141 - wrong translate for unbracketed if-else 
+#108
+#182 - if-if-else
+
+#142 - conitnue in nested for/witch
+#110
+
+#121 - switch case, without break and empty cases
+#91 - Support for 2 or more fall-through cases
+#28
+#70
+#76
+
+
+if should not be inline for function dec.
+#162
+
+return values
+#245 - not null in inner functions
+#168 - implicit returns
+#48 - implicit return bug
+#154
+#151 - return nothing
+#139
+#128 - constructor return statement
+
+loops for / while
+#244 - wrong translation of loop with continue
+#197 - wrong conversion of loop with continue
+#49 - continue in loop don't increment step
+#184 - pr for continue bug
+#120 - empty loops PR
+#116 - empty loops
+#60 - empty loops
+
+strings interpolations
+#228 - handlebar templates
+#192
+
+
+Clearify
+#243 - webstorm, windows
+#225 - sublime plugin
+#219 - var shadowing
+#230 - npm install (property of length)
+#189
+#199 - property of length
+#201
+#193 - js2coffee is broken, const
+#188 - error on js2coffee
+#187 - cli piping
+#186 - node script
+#186 - script, programatible
+#185 - english boolean, symbols, wtf?
+#183 - stdin, windows
+#175 - newlines
+#172 - es6 syntax
+#170 - reference, miniclip app
+#164 - tern operator
+#161 - use as module
+#144 - grouped expressions, why? not needed
+#138 - prototype instance of, seems to SOLVED meanwhile
+#130 - !someVar, seems to be SOLED meanwhile
+#123 - coffee not installed, no such file or directory
+#101 - seems to be fixed meanwhile
+#83 - seems to fixed already
+#53 - fixed now
+
+CLI
+#187 - cli piping
+#225 - sublime plugin
+#243 - webstorm, windows
+#186 - script, programatible
+#71 - convert multiple files in a directory
+
+indent / outdent
+#239 - weird tab issue
+#204 unexpected outdent
+#175 - newlines
+#129 - spaces for inline unless/if epxressions
+#127 - missing whitespace for mixed types (object,array,objects) fixed since my commit
+     -> #146 ??
+#89 - fixed by pretty arrays?
+
+
+Anonymous function / chain
+#155 - PR - ifie, parenthesize
+#222 - chaing with a property
+#135 - function definition + method call
+#55
+#177 - function chain
+
+anony functino call
+#200 - IFIE
+#198 - IFIE
+#190 - IFIE, wrong brackets
+#150 - fail to parenthize when assign >real< IFIE
+
+
+parenthizing
+#18 - don't need to be parenthesized
+
+operators
+#19 - compile existence checks to existential operator
+
+Syntax
+#242 - comma seperator
+#21 - for each + let
+
+features
+#22 - recognize default parameters
+#74 - constructor defaults
+#34 - do instead of IIFE
+#33 - int/float ranges
+
+# error handling - not supported
+#217 - undefined empty element in array
+#158 - line numbers
+#140 - throw error when try to use shadow vars
+
+js2coffee.org
+#239 - weird tab issue
+#216 - slow, static 
+#210 - permission for reo
+#203 - server uptime
+#193 - js2coffee is broken, const
+#188 - error on js2coffee
+#166 - fork button
+#137 - Ctrl + L -> GoTo Line, SOLVED for new editor
+#131 - end/home key
+#122 - remove 2nd tab, use only one
+#111 - line numbers
+
+dev / test / build process
+#209 - browser test
+#208 - merge PR
+#207 - merge js2coffee org into this repo
+#203 - server uptime
+#161 - use as module
+
+#133 - lost multiple regex flags
+
+
+misc
+#205
+#77
+#178 - utf8
+#152 - portage to livescript
+#136 - LowDash instead of Underscore
+#129 - spaces for inline unless/if epxressions
+#128 - constructor return statement
+#125 - regex after empty try/catch fails
+#124 - strange bug
+#118 - custom code related stuff
+#114 - multiple options for output
+#80 - file encoding
