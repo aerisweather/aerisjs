@@ -5,7 +5,7 @@ var mkdirp_p = whenNode.lift(require('mkdirp'));
 var fs_p = whenNode.liftAll(require('fs'));    // Promisified version of fs.
 
 module.exports = function demoRCTask(grunt) {
-  grunt.registerMultiTask('demo-rc', 'Prepare Aeris.js demos for release candidate version (prep to deploy to uat)', function() {
+  grunt.registerMultiTask('demo-rc', 'Replace all references to the Aeris.js lib on the CDN, with local references', function() {
     var done = this.async();
     var options = this.options({
       libSrcAttrPattern: /src="(.*aeris.*\.js)"/,
