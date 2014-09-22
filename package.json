@@ -12,8 +12,8 @@
   "scripts": {
     "test": "./node_modules/grunt-cli/bin/grunt test",
     "build": "./node_modules/grunt-cli/bin/grunt",
-    "deploy": "./node_modules/grunt-cli/bin/grunt deploy --env=prod",
-    "deploy-staging": "./node_modules/grunt-cli/bin/grunt deploy --env=staging"
+    "deploy": "./node_modules/grunt-cli/bin/grunt deploy --env=prod --verbose",
+    "deploy-staging": "./node_modules/grunt-cli/bin/grunt deploy --env=staging --verbose"
   },
   "repository": {
     "type": "git",
