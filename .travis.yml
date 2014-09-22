@@ -7,6 +7,7 @@ install:
 script:
 - if [[ "$TRAVIS_BRANCH" == "master" ]]; then npm run-script deploy; fi
 - if [[ "$TRAVIS_BRANCH" == "staging" ]]; then npm run-script deploy-staging; fi
+- if [[ "$TRAVIS_BRANCH" != "staging" ]] && [[ "$TRAVIS_BRANCH" != "master" ]]; then npm run-script build; fi
 env:
   global:
     secure: XtHn8ijC15oQD0RfT+ppsi1n/jVrES0LuBpo7K0nS/1vHO9NajZBoTP8X6mB+Cc2OwvE6tXEJ2YFZZ28GAGQH+NQW9L7IxXvooAvjrtugxFNKsVeU2Llu8UcLmWZ/5YpkwEPTOMN/yBg8vYoa6Pkb0zlK/aKgY6EqgiXu7k098s=
