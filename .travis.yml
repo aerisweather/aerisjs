@@ -3,17 +3,12 @@ node_js:
 - '0.11'
 install:
 - gem install compass
-- if [[ "$TRAVIS_BRANCH" == "master" ]]; then sudo pip install awscli; fi
+- if [[ "$TRAVIS_BRANCH" == "master" ]] || [[ "$TRAVIS_BRANCH" == "staging" ]]; then sudo pip install awscli; fi
 script:
-- npm run-script travis
+- if [[ "$TRAVIS_BRANCH" == "master" ]]; then npm run-script deploy; fi
+- if [[ "$TRAVIS_BRANCH" == "staging" ]]; then npm run-script deploy-staging; fi
 env:
   global:
     secure: XtHn8ijC15oQD0RfT+ppsi1n/jVrES0LuBpo7K0nS/1vHO9NajZBoTP8X6mB+Cc2OwvE6tXEJ2YFZZ28GAGQH+NQW9L7IxXvooAvjrtugxFNKsVeU2Llu8UcLmWZ/5YpkwEPTOMN/yBg8vYoa6Pkb0zlK/aKgY6EqgiXu7k098s=
-after_success:
-  - if [[ "$TRAVIS_BRANCH" != "master" ]]; then echo "Deployments are only done for the master branch. Current branch is $TRAVIS_BRANCH"; exit 0; fi
-  - echo "Deploying build $TRAVIS_BUILD_NUMBER"
-  - aws s3 cp build/lib s3://cdn.aerisjs.com --recursive --content-encoding gzip --cache-control max-age=1800
-  - aws s3 cp build/docs s3://docs.aerisjs.com --recursive --cache-control max-age=1800 --quiet
-  - aws s3 cp build/demo s3://demo.aerisjs.com --recursive --cache-control max-age=1800 --quiet
 after_failure:
   - "cat /home/travis/build/hamweather/aerisjs/npm-debug.log"

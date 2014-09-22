@@ -10,10 +10,10 @@
     "lib": "src"
   },
   "scripts": {
-    "test": "./node_modules/grunt-cli/bin/grunt test --verbose",
-    "build": "./node_modules/grunt-cli/bin/grunt --verbose",
-    "travis": "./node_modules/grunt-cli/bin/grunt travis",
-    "deploy": "./node_modules/grunt-cli/bin/grunt deploy --verbose"
+    "test": "./node_modules/grunt-cli/bin/grunt test",
+    "build": "./node_modules/grunt-cli/bin/grunt",
+    "deploy": "./node_modules/grunt-cli/bin/grunt deploy --env=prod",
+    "deploy-staging": "./node_modules/grunt-cli/bin/grunt deploy --env=staging"
   },
   "repository": {
     "type": "git",
