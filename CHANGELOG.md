@@ -1,3 +1,8 @@
+# 0.7.15
+
+* FIX: Update usage of _.template to work with
+  to underscore v1.7.0
+
 # 0.7.14
 
 * ADD: Promise.sequence method
