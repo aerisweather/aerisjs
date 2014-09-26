@@ -355,12 +355,12 @@ define([
     describe('template', function() {
 
       it('should work with {var} syntax', function() {
-        var str = _.template('foo {what}', { what: 'bar' });
+        var str = _.template('foo {what}')({ what: 'bar' });
         expect(str).toEqual('foo bar');
       });
 
       it('should not effect underscore.template', function() {
-        _.template('foo {what}', { what: 'bar' });
+        _.template('foo {what}')({ what: 'bar' });
 
         expect(underscore.template('<%=foo%>', {
           foo: 'bar'

@@ -191,7 +191,7 @@
       }
     ]
     var template = $('#layer-controls-template').html();
-    var controlsHtml = _.template(template, { layers: layerData });
+    var controlsHtml = _.template(template)({ layers: layerData });
 
     $('.controls').html(controlsHtml);
   }

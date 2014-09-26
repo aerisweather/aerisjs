@@ -23,7 +23,7 @@ define([
   });
 
   MockApiModel.prototype.getEndpoint = function() {
-    return _.template('MockApiModel{id}ENDPOINTSTUB', {
+    return _.template('MockApiModel{id}ENDPOINTSTUB')({
       id: this.cid
     });
   };

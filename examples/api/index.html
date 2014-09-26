@@ -93,7 +93,7 @@
 
         // Render an info box
         // with some templated weather data
-        var html = _.template($('#forecast-template').html(), {
+        var html = _.template($('#forecast-template').html())({
           days: res.response[0].periods
         });
 
