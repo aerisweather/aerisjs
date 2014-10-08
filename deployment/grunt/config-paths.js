@@ -36,6 +36,10 @@ module.exports = function(grunt) {
       docs: 'build/docs',
       demo: 'build/demo'
     },
+    prodBuckets: prodBuckets,
+    prodPaths: prodPaths,
+    stagingBuckets: stagingBuckets,
+    stagingPaths: stagingPaths,
     deployBuckets: configResolver(prodBuckets, stagingBuckets),
     deployPaths: configResolver(prodPaths, stagingPaths)
   });

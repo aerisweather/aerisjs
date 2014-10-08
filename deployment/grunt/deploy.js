@@ -20,7 +20,7 @@ module.exports = function(grunt) {
     grunt.registerTask('deploy', ['deploy-prod']);
   }
   else if (grunt.option('env') === 'staging') {
-    grunt.registerTask('deploy', ['deploy-staing']);
+    grunt.registerTask('deploy', ['deploy-staging']);
   }
 
 

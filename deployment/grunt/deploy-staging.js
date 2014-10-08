@@ -41,7 +41,7 @@ module.exports = function(grunt) {
         overwrite: true,
         replacements: [
           {
-            from: '<%=deployPaths.lib %>',
+            from: '<%=prodPaths.lib %>',
             to: '<%=stagingPaths.lib %>'
           }
         ]
