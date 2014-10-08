@@ -1,7 +1,19 @@
 define([
   'aeris/util',
-  'aeris/maps/layers/abstracttile'
-], function(_, AbstractTile) {
+  'aeris/maps/layers/abstracttile',
+  'mocks/aeris/maps/map',
+  'mocks/mockfactory'
+], function(_, AbstractTile, MockMap, MockFactory) {
+
+  var MockConcreteTileStrategy = MockFactory({
+    name: 'ConcreteTileStrategy',
+    methods: [
+      'getView',
+      'setMap',
+      'remove'
+    ]
+  });
+
 
 
   var ConcreteTile = function(opt_attrs, opt_options) {
@@ -10,8 +22,11 @@ define([
       server: 'STUB_SERVER'
     });
     var options = _.defaults(opt_options || {}, {
-      strategy: function() {
-      }
+      strategy: function(tile) {
+        var mockStrategy = new MockConcreteTileStrategy;
+        tile.getMockStrategy = _.constant(mockStrategy);
+        return mockStrategy;
+      }.bind(this)
     });
 
     AbstractTile.call(this, attrs, options);
@@ -103,14 +118,14 @@ define([
 
       beforeEach(function() {
         tile = new ConcreteTile();
-        mockMap = { STUB: 'MAP' };
+        mockMap = new MockMap();
         onResolve = jasmine.createSpy('onResolve');
         onReject = jasmine.createSpy('onReject');
       });
 
       function loadTile(tile) {
         tile.trigger('load');
-      };
+      }
 
 
       it('should resolve immediately if the layer is already loaded', function() {
@@ -143,7 +158,23 @@ define([
 
         tile.preload(mockMap);
 
+        loadTile(tile);
+
         expect(tile.pick(['opacity', 'map'])).toEqual(attrs_orig);
+      });
+
+      it('should retain any state changes made during preloading', function() {
+        tile.preload(mockMap);
+
+        tile.set({
+          opacity: 0.5,
+          map: mockMap
+        }, { validate: false });
+
+        loadTile(tile);
+
+        expect(tile.getOpacity()).toEqual(0.5);
+        expect(tile.getMap()).toEqual(mockMap);
       });
 
       it('should reject if no map is provided', function() {
@@ -153,16 +184,10 @@ define([
         expect(onReject).toHaveBeenCalled();
       });
 
-      it('should set the layer to the provided map', function() {
-        var onChangeMap = jasmine.createSpy('onChangeMap');
-        tile.once('change:map', onChangeMap);
-
-        onChangeMap.andCallFake(function() {
-          expect(tile.get('map')).toEqual(mockMap);
-        });
-
+      it('should set the layer\'s view to the provided map', function() {
         tile.preload(mockMap);
-        expect(onChangeMap).toHaveBeenCalled();
+
+        expect(tile.getMockStrategy().setMap).toHaveBeenCalledWith(mockMap);
       });
 
     });

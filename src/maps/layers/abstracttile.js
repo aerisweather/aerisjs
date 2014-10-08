@@ -1,12 +1,13 @@
 define([
   'aeris/util',
   'aeris/promise',
+  'aeris/events',
   'aeris/errors/unimplementedpropertyerror',
   'aeris/errors/validationerror',
   'aeris/maps/layers/errors/layerloadingerror',
   'aeris/maps/layers/animationlayer',
   'aeris/maps/strategy/layers/tile'
-], function(_, Promise, UnimplementedPropertyError, ValidationError, LayerLoadingError, BaseLayer, TileStrategy) {
+], function(_, Promise, Events, UnimplementedPropertyError, ValidationError, LayerLoadingError, BaseLayer, TileStrategy) {
   /**
    * Representation of image tile layer. Tile layers are
    * expected to pull in tile images from an API.
@@ -138,7 +139,7 @@ define([
       !_.isNumber(attrs.opacity) ||
         attrs.opacity > 1 ||
         attrs.opacity < 0
-    ) {
+      ) {
       return new ValidationError('opacity', 'must be a number between 0 and 1');
     }
 
@@ -246,7 +247,8 @@ define([
    */
   AbstractTile.prototype.preload = function(map) {
     var promiseToLoad = new Promise();
-    var attrs_orig = this.pick(['opacity', 'map']);
+    var attrs_orig = this.pick(['opacity']);
+    var attrListener = new Events();
 
     // We're already loaded
     // -- resolve immediately.
@@ -262,20 +264,36 @@ define([
     }
 
     this.listenToOnce(this, 'load', function() {
+      attrListener.stopListening();
+      attrListener.off();
+
+      if (this.hasMap()) {
+        this.strategy_.setMap(this.getMap());
+      }
+      else {
+        this.strategy_.remove();
+      }
+
+      this.set(attrs_orig);
       promiseToLoad.resolve();
     });
 
     this.set({
       // Temporarily set to 0 opacity, so we don't see
       // the layer being added to the map
-      opacity: 0,
-
-      // Trigger loading, by setting to the map
-      map: map
+      opacity: 0
     });
+    // Trigger the layer to load, by setting its
+    // view to a map.
+    this.strategy_.setMap(map);
 
-    // reset back to our original state
-    this.set(attrs_orig);
+    // Listen for any changes made during preloading,
+    // so we can make sure to reset our object to the expected state.
+    attrListener.listenTo(this, {
+      'change:opacity': function(obj, opacity) {
+        attrs_orig.opacity = opacity;
+      }
+    });
 
     return promiseToLoad;
   };
