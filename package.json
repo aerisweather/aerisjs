@@ -12,8 +12,8 @@
   "scripts": {
     "test": "./node_modules/grunt-cli/bin/grunt test --no-color",
     "build": "./node_modules/grunt-cli/bin/grunt --no-color",
-    "deploy": "./node_modules/grunt-cli/bin/grunt deploy --env=prod --verbose --no-color",
-    "deploy-staging": "./node_modules/grunt-cli/bin/grunt deploy --env=staging --verbose --no-color"
+    "deploy": "./node_modules/grunt-cli/bin/grunt deploy --env=prod --no-color",
+    "deploy-staging": "./node_modules/grunt-cli/bin/grunt deploy --env=staging --no-color"
   },
   "repository": {
     "type": "git",
