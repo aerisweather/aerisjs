@@ -1,6 +1,6 @@
 module.exports = function(grunt) {
 
-  grunt.registerTask('deploy', [
+  grunt.registerTask('deploy-prod', [
     'deployOnlyOnStagingOrProd',
     'build',
     'buildDemo',
@@ -16,6 +16,12 @@ module.exports = function(grunt) {
     'shell:deployS3-demo'
   ]);
 
+  if (grunt.option('env') === 'prod') {
+    grunt.registerTask('deploy', ['deploy-prod']);
+  }
+  else if (grunt.option('env') === 'staging') {
+    grunt.registerTask('deploy', ['deploy-staing']);
+  }
 
 
   grunt.registerTask('deployOnlyOnStagingOrProd', 'Shuts down the process if not on prod or staging', function() {

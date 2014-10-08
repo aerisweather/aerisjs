@@ -1,3 +1,8 @@
+# 0.7.16
+
+* FIX: Fix layer preloading with gmaps.
+       Fixes broken animations with gmaps.
+
 # 0.7.15
 
 * FIX: Update usage of _.template to work with
