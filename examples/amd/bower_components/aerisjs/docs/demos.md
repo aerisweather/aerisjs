@@ -20,4 +20,4 @@ You can sign up for a free Aeris API developer account at [hamweather.com](http:
 
 ## jsFiddle
 
-You can play with the Aeris.js library using our [jsFiddle sandbox](http://jsfiddle.net/zCr2f/3/).
+You can play with the Aeris.js library using our [jsFiddle sandbox](http://jsfiddle.net/zCr2f/10/).

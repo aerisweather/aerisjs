@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Aeris.js Documentation</title>
+
+  <link rel="stylesheet" href="{{projectConfig.assetPath}}/css/public.css"/>
+  <link rel="shortcut icon" type="image/png" href="{{projectConfig.assetPath}}/images/aeris-favicon.png"/>
+  <link rel="stylesheet" href="{{projectConfig.assetPath}}/js/tooltipster/tooltipster.css"/>
+
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+  <script type="text/javascript" src="{{projectConfig.assetPath}}/js/jquery.details.min.js"></script>
+  <script type="text/javascript" src="{{projectConfig.assetPath}}/js/tooltipster/jquery.tooltipster.min.js"></script>
+  <script type="text/javascript" src="{{projectConfig.assetPath}}/js/page.js"></script>
+</head>
+<body>
+
+{{>forkme}}
+
+<div id="page">
+
+  {{>header }}
+
+  {{>sidebar}}
+
+  <div class="container">
+
+    {{>intro projectConfig }}
+
+
+
+    {{#each publicApi.namespaces.aeris.namespaces}}
+      {{>classdocs this}}
+    {{/each}}
+
+    {{#each publicApi.namespaces.aeris.classes }}
+      {{>class this}}
+    {{/each}}
+
+  </div>
+
+</div>
+
+{{>footer}}
+</body>
+</html>

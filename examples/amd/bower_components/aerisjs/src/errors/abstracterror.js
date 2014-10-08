@@ -75,7 +75,7 @@ define(['aeris/util'], function(_) {
    * @method toString
    */
   AbstractError.prototype.toString = function() {
-    return this.name + ':' + this.message;
+    return this.name + ': ' + this.message;
   };
 
 

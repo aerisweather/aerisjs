@@ -89,20 +89,19 @@ define([
    * @private
    */
   Tile.prototype.proxyLoadEvents_ = function() {
-    var mapLoadResetEvents = {
-      loading: function() {
-        this.object_.trigger('load:reset');
-      }
+    var triggerLoadReset = this.object_.trigger.bind(this.object_, 'load:reset');
+    var loadResetEventsHash = {
+      loading: triggerLoadReset
     };
 
     // Tiles loading is reset whenever map moves
     var bindMapLoadResetEvents = (function() {
       var mapView = this.mapView_;
 
-      this.mapView_.addEventListener(mapLoadResetEvents, this);
+      this.mapView_.addEventListener(loadResetEventsHash, this);
 
       this.once('map:remove', function() {
-        mapView.removeEventListener(mapLoadResetEvents, this);
+        mapView.removeEventListener(loadResetEventsHash, this);
       });
     }).bind(this);
 
@@ -145,6 +144,7 @@ define([
   Tile.prototype.destroy = function() {
     this.view_.clearAllEventListeners();
     AbstractStrategy.prototype.destroy.call(this);
+    this.view_ = null;
   };
 
 

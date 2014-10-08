@@ -61,7 +61,7 @@
         <% if (layer.zIndex !== false) { %>
           <label>
             Z Index
-            <input type="range" class="zIndex" value="1" min="1" max="10"/>
+            <input type="range" class="zIndex" value="0" min="0" max="100"/>
           </label>
         <% } %>
       </div>
@@ -135,6 +135,15 @@
     layer.setZIndex(zIndex);
   });
 
+  // Update the zIndex sliders to
+  // match the initial zIndex of each layer.
+  $('.zIndex').each(function() {
+    var layerName = $(this).parents('[data-layer]').data('layer');
+    var layer = layers[layerName];
+
+    $(this).val(layer.getZIndex());
+  });
+
 
   // Helper function for rendering
   // layer controls
@@ -153,10 +162,6 @@
         label: 'Dewpoints'
       },
       {
-        className: 'HeatIndex',
-        label: 'Heat Index'
-      },
-      {
         className: 'Humidity',
         label: 'Humidity'
       },
@@ -165,32 +170,20 @@
         label: 'Radar'
       },
       {
+        className: 'Precip',
+        label: 'Precip'
+      },
+      {
         className: 'Satellite',
         label: 'Infrared Satellite'
-      },
-      {
-        className: 'SatelliteGlobal',
-        label: 'Global Infrared Satellite'
-      },
-      {
-        className: 'SatelliteVisible',
-        label: 'Visible Satellite'
       },
       {
         className: 'SeaSurfaceTemps',
         label: 'Sea Surface Temps'
       },
       {
-        className: 'SnowDepth',
-        label: 'Snow Depth'
-      },
-      {
         className: 'Temps',
         label: 'Temperature'
-      },
-      {
-        className: 'WindChill',
-        label: 'Wind Chil'
       },
       {
         className: 'Winds',
@@ -198,7 +191,7 @@
       }
     ]
     var template = $('#layer-controls-template').html();
-    var controlsHtml = _.template(template, { layers: layerData });
+    var controlsHtml = _.template(template)({ layers: layerData });
 
     $('.controls').html(controlsHtml);
   }

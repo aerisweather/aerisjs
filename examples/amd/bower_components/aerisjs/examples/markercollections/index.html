@@ -6,195 +6,237 @@
   <link rel="stylesheet" href="../css/example.css"/>
   <link rel="shortcut icon" type="image/x-icon" href="../weather.ico"/>
 
+  <style type="text/css">
+    #toggleClustering {
+      font-size: 16px;
+      padding: 8px;
+      margin: 15px auto 5px auto;
+      display: block;
+    }
+  </style>
+
   <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false&libraries=geometry"></script>
-  <script type="text/javascript" src="http://cdn.aerisjs.com/aeris-gmaps.js"></script>
+
+  <script type="text/javascript" src="//cdn.aerisjs.com/aeris-gmaps.js"></script>
   <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
   <script type="text/javascript" src="../apikeys.js"></script>
 </head>
 <body>
-  <div id="map-canvas"></div>
+<div id="map-canvas"></div>
 
-  <div id="loading">Loading...</div>
+<div id="loading">Loading...</div>
 
-  <div class="prompt">
-    <h1>Example: Marker Collection</h1>
+<div class="prompt">
+  <h1>Example: Marker Collection</h1>
 
-    <h2>Aeris.js</h2>
+  <h2>Aeris.js</h2>
 
-    <p>
-      The Aeris API provides several data-sets which are associated with lat/lon coordinates (e.g. earthquake, fire, lightning, and storm reports). In order to render this data points on a map, you can use a <code>PointDataMarkers</code>. A <code>PointDataMarkers</code> creates markers for every model in a data collection, and renders the model on the map.
-    </p>
-    <p>
-      <code>PointDataMarkers</code> are bound to data collections, so whenever a data collection is updated, the markers on the map will be re-rendered accordingly. This example shows how setting <em>filters</em> on a data collection will render filtered point data on the map. <strong>Select one or more storm type filters</strong> to test out the filtering functionality. Or, <strong>click on a marker</strong> to see how data can be rendered from a <code>PointDataMarker</code>.
-    </p>
-    <p>
-      See the <a href="http://www.hamweather.com/support/documentation/aeris/endpoints/stormreports" target="_blank">StormReport endpoint documentation</a> for a list of available filters.
-    </p>
+  <p>
+    The Aeris API provides several data-sets which are associated with lat/lon coordinates (e.g. earthquake, fire,
+    lightning, and storm reports). In order to render this data points on a map, you can use a
+    <code>PointDataMarkers</code>. A <code>PointDataMarkers</code> creates markers for every model in a data collection,
+    and renders the model on the map.
+  </p>
 
-    <small>
-      Having trouble? <br>
-      Make sure you've created a <code>apikeys.js</code> file, with a valid Aeris <code>client_id</code> and <code>client_secret</code>.
-    </small>
-  </div>
+  <p>
+    <code>PointDataMarkers</code> are bound to data collections, so whenever a data collection is updated, the markers
+    on the map will be re-rendered accordingly. This example shows how setting <em>filters</em> on a data collection
+    will render filtered point data on the map. <strong>Select one or more storm type filters</strong> to test out the
+    filtering functionality. Or, <strong>click on a marker</strong> to see how data can be rendered from a <code>PointDataMarker</code>.
+  </p>
 
-  <div class="controls">
-    <ul>
-      <li>
-        <strong>Storm Report Types</strong>
-      </li>
-      <li>
-        <label>
-          <input type="checkbox" name="filter" value="avalanche">
-          Avalanche
-        </label>
-      </li>
-      <li>
-        <label>
-          <input type="checkbox" name="filter" value="blizzard">
-          Blizzard
-        </label>
-      </li>
-      <li>
-        <label>
-          <input type="checkbox" name="filter" value="flood">
-          Flood
-        </label>
-      </li>
-      <li>
-        <label>
-          <input type="checkbox" name="filter" value="fog">
-          Fog
-        </label>
-      </li>
-      <li>
-        <label>
-          <input type="checkbox" name="filter" value="ice">
-          Ice
-        </label>
-      </li>
-      <li>
-        <label>
-          <input type="checkbox" name="filter" value="hail">
-          Hail
-        </label>
-      </li>
-      <li>
-        <label>
-          <input type="checkbox" name="filter" value="lightning">
-          Lightning
-        </label>
-      </li>
-      <li>
-        <label>
-          <input type="checkbox" name="filter" value="rain">
-          Rain
-        </label>
-      </li>
-      <li>
-        <label>
-          <input type="checkbox" name="filter" value="snow">
-          Snow
-        </label>
-      </li>
-      <li>
-        <label>
-          <input type="checkbox" name="filter" value="tides">
-          Tides
-        </label>
-      </li>
-      <li>
-        <label>
-          <input type="checkbox" name="filter" value="tornado">
-          Tornado
-        </label>
-      </li>
-      <li>
-        <label>
-          <input type="checkbox" name="filter" value="wind">
-          Wind
-        </label>
-      </li>
-    </ul>
-  </div>
+  <p>
+    See the <a href="http://www.hamweather.com/support/documentation/aeris/endpoints/stormreports" target="_blank">StormReport
+    endpoint documentation</a> for a list of available filters.
+  </p>
 
-  <script type="text/javascript">
-    aeris.config.set({
-      apiId: apiKeys.aeris.id,
-      apiSecret: apiKeys.aeris.secret
-    });
+  <small>
+    Having trouble? <br>
+    Make sure you've created a <code>apikeys.js</code> file, with a valid Aeris <code>client_id</code> and <code>client_secret</code>.
+  </small>
+</div>
 
-    var map = new aeris.maps.Map('map-canvas');
+<div class="controls">
+  <ul>
+    <li>
+      <strong>Storm Report Filters</strong>
+    </li>
+    <li>
+      <label>
+        <input type="checkbox" name="filter" value="avalanche">
+        Avalanche
+      </label>
+    </li>
+    <li>
+      <label>
+        <input type="checkbox" name="filter" value="blizzard">
+        Blizzard
+      </label>
+    </li>
+    <li>
+      <label>
+        <input type="checkbox" name="filter" value="flood">
+        Flood
+      </label>
+    </li>
+    <li>
+      <label>
+        <input type="checkbox" name="filter" value="fog">
+        Fog
+      </label>
+    </li>
+    <li>
+      <label>
+        <input type="checkbox" name="filter" value="ice">
+        Ice
+      </label>
+    </li>
+    <li>
+      <label>
+        <input type="checkbox" name="filter" value="hail">
+        Hail
+      </label>
+    </li>
+    <li>
+      <label>
+        <input type="checkbox" name="filter" value="lightning">
+        Lightning
+      </label>
+    </li>
+    <li>
+      <label>
+        <input type="checkbox" name="filter" value="rain">
+        Rain
+      </label>
+    </li>
+    <li>
+      <label>
+        <input type="checkbox" name="filter" value="snow">
+        Snow
+      </label>
+    </li>
+    <li>
+      <label>
+        <input type="checkbox" name="filter" value="tides">
+        Tides
+      </label>
+    </li>
+    <li>
+      <label>
+        <input type="checkbox" name="filter" value="tornado">
+        Tornado
+      </label>
+    </li>
+    <li>
+      <label>
+        <input type="checkbox" name="filter" value="wind">
+        Wind
+      </label>
+    </li>
+  </ul>
 
-    // The StormReportMarkers object is a type
-    // of PointDataMarkers, which is bound to
-    // an aeris.api.collections.StormReports object.
-    var stormMarkers = new aeris.maps.markercollections.StormReportMarkers();
-    stormMarkers.setMap(map);
+  <button id="toggleClustering">Toggle clustering</button>
+</div>
+
+<script type="text/javascript">
+  var map, isClustering = true;
+
+  aeris.config.set({
+    apiId: apiKeys.aeris.id,
+    apiSecret: apiKeys.aeris.secret
+  });
+
+  map = new aeris.maps.Map('map-canvas');
+
+  // The StormReportMarkers object is a type
+  // of PointDataMarkers, which is bound to
+  // an aeris.api.collections.StormReports object.
+  var stormMarkers = new aeris.maps.markercollections.StormReportMarkers();
+  stormMarkers.setMap(map);
 
 
-    // Show a 'loading' prompt whenever requests are
-    // being made to the AerisAPI server.
-    stormMarkers.on({
-      'data:request': function() {
-        $('#loading').show();
-      },
-      'data:sync': function() {
-        $('#loading').delay(500).hide();
-      }
-    });
+  // Show a 'loading' prompt whenever requests are
+  // being made to the AerisAPI server.
+  stormMarkers.on({
+    'data:request': function() {
+      $('#loading').show();
+    },
+    'data:sync': function() {
+      $('#loading').delay(500).hide();
+    }
+  });
 
 
+  // Fetch storm report data from the Aeris API.
+  // Markers will be created automatically from
+  // the API response.
+  stormMarkers.fetchData();
 
-    // Fetch storm report data from the Aeris API.
-    // Markers will be created automatically from
-    // the API response.
+
+  // PointDataMarkers trigger 'click' event
+  // when any marker is clicked. The individual marker
+  // is passed in as the second parameter.
+  stormMarkers.on('click', function(latLon, marker) {
+    var infoBox = new aeris.maps.InfoBox();
+
+    // Use the 'getDataAttribute' method to
+    // retrieve data associated with a PointDataMarker
+    var stormReportName = marker.getDataAttribute('report.name');
+    var stormReportComment = marker.getDataAttribute('report.comments');
+
+    // Render marker data in the info box
+    // and add it to the map
+    infoBox.setContent($('<div><strong>' + stormReportName + ': </strong>' + stormReportComment + '</div>')[0]);
+    infoBox.setPosition(latLon);
+    infoBox.setMap(map);
+
+    // Select the marker
+    stormMarkers.selectOnly(marker);
+  });
+
+
+  // To filter the PointDataCollectionMarkers
+  // you will need to make a new request to the
+  // AerisAPI with `filter` parameters set.
+  $('input[name="filter"]').change(function() {
+    var isSelected = $(this).prop('checked');
+    var filterName = $(this).val();
+
+    if (isSelected) {
+      stormMarkers.addFilter(filterName, {
+        // Use the 'OR' operator to return storm reports
+        // which are, for example, either 'snow' or 'rain'.
+        // Using the 'AND' operator in this case would only return
+        // reports which are both 'snow' and 'rain'.
+        operator: aeris.api.Operator.OR
+      });
+    }
+    else {
+      stormMarkers.removeFilter(filterName);
+    }
+
     stormMarkers.fetchData();
+  });
 
 
-    // PointDataMarkers trigger 'click' event
-    // when any marker is clicked. The individual marker
-    // is passed in as the second parameter.
-    stormMarkers.on('click', function(latLon, marker) {
-      var infoBox = new aeris.maps.InfoBox();
-
-      // Use the 'getDataAttribute' method to
-      // retrieve data associated with a PointDataMarker
-      var stormReportName =  marker.getDataAttribute('report.name');
-      var stormReportComment = marker.getDataAttribute('report.comments');
-
-      // Render marker data in the info box
-      // and add it to the map
-      infoBox.setContent($('<div><strong>' + stormReportName + ': </strong>' + stormReportComment + '</div>')[0]);
-      infoBox.setPosition(latLon);
-      infoBox.setMap(map);
-
-      // Select the marker
-      stormMarkers.selectOnly(marker);
-    });
-
-
-    // To filter the PointDataCollectionMarkers
-    // you will need to make a new request to the
-    // AerisAPI with `filter` parameters set.
-    $('input[name="filter"]').change(function() {
-      var isSelected = $(this).prop('checked');
-      var filterName = $(this).val();
-
-      if (isSelected) {
-        stormMarkers.addFilter(filterName, {
-          // Use the 'OR' operator to return storm reports
-          // which are, for example, either 'snow' or 'rain'.
-          // Using the 'AND' operator in this case would only return
-          // reports which are both 'snow' and 'rain'.
-          operator: aeris.api.Operator.OR
-        });
-      }
-      else {
-        stormMarkers.removeFilter(filterName);
-      }
-
-      stormMarkers.fetchData();
-    });
-  </script>
+  /**
+   * By default, marker collection will
+   * cluster markers. To disable marker clustering,
+   * you can call MarkerCollection#stopClustering().
+   *
+   * Creating the MarkerCollection object with a
+   * `cluster: false` option turn of clusting by default.
+   */
+  $('#toggleClustering').click(function() {
+    if (isClustering) {
+      stormMarkers.stopClustering();
+      isClustering = false;
+    }
+    else {
+      stormMarkers.startClustering();
+      isClustering = true;
+    }
+  });
+</script>
 </body>
 </html>

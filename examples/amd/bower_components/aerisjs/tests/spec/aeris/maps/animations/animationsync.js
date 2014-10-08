@@ -20,7 +20,8 @@ define([
     var options = _.defaults(opt_options || {}, {
       interval: 100,
       progress: 0.5,
-      times: new CannedTimes()
+      times: new CannedTimes(),
+      hasMap: true
     });
 
     this.loadProgress_ = options.progress;
@@ -28,6 +29,8 @@ define([
     this.times_ = options.times;
 
     BaseMockAnimation.call(this, null, options);
+
+    this.hasMap.andReturn(options.hasMap);
   };
   _.inherits(MockAnimation, BaseMockAnimation);
 
@@ -77,7 +80,8 @@ define([
         var MockAnimationType;
         var animationSync;
         var layer_A, layer_B;
-        var FROM_STUB = 'FROM_STUB', TO_STUB = 'TO_STUB', LIMIT_STUB = 'LIMIT_STUB', TIMESPAN_STUB = 'TIMESPAN_STUB';
+        var FROM_STUB = 'FROM_STUB', TO_STUB = 'TO_STUB', LIMIT_STUB = 'LIMIT_STUB';
+        var TIMESPAN_STUB = 'TIMESPAN_STUB', TIME_TOLERANCE_STUB = 'TIME_TOLERANCE_STUB';
 
         beforeEach(function() {
           layer_A = new MockAnimationLayer();
@@ -91,7 +95,8 @@ define([
             from: FROM_STUB,
             to: TO_STUB,
             limit: LIMIT_STUB,
-            timespan: TIMESPAN_STUB
+            timespan: TIMESPAN_STUB,
+            timeTolerance: TIME_TOLERANCE_STUB
           });
         });
 
@@ -101,7 +106,7 @@ define([
             from: FROM_STUB,
             to: TO_STUB,
             limit: LIMIT_STUB,
-            timespan: TIMESPAN_STUB
+            timeTolerance: TIME_TOLERANCE_STUB
           };
           animationSync.add([layer_A, layer_B]);
 
@@ -197,7 +202,93 @@ define([
             expect(listener).toHaveBeenCalled();
           });
 
-          it('should proxy layers\' load:times events', function() {
+          describe('load:times event', function() {
+            var STUB_TIMES;
+
+            beforeEach(function() {
+              STUB_TIMES = _.range(0, 100, 10);
+              spyOn(AnimationSync.prototype, 'getTimes').andCallFake(function() {
+                return _.clone(STUB_TIMES);
+              });
+            });
+
+
+            it('should fire when all layers have loaded their time', function() {
+              var onLoadTimes = jasmine.createSpy('onLoadTimes');
+              var animationSync = new TestFactory().sync;
+              var animations = [
+                new MockAnimation(),
+                new MockAnimation(),
+                new MockAnimation()
+              ];
+              animationSync.on('load:times', onLoadTimes);
+              animationSync.add(animations);
+
+              animations[0].trigger('load:times', []);
+              expect(onLoadTimes).not.toHaveBeenCalled();
+              animations[1].trigger('load:times', []);
+              expect(onLoadTimes).not.toHaveBeenCalled();
+
+              // Last of the animation finishes up...
+              animations[2].trigger('load:times', []);
+              expect(onLoadTimes).toHaveBeenCalledWith(STUB_TIMES);
+            });
+
+            describe('when a layer is added after all the other have loaded their times', function() {
+
+              it('should fire an additional event when the added layer is loaded', function() {
+                var newAnimation;
+                var onLoadTimes = jasmine.createSpy('onLoadTimes');
+                var animationSync = new TestFactory().sync;
+                var animations = [
+                  new MockAnimation(),
+                  new MockAnimation(),
+                  new MockAnimation()
+                ];
+                animationSync.add(animations);
+                animations.forEach(function(anim) {
+                  anim.trigger('load:times', []);
+                });
+
+                // Add another animation,
+                // and listen for another 'load:times' event.
+                newAnimation = new MockAnimation();
+                animationSync.add(newAnimation);
+                animationSync.on('load:times', onLoadTimes);
+                newAnimation.trigger('load:times', []);
+
+                expect(onLoadTimes).toHaveBeenCalledWith(STUB_TIMES);
+              });
+
+            });
+
+
+            describe('when a layer fires a \'load:times\' event a second time', function() {
+
+              it('should trigger an additional \'load:times\' event', function() {
+                var onLoadTimes = jasmine.createSpy('onLoadTimes');
+                var animationSync = new TestFactory().sync;
+                var animations = [
+                  new MockAnimation(),
+                  new MockAnimation(),
+                  new MockAnimation()
+                ];
+                animationSync.add(animations);
+                animations.forEach(function(anim) {
+                  anim.trigger('load:times', []);
+                });
+
+                animationSync.on('load:times', onLoadTimes);
+                animations[1].trigger('load:times', []);
+
+                expect(onLoadTimes).toHaveBeenCalledWith(STUB_TIMES);
+              });
+
+            });
+
+          });
+
+          it('should fire a load:times event when all layers have loaded their ', function() {
             var times = new CannedTimes();
             var test = new TestFactory();
             var animation = new MockAnimation();
@@ -222,45 +313,26 @@ define([
             sync.add(animation);
             sync.on('autoUpdate', onAutoUpdate);
 
-            animation.trigger('autoUpdate');
+            animation.trigger('autoUpdate', animation);
 
             expect(onAutoUpdate).toHaveBeenCalled();
           });
 
           describe('when a layer changes it\'s bounds', function() {
-            var earlyAnim, middleAnim, lateAnim;
 
-            beforeEach(function() {
-              earlyAnim = new MockAnimation();
-              middleAnim = new MockAnimation();
-              lateAnim = new MockAnimation();
-
-              earlyAnim.getFrom.andReturn(new Date(10));
-              middleAnim.getFrom.andReturn(new Date(20));
-              lateAnim.getFrom.andReturn(new Date(30));
-
-              earlyAnim.getTo.andReturn(new Date(70));
-              middleAnim.getTo.andReturn(new Date(80));
-              lateAnim.getTo.andReturn(new Date(90));
-            });
-
-
-            it('should set the sync\'s `to` as the latest `to` among all the animations', function() {
+            it('should not change it\'s from/to times', function() {
               var sync = new TestFactory().sync;
-              sync.add([earlyAnim, middleAnim, lateAnim]);
+              var animation;
+              sync.setFrom(123);
+              sync.setTo(456);
 
-              middleAnim.trigger('change:to');
+              animation = new MockAnimation();
+              animation.setFrom(200);
+              animation.setTo(300);
+              sync.add([animation]);
 
-              expect(sync.getTo().getTime()).toEqual(lateAnim.getTo().getTime());
-            });
-
-            it('should set the sync\'s `from` as the earliest `from` among all the animations', function() {
-              var sync = new TestFactory().sync;
-              sync.add([earlyAnim, middleAnim, lateAnim]);
-
-              middleAnim.trigger('change:from');
-
-              expect(sync.getFrom().getTime()).toEqual(earlyAnim.getFrom().getTime());
+              expect(sync.getFrom().getTime()).toEqual(123);
+              expect(sync.getTo().getTime()).toEqual(456);
             });
 
           });
@@ -549,6 +621,120 @@ define([
         timeEventParam = onChangeTime.mostRecentCall.args[0];
         expect(timeEventParam).toBeInstanceOf(Date);
         expect(timeEventParam.getTime()).toEqual(TIME_STUB);
+      });
+
+    });
+
+
+    describe('getLoadProgress', function() {
+
+      it('should return the average load progress of layers with maps which are loaded', function() {
+        var animSync = new AnimationSync();
+        animSync.add([
+          //
+          new MockAnimation({
+            hasMap: true,
+            progress: 0.1
+          }),
+          new MockAnimation({
+            hasMap: true,
+            isLoaded: true,
+            progress: 0.2
+          }),
+          new MockAnimation({
+            hasMap: false,
+            progress: 0.8
+          }),
+          new MockAnimation({
+            hasMap: false,
+            progress: 0.9
+          })
+        ]);
+
+        expect(animSync.getLoadProgress()).toEqual(_.average([0.1, 0.2]));
+      });
+
+    });
+
+
+    describe('preload', function() {
+      var animSync, animsWithMap, animsWithoutMap;
+
+      beforeEach(function() {
+        animSync = new AnimationSync();
+
+        animsWithMap = _.range(0, 3).map(function() {
+          return new MockAnimation({
+            hasMap: true
+          });
+        });
+        animsWithoutMap = _.range(0, 3).map(function() {
+          return new MockAnimation({
+            hasMap: false
+          });
+        });
+      });
+
+      function loadAll(animations) {
+        animations.forEach(function(anim) {
+          anim.promiseToPreload.resolve();
+        });
+      }
+
+
+      it('should preload only animations which have a map', function() {
+        animSync.add(animsWithMap);
+        animSync.add(animsWithoutMap);
+
+        animSync.preload();
+        loadAll(animsWithMap);
+        loadAll(animsWithoutMap);
+
+        animsWithMap.forEach(function(anim) {
+          expect(anim.preload).toHaveBeenCalled();
+        });
+
+        animsWithoutMap.forEach(function(anim) {
+          expect(anim.preload).not.toHaveBeenCalled();
+        });
+      });
+
+      it('should preload animation sequentially', function() {
+        animSync.add(animsWithMap);
+
+        animSync.preload();
+
+        expect(animsWithMap[0].preload).toHaveBeenCalled();
+        expect(animsWithMap[1].preload).not.toHaveBeenCalled();
+
+        animsWithMap[0].promiseToPreload.resolve();
+        expect(animsWithMap[1].preload).toHaveBeenCalled();
+        expect(animsWithMap[2].preload).not.toHaveBeenCalled();
+      });
+
+      it('should resolve when all animations are preloaded', function() {
+        var onResolve = jasmine.createSpy('onResolve');
+        animSync.add(animsWithMap);
+
+        animSync.preload().
+          done(onResolve).
+          fail(_.throwError);
+
+        expect(onResolve).not.toHaveBeenCalled();
+
+        loadAll(animsWithMap);
+        expect(onResolve).toHaveBeenCalled();
+      });
+
+      it('should reject when any animation fails to preload', function() {
+        var onReject = jasmine.createSpy('onReject');
+        animSync.add(animsWithMap);
+
+        animSync.preload().
+          fail(onReject);
+
+        animsWithMap[0].promiseToPreload.reject();
+        expect(onReject).toHaveBeenCalled();
       });
 
     });

@@ -1,36 +1,45 @@
 define([
   'aeris/util',
   'aeris/api/mixins/aerisapibehavior',
-  'mocks/mockfactory'
-], function(_, AerisApiBehavior, MockFactory) {
+  'aeris/events',
+  'aeris/model',
+  'aeris/errors/apiresponseerror',
+  'mocks/mockfactory',
+  'mocks/aeris/jsonp'
+], function(_, AerisApiBehavior, Events, Model, ApiResponseError, MockFactory, MockJSONP) {
   var ConcreteAerisApi = function(options) {
     this.params_ = options.params;
+    this.jsonp_ = options.jsonp;
+
+    Events.call(this);
   };
   _.extend(ConcreteAerisApi.prototype, AerisApiBehavior);
+  _.extend(ConcreteAerisApi.prototype, Events.prototype);
 
   var MockParams = new MockFactory({
     methods: [
-      'set',
       'setBounds',
       'addFilter',
       'removeFilter',
       'resetFilter',
       'addQuery',
       'removeQuery',
-      'resetQuery',
-      'get'
-    ]
+      'resetQuery'
+    ],
+    inherits: Model
   });
 
 
   describe('AerisApiBehavior', function() {
-    var aerisApi, mockParams, OPTIONS_STUB;
+    var aerisApi, mockParams, jsonp, OPTIONS_STUB;
 
     beforeEach(function() {
       OPTIONS_STUB = { STUB: 'OPTIONS_STUB' };
       mockParams = new MockParams();
+      jsonp = new MockJSONP();
       aerisApi = new ConcreteAerisApi({
-        params: mockParams
+        params: mockParams,
+        jsonp: jsonp
       });
     });
 
@@ -39,7 +48,7 @@ define([
       var ATTRS_STUB = { stub: 'ATTRS_STUB' };
 
       it('should set params attributes', function() {
-        mockParams.set.andCallFake(function(attrs, opts) {
+        spyOn(mockParams, 'set').andCallFake(function(attrs, opts) {
           expect(attrs).toEqual(ATTRS_STUB);
         });
 
@@ -47,7 +56,7 @@ define([
       });
 
       it('should always validate', function() {
-        mockParams.set.andCallFake(function(attrs, opts) {
+        spyOn(mockParams, 'set').andCallFake(function(attrs, opts) {
           expect(opts.validate).toEqual(true);
         });
 
@@ -86,6 +95,61 @@ define([
           aerisApi[methodName](QUERY_STUB, OPTIONS_STUB);
           expect(mockParams[methodName]).toHaveBeenCalledWith(QUERY_STUB, OPTIONS_STUB);
         });
+      });
+
+    });
+
+
+    describe('sync', function() {
+
+      describe('when the response contains an error object', function() {
+        var ERROR_CODE_STUB, RESPONSE_STUB;
+
+        function getFetchError() {
+          var error;
+
+          aerisApi.sync('read', aerisApi, {}).
+            // Assuming fetch is stubbed to be synchronous
+            fail(function(err) {
+              error = err;
+            });
+
+          if (!error) {
+            throw 'Fetch did not throw an error.';
+          }
+
+          return error;
+        }
+
+        beforeEach(function() {
+          ERROR_CODE_STUB = 'ERROR_CODE_STUB';
+          RESPONSE_STUB = {
+            success: false,
+            error: {
+              code: ERROR_CODE_STUB,
+              description: 'ERR_DESCR_STUB'
+            }
+          };
+          jsonp.resolveWith(RESPONSE_STUB);
+        });
+
+
+        it('should reject with an AeriApiResponseError', function() {
+          expect(getFetchError()).toBeInstanceOf(ApiResponseError);
+        });
+
+        describe('the AeriApiResponseError', function() {
+
+          it('should contain the error code', function() {
+            expect(getFetchError().code).toEqual(ERROR_CODE_STUB);
+          });
+
+          it('should contain the response object', function() {
+            expect(getFetchError().responseObject).toEqual(RESPONSE_STUB);
+          });
+
+        });
+
       });
 
     });

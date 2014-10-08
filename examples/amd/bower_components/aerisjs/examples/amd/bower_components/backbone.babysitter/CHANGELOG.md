@@ -1,9 +1,17 @@
 # Change log
 
+### v0.1.4
+
+* Update UMD Wrapper and build process
+
+### v0.1.2
+
+* Add .VERSION and n.oConflict
+* General cleanups to tests and package.json
+* Add travis build info
+
 ### v0.1.1
-* lossen backbone dependency
-* remove jquery dependency
-* add underscore dependency
+* Remove AMD builds and replace with a single UMD style wrapper.
 
 ### v0.1.0
 * allow chaining of add and remove methods

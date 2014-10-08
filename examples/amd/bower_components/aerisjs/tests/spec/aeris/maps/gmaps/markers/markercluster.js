@@ -5,8 +5,9 @@ define([
   'aeris/collection',
   'aeris/model',
   'aeris/promise',
-  'tests/lib/clock'
-], function(_, sinon, MarkerClusterStrategy, Collection, Model, Promise, clock) {
+  'tests/lib/clock',
+  'mocks/mockfactory'
+], function(_, sinon, MarkerClusterStrategy, Collection, Model, Promise, clock, MockFactory) {
   var ASYNC_DELAY = 100;
 
   var MockMarkerClustererFactory = function() {
@@ -20,12 +21,21 @@ define([
   };
 
 
+  var MockMarkerView = MockFactory({
+    getSetters: [
+      'map'
+    ],
+    inherits: Model
+  });
+
+
+
   var MockMarker = function(opt_attrs, opt_options) {
     var options = _.defaults(opt_options || {}, {
       type: undefined
     });
 
-    var markerView = _.uniqueId('MarkerView_');
+    var markerView = new MockMarkerView();
 
     this.getType = jasmine.createSpy('Marker#getType').andReturn(options.type);
 
@@ -35,7 +45,6 @@ define([
     Model.apply(this, arguments);
   };
   _.inherits(MockMarker, Model);
-
 
   var MockMarkerCollection = function(opt_models, opt_options) {
     var options = _.defaults(opt_options || {}, {
@@ -70,6 +79,8 @@ define([
     Model.apply(this, arguments);
   };
   _.inherits(MockMap, Model);
+
+  MockMap.prototype.jasmineToString = _.constant('MockMap');
 
 
   beforeEach(function() {
@@ -558,6 +569,26 @@ define([
 
         strategy.destroy();
         expect(strategy.clearClusters).toHaveBeenCalled();
+      });
+
+
+      it('should set the individual markers back onto the map', function() {
+        var map = new MockMap();
+        var markers = _.range(0, 2).map(function() {
+          return new MockMarker();
+        });
+        var markerCollection = new MockMarkerCollection(markers, {
+          map: map
+        });
+        var strategy = new MarkerClusterStrategy(markerCollection, {
+          MarkerClusterer: MockMarkerClustererFactory()
+        });
+
+        strategy.destroy();
+
+        markers.forEach(function(marker) {
+          expect(marker.getView().getMap()).toEqual(map.getView());
+        })
       });
 
     });

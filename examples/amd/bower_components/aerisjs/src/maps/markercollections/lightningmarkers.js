@@ -2,8 +2,9 @@ define([
   'aeris/util',
   'aeris/maps/markercollections/pointdatamarkers',
   'aeris/api/collections/lightning',
-  'aeris/maps/markers/lightningmarker'
-], function(_, PointDataMarkers, LightningCollection, LightningMarker) {
+  'aeris/maps/markers/lightningmarker',
+  'aeris/maps/markercollections/config/clusterstyles'
+], function(_, PointDataMarkers, LightningCollection, LightningMarker, clusterStyles) {
   /**
    * @publicApi
    * @class LightningMarkers
@@ -15,7 +16,8 @@ define([
   var LightningMarkers = function(opt_markers, opt_options) {
     var options = _.extend({
       data: new LightningCollection(),
-      model: LightningMarker
+      model: LightningMarker,
+      clusterStyles: clusterStyles.lightning
     }, opt_options);
 
     PointDataMarkers.call(this, opt_markers, options);

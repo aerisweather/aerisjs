@@ -57,7 +57,6 @@ define(['aeris/util', 'backbone'], function(_, Backbone) {
 
   /**
    * See http://backbonejs.org/#Events-off
-   * Extended to return count of remaining event handler.
    *
    * @method off
    */
@@ -75,12 +74,6 @@ define(['aeris/util', 'backbone'], function(_, Backbone) {
     else {
       Backbone.Events.off.apply(this, arguments);
     }
-
-    if (!event || !this._events || !this._events[event]) {
-      return 0;
-    }
-
-    return this;
   };
 
 

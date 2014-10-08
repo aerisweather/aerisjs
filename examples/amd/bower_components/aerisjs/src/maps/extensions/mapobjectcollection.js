@@ -15,6 +15,13 @@ define([
    * @override
   */
   var MapObjectCollection = function() {
+    /**
+     * @property map_
+     * @private
+     * @type {?aeris.maps.Map}
+    */
+    this.map_ = null;
+
     ViewCollection.apply(this, arguments);
 
     this.bindChildrenToMap_();

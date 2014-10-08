@@ -1,0 +1,14 @@
+{
+  "name": "gmaps-markerclusterer-plus",
+  "_cacheHeaders": {
+    "ETag": "\"456//tags/markerclustererplus/2.1.1/src/markerclusterer.js\"",
+    "Last-Modified": "Mon, 04 Nov 2013 02:04:08 GMT",
+    "Content-Length": "51396",
+    "Content-Type": "text/javascript"
+  },
+  "_release": "e-tag:456//tags",
+  "main": "index.js",
+  "_source": "http://google-maps-utility-library-v3.googlecode.com/svn/tags/markerclustererplus/2.1.1/src/markerclusterer.js",
+  "_target": "*",
+  "_originalSource": "http://google-maps-utility-library-v3.googlecode.com/svn/tags/markerclustererplus/2.1.1/src/markerclusterer.js"
+}

@@ -1,0 +1,22 @@
+<li>
+  <details {{#ifEquals name 'aeris'}}open{{/ifEquals}}>
+    <summary>{{shortName name}}</summary>
+    {{#if namespaces}}
+      <ul>
+        {{#each namespaces }}
+          {{>namespacetree this}}
+        {{/each}}
+      </ul>
+    {{/if}}
+
+    {{#if classes}}
+      <ul>
+        {{#each classes}}
+          <li class="{{#if access}}{{access}}{{/if}}">
+            <a href="{{getApiDocUrl name}}">{{shortName name}}</a>
+          </li>
+        {{/each}}
+      </ul>
+    {{/if}}
+  </details>
+</li>

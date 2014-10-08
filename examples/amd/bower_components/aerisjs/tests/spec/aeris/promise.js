@@ -1,5 +1,10 @@
-define(['aeris/promise'], function(Promise) {
-  describe('A Promise', function() {
+define([
+  'aeris/util',
+  'aeris/promise'
+], function(_, Promise) {
+  Promise.prototype.jasmineToString = _.constant('Promise');
+
+  describe('Promise', function() {
     var promise;
     var flag;
 
@@ -167,6 +172,33 @@ define(['aeris/promise'], function(Promise) {
     });
 
 
+    it('should bind `resolve` to the promise', function() {
+      var promise, resolve;
+
+      spyOn(Promise.prototype, 'resolve');
+      promise = new Promise();
+
+      // Call resolve outside of context
+      resolve = promise.resolve;
+      resolve();
+
+      expect(Promise.prototype.resolve).toHaveBeenCalledInTheContextOf(promise);
+    });
+
+    it('should bind `reject` to the promise', function() {
+      var promise, reject;
+
+      spyOn(Promise.prototype, 'reject');
+      promise = new Promise();
+
+      // Call reject outside of context
+      reject = promise.reject;
+      reject();
+
+      expect(Promise.prototype.reject).toHaveBeenCalledInTheContextOf(promise);
+    });
+
+
     describe('done', function() {
 
       it('should throw an error if no callback is provided', function() {
@@ -276,9 +308,9 @@ define(['aeris/promise'], function(Promise) {
         Promise.when(p1, p2, p3).always(function(a, b, c) {
           if (
             a[0] === 'p1-a' && a[1] === 'p1-b' &&
-            b[0] === 'p2' &&
-            c[0].p1[0] === 'a' && c[0].p1[1] === 'b'
-          ) {
+              b[0] === 'p2' &&
+              c[0].p1[0] === 'a' && c[0].p1[1] === 'b'
+            ) {
             setFlag();
           }
         });
@@ -301,6 +333,207 @@ define(['aeris/promise'], function(Promise) {
         expect(flag).toBe(true);
       });
     });
+
+
+    describe('sequence', function() {
+
+      /**
+       * Creates a function which returns a promise.
+       *
+       * @param {Number} count Number of promises to expect.
+       * @return {function():aeris.Promise} Promise function.
+       *         Has a `promises` property, which is an array of the promises to be returned
+       *         by the promiseFn. (length will be equal to the `count` param)
+       */
+      function PromiseFn(count) {
+        // Create `count` promises
+        var promises = _.range(0, count).map(function() {
+          return new Promise();
+        });
+
+        var promiseFn = jasmine.createSpy('promiseFn').
+          andCallFake(function() {
+            return promises.shift() || new Promise();
+          });
+        promiseFn.promises = _.clone(promises);
+
+        return promiseFn;
+      }
+
+
+      it('should call the promiseFn with each array member, ' +
+        'waiting for each promise to resolve before calling with the next member', function() {
+        var promiseFn = PromiseFn(3);
+        var promises = promiseFn.promises;
+        var objects = ['A', 'B', 'C'];
+
+        Promise.sequence(objects, promiseFn).
+          fail(_.throwError);
+
+        expect(promiseFn).toHaveBeenCalledWith('A');
+        expect(promiseFn.callCount).toEqual(1);
+
+        // resolve the first promise
+        promises[0].resolve();
+        expect(promiseFn).toHaveBeenCalledWith('B');
+        expect(promiseFn.callCount).toEqual(2);
+
+        // resolve the second promise
+        promises[1].resolve();
+        expect(promiseFn).toHaveBeenCalledWith('C');
+        expect(promiseFn.callCount).toEqual(3);
+
+        promises[2].resolve();
+        expect(promiseFn.callCount).toEqual(3);
+      });
+
+      it('should resolve with resolution arguments from each call to the promiseFn', function() {
+        var promiseFn = PromiseFn(3);
+        var promises = promiseFn.promises;
+        var objects = ['A', 'B', 'C'];
+        var onResolve = jasmine.createSpy('onResolve');
+
+        Promise.sequence(objects, promiseFn).
+          done(onResolve).
+          fail(_.throwError);
+
+        promises[0].resolve(1);
+        expect(onResolve).not.toHaveBeenCalled();
+
+        promises[1].resolve(2);
+        expect(onResolve).not.toHaveBeenCalled();
+
+        promises[2].resolve(3);
+        expect(onResolve).toHaveBeenCalledWith([1, 2, 3]);
+      });
+
+      it('should reject with the first error thrown by a promiseFn', function() {
+        var promiseFn = PromiseFn(3);
+        var promises = promiseFn.promises;
+        var objects = ['A', 'B', 'C'];
+        var onReject = jasmine.createSpy('onReject');
+        var err = new Error('STUB_ERROR');
+
+        Promise.sequence(objects, promiseFn).
+          fail(onReject);
+
+        promises[0].resolve();
+        expect(onReject).not.toHaveBeenCalled();
+
+        promises[1].reject(err);
+        expect(onReject).toHaveBeenCalledWith(err);
+      });
+
+      it('should resolve immediately if the array is empty', function() {
+        var promiseFn = PromiseFn(0);
+        var objects = [];
+        var onResolve = jasmine.createSpy('onResolve');
+
+        Promise.sequence(objects, promiseFn).
+          done(onResolve).
+          fail(_.throwError);
+
+        expect(onResolve).toHaveBeenCalled();
+      });
+
+      it('should throw an error if the promiseFn does not return a promise', function() {
+        expect(function() {
+          Promise.sequence([1, 2, 3], function() {
+            return void 0;
+          });
+        }).toThrowType('InvalidArgumentError');
+
+        expect(function() {
+          Promise.sequence([1, 2, 3], function() {
+            return new Date();
+          });
+        }).toThrowType('InvalidArgumentError');
+      });
+
+    });
+
+
+    describe('proxy', function() {
+
+      it('should proxy another promise\'s resolution state', function() {
+        var onResolve = jasmine.createSpy('onResolve');
+        var basePromise = new Promise();
+        var proxyPromise = new Promise();
+
+        proxyPromise.done(onResolve);
+        proxyPromise.proxy(basePromise);
+
+        basePromise.resolve('foo');
+        expect(onResolve).toHaveBeenCalledWith('foo');
+      });
+
+      it('should proxy another promise\'s failure state', function() {
+        var onReject = jasmine.createSpy('onReject');
+        var basePromise = new Promise();
+        var proxyPromise = new Promise();
+
+        proxyPromise.fail(onReject);
+        proxyPromise.proxy(basePromise);
+
+        basePromise.reject('foo');
+        expect(onReject).toHaveBeenCalledWith('foo');
+      });
+
+    });
+
+
+    describe('map', function() {
+
+      it('should provide a callback, with each array member', function() {
+        var arr = ['foo', 'bar'];
+        var mapFn = jasmine.createSpy('mapFn').andReturn(new Promise());
+
+        Promise.map(arr, mapFn);
+
+        expect(mapFn.argsForCall[0][0]).toEqual('foo');
+        expect(mapFn.argsForCall[1][0]).toEqual('bar');
+      });
+
+      it('should call the mapFn in the provided ctx', function() {
+        var mapFn = jasmine.createSpy('mapFn').andReturn(new Promise());
+        var ctx = { some: 'ctx' };
+
+        Promise.map(['a', 'b'], mapFn, ctx);
+
+        expect(mapFn).toHaveBeenCalledInTheContextOf(ctx);
+      });
+
+      it('should resolve when all of the returned promises resolve', function() {
+        var promiseA = new Promise(), promiseB = new Promise();
+        var onResolve = jasmine.createSpy('onResolve');
+
+        Promise.map(['a', 'b'], function(item) {
+          return item === 'a' ? promiseA : promiseB;
+        }).
+          done(onResolve);
+
+        promiseA.resolve();
+        expect(onResolve).not.toHaveBeenCalled();
+
+        promiseB.resolve();
+        expect(onResolve).toHaveBeenCalled();
+      });
+
+      it('should fail if any of the returned promises fail', function() {
+        var promiseA = new Promise(), promiseB = new Promise();
+        var onReject = jasmine.createSpy('onReject');
+
+        Promise.map(['a', 'b'], function(item) {
+          return item === 'a' ? promiseA : promiseB;
+        }).
+          fail(onReject);
+
+        promiseA.reject();
+        expect(onReject).toHaveBeenCalled();
+      });
+
+    });
+
   });
 
 

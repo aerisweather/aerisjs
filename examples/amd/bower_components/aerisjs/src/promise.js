@@ -4,7 +4,6 @@ define([
 ], function(_, InvalidArgumentError) {
 
 
-
   /**
    * Create a lightweight Promise for async related work.
    *
@@ -50,6 +49,10 @@ define([
       resolved: [],
       rejected: []
     };
+
+    // Bind resolve/reject to the promise instance
+    this.resolve = this.resolve.bind(this);
+    this.reject = this.reject.bind(this);
   };
 
 
@@ -160,7 +163,7 @@ define([
     // Enforce state is 'rejected' or 'resolved'
     if (state !== 'rejected' && state !== 'resolved') {
       throw new Error('Invalid promise state: \'' + state + '\'. +' +
-                      'Valid states are \'resolved\' and \'rejected\'');
+        'Valid states are \'resolved\' and \'rejected\'');
     }
 
     if (this.state === 'pending') {
@@ -199,6 +202,21 @@ define([
 
 
   /**
+   * Resolve/reject the promise
+   * when the proxy promise is resolved/rejected.
+   *
+   * @method {aeris.Promise} proxy
+   */
+  Promise.prototype.proxy = function(proxyPromise) {
+    proxyPromise.
+      done(this.resolve).
+      fail(this.reject);
+
+    return this;
+  };
+
+
+  /**
    * Create a master promise from a combination of promises.
    * Master promise is resolved when all component promises are resolved,
    * or rejected when any single component promise is rejected.
@@ -233,7 +251,7 @@ define([
       });
 
       promise.done(function() {
-        var childResponse = Array.prototype.slice.call(arguments);
+        var childResponse = _.argsToArray(arguments);
         masterResponse.push(childResponse);
         resolvedCount++;
 
@@ -249,6 +267,95 @@ define([
     }
 
     return masterPromise;
+  };
+
+
+  /**
+   * Calls the promiseFn with each member in `objects`.
+   * Each call to the promiseFn will be postponed until the promise
+   * returned by the previous call is resolved.
+   *
+   * @param {Array<*>} objects
+   * @param {function():aeris.Promise} promiseFn
+   * @return {aeris.Promise}
+   *         Resolves with an array containing the resolution value of each
+   *         call to the promiseFn.
+   */
+  Promise.sequence = function(objects, promiseFn) {
+    var promiseToResolveAll = new Promise();
+    var resolvedArgs = [];
+    var rejectSequence = promiseToResolveAll.reject.
+      bind(promiseToResolveAll);
+    var resolveSequence = promiseToResolveAll.resolve.
+      bind(promiseToResolveAll, resolvedArgs);
+
+    var nextAt = function(i) {
+      var next = _.partial(nextAt, i + 1);
+      var obj = objects[i];
+
+      if (obj) {
+        Promise.callPromiseFn_(promiseFn, obj).
+          done(function(arg) {
+            // When the promiseFn resolves,
+            // Save the resolution data
+            // and run again with the next object.
+            resolvedArgs.push(arg);
+            next();
+          }).
+          fail(rejectSequence);
+      }
+      else {
+        // No more objects exist,
+        // --> we're done.
+        resolveSequence();
+      }
+    };
+    nextAt(0);
+
+    return promiseToResolveAll;
+  };
+
+
+  /**
+   *
+   * @param {function():Promise} promiseFn
+   * @param {*...} var_args
+   * @private
+   */
+  Promise.callPromiseFn_ = function(promiseFn, var_args) {
+    var args = Array.prototype.slice.call(arguments, 1);
+    var promise = promiseFn.apply(null, args);
+
+    if (!(promise instanceof Promise)) {
+      throw new InvalidArgumentError('Promise.sequence expects the promiseFn ' +
+        'argument to return an aeris.Promise object.');
+    }
+
+    return promise;
+  };
+
+
+  /**
+   * Similar to Promise#when, but accepts a map function
+   * which transforms array members into promises.
+   *
+   * eg.
+   *
+   *  var apiEndpoints = [ '/endpointA', '/endpointB' ];
+   *
+   *  function request(endpoint) {
+   *  // .. returns a promise
+   *  }
+   *
+   *  // Resolves when requests have completed for all endpoints.
+   *  Promise.map(apiEndpoints, request);
+   *
+   * @param {Array} arr
+   * @param {function(*):aeris.Promise} mapFn
+   * @return {aeris.Promise}
+   */
+  Promise.map = function(arr, mapFn, opt_ctx) {
+    return Promise.when(arr.map(mapFn, opt_ctx));
   };
 
 

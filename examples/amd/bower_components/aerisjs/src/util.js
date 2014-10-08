@@ -18,6 +18,23 @@ define([
     abstractMethod: function() {
     },
 
+    /**
+     * Bind all methods in an object
+     * to be run in the specified context.
+     *
+     * @param {Object} object
+     * @param {Object=} opt_ctx Defaults to the object.
+     */
+    bindAllMethods: function(object, opt_ctx) {
+      var ctx = opt_ctx || object;
+
+      _.each(object, function(val, key) {
+        if (_.isFunction(val)) {
+          object[key] = val.bind(ctx);
+        }
+      });
+    },
+
 
     /**
      * Inherit the prototype methods from one constructor into another.
@@ -229,6 +246,17 @@ define([
       });
     },
 
+
+    /**
+     * Throw an error.
+     *
+     * @param {Error} err
+     */
+    throwError: function(err) {
+      throw err;
+    },
+
+
     template: function() {
       // Temporarily change templateSettings
       // so we don't overwrite global settings
@@ -243,10 +271,50 @@ define([
       _.templateSettings = settings_orig;
 
       return res;
+    },
+
+    /**
+     * Invokes a callback with each object in an array.
+     * Waits `interval` ms between each invocation.
+     *
+     * @param {Array} objects
+     * @param {Function} cb
+     * @param {Number} interval
+     */
+    eachAtInterval: function(objects, cb, interval) {
+      var next = function(i) {
+        var obj = objects[i];
+        var nextIncremented = _.partial(next, i + 1);
+
+        if (obj) {
+          cb(obj);
+          _.delay(nextIncremented, interval);
+        }
+      };
+
+      next(0);
+    },
+
+    /**
+     * @method tryCatch
+     * @param {function()} tryFn
+     * @param {function(Error)} catchFn
+     */
+    tryCatch: function(tryFn, catchFn) {
+      try {
+        tryFn();
+      }
+      catch (err) {
+        catchFn(err);
+      }
     }
   };
 
 
+  // Instead of mixing our methods into underscore (which
+  // would overwrite the client's window._ object), we
+  // are creating a clone of underscore.
+  //
   // Create a proxy _() wrapper function
   var util = function(var_args) {
     // Call the underscore wrapper with supplied

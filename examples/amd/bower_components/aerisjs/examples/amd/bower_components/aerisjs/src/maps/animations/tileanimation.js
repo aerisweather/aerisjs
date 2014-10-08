@@ -21,9 +21,10 @@ define([
   var TileAnimation = function(layer, opt_options) {
     var options = _.defaults(opt_options || {}, {
       // Defaults will be set after times are loaded.
-      from: 0,
-      to: new Date().getTime(),
-      limit: 20
+      from: _.now() - (1000 * 60 * 60 * 2), // two hours ago
+      to: _.now(),
+      limit: 20,
+      AnimationLayerLoader: AnimationLayerLoader
     });
 
     AbstractAnimation.call(this, options);
@@ -62,16 +63,24 @@ define([
 
 
     /**
-     * Helper for creating and loading animation layer 'frames.'
+     * animationLayerLoader constructor.
      *
-     * @type {aeris.animations.helpers.AnimationLayerLoader}
-     * @private
+     * @property AnimationLayerLoader_
+     * @type {function():aeris.maps.animations.helpers.AnimationLayerLoader}
+     * @protected
      */
-    this.animationLayerLoader_ = options.animationLayerLoader || new AnimationLayerLoader(this.masterLayer_, {
-      from: this.from_,
-      to: this.to_,
-      limit: this.limit_
-    });
+    this.AnimationLayerLoader_ = options.AnimationLayerLoader;
+
+
+    /**
+     * Helper for creating and loading animation layer 'frames'
+     *
+     * @property animationLayerLoader_
+     * @protected
+     * @type {aeris.maps.animations.helpers.AnimationLayerLoader}
+     */
+    this.animationLayerLoader_ = this.createAnimationLayerLoader_();
+
 
     this.prepareMasterLayer_();
     this.loadAnimationLayers();
@@ -80,16 +89,26 @@ define([
 
 
   /**
+   * @method createAnimationLayerLoader_
+   * @protected
+   */
+  TileAnimation.prototype.createAnimationLayerLoader_ = function() {
+    return new this.AnimationLayerLoader_(this.masterLayer_, {
+      from: this.from_,
+      to: this.to_,
+      limit: this.limit_
+    });
+  };
+
+
+  /**
    * Load the tile layers for the animation.
-   *
-   * Note that is is not necessary to wait for all layers
-   * to load before starting animations.
    *
    * @return {aeris.Promise} Promise to load all layers.
    * @method loadAnimationLayers
    */
   TileAnimation.prototype.loadAnimationLayers = function() {
-    this.bindLoadEvents_();
+    this.bindLoadEventsTo_(this.animationLayerLoader_);
 
     this.animationLayerLoader_.once('load:times', function(times, timeLayers) {
       this.setTimeLayers_(timeLayers);
@@ -115,7 +134,7 @@ define([
    * @private
    */
   TileAnimation.prototype.prepareMasterLayer_ = function() {
-    // Destroy its strategy, so changes to its state are not rendered
+    // Destroy its strategy, so changes to its state is not rendered
     this.masterLayer_.removeStrategy();
   };
 
@@ -187,7 +206,7 @@ define([
 
     // Only transition if the layer is loaded
     // to prevent gaps in animation.
-    if (nextLayer && nextLayer.isLoaded()) {
+    if (nextLayer && nextLayer !== this.getCurrentLayer() && nextLayer.isLoaded()) {
       this.transition_(this.getCurrentLayer(), nextLayer);
     }
 
@@ -195,11 +214,6 @@ define([
     this.currentTime_ = time;
 
     this.trigger('change:time', new Date(this.currentTime_));
-  };
-
-
-  TileAnimation.prototype.getCurrentTime = function() {
-    return this.currentTime_;
   };
 
 
@@ -248,9 +262,14 @@ define([
   };
 
 
-  TileAnimation.prototype.bindLoadEvents_ = function() {
+  /**
+   * @method bindLoadEventsTo_
+   * @private
+   * @param {aeris.maps.animations.helpers.AnimationLayerLoader} layerLoader
+   */
+  TileAnimation.prototype.bindLoadEventsTo_ = function(layerLoader) {
     // Proxy load events from AnimationLayerLoader
-    var proxyLayerLoaderEvents = _.partial(this.proxyEvent_, this.animationLayerLoader_);
+    var proxyLayerLoaderEvents = _.partial(this.proxyEvent_, layerLoader);
 
     _.each([
       'load:progress',
@@ -258,6 +277,20 @@ define([
       'load:error',
       'load:reset'
     ], proxyLayerLoaderEvents, this);
+  };
+
+
+  /**
+   * @method proxyEvent_
+   * @param {aeris.Events} target
+   * @param {string} eventName
+   * @private
+   */
+  TileAnimation.prototype.proxyEvent_ = function(target, eventName) {
+    this.listenTo(target, eventName, function(var_args) {
+      var args = _.argsToArray(arguments);
+      this.trigger.apply(this, [eventName].concat(args));
+    });
   };
 
 
@@ -280,7 +313,7 @@ define([
    * Some mapping libraries will not load a layer
    * until it has been set to the map.
    *
-   * This method "quietly" sets a layer to the map,
+   * This method silently and temporarily sets a layer to the map,
    * to make sure loading is initialized.
    *
    * @method initializeLayerLoading_
@@ -288,23 +321,31 @@ define([
    * @param {aeris.maps.layers.AerisTile} layer
    */
   TileAnimation.prototype.initializeLayerLoading_ = function(layer) {
-    var quietlyAddToMap = (function() {
-      // Temporarily set to 0 opacity, so we don't see
-      // the layer being added to the map
-      layer.setOpacity(0);
+    var triggerLayerLoad = (function() {
+      // Don't mess with the current layer.
+      if (this.isCurrentLayer_(layer)) {
+        return;
+      }
 
-      // Trigger loading, by setting to the map
-      layer.setMap(this.masterLayer_.getMap());
+      layer.set({
+        // Temporarily set to 0 opacity, so we don't see
+        // the layer being added to the map
+        opacity: 0,
 
-      // We're not going to be reset our layer attributes
-      // here because it (for some reason) causes the application
-      // to crash.
-      // Instead we'll rely on the transitioning logic.
-      // This may be dangerous, but it will work for now.
+        // Trigger loading, by setting to the map
+        map: this.masterLayer_.getMap()
+      });
     }).bind(this);
 
-    quietlyAddToMap();
-    this.listenTo(this.masterLayer_, 'map:set', quietlyAddToMap);
+    // Prevent layer initialization from
+    // blocking the call stack.
+    // (this is a CPU intensive method)
+    var triggerLayerLoad_non_blocking = _.throttle(function() {
+      _.defer(triggerLayerLoad);
+    }, 10);
+
+    triggerLayerLoad_non_blocking();
+    this.listenTo(this.masterLayer_, 'map:set', triggerLayerLoad_non_blocking);
   };
 
 
@@ -313,10 +354,14 @@ define([
    * @method updateTimeBounds_
    */
   TileAnimation.prototype.updateTimeBounds_ = function() {
+    if (!this.times_.length) {
+      return;
+    }
+
     // Our tile loader already constrained our tile times
     // for us, so we can reset our bounds.
-    this.from_ = Math.min.apply(null, this.times_);
-    this.to_ = Math.max.apply(null, this.times_);
+    this.setFrom(Math.min.apply(null, this.times_));
+    this.setTo(Math.max.apply(null, this.times_));
     this.limit_ = this.times_.length;
   };
 
@@ -326,14 +371,6 @@ define([
       return parseInt(time);
     });
     return _.sortBy(times, _.identity);
-  };
-
-
-  TileAnimation.prototype.proxyEvent_ = function(target, eventName) {
-    this.listenTo(target, eventName, function(var_args) {
-      var args = _.argsToArray(arguments);
-      this.trigger.apply(this, [eventName].concat(args));
-    });
   };
 
 
@@ -424,6 +461,16 @@ define([
     var lastTime = _.last(this.times_);
     return this.isCurrentLayerFirst_() ?
       lastTime : this.times_[this.getLayerIndex_() - 1];
+  };
+
+  /**
+   * @method isCurrentLayer_
+   * @private
+   * @param {aeris.maps.layers.AerisTile} layer
+   * @return {Boolean}
+   */
+  TileAnimation.prototype.isCurrentLayer_ = function(layer) {
+    return layer === this.getCurrentLayer();
   };
 
 

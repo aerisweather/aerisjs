@@ -19,27 +19,20 @@ define([
 
     this.bindMapEvents_();
 
-    // Sycn map view with map object.
+    // Sync map view with map object.
     this.listenTo(this.object_, {
-      'change:center': this.setCenter_,
-      'change:zoom': this.setZoom_
+      'change:center': this.updateCenter_,
+      'change:zoom': this.updateZoom_,
+      'change:baseLayer': this.updateBaseLayer_
     }, this);
 
+    // Make sure all attributes are in sync
+    // on init. If pre-existing google.maps.Map object was
+    // injected as our view, we need to make sure our aeris.maps.Map
+    // object is updated.
+    this.updateObjectFromView_();
 
-    // A hack to prevent zoom on dblclick
-    // Only if a handler is bound to the 'dblclick' event
-    this.object_.on = function(topic, handler) {
-      if (_.isString(topic) && topic === 'dblclick' ||
-        _.isObject(topic) && _.has(topic, 'dblclick')
-        ) {
-        this.getView().set('disableDoubleClickZoom', true);
-      }
-
-      // Note that we can't pull this in with ReqJS,
-      // because we would create a circular dependency.
-      // Hacks are fun, no?
-      aeris.maps.Map.prototype.on.apply(this, arguments);
-    };
+    this.preventZoomOnDblClick_();
   };
   _.inherits(GoogleMapStrategy, AbstractStrategy);
 
@@ -49,6 +42,7 @@ define([
    */
   GoogleMapStrategy.prototype.createView_ = function() {
     var el = this.object_.getElement();
+    var baseLayer = this.object_.getBaseLayer();
     var view;
 
     // Accept a predefined google.maps.Map
@@ -60,8 +54,15 @@ define([
     gmaps.visualRefresh = true;
     view = new gmaps.Map(el, {
       center: mapUtil.arrayToLatLng(this.object_.get('center')),
-      zoom: this.object_.get('zoom')
+      zoom: this.object_.get('zoom'),
+      scrollwheel: this.object_.get('scrollZoom')
     });
+
+    if (baseLayer) {
+      _.defer(function() {
+        baseLayer.setMap(this.object_);
+      }.bind(this));
+    }
 
     return view;
   };
@@ -104,9 +105,9 @@ define([
 
   /**
    * @private
-   * @method setCenter_
+   * @method updateCenter_
    */
-  GoogleMapStrategy.prototype.setCenter_ = function() {
+  GoogleMapStrategy.prototype.updateCenter_ = function() {
     var latLng = mapUtil.arrayToLatLng(this.object_.get('center'));
 
     this.getView().setCenter(latLng);
@@ -114,18 +115,64 @@ define([
 
 
   /**
+   * @method updateAllAttributes_
    * @private
-   * @method setZoom_
    */
-  GoogleMapStrategy.prototype.setZoom_ = function() {
+  GoogleMapStrategy.prototype.updateObjectFromView_ = function() {
+    this.object_.set({
+      center: this.getView().getCenter(),
+      zoom: this.getView().getZoom(),
+      scrollZoom: this.getView().scrollwheel
+    });
+  };
+
+
+  /**
+   * @private
+   * @method updateZoom_
+   */
+  GoogleMapStrategy.prototype.updateZoom_ = function() {
     var zoom = this.object_.get('zoom');
     this.getView().setZoom(zoom);
+  };
+
+  /**
+   * @method updateBaseLayer_
+   * @private
+   */
+  GoogleMapStrategy.prototype.updateBaseLayer_ = function() {
+    var baseLayer = this.object_.getBaseLayer();
+    if (baseLayer) {
+      baseLayer.setMap(this.object_);
+    }
   };
 
 
   GoogleMapStrategy.prototype.fitToBounds = function(bounds) {
     var gBounds = mapUtil.arrayToBounds(bounds);
     this.view_.fitBounds(gBounds);
+  };
+
+
+  /**
+   * @method preventZoomOnDblClick_
+   * @private
+   */
+  GoogleMapStrategy.prototype.preventZoomOnDblClick_ = function() {
+    // A hack to prevent zoom on dblclick
+    // Only if a handler is bound to the 'dblclick' event
+    this.object_.on = function(topic, handler) {
+      if (_.isString(topic) && topic === 'dblclick' ||
+        _.isObject(topic) && _.has(topic, 'dblclick')
+        ) {
+        this.getView().set('disableDoubleClickZoom', true);
+      }
+
+      // Note that we can't pull this in with ReqJS,
+      // because we would create a circular dependency.
+      // Hacks are fun, no?
+      aeris.maps.Map.prototype.on.apply(this, arguments);
+    };
   };
 
 

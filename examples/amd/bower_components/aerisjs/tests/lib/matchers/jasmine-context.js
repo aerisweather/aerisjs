@@ -8,7 +8,9 @@
 // Released under the MIT license
 beforeEach(function() {
   var jQueryEquals = function(actual, expected) {
-    if (!window.jQuery) { return false; }
+    if (!window.jQuery) {
+      return false;
+    }
 
     var normalizeObjects = function(objects) {
       return (objects instanceof jQuery) ? objects.toArray() : [objects];
@@ -25,6 +27,10 @@ beforeEach(function() {
   this.addMatchers({
     toHaveBeenCalledInTheContextOf: function(expectedObject, expectedArgs) {
       var spy = this.actual;
+
+      var calledWithObjects_pp = jasmine.pp(spy.calls.map(function(call) {
+        return jasmine.pp(call.object);
+      }));
 
       if (!jasmine.isSpy(spy)) {
         throw new Error('Expected a spy, but got ' + jasmine.pp(spy) + '.');
@@ -46,7 +52,8 @@ beforeEach(function() {
 
         if (expectedArgs === undefined) {
           return [
-            'Expected spy ' + this.actual.identity + ' to have been called in the context of ' + jasmine.pp(expectedObject),
+            'Expected spy ' + this.actual.identity + ' to have been called in the context of ' + jasmine.pp(expectedObject) +
+              ' but the spy was actually called in the contexts of ' + calledWithObjects_pp + '.',
             'Expected spy ' + this.actual.identity + ' not to have been called in the context of ' + jasmine.pp(expectedObject)
           ];
         } else {

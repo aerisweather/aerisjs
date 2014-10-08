@@ -1,0 +1,8 @@
+<a href="{{link}}" class="ref"
+    {{#if isNative}}
+    target="_blank"
+    >{{name}}</a>
+  {{else}}
+    title="<code>{{name}}</code>{{#if ../description}}<br>{{../../description}}{{/if}}"
+    >{{shortName name}}</a>
+  {{/if}}

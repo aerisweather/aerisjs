@@ -1,7 +1,7 @@
 define([
   'underscore'
-], function(_) {
-  var util = _.noConflict();
+], function(underscore) {
+  var _ = underscore.noConflict();
 
   /**
    * Aeris library utilities.
@@ -10,7 +10,7 @@ define([
    * @namespace aeris
    * @static
    */
-  util.mixin({
+  var customUtil = {
     /**
      * Representation of an abstract method that needs overriding.
      * @method abstractMethod
@@ -227,12 +227,43 @@ define([
       _.defer(function() {
         throw e;
       });
-    }
-  });
+    },
 
-  util.templateSettings = {
-    interpolate: /\{(.+?)\}/g
+    template: function() {
+      // Temporarily change templateSettings
+      // so we don't overwrite global settings
+      // for other users.
+      var res;
+      var settings_orig = _.clone(_.templateSettings);
+      _.templateSettings.interpolate = /\{(.+?)\}/g;
+
+      res = _.template.apply(_, arguments);
+
+      // Restore original settings
+      _.templateSettings = settings_orig;
+
+      return res;
+    }
   };
+
+
+  // Create a proxy _() wrapper function
+  var util = function(var_args) {
+    // Call the underscore wrapper with supplied
+    // arguments
+    var wrapper = _.apply(_, arguments);
+
+    // Mixin custom functions
+    _.each(customUtil, function(func, name) {
+      wrapper[name] = function() {
+        return func.call(wrapper, wrapper._wrapped);
+      };
+    });
+    wrapper.mixin(customUtil);
+
+    return wrapper;
+  };
+  _.extend(util, _, customUtil);
 
 
   return util;

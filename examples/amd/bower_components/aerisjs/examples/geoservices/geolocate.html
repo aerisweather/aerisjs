@@ -44,6 +44,10 @@
   <script type="text/javascript">
     var map = new aeris.maps.Map('map-canvas');
 
+    // Configure Aeris API keys (required for the AerisGeolocateService)
+    aeris.config.setApiId(apiKeys.aeris.id);
+    aeris.config.setApiSecret(apiKeys.aeris.secret)
+
 
     // Want to test out the IP-based geolocation?
     // Just comment out this line to turn off HTML5
@@ -60,7 +64,7 @@
       }
       else {
         // Fallback to IP-based geolocation
-        geolocateService = new aeris.geolocate.FreeGeoIPGeolocateService();
+        geolocateService = new aeris.geolocate.AerisGeolocateService();
       }
 
       $('#loading').show();

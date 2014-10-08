@@ -1,3 +1,146 @@
+# 0.7.15
+
+* FIX: Update usage of _.template to work with
+  to underscore v1.7.0
+
+# 0.7.14
+
+* ADD: Promise.sequence method
+* ADD: Promise.map method
+* ADD: Promise#proxy method
+* MOD: Remove duplication Aeris API keys from BatchModel requests.
+* FIX: Fix error thrown by TileAnimation, if a layer is
+       removed from the map while preloading.
+* FIX: Fix possible error with L.mapbox, in build.
+       AMD wrapper was not returning the correct global property.
+* FIX: Avoid overriding base `aeris` namespace in build.
+
+See git history for a full list of changes.
+
+
+# 0.7.13
+
+* ADD: New tile layer: `aeris.maps.layers.RadarSat` (combined radar and satellite)
+* ADD: `aeris.maps.Map` accepts a `baseLayer` option
+* ADD: New tile layer: `aeris.maps.layers.MapBox`, supporting custom MapBox tile layers.
+* ADD: Animations may be preloaded using the `preload()` method
+
+See git history for a full list of changes.
+
+
+# 0.7.12
+
+* ADD: New tile layer: `aeris.maps.layers.QPF` (Quantitative Precipitation Forecast)
+* ADD: New tile layer: `aeris.maps.layers.LightningStrikeDensity`
+* ADD: Add `aeris.VERSION` property to builds.
+* MOD: Use 4kname as the default Tile Layer forecast model, where available
+* FIX: When creating an `aeris.maps.Map` using an existing view (eg. `google.maps.Map`),
+       the aeris map will update its own attributes using the attributes of the view.
+
+See git history for a full list of changes.
+
+
+# 0.7.11
+
+* FIX: Fix animation error related to uninitialized time layers.
+* FIX: Handle tile animations with no available times from API.
+
+# 0.7.10
+
+* FIX: Fix bug where setting a future time on an animation with no future times
+       would throw an error.
+* FIX: Fix various documentation errors
+
+See git history for a full list of changes.
+
+# 0.7.9
+
+* ADD: AerisGeocodeService
+* ADD: AerisGeolocateService
+* MOD: Lightning Markers change color by age of report
+* MOD: LightningCollection defaults: sorts by most recent, and has a higher limit (250)
+* FIX: Lightning Model id attribute generation -- prevents duplicate models in a Lightning Collection
+* FIX: MarkerCollection `cluster: false` option (to disable clustering)
+* FIX: MarkerCollection#start/stopClustering
+* FIX: Add missing `aeris.api` objects to the aeris.js build package
+* FIX: Fix multi-layers and animation sync demos.
+
+
+# 0.7.8
+
+* ADD: Add a sandbox environment to the repo, to make it easier for contributing developers
+       to get started playing around with the library. See [`docs/usage.md`](/docs/usage.md)
+       for more.
+* MOD: Disable TileAnimation pre-loading. Automatically pre-loading all tile layers was causing
+       significant performance issues when creating several TileAnimations at once.
+       An interface for manually pre-loading animations is slated for a future release of Aeris.js.
+       See code snippet below for a temporary pre-loading solution.
+* MOD: TileAnimation and AnimationSync no longer changes the from/to bounds of the animation when
+       new times are loaded. See code snippet below to restore the previous behavior.
+* MOD: aeris.api.collections.Lightning sorts models by date/time. This results in a more geographically
+       distributed collection (by default, Aeris API sorts Lightning by distance).
+* FIX: Fix parsing of collection data for models which dynamically generate ids.
+* FIX: Configure styles for all point data marker clusters.
+* FIX: Remove invalid BatchModel documentation.
+* FIX: When an animation is set to the current actual time,
+       never display a forecast tile layer. (Previously, the animation
+       would should either a past or a future layer, depending on whichever
+       layer's time was closer to the current time).
+
+See git history for a full list of changes.
+
+
+
+### Temporary Solution For Pre-loading Animations
+
+```js
+var animation = new aeris.interactive.animations.TileAnimation(layer);
+
+animation.on('load:times', function(times) {
+  var currentTime = animation.getCurrentTime();
+
+  // Calling goToTime will trigger the time layer to load.
+  times.forEach(function(time) {
+    animation.goToTime(time);
+  });
+
+  // Revert back to the original time
+  animation.goToTime(currentTime);
+});
+```
+
+
+### Update animation from/to times when times are loaded
+
+```js
+var animation = new aeris.interactive.animations.TileAnimation(layer);
+
+animation.on('load:times', function(times) {
+  var earliestTime = Math.min.apply(Math, times);
+  var latestTime = Math.max.apply(Math, times);
+
+  animation.setFrom(earliestTime);
+  animation.setTo(latestTime);
+});
+```
+
+
+# 0.7.7
+
+* ADD: Precip tile layer
+* ADD: Support future (forecast) tiles and animation for for Radar, Precip, Satellite, SatelliteGlobal, and Winds
+* ADD: Map `scrollZoom` attribute. Allows disabling scroll-to-zoom functionality (Google Maps, Leaflet)
+* ADD: Model for /places Aeris API endpoint (`aeris.api.models.Place`, `aeris.api.collections.Places`)
+* MOD: AerisApiModel/Collection: Promise returned by `fetch()` is now resolved with an ApiResponseError object.
+* MOD: Api object params: accept strings as from/to params (eg. 'today', 'tomorrow')
+* FIX: Correct cdn paths to Aeris.js in demo files. Fix missing dependencies.
+* FIX: Fix invalid reference to Lightning model constructor.
+* FIX: Prevent collections from creating duplicate models
+* FIX: Improve performance when handling large collections of PointDataMarkers
+
+See git history for a full list of changes.
+
+
 # 0.7.6
 
 * FIX: ClusterStyles were failing to load if Aeris.js was loaded before the document

@@ -61,6 +61,23 @@ define([
   };
   _.extend(AnimationLayerLoader.prototype, Events.prototype);
 
+  /**
+   * @method setFrom
+   * @param {number} from Timestamp.
+   */
+  AnimationLayerLoader.prototype.setFrom = function(from) {
+    this.timeLayersFactory_.setFrom(from);
+  };
+
+
+  /**
+   * @method setTo
+   * @param {number} to Timestamp.
+   */
+  AnimationLayerLoader.prototype.setTo = function(to) {
+    this.timeLayersFactory_.setTo(to);
+  };
+
 
   /**
    * Creates layers for all available times,
@@ -77,8 +94,7 @@ define([
 
     this.baseLayer_.loadTileTimes().
       done(function(times) {
-        this.timeLayers_ = this.createLayersFromTimes_(times);
-        this.bindLayerLoadEvents_();
+        this.addTimeLayersForTimes_(times);
 
         this.trigger('load:times', times, this.timeLayers_);
 
@@ -99,23 +115,35 @@ define([
    * @param {Array.<number>} times
    * @return {Object.<number, aeris.maps.layers.AerisTile>}
    * @private
-   * @method createLayersFromTimes_
+   * @method addTimeLayersForTimes_
    */
-  AnimationLayerLoader.prototype.createLayersFromTimes_ = function(times) {
+  AnimationLayerLoader.prototype.addTimeLayersForTimes_ = function(times) {
+    var currentTimes = Object.keys(this.timeLayers_).map(function(time) {
+      return parseInt(time);
+    });
+    times = _.uniq(currentTimes.concat(times));
+
     this.timeLayersFactory_.setTimes(times);
-    return this.timeLayersFactory_.createTimeLayers();
+
+    this.timeLayers_ = this.timeLayersFactory_.createTimeLayers();
+
+    this.bindLayerLoadEvents_(this.timeLayers_);
   };
 
 
   /**
    * @method bindLayerLoadEvents_
+   * @param {Object.<number,aeris.maps.layers.AerisTile>} timeLayers
    */
-  AnimationLayerLoader.prototype.bindLayerLoadEvents_ = function() {
+  AnimationLayerLoader.prototype.bindLayerLoadEvents_ = function(timeLayers) {
     var triggerLoadResetOnce = _.debounce(function() {
       this.trigger('load:reset', this.getLoadProgress());
     }, 15);
 
-    _.each(this.timeLayers_, function(layer) {
+    _.each(timeLayers, function(layer) {
+      // clear any old event bindings
+      this.stopListening(layer);
+
       this.listenTo(layer, {
         'load': function() {
           var progress = this.getLoadProgress();
@@ -140,7 +168,9 @@ define([
     var totalCount = _.keys(this.timeLayers_).length;
     var loadedCount = 0;
 
-    if (!totalCount) { return 0; }
+    if (!totalCount) {
+      return 0;
+    }
 
     _.each(this.timeLayers_, function(layer) {
       if (layer.isLoaded()) {
@@ -150,6 +180,17 @@ define([
 
 
     return Math.min(loadedCount / totalCount, 1);
+  };
+
+
+  /**
+   * @method destroy
+   */
+  AnimationLayerLoader.prototype.destroy = function() {
+    this.stopListening();
+    this.timeLayersFactory_.destroy();
+
+    delete this.timeLayers_;
   };
 
 

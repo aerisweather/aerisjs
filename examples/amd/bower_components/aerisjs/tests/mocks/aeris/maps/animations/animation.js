@@ -1,8 +1,9 @@
 define([
   'aeris/util',
   'mocks/mockfactory',
-  'aeris/model'
-], function(_, MockFactory, Model) {
+  'aeris/model',
+  'aeris/promise'
+], function(_, MockFactory, Model, Promise) {
   /**
    * @class MockAnimation
    * @implements aeris.maps.animations.AnimationInterface
@@ -23,9 +24,17 @@ define([
       'getCurrentTime',
       'isAnimating',
       'getLoadProgress',
-      'getTimes'
+      'getTimes',
+      'setSpeed',
+      'setTimestep',
+      'hasMap',
+      'preload'
     ],
-    inherits: Model
+    inherits: Model,
+    constructor: function() {
+      this.time_ = new Date().getTime();
+      this.promiseToPreload = new Promise();
+    }
   });
 
   /**
@@ -61,11 +70,26 @@ define([
 
 
   /**
+   * @method goToTime
+   * @param {Date|number} time
+   */
+  MockAnimation.prototype.goToTime = function(time) {
+    if (time === this.time_) {
+      return;
+    }
+
+    this.time_ = time;
+
+    this.trigger('change:time', new Date(this.time_));
+  };
+
+
+  /**
    * @method getCurrentTime
    * @return {Date}
    */
   MockAnimation.prototype.getCurrentTime = function() {
-    return new Date();
+    return new Date(this.time_);
   };
 
   /**
@@ -105,6 +129,15 @@ define([
     }
 
     this.set('to', to);
+  };
+
+
+  /**
+   * @method preload
+   * @return {aeris.Promise}
+   */
+  MockAnimation.prototype.preload = function() {
+    return this.promiseToPreload;
   };
 
 

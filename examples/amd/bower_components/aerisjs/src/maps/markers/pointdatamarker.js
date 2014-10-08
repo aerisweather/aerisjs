@@ -13,14 +13,14 @@ define([
    *
    * @constructor
    * @override
-  */
+   */
   var PointDataMarker = function(opt_attrs, opt_options) {
     var attrs = _.defaults(opt_attrs || {}, {
       offsetX: 12,
       offsetY: 12
     });
     var options = _.defaults(opt_options || {}, {
-      iconPath: config.get('assetPath') + '{name}.png',
+      iconPath: '{name}',
       iconLookup: {},
       typeAttribute: ''
     });
@@ -30,7 +30,9 @@ define([
       selectedUrl: this.lookupSelectedUrl_,
       title: this.lookupTitle_,
       position: this.lookupPosition_,
-      type: this.lookupType_
+      type: this.lookupType_,
+      offsetX: this.lookupOffsetX_,
+      offsetY: this.lookupOffsetY_
     });
 
 
@@ -63,7 +65,7 @@ define([
      * @property selectedIconPath_
      * @private
      * @type {string}
-    */
+     */
     this.selectedIconPath_ = options.selectedIconPath || options.iconPath;
 
 
@@ -147,13 +149,15 @@ define([
    * @method lookupUrl_
    */
   PointDataMarker.prototype.lookupUrl_ = function() {
-    var iconName = this.getIconNameForType_();
+    var iconConfig = this.getIconConfig_();
 
     // If no icon name found,
     // don't try to set one.
-    if (!iconName) { return this.get('url'); }
+    if (!iconConfig) {
+      return this.get('url');
+    }
 
-    return this.iconPath_.replace(/\{name\}/, iconName);
+    return this.iconPath_.replace(/\{name\}/, iconConfig.url);
   };
 
 
@@ -162,38 +166,58 @@ define([
    * @private
    */
   PointDataMarker.prototype.lookupSelectedUrl_ = function() {
-    var iconName = this.getIconNameForType_();
+    var selectedUrl;
+    var iconConfig = this.getIconConfig_();
 
     // If no icon name found,
     // don't try to set one.
-    if (!iconName) { return this.get('selectedUrl'); }
+    if (!iconConfig) {
+      return this.get('selectedUrl');
+    }
 
-    return this.selectedIconPath_.replace(/\{name\}/, iconName);
+    selectedUrl = iconConfig.selectedUrl || iconConfig.url;
+
+    return this.selectedIconPath_.replace(/\{name\}/, selectedUrl);
   };
 
+
   /**
-   * @method getIconNameForType_
+   * @method lookupOffsetX_
    * @private
-   * @return {string}
    */
-  PointDataMarker.prototype.getIconNameForType_ = function() {
-    var type = this.getType() || this.lookupType_();
+  PointDataMarker.prototype.lookupOffsetX_ = function() {
+    var iconConfig = this.getIconConfig_();
 
-    return this.lookupTypeIcon_(type);
+    if (!iconConfig) {
+      return this.get('offsetX');
+    }
+
+    return iconConfig.offsetX;
   };
 
 
   /**
-   * Find an icon name associated with
-   * a data type.
-   *
-   * @param {string} type Marker data type.
-   * @return {string} Icon name.
-   *
-   * @protected
-   * @method lookupTypeIcon_
+   * @method lookupOffsetY_
+   * @private
    */
-  PointDataMarker.prototype.lookupTypeIcon_ = function(type) {
+  PointDataMarker.prototype.lookupOffsetY_ = function() {
+    var iconConfig = this.getIconConfig_();
+
+    if (!iconConfig) {
+      return this.get('offsetY');
+    }
+
+    return iconConfig.offsetY;
+  };
+
+
+  /**
+   * @method getIconConfig_
+   * @private
+   */
+  PointDataMarker.prototype.getIconConfig_ = function() {
+    var type = this.lookupType_();
+
     return this.iconLookup_[type];
   };
 
@@ -224,7 +248,9 @@ define([
     var loc = this.getDataAttribute('loc');
 
     // Fallback to current position
-    if (!loc) { return this.get('position'); }
+    if (!loc) {
+      return this.get('position');
+    }
 
     return [
       loc.lat,

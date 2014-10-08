@@ -108,14 +108,6 @@ define([
       return placeError;
     }
 
-    if (attrs.to && !(attrs.to instanceof Date)) {
-      return new ValidationError('\'to\' parameter must be a Date object');
-    }
-
-    if (attrs.from && !(attrs.from instanceof Date)) {
-      return new ValidationError('\'from\' parameter must be a Date object');
-    }
-
     if (attrs.query && !(attrs.query instanceof this.QueryType_)) {
       return new ValidationError('query', attrs.query + ' is not a valid Query');
     }

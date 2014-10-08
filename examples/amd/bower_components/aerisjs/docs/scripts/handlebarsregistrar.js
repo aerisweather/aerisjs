@@ -2,11 +2,11 @@
   var fs = require('fs');
   var path = require('path');
   var _ = require('underscore');
-  
+
   var HandlebarsRegistrar = function(handlebars) {
     this.handlebars_ = handlebars;
   };
-  
+
   HandlebarsRegistrar.prototype.registerHelpersInDir = function(helpersDir) {
     var helperPaths = fs.readdirSync(helpersDir);
 
@@ -38,6 +38,6 @@
       this.handlebars_.registerPartial(partialName, html);
     }, this);
   };
-  
+
   module.exports = HandlebarsRegistrar;
 }(module));

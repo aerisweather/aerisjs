@@ -9,109 +9,71 @@ define([
 
   describe('AutoUpdateAnimation', function() {
     var autoUpdateAnimation, animationLayerLoader, AnimationLayerLoaderFactory, masterLayer;
-    var LIMIT_STUB = 20, TIMESPAN_STUB = 100;
+    var LIMIT_STUB = 20, AUTO_UPDATE_INTERVAL_STUB = 111e15;
+    var FROM_STUB = 123e3, TO_STUB = 789e3;
 
 
     beforeEach(function() {
-      clock.useFakeTimers(TIMESPAN_STUB + 1000000);
+      clock.useFakeTimers(1e10);
     });
     afterEach(function() {
       clock.restore();
     });
 
     beforeEach(function() {
-      masterLayer = new MockAerisTile();
+      masterLayer = new MockAerisTile({
+        autoUpdateInterval: AUTO_UPDATE_INTERVAL_STUB
+      });
 
       animationLayerLoader = new MockAnimationLayerLoader();
       AnimationLayerLoaderFactory = jasmine.createSpy('AnimationLayerLoaderFactory').
         andReturn(animationLayerLoader);
 
-      spyOn(AutoUpdateAnimation.prototype, 'loadAnimationLayers').
-        andCallThrough();
-
       autoUpdateAnimation = new AutoUpdateAnimation(masterLayer, {
         limit: LIMIT_STUB,
-        timespan: TIMESPAN_STUB,
+        from: FROM_STUB,
+        to: TO_STUB,
         AnimationLayerLoader: AnimationLayerLoaderFactory
       });
     });
 
 
-    describe('constructor', function() {
-
-      it('should set `to` to the current time', function() {
-        expect(autoUpdateAnimation.getTo().getTime()).toEqual(Date.now());
-      });
-
-      it('should set `from` to (current time - timespan)', function() {
-        var timespanAgo = Date.now() - TIMESPAN_STUB;
-
-        expect(autoUpdateAnimation.getFrom().getTime()).toEqual(timespanAgo);
-      });
-
-      it('should load layers using the animation\'s from/to times, and limit', function() {
-        expect(AnimationLayerLoaderFactory).toHaveBeenCalledWith(masterLayer, {
-          limit: LIMIT_STUB,
-          to: autoUpdateAnimation.getTo().getTime(),
-          from: autoUpdateAnimation.getFrom().getTime()
-        });
-
-        expect(autoUpdateAnimation.loadAnimationLayers).toHaveBeenCalled();
-      });
-
-    });
-
-
     describe('on the masterLayer#autoUpdate event', function() {
+      var promiseToLoadAnimationLayers;
 
       beforeEach(function() {
-        // ...and some time passes
-        clock.tick(Math.round(Math.random() * 10000));
+        promiseToLoadAnimationLayers = new Promise();
+
+        spyOn(autoUpdateAnimation, 'setFrom').andCallThrough();
+        spyOn(autoUpdateAnimation, 'setTo').andCallThrough();
+        spyOn(autoUpdateAnimation, 'loadAnimationLayers').andReturn(promiseToLoadAnimationLayers);
       });
 
 
-      it('should set `to` as the current time', function() {
-        spyOn(autoUpdateAnimation, 'setTo');
+      it('should bump the time forward by the masterLayer\'s `autoUpdateInterval`', function() {
         masterLayer.trigger('autoUpdate');
+        expect(autoUpdateAnimation.setFrom).toHaveBeenCalledWith(FROM_STUB + AUTO_UPDATE_INTERVAL_STUB);
+        expect(autoUpdateAnimation.setTo).toHaveBeenCalledWith(TO_STUB + AUTO_UPDATE_INTERVAL_STUB);
 
-        expect(autoUpdateAnimation.setTo).toHaveBeenCalledWith(Date.now());
+        masterLayer.trigger('autoUpdate');
+        expect(autoUpdateAnimation.setFrom).toHaveBeenCalledWith(FROM_STUB + AUTO_UPDATE_INTERVAL_STUB * 2);
+        expect(autoUpdateAnimation.setTo).toHaveBeenCalledWith(TO_STUB + AUTO_UPDATE_INTERVAL_STUB * 2);
       });
 
-      it('should set `from` as (current time - timespan)', function() {
-        var timespanAgo = Date.now() - TIMESPAN_STUB;
-        spyOn(autoUpdateAnimation, 'setFrom');
-
+      it('should reload animation layers', function() {
         masterLayer.trigger('autoUpdate');
 
-        expect(autoUpdateAnimation.setFrom).toHaveBeenCalledWith(timespanAgo);
-      });
-
-      it('should update the animationLayerLoader\'s from and to settings', function() {
-        // reset our spies
-        animationLayerLoader.setFrom = jasmine.createSpy('setFrom');
-        animationLayerLoader.setTo = jasmine.createSpy('setTo');
-
-        masterLayer.trigger('autoUpdate');
-
-        expect(animationLayerLoader.setFrom).toHaveBeenCalledWith(autoUpdateAnimation.getFrom().getTime());
-        expect(animationLayerLoader.setTo).toHaveBeenCalledWith(autoUpdateAnimation.getTo().getTime());
-      });
-
-      it('should load time layers', function() {
-        // reset loadAnimLayers spy
-        autoUpdateAnimation.loadAnimationLayers = jasmine.createSpy('loadAnimationLayers').
-          andReturn(new Promise());
-
-        masterLayer.trigger('autoUpdate');
         expect(autoUpdateAnimation.loadAnimationLayers).toHaveBeenCalled();
       });
 
-      it('should trigger an autoUpdate event', function() {
+      it('should emit an `autoUpdate` event after times are loaded', function() {
         var onAutoUpdate = jasmine.createSpy('onAutoUpdate');
         autoUpdateAnimation.on('autoUpdate', onAutoUpdate);
 
         masterLayer.trigger('autoUpdate');
+        expect(onAutoUpdate).not.toHaveBeenCalled();
 
+        autoUpdateAnimation.trigger('load:times', []);
         expect(onAutoUpdate).toHaveBeenCalled();
       });
 

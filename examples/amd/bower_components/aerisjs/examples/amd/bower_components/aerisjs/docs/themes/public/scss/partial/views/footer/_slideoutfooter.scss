@@ -1,0 +1,19 @@
+// Thanks to http://codepen.io/orioltf/pen/cHwyu
+
+$footerHeight: 180px;
+
+#page {
+  position: relative;
+  z-index: 1;
+  margin-bottom: $footerHeight;
+}
+footer {
+  position: fixed;
+  bottom: 0; left: 0;
+
+  background: $bg-black;
+
+  height: $footerHeight;
+  width: 100%;
+  z-index: -1;
+}

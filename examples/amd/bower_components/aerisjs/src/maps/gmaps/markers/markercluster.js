@@ -190,16 +190,6 @@ define([
 
 
   /**
-   * @method destroy
-   */
-  MarkerClusterStrategy.prototype.destroy = function() {
-    AbstractStrategy.prototype.destroy.apply(this, arguments);
-
-    this.clearClusters();
-  };
-
-
-  /**
    * Add a set of markers to the
    * appropriate {MarkerClusterer} views.
    *
@@ -343,7 +333,7 @@ define([
     var clusterer;
     var clustererOptions = _.defaults({}, this.object_.getClusterOptions(), {
       clusterClass: 'aeris-cluster',
-      styles: this.object_.getClusterStyle(groupName),
+      styles: this.getClusterStyle_(groupName),
       averageCenter: true,
       zoomOnClick: true,
       gridSize: 60,
@@ -360,6 +350,19 @@ define([
     this.trigger('clusterer:create', clusterer);
 
     return clusterer;
+  };
+
+
+  /**
+   * @method getClusterStyle_
+   * @private
+   */
+  MarkerClusterStrategy.prototype.getClusterStyle_ = function(groupName) {
+    var style = _.clone(this.object_.getClusterStyle(groupName));
+
+    style.anchorIcon = [style.offsetX, style.offsetY];
+
+    return style;
   };
 
 
@@ -435,6 +438,25 @@ define([
     return _.reduce(this.getView(), function(memo, clusterer) {
       return memo.concat(clusterer.getMarkers());
     }, [], this);
+  };
+
+
+  /**
+   * @method destroy
+   */
+  MarkerClusterStrategy.prototype.destroy = function() {
+    this.clearClusters();
+
+    // Put each marker view back on the map.
+    // --> we're destroying the clustering strategy,
+    //    but we still want the markers to be rendered.
+    this.object_.each(function(markerObj) {
+      if (this.mapView_) {
+        markerObj.getView().setMap(this.mapView_);
+      }
+    }, this);
+
+    AbstractStrategy.prototype.destroy.call(this);
   };
 
 

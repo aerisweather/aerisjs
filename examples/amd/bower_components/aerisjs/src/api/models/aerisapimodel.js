@@ -158,15 +158,24 @@ define([
    * @method parse
    */
   AerisApiModel.prototype.parse = function(res) {
-    if (res.response) {
+    var data;
+
+    if (_.isArray(res)) {
+      data = res[0];
+    }
+    else if (res.response) {
       if (_.isArray(res.response)) {
-        return res.response[0] || {};
+        data = res.response[0];
       }
       else {
-        return res.response;
+        data = res.response;
       }
     }
-    return res;
+    else {
+      data = res;
+    }
+
+    return data || {};
   };
 
 

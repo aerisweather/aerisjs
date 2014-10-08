@@ -19,8 +19,16 @@ define([
       mapCanvas.parentNode.removeChild(mapCanvas);
     };
 
+    mapCanvas.jasmineToString = _.constant('MapCanvas');
+
     return mapCanvas;
   };
+
+  // Clean up map canvas elements
+  afterEach(function() {
+    $('[id^=MAP_CANVAS_ID_]').remove();
+  });
+
 
 
   return MapCanvas;

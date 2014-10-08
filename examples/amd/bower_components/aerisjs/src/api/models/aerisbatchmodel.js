@@ -17,9 +17,8 @@ define([
    * @constructor
    * @override
    *
-   * @param {Object=} opt_attrs
+   * @param {Object=} opt_attrs Set models as attribute values to enable batch requests.
    * @param {Object=} opt_options
-   * @param {Object.<string,aeris.api.models.AerisApiModel>} opt_options.models See addModels documentation.
    *
    * @param {aeris.api.params.Params} opt_options.params
    */
@@ -68,7 +67,7 @@ define([
 
     return _.extend(params.toJSON(), {
       requests: this.getEncodedEndpoints_(this.modelsInOrder_)
-    });
+    }, this.getApiKeyParams_());
   };
 
 
@@ -81,9 +80,18 @@ define([
    * @return {Array.<aeris.api.models.AerisApiModel>}
    */
   AerisBatchModel.prototype.getNestedModels_ = function() {
-    return this.values().filter(function(attr) {
-      return attr instanceof AerisApiModel;
-    });
+    return this.values().filter(this.isModel_.bind(this));
+  };
+
+
+  /**
+   * @method isModel_
+   * @private
+   * @param {Object} obj
+   * @return {Boolean}
+   */
+  AerisBatchModel.prototype.isModel_ = function(obj) {
+    return obj instanceof AerisApiModel;
   };
 
 
@@ -91,6 +99,7 @@ define([
    * @method getEncodedEndpoints_
    * @private
    * @param {Array.<aeris.api.models.AerisApiModel>} apiModels
+   * @return {string}
    */
   AerisBatchModel.prototype.getEncodedEndpoints_ = function(apiModels) {
     var requests = apiModels.map(function(model) {
@@ -113,8 +122,12 @@ define([
    * @return {string} Encoded model params.
    */
   AerisBatchModel.prototype.encodeModelParams_ = function(model) {
+    var paramsStr;
     var params = model.getParams().toJSON();
-    var paramsStr = _.map(params, function(val, key) {
+
+    this.removeApiKeysFromParams_(params);
+
+    paramsStr = _.map(params, function(val, key) {
       return key + '=' + val;
     }).join('&');
 
@@ -135,6 +148,46 @@ define([
 
 
   /**
+   * It is likely that each model contains idential
+   * client_id/client_secret params. This will result in the
+   * params being serialized into the query string for every model.
+   *
+   * For batch queries with many model, this could potentially
+   * exceed the url limit.
+   *
+   * @method removeApiKeysFromParams_
+   * @private
+   * @param {Object} serializedParams
+   */
+  AerisBatchModel.prototype.removeApiKeysFromParams_ = function(serializedParams) {
+    delete serializedParams.client_id;
+    delete serializedParams.client_secret;
+  };
+
+
+  /**
+   * Find the Aeris client_id and client_secret params
+   * by searching through component models.
+   *
+   * @method getApiKeyParams_
+   * @private
+   * @return {Object}
+   */
+  AerisBatchModel.prototype.getApiKeyParams_ = function() {
+    var apiKeyParams = {};
+
+    this.modelsInOrder_.some(function(model) {
+      apiKeyParams = model.getParams().pick('client_id', 'client_secret');
+
+      // Stop looping once we've found the params.
+      return apiKeyParams.client_id && apiKeyParams.client_secret;
+    }, this);
+
+    return apiKeyParams;
+  };
+
+
+  /**
    * @method isSuccessResponse_
    * @param {Object} res
    * @protected
@@ -149,6 +202,40 @@ define([
     return res.response.responses.every(function(r) {
       return !!r && r.success;
     });
+  };
+
+
+  /**
+   * @method createErrorFromResponse_
+   * @protected
+   * @param {Object} res
+   * @return {Error}
+   */
+  AerisBatchModel.prototype.createErrorFromResponse_ = function(res) {
+    var isTopLevelError = !!res.error;
+
+    if (isTopLevelError) {
+      return AerisApiModel.prototype.createErrorFromResponse_.call(this, res);
+    }
+
+    return res.response.responses.reduce(function(lastError, response) {
+      var error;
+
+      if (lastError || !response.error) {
+        return lastError;
+      }
+
+      error = AerisApiModel.prototype.createErrorFromResponse_.call(this, response);
+
+      // Temporary fix for Aeris API bug:
+      // -- incorrect code for 'invalid_location' error when
+      //    using batch requests.
+      if (response.error.description === 'The requested location was not found.') {
+        error.code = 'invalid_location';
+      }
+
+      return error;
+    }, void 0);
   };
 
 
@@ -204,6 +291,28 @@ define([
     });
 
     return json;
+  };
+
+
+  /**
+   * Clear data from each model.
+   *
+   * @override
+   */
+  AerisBatchModel.prototype.clear = function() {
+    this.keys().forEach(function(attr) {
+      var value = this.get(attr);
+
+      // Clear our all nested models
+      if (this.isModel_(value)) {
+        value.clear();
+      }
+
+      // Remove regular attributes
+      else {
+        this.unset(attr);
+      }
+    }, this);
   };
 
 

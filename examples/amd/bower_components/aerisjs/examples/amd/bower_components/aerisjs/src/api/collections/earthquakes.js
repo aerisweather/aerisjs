@@ -27,7 +27,7 @@ define([
     });
 
     _.defaults(options.params, {
-      from: new DateHelper().addWeeks(-7),
+      from: new DateHelper().addWeeks(-7).getDate(),
       to: new Date(),
       radius: '3000miles'
     });

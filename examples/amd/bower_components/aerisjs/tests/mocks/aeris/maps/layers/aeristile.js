@@ -1,8 +1,9 @@
 define([
   'aeris/util',
   'mocks/mockfactory',
-  'mocks/mapobject'
-], function(_, MockFactory, MockMapObject) {
+  'mocks/mapobject',
+  'aeris/promise'
+], function(_, MockFactory, MockMapObject, Promise) {
   /**
    * @class MockAerisTile
    */
@@ -19,7 +20,8 @@ define([
       'show',
       'hide',
       'removeStrategy',
-      'resetStrategy'
+      'resetStrategy',
+      'preload'
     ],
     constructor: function() {
       this.set('opacity', 1, { silent: true });
@@ -27,6 +29,8 @@ define([
       if (!this.getMap()) {
         this.setMap(null, { silent: true });
       }
+
+      this.promiseToPreload = new Promise();
     }
   });
 
@@ -44,6 +48,10 @@ define([
 
   MockAerisTile.prototype.hide = function() {
     this.setOpacity(0);
+  };
+
+  MockAerisTile.prototype.preload = function() {
+    return this.promiseToPreload;
   };
 
   MockAerisTile.prototype.isShown = function() {

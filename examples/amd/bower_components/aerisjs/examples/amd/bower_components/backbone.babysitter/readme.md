@@ -1,5 +1,7 @@
 # Backbone.BabySitter
 
+[![Build Status](https://travis-ci.org/marionettejs/backbone.babysitter.svg?branch=master)](https://travis-ci.org/marionettejs/backbone.babysitter)
+
 Manage child views in a Backbone.View.
 
 ## About Backbone.BabySitter
@@ -18,17 +20,9 @@ list of views.
 Grab the source from the `src` folder above. Grab the most recent builds
 from the links below.
 
-### Standard Builds
-
 * Development: [backbone.babysitter.js](https://raw.github.com/marionettejs/backbone.babysitter/master/lib/backbone.babysitter.js)
 
 * Production: [backbone.babysitter.min.js](https://raw.github.com/marionettejs/backbone.babysitter/master/lib/backbone.babysitter.min.js)
-
-### RequireJS (AMD) Builds
-
-* Development: [backbone.babysitter.js](https://raw.github.com/marionettejs/backbone.babysitter/master/lib/amd/backbone.babysitter.js)
-
-* Production: [backbone.babysitter.min.js](https://raw.github.com/marionettejs/backbone.babysitter/master/lib/amd/backbone.babysitter.min.js)
 
 ## Documentation
 

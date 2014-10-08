@@ -30,15 +30,19 @@ define([
      * @override
      */
 
+      // We need to allow the map view to finish initializing
+      // before asking a layer to be set on it.
+    this.ensureBaseLayer_();
+
+
+    this.updateObjectFromView_();
     this.updateLeafletMapPosition_();
-    this.updateAerisMapPosition_();
 
     this.proxyLeafletMapEvents_();
     this.bindToLeafletMapState_();
 
     this.bindMapToElementDimensions_();
     this.bindElReadyEvent_();
-
     /**
      * Triggered when the element is
      * has non-zero dimensions set on it.
@@ -57,7 +61,6 @@ define([
    * @return {L.Map}
    */
   LeafletMapStrategy.prototype.createView_ = function() {
-    var baseLayer;
     var map;
     var el = this.object_.getElement();
 
@@ -66,13 +69,58 @@ define([
       return el;
     }
 
-    map = new Leaflet.Map(el);
-
-    // Add a baseLayer to the map.
-    baseLayer = new OSMLayer();
-    baseLayer.getView().addTo(map);
+    map = new Leaflet.Map(el, {
+      center: mapUtil.toLeafletLatLng(this.object_.getCenter()),
+      zoom: this.object_.getZoom(),
+      scrollWheelZoom: this.object_.get('scrollZoom')
+    });
 
     return map;
+  };
+
+
+  /**
+   * Sets a base layer, if none is already set.
+   *
+   * @method ensureBaseLayer_
+   * @private
+   */
+  LeafletMapStrategy.prototype.ensureBaseLayer_ = function() {
+    var baseLayer = this.object_.getBaseLayer();
+    if (!baseLayer) {
+      baseLayer = new LeafletMapStrategy.DEFAULT_BASE_LAYER_TYPE_();
+      this.object_.setBaseLayer(baseLayer);
+    }
+
+    if (!this.getLayerCount_()) {
+      this.renderBaseLayer_(baseLayer);
+    }
+  };
+
+
+  /**
+   * @property DEFAULT_BASE_LAYER_TYPE_
+   * @static
+   * @type {function():aeris.maps.layers.Layer}
+   * @private
+   */
+  LeafletMapStrategy.DEFAULT_BASE_LAYER_TYPE_ = OSMLayer;
+
+
+  /**
+   * @method getLayerCount_
+   * @private
+   */
+  LeafletMapStrategy.prototype.getLayerCount_ = function() {
+    var count = 0;
+
+    // We have indirect access to the
+    // maps layers via the #eachLayer method.
+    this.view_.eachLayer(function() {
+      count++;
+    });
+
+    return count;
   };
 
 
@@ -82,19 +130,6 @@ define([
    */
   LeafletMapStrategy.prototype.updateLeafletMapPosition_ = function() {
     this.view_.setView(this.object_.getCenter(), this.object_.getZoom());
-  };
-
-
-  /**
-   * @method updateAerisMapPosition_
-   * @private
-   */
-  LeafletMapStrategy.prototype.updateAerisMapPosition_ = function() {
-    this.object_.set({
-      center: mapUtil.toAerisLatLon(this.view_.getCenter()),
-      bounds: mapUtil.toAerisBounds(this.view_.getBounds()),
-      zoom: this.view_.getZoom()
-    }, { validate: true });
   };
 
 
@@ -134,12 +169,62 @@ define([
    */
   LeafletMapStrategy.prototype.bindToLeafletMapState_ = function() {
     this.view_.addEventListener({
-      moveend: this.updateAerisMapPosition_.bind(this)
+      moveend: this.updateObjectFromView_.bind(this)
     });
 
     this.listenTo(this.object_, {
-      'change:center change:zoom': this.updateLeafletMapPosition_
+      'change:center change:zoom': this.updateLeafletMapPosition_,
+      'change:baseLayer': this.updateBaseLayer_
     });
+  };
+
+
+  /**
+   * @method updateObjectFromView_
+   * @private
+   */
+  LeafletMapStrategy.prototype.updateObjectFromView_ = function() {
+    this.object_.set({
+      center: mapUtil.toAerisLatLon(this.view_.getCenter()),
+      bounds: mapUtil.toAerisBounds(this.view_.getBounds()),
+      zoom: this.view_.getZoom(),
+      scrollZoom: this.view_.options.scrollWheelZoom
+    }, { validate: true });
+  };
+
+
+  /**
+   * @method updateBaseLayer_
+   * @private
+   */
+  LeafletMapStrategy.prototype.updateBaseLayer_ = function() {
+    var baseLayer = this.object_.getBaseLayer();
+    var previousBaseLayer = this.object_.previousAttributes().baseLayer;
+    var isSameBaseLayer = baseLayer === previousBaseLayer;
+
+    if (isSameBaseLayer) {
+      return;
+    }
+    if (previousBaseLayer) {
+      this.view_.removeLayer(previousBaseLayer.getView());
+      previousBaseLayer.set('map', null, { silent: true });
+    }
+
+    this.renderBaseLayer_(baseLayer);
+  };
+
+
+  /**
+   * @method renderBaseLayer_
+   * @private
+   * @param {aeris.maps.layers.Layer} baseLayer
+   */
+  LeafletMapStrategy.prototype.renderBaseLayer_ = function(baseLayer) {
+    this.view_.addLayer(baseLayer.getView(), true);
+
+    // Manually update map attribute, without the base layer
+    // trying to update the view itself.
+    baseLayer.set('map', this.object_, { silent: true });
   };
 
 

@@ -1,7 +1,8 @@
 define([
   'aeris/util',
-  'aeris/maps/animations/animationinterface'
-], function(_, AnimationInterface) {
+  'aeris/maps/animations/animationinterface',
+  'aeris/errors/invalidargumenterror'
+], function(_, AnimationInterface, InvalidArgumentError) {
   /**
    * A partially implemented {aeris.maps.animations.AnimationInterface}.
    *
@@ -22,7 +23,7 @@ define([
   var AbstractAnimation = function(opt_options) {
     var options = _.defaults(opt_options || {}, {
       from: 0,
-      to: new Date().getTime(),
+      to: _.now(),
       speed: 30,
       timestep: 1000 * 60,
       endDelay: 1000
@@ -95,11 +96,11 @@ define([
     /**
      * The time of the current animation frame.
      *
-     * @type {Date}
+     * @type {number} Timestamp
      * @private
      * @property currentTime_
      */
-    this.currentTime_ = null;
+    this.currentTime_ = Date.now();
 
 
     /**
@@ -229,7 +230,7 @@ define([
    * @return {?Date}
    */
   AbstractAnimation.prototype.getCurrentTime = function() {
-    return _.isNull(this.currentTime_) ? null : new Date(this.currentTime_);
+    return new Date(this.currentTime_);
   };
 
 
@@ -275,6 +276,14 @@ define([
    * @method setSpeed
    */
   AbstractAnimation.prototype.setSpeed = function(speed) {
+    if (speed === this.speed_) {
+      return;
+    }
+
+    if (!_.isNumber(speed)) {
+      throw new InvalidArgumentError(speed + ' is not a valid animation speed.');
+    }
+
     this.speed_ = speed;
 
     if (this.isAnimating()) {
@@ -295,6 +304,10 @@ define([
    * @method setTimestep
    */
   AbstractAnimation.prototype.setTimestep = function(timestep) {
+    if (timestep === this.timestep_) {
+      return;
+    }
+
     this.timestep_ = timestep;
 
     if (this.isAnimating()) {

@@ -1,45 +1,44 @@
 define([
   'aeris/util',
-  'aeris/maps/animations/tileanimation',
-  'aeris/datehelper'
-], function(_, TileAnimation, DateHelper) {
+  'aeris/maps/animations/tileanimation'
+], function(_, TileAnimation) {
   /**
    * An AutoUpdateAnimation is automatically updated
-   * to to display the most recent tiles available
+   * to to display the most current tiles available
    * from the Aeris API.
+   *
+   * The timespan (to - from) of an AutoUpdateAnimation
+   * object will always remain constant.
+   *
+   * For example:
+   *
+   *    var animation = new AutoUpdateAnimation({
+   *      from: 1PM_TODAY
+   *      to: 3PM_TODAY
+   *    });
+   *
+   *    // Some time passes...
+   *    // Tiles become available for 4PM_TODAY
+   *    animation.getTo();      // 4PM_TODAY
+   *    animation.getFrom();    // 2PM_TODAY
+   *
+   * Note that as the animation range is updated, it will trigger
+   * 'change:from' and 'change:to' events. This is useful if you need
+   * UI components to reflect the range of the animation.
+   *
+   *    animation.on('change:from change:to', function() {
+   *      $('#rangeInput').attr('min', animation.getFrom().getTime());
+   *      $('#rangeInput').attr('max', animation.getFrom().getTime());
+   *    });
    *
    * @class AutoUpdateAnimation
    * @namespace aeris.maps.animations
    * @extends aeris.maps.animations.TileAnimation
    *
    * @constructor
-   * @override
-   *
-   * @param {aeris.maps.layers.AerisTile} masterLayer
-   *
-   * @param {Object=} opt_options
-   * @param {number=} opt_options.limit The maximum number of time intervals to animate.
-   * @param {number=} opt_options.timespan How far back from the current time to animate, in milliseconds.
    */
   var AutoUpdateAnimation = function(masterLayer, opt_options) {
-    var options = _.defaults(opt_options || {}, {
-      limit: 20,
-      timespan: new DateHelper(new Date(0)).addHours(2).getTime()
-    });
-
-    options.to = Date.now();
-    options.from = Date.now() - options.timespan;
-
-
-    /**
-     * @property timespan_
-     * @private
-     * @type {number} Milliseconds
-     */
-    this.timespan_ = options.timespan;
-
-
-    TileAnimation.call(this, masterLayer, options);
+    TileAnimation.call(this, masterLayer, opt_options);
 
 
     this.bindToLayerAutoUpdate_();
@@ -56,34 +55,20 @@ define([
    * @private
    */
   AutoUpdateAnimation.prototype.bindToLayerAutoUpdate_ = function() {
+    var updateInterval = this.masterLayer_.get('autoUpdateInterval');
+
     this.listenTo(this.masterLayer_, 'autoUpdate', function() {
-      this.recalculateTimeBounds_();
-      this.reloadAnimationLayers_();
+      // Bump forward the animation by the autoUpdateInterval
+      this.setTo(this.to_ + updateInterval);
+      this.setFrom(this.from_ + updateInterval);
 
-      this.trigger('autoUpdate');
+      this.listenToOnce(this, 'load:times', function() {
+        this.trigger('autoUpdate', this);
+      });
+
+      // Reload layers with new interval
+      this.loadAnimationLayers();
     });
-  };
-
-
-  /**
-   * @method recalculateTimeBounds_
-   * @private
-   */
-  AutoUpdateAnimation.prototype.recalculateTimeBounds_ = function() {
-    this.setTo(Date.now());
-    this.setFrom(this.to_ - this.timespan_);
-  };
-
-
-  /**
-   * @method reloadAnimationLayers_
-   * @private
-   */
-  AutoUpdateAnimation.prototype.reloadAnimationLayers_ = function() {
-    this.animationLayerLoader_.setFrom(this.from_);
-    this.animationLayerLoader_.setTo(this.to_);
-
-    this.loadAnimationLayers();
   };
 
 

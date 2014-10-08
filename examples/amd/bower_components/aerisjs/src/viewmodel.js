@@ -20,7 +20,7 @@ define([
    * @param {Object=} opt_options
    *
    * @param {Backbone.Model=} opt_options.data Data model.
-  */
+   */
   var ViewModel = function(opt_attrs, opt_options) {
     var options = _.defaults(opt_options || {}, {
       data: new Model(),
@@ -77,9 +77,13 @@ define([
    * @method syncToModel
    */
   ViewModel.prototype.syncToModel = function() {
+    var attrs = {};
+
     _.each(this.attributeTransforms_, function(transform, key) {
-      this.set(key, transform.call(this), { validate: true });
+      attrs[key] = transform.call(this);
     }, this);
+
+    this.set(attrs, { validate: true });
   };
 
 

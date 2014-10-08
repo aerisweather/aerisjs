@@ -25,15 +25,29 @@ There are several hosted versions of the Aeris.js library, each with a varying s
 
 * **Aeris.js**
 
-    The default library includes all of the Aeris.js features, excluding the Map AppBuilder. Google Maps is used as the default mapping library.
+    The default library includes all of the Aeris.js features. Leaflet is used as the default mapping library.
 
     [//cdn.aerisjs.com/aeris.min.js](//cdn.aerisjs.com/aeris.min.js)
+
+    For this package, you will also need to include the Leaflet library and stylesheet:
+
+    ```js
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.2/leaflet.css"/>
+<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.2/leaflet.js"></script>
+    ```
 
 * **Weather for Google Maps**
 
     Render weather tile layers and data using [Google Maps](https://developers.google.com/maps/).
 
-    [//cdn.aerisjs.com/gmaps.min.js](//cdn.aerisjs.com/gmaps.min.js)
+    [//cdn.aerisjs.com/aeris-gmaps.min.js](//cdn.aerisjs.com/aeris-gmaps.min.js)
+
+
+* **Weather for Leaflet**
+
+    Render weather tile layers and data using [Leaflet](http://leafletjs.com/).
+
+    [//cdn.aerisjs.com/aeris-leaflet.min.js](//cdn.aerisjs.com/aeris-leaflet.min.js)
 
 * **Weather for OpenLayers**
 
@@ -47,13 +61,19 @@ There are several hosted versions of the Aeris.js library, each with a varying s
 
     A javascript interface for the [Aeris Weather API](http://www.hamweather.com/support/documentation/aeris).
 
-    [//cdn.aerisjs.com/api.min.js](//cdn.aerisjs.com/api.min.js)
+    [//cdn.aerisjs.com/aeris-api.min.js](//cdn.aerisjs.com/aeris-api.min.js)
 
 * **Weather for Google Maps + Geo Services**
 
     Includes additional APIs for [`geolocation`](http://docs.aerisjs.com#aeris.geolocate), [`geocoding`](http://docs.aerisjs.com#aeris.geocode), and [`directions`](http://docs.aerisjs.com/api/classes/aeris.directions.DirectionsServiceInterface.html).
 
-    [//cdn.aerisjs.com/gmaps-plus.min.js](//cdn.aerisjs.com/gmaps-plus.min.js)
+    [//cdn.aerisjs.com/aeris-gmaps-plus.min.js](//cdn.aerisjs.com/aeris-gmaps-plus.min.js)
+
+* **Weather for Leaflet + Geo Services**
+
+    Includes additional APIs for [`geolocation`](http://docs.aerisjs.com#aeris.geolocate), [`geocoding`](http://docs.aerisjs.com#aeris.geocode), and [`directions`](http://docs.aerisjs.com/api/classes/aeris.directions.DirectionsServiceInterface.html).
+
+    [//cdn.aerisjs.com/aeris-leaflet-plus.min.js](//cdn.aerisjs.com/aeris-leaflet-plus.min.js)
     
 
 
@@ -62,7 +82,7 @@ There are several hosted versions of the Aeris.js library, each with a varying s
 In order to use weather data from the Aeris API, you must provide an Aeris API client id and secret (visit [hamweather.com](http://www.hamweather.com/products/aeris-api/pricing/) to sign up for a free devleoper account). API keys may be set globally using the [`aeris.config`](http://docs.aerisjs.com#aeris.config) object:
 
 ```javascript
-aeris.config.setApiKey('abcd1234');
+aeris.config.setApiId('abcd1234');
 aeris.config.setApiSecret('wxyz6789');
 ```
 
@@ -142,7 +162,7 @@ See [the AMD/Bower.js example app](https://github.com/hamweather/aerisjs/tree/ma
 
 #### Specifying a Map Library
 
-By default,tThe Aeris.js library uses [Leaflet](http://leafletjs.com/) as it core mapping library. You can change which mapping library is used by overriding the `aeris/maps/strategy` AMD path.
+By default, The Aeris.js library uses [Leaflet](http://leafletjs.com/) as it core mapping library. You can change which mapping library is used by overriding the `aeris/maps/strategy` AMD path.
 
 ```javascript
 require.config({

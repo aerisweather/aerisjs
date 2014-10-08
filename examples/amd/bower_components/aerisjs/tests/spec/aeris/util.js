@@ -2,9 +2,10 @@ var underscore_orig = window._ || (window._ = { STUB: 'UNDERSCORE_ORIG' });
 define([
   'sinon',
   'aeris/util',
-  'underscore'
-], function(sinon, _, underscore) {
-  describe('The Aeris Utility Library', function() {
+  'underscore',
+  'tests/lib/clock'
+], function(sinon, _, underscore, clock) {
+  describe('util', function() {
 
     describe('expose method', function() {
       var aeris_orig = window.aeris;
@@ -143,6 +144,52 @@ define([
         clock.tick(200);
         expect(fn.callCount).toEqual(2);
       });
+    });
+
+
+    describe('eachAtInterval', function() {
+
+      beforeEach(function() {
+        clock.useFakeTimers(0);
+      });
+      afterEach(function() {
+        clock.restore();
+      });
+
+
+      it('should invoke the callback with each object, waiting INTERVAL between each call', function() {
+        var objects = ['A', 'B', 'C'];
+        var cb = jasmine.createSpy('cb');
+        var INTERVAL = 100;
+
+        _.eachAtInterval(objects, cb, INTERVAL);
+
+        // Only called with 'A'
+        expect(cb).toHaveBeenCalledWith('A');
+        expect(cb.callCount).toEqual(1);
+
+        clock.tick(INTERVAL);
+        // Called with 'A' and 'B'
+        expect(cb).toHaveBeenCalledWith('B');
+        expect(cb.callCount).toEqual(2);
+
+        clock.tick(INTERVAL);
+        // Called with 'A', 'B', and 'C'
+        expect(cb).toHaveBeenCalledWith('C');
+        expect(cb.callCount).toEqual(3);
+      });
+
+      it('should not invoke the callback more times than there are objects', function() {
+        var objects = ['A', 'B', 'C'];
+        var cb = jasmine.createSpy('cb');
+        var INTERVAL = 100;
+
+        _.eachAtInterval(objects, cb, INTERVAL);
+
+        clock.tick(INTERVAL * 10);
+        expect(cb.callCount).toEqual(3);
+      });
+
     });
 
 
@@ -308,12 +355,12 @@ define([
     describe('template', function() {
 
       it('should work with {var} syntax', function() {
-        var str = _.template('foo {what}', { what: 'bar' });
+        var str = _.template('foo {what}')({ what: 'bar' });
         expect(str).toEqual('foo bar');
       });
 
       it('should not effect underscore.template', function() {
-        _.template('foo {what}', { what: 'bar' });
+        _.template('foo {what}')({ what: 'bar' });
 
         expect(underscore.template('<%=foo%>', {
           foo: 'bar'
@@ -321,6 +368,109 @@ define([
       });
 
     });
+
+
+    describe('bindAllMethods', function() {
+      var ctx, fooSpy, barSpy, shazaamSpy;
+
+      beforeEach(function() {
+        ctx = { STUB: 'CONTEXT' };
+
+        fooSpy = jasmine.createSpy('foo');
+        barSpy = jasmine.createSpy('bar');
+        shazaamSpy = jasmine.createSpy('shazaam');
+      });
+
+      it('should bind all methods in the object to the specified context', function() {
+        var myBar;
+        var obj = {
+          foo: fooSpy,
+          bar: barSpy,
+          shazaam: shazaamSpy
+        };
+
+        _.bindAllMethods(obj, ctx);
+
+        // Call in scope of object
+        obj.foo();
+        expect(fooSpy).toHaveBeenCalledInTheContextOf(ctx);
+
+        // Call without scope
+        myBar = obj.bar;
+        myBar();
+        expect(barSpy).toHaveBeenCalledInTheContextOf(ctx);
+
+        // Call in scope of a different object
+        ({
+          myShazaam: obj.shazaam
+        }).myShazaam();
+        expect(shazaamSpy).toHaveBeenCalledInTheContextOf(ctx);
+      });
+
+      it('should accept objects which contain values which are not functions', function() {
+        var obj = {
+          foo: fooSpy,
+          bar: barSpy,
+          someNumber: 32,
+          someString: 'a string',
+          someObj: { some: 'obj' }
+        };
+
+        expect(function() {
+          _.bindAllMethods(obj, ctx);
+        }).not.toThrow();
+      });
+
+      it('should use the object as the default context', function() {
+        var obj = {
+          foo: fooSpy
+        };
+
+        _.bindAllMethods(obj);
+
+        ({
+          myFoo: obj.foo
+        }).myFoo();
+        expect(fooSpy).toHaveBeenCalledInTheContextOf(obj);
+      });
+
+    });
+
+
+    describe('tryCatch', function() {
+      var tryFn, catchFn;
+
+      beforeEach(function() {
+        tryFn = jasmine.createSpy('tryFn');
+        catchFn = jasmine.createSpy('catchFn');
+      });
+
+
+      it('should call the `try` function', function() {
+        _.tryCatch(tryFn, catchFn);
+
+        expect(tryFn).toHaveBeenCalled();
+      });
+
+      it('should call the `catch` function with errors thrown in try', function() {
+        var error = new Error('ERROR_THROWN_IN_TRY_FN');
+        tryFn.andCallFake(function() {
+          throw error;
+        });
+
+        _.tryCatch(tryFn, catchFn);
+
+        expect(catchFn).toHaveBeenCalledWith(error);
+      });
+
+      it('should not call the `catch` function if now errors are thrown in try', function() {
+        _.tryCatch(tryFn, catchFn);
+
+        expect(catchFn).not.toHaveBeenCalled();
+      });
+
+    });
+
 
     describe('extending underscore', function() {
 

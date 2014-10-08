@@ -70,7 +70,29 @@ define([
        * @attribute zoom
        * @type {number}
        */
-      zoom: 4
+      zoom: 4,
+
+      /**
+       * Whether to enable zooming using the
+       * mouse scrollwheel.
+       *
+       * Attribute not currently supported by open layers.
+       *
+       * @attribute scrollZoom
+       * @type {Boolean}
+       */
+      scrollZoom: true,
+
+
+      /**
+       * The base map layer.
+       * Note that different mapping libraries have
+       * different default base layers.
+       *
+       * @attribute baseLayer
+       * @type {aeris.maps.layers.Layer}
+       */
+      baseLayer: null
     }, opt_attrs);
 
     var options = _.extend({
@@ -81,7 +103,7 @@ define([
     /**
      * @property mapEl_
      * @private
-     * @type {string|HTMLElement|{}} Map element be also be a reference to a pre-existing map view
+     * @type {HTMLElement} Map element be also be a reference to a pre-existing map view
      */
     this.mapEl_ = this.normalizeElement_(el);
 
@@ -164,6 +186,23 @@ define([
 
 
   /**
+   * @method setBaseLayer
+   * @param {aeris.maps.layers.Layer} baseLayer
+   */
+  Map.prototype.setBaseLayer = function(baseLayer) {
+    this.set('baseLayer', baseLayer, { validate: true });
+  };
+
+  /**
+   * @method getBaseLayer
+   * @return {aeris.maps.layers.Layer}
+   */
+  Map.prototype.getBaseLayer = function() {
+    return this.get('baseLayer');
+  };
+
+
+  /**
    * Zoom and center the map in order to fit
    * the viewport to the specified bounds.
    *
@@ -205,6 +244,10 @@ define([
 
 
   /**
+   * Note that this may return unexpected results
+   * when the map was created with a view instance,
+   * instead of an {HTMLElement}.
+   *
    * @method getElement
    * @return {HTMLElement} The map canvas element
    */

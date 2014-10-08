@@ -23,7 +23,7 @@ define([
   });
 
   MockApiModel.prototype.getEndpoint = function() {
-    return _.template('MockApiModel{id}ENDPOINTSTUB', {
+    return _.template('MockApiModel{id}ENDPOINTSTUB')({
       id: this.cid
     });
   };
@@ -44,17 +44,17 @@ define([
 
   describe('AerisBatchModel', function() {
     var batchModel;
-    var mockJSONP;
+    var jsonp;
     var SERVER_STUB = 'SERVER_STUB';
-    var mockModel_A, mockModel_B;
+    var modelA, modelB;
 
     beforeEach(function() {
-      mockJSONP = new MockJSONP();
-      mockModel_A = new MockApiModel();
-      mockModel_B = new MockApiModel();
+      jsonp = new MockJSONP();
+      modelA = new MockApiModel();
+      modelB = new MockApiModel();
 
       batchModel = new AerisBatchModel(null, {
-        jsonp: mockJSONP,
+        jsonp: jsonp,
         server: SERVER_STUB
       });
     });
@@ -66,8 +66,8 @@ define([
 
         beforeEach(function() {
           batchModel.set({
-            modelA: mockModel_A,
-            modelB: mockModel_B
+            modelA: modelA,
+            modelB: modelB
           });
         });
 
@@ -77,7 +77,7 @@ define([
           it('should target the \'batch\' endpoint on the AerisApi server', function() {
             batchModel.fetch();
 
-            expect(mockJSONP.getRequestedUrl()).toMatch(SERVER_STUB + '/batch');
+            expect(jsonp.getRequestedUrl()).toMatch(SERVER_STUB + '/batch');
           });
 
           describe('when an id is set', function() {
@@ -93,7 +93,7 @@ define([
               var actionRe = new RegExp('/[a-z]+/' + BATCH_ID_STUB);
               batchModel.fetch();
 
-              expect(mockJSONP.getRequestedUrl()).toMatch(actionRe);
+              expect(jsonp.getRequestedUrl()).toMatch(actionRe);
             });
 
           });
@@ -105,7 +105,7 @@ define([
               batchModel.unset('id');
               batchModel.fetch();
 
-              expect(mockJSONP.getRequestedUrl()).not.toMatch(hasActionRe);
+              expect(jsonp.getRequestedUrl()).not.toMatch(hasActionRe);
             });
 
           });
@@ -116,30 +116,39 @@ define([
 
           describe('the \'requests\' parameter', function() {
             var requestsParam, modelAParams;
+            var CLIENT_ID_STUB = 'CLIENT_ID_STUB', CLIENT_SECRET_STUB = 'CLIENT_SECRET_STUB';
 
             beforeEach(function() {
               modelAParams = new Model({
                 foo: 'bar',
-                faz: 'baz'
+                faz: 'baz',
+                client_id: CLIENT_ID_STUB,
+                client_secret: CLIENT_SECRET_STUB
               });
-              mockModel_A.getParams.andReturn(modelAParams);
+              modelA.getParams.andReturn(modelAParams);
 
               batchModel.fetch();
 
-              requestsParam = mockJSONP.getRequestedData().requests;
+              requestsParam = jsonp.getRequestedData().requests;
+            });
+
+
+            it('should include a client_id and client_secret param, copied from any model', function() {
+              expect(jsonp.getRequestedData().client_id).toEqual(CLIENT_ID_STUB);
+              expect(jsonp.getRequestedData().client_secret).toEqual(CLIENT_SECRET_STUB);
             });
 
             describe('each component model request', function() {
 
               it('should contain the endpoint for the model', function() {
-                [mockModel_A, mockModel_B].forEach(function(model) {
+                [modelA, modelB].forEach(function(model) {
                   expect(requestsParam).toMatch('/' + model.getEndpoint());
                 });
               });
 
               it('should contain serialized and encoded model params', function() {
                 expect(requestsParam).toMatch(
-                  mockModel_A.getEndpoint() +
+                  modelA.getEndpoint() +
                     // Note that request params order is not known,
                     // so we need to check in either order
                     '%3F(foo=bar%26faz=baz|faz=baz%26foo=bar)'
@@ -151,7 +160,15 @@ define([
                 expect(requestsParam).toMatch(/\/.*,\/.*/i);
               });
 
+              // Duplicating the client_id/client_secret for every model can
+              // potentially cause the url length to exceed the limit.
+              it('should not include the client_id/client_secret params in individual model params', function() {
+                expect(requestsParam).not.toMatch(CLIENT_ID_STUB);
+                expect(requestsParam).not.toMatch(CLIENT_SECRET_STUB);
+              });
+
             });
+
 
           });
 
@@ -165,18 +182,44 @@ define([
 
           batchModel.fetch();
 
-          expect(mockJSONP.getRequestedData().foo).toEqual('bar');
-          expect(mockJSONP.getRequestedData().faz).toEqual('baz');
+          expect(jsonp.getRequestedData().foo).toEqual('bar');
+          expect(jsonp.getRequestedData().faz).toEqual('baz');
         });
 
       });
 
       describe('response handling', function() {
 
-        describe('when any batch model response contains an error', function() {
+        function getFetchError() {
+          var error;
+
+          batchModel.fetch().
+            // Assuming fetch is stubbed to be synchronous
+            fail(function(err) {
+              error = err;
+            });
+
+          if (!error) {
+            throw 'Fetch did not throw an error.';
+          }
+
+          return error;
+        }
+
+        describe('when any individual model response contains an error', function() {
+          var ERROR_CODE_STUB, BATCH_RESPONSE_STUB, ERROR_RESPONSE_STUB;
 
           beforeEach(function() {
-            mockJSONP.resolveWith({
+            ERROR_CODE_STUB = 'ERROR_CODE_STUB';
+            ERROR_RESPONSE_STUB = {
+              success: false,
+              error: {
+                code: ERROR_CODE_STUB,
+                description: 'STUB_ERROR_DESCRIPTION'
+              },
+              response: []
+            };
+            BATCH_RESPONSE_STUB = {
               success: true,
               error: null,
               response: {
@@ -184,34 +227,66 @@ define([
                   {
                     success: true,
                     error: null,
-                    response: [{}]
+                    response: [
+                      {}
+                    ]
                   },
                   {
                     success: false,
                     error: {
-                      code: 'STUB_ERROR_CODE',
+                      code: ERROR_CODE_STUB,
                       description: 'STUB_ERROR_DESCRIPTION'
                     },
                     response: []
                   }
                 ]
               }
-            });
+            };
+            jsonp.resolveWith(BATCH_RESPONSE_STUB);
+          });
+
+
+          it('should reject with an ApiResponseError', function() {
+            expect(getFetchError()).toBeInstanceOf(ApiResponseError);
+          });
+
+          it('should reject with the correct error code', function() {
+            expect(getFetchError().code).toEqual(ERROR_CODE_STUB);
+          });
+
+          it('should reject with the response object', function() {
+            expect(getFetchError().responseObject).toEqual(ERROR_RESPONSE_STUB);
           });
 
         });
 
 
         describe('when the top level response contains an error', function() {
+          var ERROR_CODE_STUB, BATCH_RESPONSE_STUB;
 
           beforeEach(function() {
-            mockJSONP.resolveWith({
+            ERROR_CODE_STUB = 'STUB_ERROR_CODE';
+            BATCH_RESPONSE_STUB = {
               success: false,
               error: {
-                code: 'STUB_ERROR_CODE',
+                code: ERROR_CODE_STUB,
                 description: 'STUB_ERROR_DESCRIPTION'
               }
-            });
+            };
+
+            jsonp.resolveWith(BATCH_RESPONSE_STUB);
+          });
+
+          it('should reject with an ApiResponseError', function() {
+            expect(getFetchError()).toBeInstanceOf(ApiResponseError);
+          });
+
+          it('should reject with the correct error code', function() {
+            expect(getFetchError().code).toEqual(ERROR_CODE_STUB);
+          });
+
+          it('should reject with the response object', function() {
+            expect(getFetchError().responseObject).toEqual(BATCH_RESPONSE_STUB);
           });
 
         });
@@ -226,8 +301,8 @@ define([
 
       beforeEach(function() {
         batchModel.set({
-          modelA: mockModel_A,
-          modelB: mockModel_B
+          modelA: modelA,
+          modelB: modelB
         });
 
         modelResponse_A = { STUB: 'RESPONSE_A' };
@@ -254,9 +329,9 @@ define([
           commonAttr: 'COMMON_ATTR_STUB_B'
         };
 
-        mockModel_A.parse = jasmine.createSpy('parse_A').
+        modelA.parse = jasmine.createSpy('parse_A').
           andReturn(PARSED_STUB_A);
-        mockModel_B.parse = jasmine.createSpy('parse_A').
+        modelB.parse = jasmine.createSpy('parse_A').
           andReturn(PARSED_STUB_B);
 
 
@@ -267,8 +342,8 @@ define([
       it('should parse the response for each model, and set it on the model', function() {
         var attrs = batchModel.parse(batchResponse);
 
-        expect(mockModel_A.parse).toHaveBeenCalledWith(modelResponse_A);
-        expect(mockModel_B.parse).toHaveBeenCalledWith(modelResponse_B);
+        expect(modelA.parse).toHaveBeenCalledWith(modelResponse_A);
+        expect(modelB.parse).toHaveBeenCalledWith(modelResponse_B);
 
         expect(attrs.modelA.attributes).toEqual(PARSED_STUB_A);
         expect(attrs.modelB.attributes).toEqual(PARSED_STUB_B);
@@ -284,12 +359,12 @@ define([
       beforeEach(function() {
         json_A = { stub: 'modelAttr_A' };
         json_B = { stub: 'modelAttr_B' };
-        mockModel_A.toJSON.andReturn(json_A);
-        mockModel_B.toJSON.andReturn(json_B);
+        modelA.toJSON.andReturn(json_A);
+        modelB.toJSON.andReturn(json_B);
 
         batchModel.set({
-          modelA: mockModel_A,
-          modelB: mockModel_B,
+          modelA: modelA,
+          modelB: modelB,
           foo: 'bar'
         });
       });
@@ -306,6 +381,46 @@ define([
         var json = batchModel.toJSON();
 
         expect(json.foo).toEqual('bar');
+      });
+
+    });
+
+
+    describe('clear', function() {
+
+      it('should clear all nested models', function() {
+        batchModel.set({
+          modelA: modelA,
+          modelB: modelB
+        });
+        modelA.set({ foo: 'data' });
+        modelB.set({ faz: 'data' });
+
+        batchModel.clear();
+        expect(modelA.has('foo')).toEqual(false);
+        expect(modelB.has('faz')).toEqual(false);
+      });
+
+      it('should not remove nested models', function() {
+        batchModel.set({
+          modelA: modelA,
+          modelB: modelB
+        });
+
+        batchModel.clear();
+        expect(batchModel.get('modelA')).toEqual(modelA);
+        expect(batchModel.get('modelB')).toEqual(modelB);
+      });
+
+      it('should remove all non-model attributes', function() {
+        batchModel.set({
+          modelA: modelA,
+          modelB: modelB,
+          foo: 'bar'
+        });
+
+        batchModel.clear();
+        expect(batchModel.has('foo')).toEqual(false);
       });
 
     });

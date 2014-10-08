@@ -35,6 +35,23 @@ define([
     });
 
 
+    beforeEach(function() {
+      spyOn(Animation.prototype, 'pause').andCallThrough();
+      spyOn(Animation.prototype, 'start').andCallThrough();
+
+      this.addMatchers({
+        toHaveBeenRestarted: function() {
+          var animation = this.actual;
+          var wasPaused = !!animation.pause.callCount;
+          var wasStarted = !!animation.start.callCount;
+          var isAnimating = animation.isAnimating();
+
+          return wasPaused && wasStarted && isAnimating;
+        }
+      });
+    });
+
+
     describe('start', function() {
 
       it('should animate at a specified speed (simple)', function() {
@@ -170,8 +187,6 @@ define([
         var test = new TestFactory();
         test.animation.start();
 
-        spyOn(test.animation, 'pause');
-
         test.animation.stop();
         expect(test.animation.pause).toHaveBeenCalled();
       });
@@ -192,70 +207,189 @@ define([
 
 
     describe('setSpeed', function() {
+      var SPEED_ORIG = 1;
+      var animation;
 
-      it('should change the animation speed', function() {
-        var test = new TestFactory({
+      beforeEach(function() {
+        animation = new TestFactory({
           timestep: 100,
-          speed: 1,
+          speed: SPEED_ORIG,
           to: new Date(9999999999999999),
           from: new Date(0)
-        });
+        }).animation;
+      });
 
+
+      it('should change the animation speed', function() {
         function getLastTime() {
-          return test.animation.goToTime.mostRecentCall.args[0];
+          return animation.goToTime.mostRecentCall.args[0];
         }
 
-        test.animation.start();
+        animation.start();
 
         clock.tick(1000);
         expect(getLastTime()).toEqual(100);
 
-        test.animation.setSpeed(2);
+        animation.setSpeed(2);
         clock.tick(1000);
         expect(getLastTime()).toEqual(300);
 
-        test.animation.setSpeed(0.5);
+        animation.setSpeed(0.5);
         clock.tick(1000);
         expect(getLastTime()).toEqual(350);
 
-        test.animation.setSpeed(-1);
+        animation.setSpeed(-1);
         clock.tick(1000);
         expect(getLastTime()).toEqual(250);
+      });
+
+      it('should reject invalid numbers', function() {
+        expect(animation.setSpeed.bind(animation, 'foo')).toThrowType('InvalidArgumentError');
+      });
+
+
+      describe('if the speed has changed', function() {
+
+        describe('if the animating is currently playing', function() {
+
+          beforeEach(function() {
+            animation.start();
+          });
+
+          it('should restart the animation', function() {
+            animation.setSpeed(SPEED_ORIG + 100);
+
+            expect(animation).toHaveBeenRestarted();
+          });
+
+        });
+
+        describe('if the animation is not currently playing', function() {
+
+          it('should not restart the animation', function() {
+            animation.setSpeed(SPEED_ORIG + 100);
+
+            expect(animation).not.toHaveBeenRestarted();
+          });
+
+        });
+
+      });
+
+      describe('if the speed has not changed', function() {
+
+        describe('if the animation is playing', function() {
+
+          it('should not restart the animation', function() {
+            animation.start();
+            animation.setSpeed(SPEED_ORIG);
+
+            expect(animation).not.toHaveBeenRestarted();
+          });
+
+        });
+
+        describe('if the animation is not playing', function() {
+
+          it('should not restart the animation', function() {
+            expect(animation).not.toHaveBeenRestarted();
+          });
+
+        });
+
       });
 
     });
 
 
     describe('setTimestep', function() {
+      var SPEED_ORIG = 1, TIMESTEP_ORIG = 100;
+      var animation;
 
-      it('should change the animation timestep', function() {
-        var test = new TestFactory({
-          timestep: 100,
-          speed: 1,
+      beforeEach(function() {
+        animation = new TestFactory({
+          timestep: TIMESTEP_ORIG,
+          speed: SPEED_ORIG,
           to: new Date(9999999999999999),
           from: new Date(0)
-        });
+        }).animation;
+      });
 
+
+      it('should change the animation timestep', function() {
         function getLastTime() {
-          return test.animation.goToTime.mostRecentCall.args[0];
+          return animation.goToTime.mostRecentCall.args[0];
         }
 
-        test.animation.start();
+        animation.start();
 
         clock.tick(1000);
         expect(getLastTime()).toEqual(100);
 
-        test.animation.setTimestep(200);
+        animation.setTimestep(200);
         clock.tick(1000);
         expect(getLastTime()).toEqual(300);
 
-        test.animation.setTimestep(50);
+        animation.setTimestep(50);
         clock.tick(1000);
         expect(getLastTime()).toEqual(350);
 
-        test.animation.setTimestep(-100);
+        animation.setTimestep(-100);
         clock.tick(1000);
         expect(getLastTime()).toEqual(250);
+      });
+
+      describe('when the animation is playing', function() {
+
+        beforeEach(function() {
+          animation.start();
+        });
+
+
+        describe('if a different timestep is set', function() {
+
+          it('should restart the animation', function() {
+            animation.setTimestep(TIMESTEP_ORIG + 100);
+
+            expect(animation).toHaveBeenRestarted();
+          });
+
+        });
+
+        describe('if the same timestep is set', function() {
+
+          it('should not restart the animation', function() {
+            animation.setTimestep(TIMESTEP_ORIG);
+
+            expect(animation).not.toHaveBeenRestarted();
+          });
+
+        });
+
+      });
+
+      describe('when the animation is not playing', function() {
+
+        describe('if a different timestep is set', function() {
+
+          it('should not restart the animation', function() {
+            animation.setTimestep(TIMESTEP_ORIG + 100);
+
+            expect(animation).not.toHaveBeenRestarted();
+          });
+
+        });
+
+        describe('if the same timestep is set', function() {
+
+          it('should not restart the animation', function() {
+            animation.setTimestep(TIMESTEP_ORIG);
+
+            expect(animation).not.toHaveBeenRestarted();
+          });
+
+        });
+
       });
 
     });

@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="../css/example.css"/>
 
   <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
-  <script type="text/javascript" src="http://cdn.aeris.js/aeris-gmaps-plus.js"></script>
+  <script type="text/javascript" src="http://cdn.aerisjs.com/aeris-gmaps-plus.js"></script>
   <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
   <script type="text/javascript" src="../apikeys.js"></script>
 </head>
@@ -48,20 +48,26 @@
   </div>
 
   <script type="text/javascript">
-    var map = new aeris.maps.Map('map-canvas');
-
-    var geocoder = new aeris.geocode.MapQuestGeocodeService({
-      apiId: apiKeys.mapquest
-    });
-
-    // Alternatively, use the Google Geocoder
-    // var geocoder = new aeris.geocdoe.GoogleGeocodeService();
-
-
     // Create our map objects, so they are
     // ready to render
+    var map = new aeris.maps.Map('map-canvas');
     var marker = new aeris.maps.markers.Marker();
     var infoBox = new aeris.maps.InfoBox();
+
+    var geocoder = new aeris.geocode.AerisGeocodeService();
+
+    // Alternatively, use the GoogleGeocodeService
+    // var geocoder = new aeris.geocdoe.GoogleGeocodeService();
+    //
+    // Or, the MapQuestGeocodeService
+    // var geocoder = new aeris.geocode.MapQuestGeocodeService({
+    //   // requires an api key
+    //   apiId: 'MY_MAPQUEST_API_KEY'
+    // });
+
+    // Configure Aeris API keys (required for the AerisGeocodeService)
+    aeris.config.setApiId(apiKeys.aeris.id);
+    aeris.config.setApiSecret(apiKeys.aeris.secret);
 
     $('#geocode').click(function() {
       var location = $('#location').val();

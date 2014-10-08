@@ -1,10 +1,12 @@
 define([
   'aeris/util',
+  'aeris/promise',
   'aeris/errors/unimplementedpropertyerror',
   'aeris/errors/validationerror',
+  'aeris/maps/layers/errors/layerloadingerror',
   'aeris/maps/layers/animationlayer',
   'aeris/maps/strategy/layers/tile'
-], function(_, UnimplementedPropertyError, ValidationError, BaseLayer, TileStrategy) {
+], function(_, Promise, UnimplementedPropertyError, ValidationError, LayerLoadingError, BaseLayer, TileStrategy) {
   /**
    * Representation of image tile layer. Tile layers are
    * expected to pull in tile images from an API.
@@ -230,6 +232,52 @@ define([
    */
   AbstractTile.prototype.isLoaded = function() {
     return !!this.loaded_;
+  };
+
+
+  /**
+   * Preloads the tile layer images.
+   *
+   * @method preload
+   * @param {aeris.maps.Map} map
+   *        The layer will be temporarily set to this
+   *        map, in order to trigger it's tile images
+   *        to start loading.
+   */
+  AbstractTile.prototype.preload = function(map) {
+    var promiseToLoad = new Promise();
+    var attrs_orig = this.pick(['opacity', 'map']);
+
+    // We're already loaded
+    // -- resolve immediately.
+    if (this.isLoaded()) {
+      promiseToLoad.resolve();
+      return promiseToLoad;
+    }
+    // We don't have a map to use,
+    // so that's all
+    if (!map) {
+      promiseToLoad.reject(new LayerLoadingError('Unable to preload Tile: no map has been specified.'));
+      return promiseToLoad;
+    }
+
+    this.listenToOnce(this, 'load', function() {
+      promiseToLoad.resolve();
+    });
+
+    this.set({
+      // Temporarily set to 0 opacity, so we don't see
+      // the layer being added to the map
+      opacity: 0,
+
+      // Trigger loading, by setting to the map
+      map: map
+    });
+
+    // reset back to our original state
+    this.set(attrs_orig);
+
+    return promiseToLoad;
   };
 
 

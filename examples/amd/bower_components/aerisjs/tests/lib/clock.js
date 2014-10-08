@@ -5,10 +5,19 @@ define(['sinon', 'underscore'], function(sinon, _) {
   /**
    * Resolves sinon-underscore integration issues
    * with underscore's v1.6.0 usage of Date.now.
+   *
+   * @class MockClock
+   * @static
    */
   return {
     useFakeTimers: function(var_args) {
-      _.now = function() { return new Date().getTime(); };
+      _.now = function() { return Date.now(); };
+
+      // Clean up any existing clocks.
+      if (clock) {
+        clock.restore();
+      }
+
       clock = sinon.useFakeTimers.apply(sinon, arguments);
     },
     restore: function() {

@@ -3,8 +3,9 @@ define([
   'aeris/maps/animations/helpers/timelayersfactory',
   'aeris/model',
   'mocks/aeris/maps/animations/helpers/times',
-  'mocks/mockfactory'
-], function(_, TimeLayersFactory, Model, MockTimes, MockFactory) {
+  'mocks/mockfactory',
+  'tests/lib/clock'
+], function(_, TimeLayersFactory, Model, MockTimes, MockFactory, clock) {
 
   var MockLayer = MockFactory({
     getSetters: [
@@ -24,9 +25,14 @@ define([
     return new MockLayer(attrs, options);
   };
 
+
+  MockLayer.prototype.jasmineToString = function() {
+    return 'Layer_' + this.cid + '_t' + this.get('time').getTime();
+  };
+
   function sortChronologically(times) {
-    return _.sortBy(times, function(time) {
-      return time;
+    return times.sort(function(a, b) {
+      return a > b ? 1 : -1;
     });
   }
 
@@ -35,6 +41,24 @@ define([
       return parseFloat(t);
     });
   }
+
+  function getTimesFromLayers(layers) {
+    var times = normalizeTimes(Object.keys(layers));
+    return sortChronologically(times);
+  }
+
+
+  function getRandomTimes(count) {
+    var times = [];
+
+    _.times(count, function() {
+      var randomTime = Math.round(Math.random() * 1000);
+      times.push(parseInt(randomTime));
+    });
+
+    return times;
+  }
+
 
   describe('TimeLayersFactory', function() {
     var baseLayer;
@@ -68,7 +92,6 @@ define([
         timeLayers = timeLayersFactory.createTimeLayers();
         expect(timeLayers[10]).not.toBeDefined();
       });
-
 
     });
 
@@ -120,6 +143,33 @@ define([
 
         console.log('\nPerformance test: \n' +
           'Cloned ' + LAYER_COUNT + ' tile layers in ' + average.toFixed(2) + 'ms.\n');
+      });
+
+      describe('integration with `setTimes`', function() {
+
+        it('should create layers for the set times', function() {
+          var createdTimes;
+          times = times.map(function(time) {
+            return time + 3;
+          });
+          factory.setTimes(times);
+          factory.setLimit(times.length);
+
+          createdTimes = getTimesFromLayers(factory.createTimeLayers());
+          expect(createdTimes).toEqual(sortChronologically(times));
+        });
+
+        it('sould not create layers for duplicate times', function() {
+          var createdTimes;
+          var timesLength_orig = times.length;
+          times.push(times[0], times[1], times[2]);
+          factory.setTimes(times);
+          factory.setLimit(times.length);
+
+          createdTimes = getTimesFromLayers(factory.createTimeLayers());
+          expect(createdTimes.length).toEqual(timesLength_orig);
+        });
+
       });
 
 
@@ -227,6 +277,7 @@ define([
       it('should thin times to maintain a limit', function() {
         // Try a few different version of this
         [
+          { count: 10, limit: 5},
           { count: 100, limit: 10 },
           { count: 11, limit: 10 },
           { count: 8, limit: 7 },
@@ -238,9 +289,7 @@ define([
               limit: config.limit
             });
             var layers = factory.createTimeLayers();
-            var createdTimes = Object.keys(layers).map(function(time) {
-              return parseFloat(time);
-            });
+            var createdTimes = getTimesFromLayers(layers);
 
             expect(createdTimes.length).toEqual(config.limit);
 
@@ -249,6 +298,87 @@ define([
             expect(_.contains(createdTimes, _.last(times))).toEqual(true);
           });
       });
+
+      it('should thin times to maintain the limit (random times)', function() {
+        var TEST_ITERATIONS = 1;
+        var TIMES_COUNT = 100;
+        var LIMIT = 17;
+
+        _.times(TEST_ITERATIONS, function(i) {
+          var times = getRandomTimes(TIMES_COUNT);
+          var factory = new TimeLayersFactory(baseLayer, times, {
+            limit: LIMIT
+          });
+          var layers = factory.createTimeLayers();
+          var createdTimes = getTimesFromLayers(layers);
+
+          expect(createdTimes.length).toEqual(LIMIT);
+        });
+      });
+
+      it('should thin time to maintain limit (another example)', function() {
+        var times = [0, 10, 20, 30, 40, 50, 60, 70, 100, 200];
+        var factory = new TimeLayersFactory(baseLayer, times, {
+          limit: 5
+        });
+        var layers = factory.createTimeLayers();
+        var createdTimes = getTimesFromLayers(layers);
+
+        expect(createdTimes.length).toEqual(5);
+      });
+
+      it('should thin time to maintain limit (yet another example)', function() {
+        var times = _.range(0, 100, 10).concat(_.range(200, 1000, 100));
+        var factory = new TimeLayersFactory(baseLayer, times, {
+          limit: 5
+        });
+        var layers = factory.createTimeLayers();
+        var createdTimes = getTimesFromLayers(layers);
+
+        expect(createdTimes.length).toEqual(5);
+      });
+
+      it('should keep times evenly spread out, while keeping the first, last, and most current', function() {
+        [
+          {
+            times: [10, 110, 120, 130, 140, 150, 160, 1100, 1200, 1300],
+            limit: 5,
+            expected: [10, 110, 160, 1100, 1300],
+            currentTime: 301
+          },
+          {
+            times: [0, 10, 20, 30, 40, 50, 60, 100, 101, 200, 300],
+            limit: 7,
+            expected: [0, 20, 40, 60, 101, 200, 300],
+            currentTime: 105
+          },
+          {
+            times: [0, 10, 20, 30, 40, 50, 60, 100, 200, 300, 301],
+            limit: 5,
+            expected: [0, 60, 200, 300, 301],
+            currentTime: 300
+          },
+          {
+            times: [0, 2, 4, 6, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096],
+            limit: 9,
+            currentTime: 110,
+            expected: [0, 32, 64, 128, 256, 512, 1024, 2048, 4096]
+          }
+        ].forEach(function(test) {
+            var factory, createdTimes;
+            clock.useFakeTimers(test.currentTime);
+
+            factory = new TimeLayersFactory(baseLayer, test.times, {
+              limit: test.limit
+            });
+            createdTimes = getTimesFromLayers(factory.createTimeLayers());
+
+            expect(createdTimes).toEqual(test.expected);
+
+            clock.restore();
+          });
+      });
+
 
       it('should not limit times by chopping of ends', function() {
         var layers;
@@ -283,6 +413,22 @@ define([
         expect(createdTimes).not.toBeTimes(choppedBackTimes);
       });
 
+      it('should not remove the earliest, latest, or most current time', function() {
+
+        var factory, createdTimes;
+        var times = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 2000, 3000, 4000];
+        clock.useFakeTimers(501);
+
+        factory = new TimeLayersFactory(baseLayer, times, {
+          limit: 3
+        });
+        createdTimes = getTimesFromLayers(factory.createTimeLayers());
+
+        expect(createdTimes).toEqual([100, 500, 4000]);
+
+        clock.restore();
+      });
+
       it('should not limit times if their are fewer times than the limit', function() {
         var TIMES_COUNT = 10;
         var LIMIT = TIMES_COUNT + 3;
@@ -308,6 +454,20 @@ define([
         factory.createTimeLayers();
 
         expect(times).toEqual(times_orig);
+      });
+
+      describe('when run a second time', function() {
+
+        it('should destroy and recreate all layers', function() {
+          var firstLayers = _.clone(factory.createTimeLayers());
+          var secondLayers = factory.createTimeLayers();
+
+          _.each(firstLayers, function(layer, time) {
+            expect(layer.destroy).toHaveBeenCalled();
+            expect(layer).not.toEqual(secondLayers[time]);
+          });
+        });
+
       });
     });
 

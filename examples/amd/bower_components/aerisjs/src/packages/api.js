@@ -1,14 +1,27 @@
 define([
+  'aeris/api/collections/advisories',
   'aeris/api/collections/earthquakes',
   'aeris/api/collections/fires',
   'aeris/api/collections/lightning',
+  'aeris/api/collections/normals',
+  'aeris/api/collections/observations',
+  'aeris/api/collections/places',
+  'aeris/api/collections/records',
+  'aeris/api/collections/stormcells',
   'aeris/api/collections/stormreports',
+  'aeris/api/collections/tides',
 
   'aeris/api/models/advisory',
+  'aeris/api/models/aerisbatchmodel',
   'aeris/api/models/earthquake',
   'aeris/api/models/fire',
   'aeris/api/models/forecast',
   'aeris/api/models/lightning',
+  'aeris/api/models/normal',
   'aeris/api/models/observation',
-  'aeris/api/models/stormreport'
+  'aeris/api/models/place',
+  'aeris/api/models/record',
+  'aeris/api/models/stormreport',
+  'aeris/api/models/sunmoon',
+  'aeris/api/models/tide'
 ], function() {});

@@ -2,8 +2,10 @@ define([
   'aeris/util',
   'aeris/maps/animations/abstractanimation',
   'aeris/maps/animations/helpers/animationlayerloader',
-  'aeris/errors/invalidargumenterror'
-], function(_, AbstractAnimation, AnimationLayerLoader, InvalidArgumentError) {
+  'aeris/promise',
+  'aeris/errors/invalidargumenterror',
+  'aeris/util/findclosest'
+], function(_, AbstractAnimation, AnimationLayerLoader, Promise, InvalidArgumentError, findClosest) {
   /**
    * Animates a single {aeris.maps.layers.AerisTile} layer.
    *
@@ -17,6 +19,9 @@ define([
    * @param {aeris.maps.animations.options.AnimationOptions} opt_options
    * @param {number} opt_options.timestep Time between animation frames, in milliseconds.
    * @param {aeris.maps.animations.helpers.AnimationLayerLoader=} opt_options.animationLayerLoader
+   * @param {number=} opt_options.timeTolerance When the time is set on a TileAnimation, the animation object will
+   *        find and display the animation layer with the closest timestamp. However, if the closest available layer is
+   *        more than `timeTolerance` ms away from the set time, the layer will not be displayed. Defaults to 2 hours.
    */
   var TileAnimation = function(layer, opt_options) {
     var options = _.defaults(opt_options || {}, {
@@ -24,8 +29,18 @@ define([
       from: _.now() - (1000 * 60 * 60 * 2), // two hours ago
       to: _.now(),
       limit: 20,
-      AnimationLayerLoader: AnimationLayerLoader
+      AnimationLayerLoader: AnimationLayerLoader,
+      timeTolerance: 1000 * 60 * 60 * 2   // 2 hours
     });
+
+
+    /**
+     * @property timeTolerance_
+     * @private
+     * @type {number} In milliseconds.
+     */
+    this.timeTolerance_ = options.timeTolerance;
+
 
     AbstractAnimation.call(this, options);
 
@@ -39,6 +54,14 @@ define([
      * @property masterLayer_
      */
     this.masterLayer_ = layer;
+
+
+    /**
+     * @property currentLayer_
+     * @private
+     * @type {?aeris.maps.layers.AerisTile}
+     */
+    this.currentLayer_ = null;
 
 
     /**
@@ -84,6 +107,11 @@ define([
 
     this.prepareMasterLayer_();
     this.loadAnimationLayers();
+
+    this.listenTo(this, 'change:to change:from', function() {
+      this.animationLayerLoader_.setTo(this.to_);
+      this.animationLayerLoader_.setFrom(this.from_);
+    });
   };
   _.inherits(TileAnimation, AbstractAnimation);
 
@@ -112,13 +140,79 @@ define([
 
     this.animationLayerLoader_.once('load:times', function(times, timeLayers) {
       this.setTimeLayers_(timeLayers);
-      this.updateTimeBounds_();
-      this.trigger('load:times', times, timeLayers);
+      this.refreshCurrentLayer_();
 
-      this.showInitialAnimationFrame_();
+      this.trigger('load:times', times, timeLayers);
     }, this);
 
-    return this.animationLayerLoader_.load();
+    return this.animationLayerLoader_.load().
+      fail(function(err) {
+        throw err;
+      });
+  };
+
+  /**
+   * @method preload
+   */
+  TileAnimation.prototype.preload = function() {
+    var promiseToPreload = new Promise();
+    var mapToUseForPreloading = this.masterLayer_.getMap();
+
+    // We need our times (and timeLayers)
+    // to be loaded, before we can preload layers
+    this.whenTimesAreLoaded_().
+      done(function() {
+        var layers = _.values(this.timeLayers_);
+
+        // Preload each layer in sequece
+        Promise.sequence(layers, function(layer) {
+          return layer.preload(mapToUseForPreloading);
+        }).
+          done(promiseToPreload.resolve).
+          fail(promiseToPreload.reject);
+      }, this).
+      fail(promiseToPreload.reject);
+
+    return promiseToPreload;
+  };
+
+
+  /**
+   * Preloads a single tile layer.
+   *
+   * @method preloadLayer_
+   * @private
+   * @param {aeris.maps.layers.AerisTile} layer
+   * @return {aeris.Promise} Promise to load the layer
+   */
+  TileAnimation.prototype.preloadLayer_ = function(layer) {
+    return layer.preload(this.masterLayer_.getMap());
+  };
+
+
+  /**
+   * @method whenTimesAreLoaded_
+   * @private
+   * @return {aeris.Promise} A promise to load tile layer times.
+   *                         Resolves immediately if times are already loaded.
+   */
+  TileAnimation.prototype.whenTimesAreLoaded_ = function() {
+    var promiseToLoadTimes = new Promise();
+    var areTimesLoaded = !!this.times_.length;
+
+    if (areTimesLoaded) {
+      promiseToLoadTimes.resolve(this.getTimes());
+    }
+    else {
+      this.listenToOnce(this, {
+        'load:times': promiseToLoadTimes.resolve.
+          bind(promiseToLoadTimes),
+        'load:error': promiseToLoadTimes.reject.
+          bind(promiseToLoadTimes)
+      });
+    }
+
+    return promiseToLoadTimes;
   };
 
 
@@ -140,15 +234,11 @@ define([
 
 
   /**
-   * @method showInitialAnimationFrame_
+   * @method refreshCurrentLayer_
    * @private
    */
-  TileAnimation.prototype.showInitialAnimationFrame_ = function() {
-    var initialTime = this.to_;
-    var lastLayer = this.getLayerForTime_(initialTime);
-
-    this.goToTime(initialTime);
-    this.syncLayerToMaster_(lastLayer);
+  TileAnimation.prototype.refreshCurrentLayer_ = function() {
+    this.goToTime(this.getCurrentTime());
   };
 
 
@@ -195,6 +285,8 @@ define([
    */
   TileAnimation.prototype.goToTime = function(time) {
     var nextLayer;
+    var currentLayer;
+    var haveTimesBeenLoaded = !!this.getTimes().length;
 
     time = _.isDate(time) ? time.getTime() : time;
 
@@ -202,17 +294,33 @@ define([
       throw new InvalidArgumentError('Invalid animation time: time must be a Date or a timestamp (number).');
     }
 
-    nextLayer = this.getLayerForTime_(time);
-
-    // Only transition if the layer is loaded
-    // to prevent gaps in animation.
-    if (nextLayer && nextLayer !== this.getCurrentLayer() && nextLayer.isLoaded()) {
-      this.transition_(this.getCurrentLayer(), nextLayer);
-    }
+    currentLayer = this.getCurrentLayer();
+    // Note that we may not be able to find a layer in the same tense,
+    // in which case this value is null.
+    nextLayer = this.getLayerForTimeInSameTense_(time) || null;
 
     // Set the new layer
     this.currentTime_ = time;
 
+
+    // If no time layers have been created
+    // wait for time layers to be created,
+    // then try again. Otherwise, our first
+    // frame will  never show.
+    if (!haveTimesBeenLoaded) {
+      this.listenToOnce(this, 'load:times', function() {
+        this.goToTime(this.getCurrentTime());
+      });
+    }
+
+    if (currentLayer && nextLayer) {
+      this.transition_(currentLayer, nextLayer);
+    }
+    else if (currentLayer) {
+      this.transitionOut_(currentLayer);
+    }
+
+    this.currentLayer_ = nextLayer;
     this.trigger('change:time', new Date(this.currentTime_));
   };
 
@@ -223,6 +331,14 @@ define([
    */
   TileAnimation.prototype.getLoadProgress = function() {
     return this.animationLayerLoader_.getLoadProgress();
+  };
+
+
+  /**
+   * @method hasMap
+   */
+  TileAnimation.prototype.hasMap = function() {
+    return this.masterLayer_.hasMap();
   };
 
 
@@ -304,68 +420,15 @@ define([
   TileAnimation.prototype.setTimeLayers_ = function(timeLayers) {
     this.timeLayers_ = timeLayers;
     this.times_ = this.getOrderedTimesFromLayers_(timeLayers);
-
-    _.each(timeLayers, this.initializeLayerLoading_, this);
   };
 
 
   /**
-   * Some mapping libraries will not load a layer
-   * until it has been set to the map.
    *
-   * This method silently and temporarily sets a layer to the map,
-   * to make sure loading is initialized.
-   *
-   * @method initializeLayerLoading_
+   * @param {Object.<number, aeris.maps.layers.AerisTile>} timeLayers
+   * @return {Array.<Number>}
    * @private
-   * @param {aeris.maps.layers.AerisTile} layer
    */
-  TileAnimation.prototype.initializeLayerLoading_ = function(layer) {
-    var triggerLayerLoad = (function() {
-      // Don't mess with the current layer.
-      if (this.isCurrentLayer_(layer)) {
-        return;
-      }
-
-      layer.set({
-        // Temporarily set to 0 opacity, so we don't see
-        // the layer being added to the map
-        opacity: 0,
-
-        // Trigger loading, by setting to the map
-        map: this.masterLayer_.getMap()
-      });
-    }).bind(this);
-
-    // Prevent layer initialization from
-    // blocking the call stack.
-    // (this is a CPU intensive method)
-    var triggerLayerLoad_non_blocking = _.throttle(function() {
-      _.defer(triggerLayerLoad);
-    }, 10);
-
-    triggerLayerLoad_non_blocking();
-    this.listenTo(this.masterLayer_, 'map:set', triggerLayerLoad_non_blocking);
-  };
-
-
-  /**
-   * @private
-   * @method updateTimeBounds_
-   */
-  TileAnimation.prototype.updateTimeBounds_ = function() {
-    if (!this.times_.length) {
-      return;
-    }
-
-    // Our tile loader already constrained our tile times
-    // for us, so we can reset our bounds.
-    this.setFrom(Math.min.apply(null, this.times_));
-    this.setTo(Math.max.apply(null, this.times_));
-    this.limit_ = this.times_.length;
-  };
-
-
   TileAnimation.prototype.getOrderedTimesFromLayers_ = function(timeLayers) {
     var times = _.map(_.keys(timeLayers), function(time) {
       return parseInt(time);
@@ -374,8 +437,25 @@ define([
   };
 
 
+  /**
+   * @method getLayerForTime_
+   * @param {Number} time
+   * @return {aeris.maps.layers.AerisTile}
+   * @private
+   */
   TileAnimation.prototype.getLayerForTime_ = function(time) {
     return this.timeLayers_[this.getClosestTime_(time)];
+  };
+
+
+  /**
+   * @method getLayerForTimeInSameTense_
+   * @private
+   * @param {Number} time
+   * @return {aeris.maps.layers.AerisTile}
+   */
+  TileAnimation.prototype.getLayerForTimeInSameTense_ = function(time) {
+    return this.timeLayers_[this.getClosestTimeInSameTense_(time)];
   };
 
 
@@ -383,23 +463,44 @@ define([
    * Returns the closes available time.
    *
    * @param {number} targetTime UNIX timestamp.
+   * @param {Array.<Number>} opt_times Defaults to loaded animation times.
    * @return {number}
    * @private
    * @method getClosestTime_
    */
-  TileAnimation.prototype.getClosestTime_ = function(targetTime) {
-    var closest = this.times_[0];
-    var diff = Math.abs(targetTime - closest);
+  TileAnimation.prototype.getClosestTime_ = function(targetTime, opt_times) {
+    var times = opt_times || this.times_;
+    return findClosest(targetTime, times);
+  };
 
-    _.each(this.times_, function(time) {
-      var newDiff = Math.abs(targetTime - time);
-      if (newDiff < diff) {
-        diff = newDiff;
-        closest = time;
-      }
-    }, this);
 
-    return closest;
+  /**
+   * Returns the closes available time.
+   *
+   * If provided time is in the past, will return
+   * the closest past time (and vice versa);
+   *
+   * @method getClosestTimeInSameTense_
+   * @private
+   *
+   * @param {number} targetTime UNIX timestamp.
+   * @param {Array.<Number>} opt_times Defaults to loaded animation times.
+   * @return {number}
+   */
+  TileAnimation.prototype.getClosestTimeInSameTense_ = function(targetTime, opt_times) {
+    var isTargetInFuture = targetTime > Date.now();
+    var times = opt_times || this.times_;
+
+    // Only look at times that are in the past, if
+    // the target is in the past, and vice versa.
+    var timesInSameTense = times.filter(function(time) {
+      var isTimeInFuture = time > Date.now();
+      var isTimeInSameTenseAsTarget = isTimeInFuture && isTargetInFuture || !isTimeInFuture && !isTargetInFuture;
+
+      return isTimeInSameTenseAsTarget;
+    });
+
+    return findClosest(targetTime, timesInSameTense);
   };
 
 
@@ -412,19 +513,106 @@ define([
    * @method transition_
    */
   TileAnimation.prototype.transition_ = function(oldLayer, newLayer) {
-    this.syncLayerToMaster_(newLayer);
+    var isWithinTimeTolerance;
 
+
+    // If the new layer is not yet loaded,
+    // wait to transition until it is.
+    // This prevents displaying an "empty" tile layer,
+    // and makes it easier to start animations before all
+    // layers are loaded.
+    if (!newLayer.isLoaded()) {
+      this.preloadLayer_(newLayer);
+      this.transitionWhenLoaded_(oldLayer, newLayer);
+    }
+
+
+    // Hide all the layers
     // Sometime we have trouble with old layers sticking around.
     // especially when we need to reload layers for new bounds.
     // This a fail-proof way to handle that issue.
-    _.each(this.timeLayers_, function(layer) {
-      if (layer !== newLayer) {
-        // Note that removing the old layer from the map
-        // every time causes performance issues.
-        layer.setOpacity(0);
-        layer.stopListening(this.masterLayer_);
+    _.without(this.timeLayers_, newLayer).
+      forEach(this.transitionOut_, this);
+
+    isWithinTimeTolerance = this.getTimeDeviation_(this.currentTime_) < this.timeTolerance_;
+    if (isWithinTimeTolerance) {
+      this.transitionInClosestLoadedLayer_(newLayer);
+    }
+    else {
+      this.transitionOut_(newLayer);
+    }
+  };
+
+
+  /**
+   * @param {aeris.maps.layers.AerisTile} layer
+   * @method transitionIn_
+   * @private
+   */
+  TileAnimation.prototype.transitionIn_ = function(layer) {
+    this.syncLayerToMaster_(layer);
+  };
+
+
+  /**
+   * @param {aeris.maps.layers.AerisTile} layer
+   * @method transitionOut_
+   * @private
+   */
+  TileAnimation.prototype.transitionOut_ = function(layer) {
+    layer.stopListening(this.masterLayer_);
+    layer.setOpacity(0);
+  };
+
+
+  /**
+   * Handle transition for a layer which has not yet
+   * been loaded
+   *
+   * @param {aeris.maps.layers.AerisTile} oldLayer
+   * @param {aeris.maps.layers.AerisTile} newLayer
+   * @method transitionWhenLoaded_
+   * @private
+   */
+  TileAnimation.prototype.transitionWhenLoaded_ = function(oldLayer, newLayer) {
+    // Clear any old listeners from this transition
+    // (eg. if transition is called twice for the same layer)
+    this.stopListening(newLayer, 'load');
+    this.listenToOnce(newLayer, 'load', function() {
+      if (this.getCurrentLayer() === newLayer) {
+        this.transition_(oldLayer, newLayer);
       }
+    });
+  };
+
+
+  /**
+   * @method transitionInClosestLoadedLayer_
+   * @private
+   */
+  TileAnimation.prototype.transitionInClosestLoadedLayer_ = function(layer) {
+    var loadedTimes = _.keys(this.timeLayers_).filter(function(time) {
+      return this.timeLayers_[time].isLoaded();
     }, this);
+    var closestLoadedTime = this.getClosestTimeInSameTense_(layer.get('time').getTime(), loadedTimes);
+
+    if (!closestLoadedTime) {
+      return;
+    }
+
+
+    this.transitionIn_(this.timeLayers_[closestLoadedTime]);
+  };
+
+
+  /**
+   * @method getTimeDeviation_
+   * @private
+   * @param {number} time
+   * @return {number} The difference the provided time, and the closest available time.
+   */
+  TileAnimation.prototype.getTimeDeviation_ = function(time) {
+    return Math.abs(time - this.getClosestTime_(time));
   };
 
 
@@ -442,12 +630,16 @@ define([
       'opacity',
       'zIndex'
     ];
+
+    // clear any old bindings
+    layer.stopListening(this.masterLayer_);
+
     layer.bindAttributesTo(this.masterLayer_, boundAttrs);
   };
 
 
   TileAnimation.prototype.getCurrentLayer = function() {
-    return this.getLayerForTime_(this.currentTime_);
+    return this.currentLayer_;
   };
 
 
@@ -505,6 +697,16 @@ define([
   TileAnimation.prototype.getLayerIndex_ = function() {
     var timeOfCurrentLayer = this.getClosestTime_(this.currentTime_);
     return this.times_.indexOf(timeOfCurrentLayer);
+  };
+
+
+  /**
+   * @method setTimeTolerance
+   * @param {number} tolerance
+   */
+  TileAnimation.prototype.setTimeTolerance = function(tolerance) {
+    this.timeTolerance_ = tolerance;
+    this.goToTime(this.currentTime_);
   };
 
 

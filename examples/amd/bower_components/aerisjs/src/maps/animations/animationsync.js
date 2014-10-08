@@ -2,8 +2,9 @@ define([
   'aeris/util',
   'aeris/maps/animations/abstractanimation',
   'aeris/maps/layers/animationlayer',
-  'aeris/maps/animations/autoupdateanimation'
-], function(_, AbstractAnimation, AnimationLayer, AutoUpdateAnimation) {
+  'aeris/maps/animations/autoupdateanimation',
+  'aeris/promise'
+], function(_, AbstractAnimation, AnimationLayer, AutoUpdateAnimation, Promise) {
   /**
    * Animates multiple layers along a single timeline.
    * Works by running a single 'master' animation, and having
@@ -47,7 +48,7 @@ define([
       to: this.to_,
       from: this.from_,
       limit: this.limit_,
-      timespan: options.timespan
+      timeTolerance: options.timeTolerance
     };
 
 
@@ -72,9 +73,28 @@ define([
     this.AnimationType_ = options.AnimationType;
 
 
+    /**
+     * Memory of which animations have triggered a load:times event.
+     *
+     * @property animationsWhichHaveLoadedTimes_
+     * @private
+     * @type {Array.<aeris.maps.animations.AnimationInterface}
+     */
+    this.animationsWhichHaveLoadedTimes_ = [];
+
+
     // Add animations passed in constructor
     this.add(opt_animations || []);
 
+
+    this.listenTo(this, {
+      'change:to change:from': function() {
+        this.animations_.forEach(function(anim) {
+          anim.setTo(this.getTo());
+          anim.setFrom(this.getFrom());
+        }, this);
+      }
+    });
 
     /**
      * @event autoUpdate
@@ -82,6 +102,21 @@ define([
   };
 
   _.inherits(AnimationSync, AbstractAnimation);
+
+
+  /**
+   * @method preload
+   */
+  AnimationSync.prototype.preload = function() {
+    var activeAnimations = this.animations_.filter(function(anim) {
+      return anim.hasMap();
+    });
+
+    // Preload each animation, in sequence.
+    return Promise.sequence(activeAnimations, function(animation) {
+      return animation.preload();
+    });
+  };
 
 
   /**
@@ -121,9 +156,14 @@ define([
     this.animations_.push(animation);
 
     this.listenTo(animation, {
-      'change:from change:to': this.updateTimeBounds_,
       'load:times': function() {
-        this.trigger('load:times', this.getTimes());
+        if (!_.contains(this.animationsWhichHaveLoadedTimes_, animation)) {
+          this.animationsWhichHaveLoadedTimes_.push(animation);
+        }
+
+        if (this.animationsWhichHaveLoadedTimes_.length === this.animations_.length) {
+          this.trigger('load:times', this.getTimes());
+        }
       },
       'load:progress load:complete': this.triggerLoadProgress_,
       'load:error': function(err) {
@@ -132,28 +172,17 @@ define([
       'load:reset': function(progress) {
         this.trigger('load:reset', progress);
       },
-      'autoUpdate': function() {
+      'autoUpdate': function(anim) {
+        this.setTo(anim.getTo());
+        this.setFrom(anim.getFrom());
         this.trigger('autoUpdate');
       }
     });
 
+    animation.setTo(this.getTo());
+    animation.setFrom(this.getFrom());
+
     this.triggerLoadProgress_();
-  };
-
-
-  AnimationSync.prototype.updateTimeBounds_ = function() {
-    var fromTimes = this.animations_.map(function(anim) {
-      return anim.getFrom().getTime();
-    });
-    var toTimes = this.animations_.map(function(anim) {
-      return anim.getTo().getTime();
-    });
-
-    // Set sync `from` to the earliest animation `from`
-    this.setFrom(Math.min.apply(Math, fromTimes));
-
-    // Set sync `to` to the latest animation `to`
-    this.setTo(Math.max.apply(Math, toTimes));
   };
 
 
@@ -206,25 +235,21 @@ define([
 
 
   /**
+   * Get the total loading progress of animations within the animation
+   * sync. Only considers animations which are set to the map.
+   *
    * @method getLoadProgress
    * @return {number}
    */
   AnimationSync.prototype.getLoadProgress = function() {
-    var progressArr = [];
-    var progress;
+    var activeAnimations = this.animations_.filter(function(anim) {
+      return anim.hasMap();
+    });
+    var progressCounts = activeAnimations.map(function(anim) {
+      return anim.getLoadProgress();
+    });
 
-    _.each(this.animations_, function(anim) {
-      progressArr.push(anim.getLoadProgress());
-    }, this);
-
-    progress = _.average(progressArr);
-
-    if (progress >= 1) {
-      this.trigger('load:complete');
-    }
-    this.trigger('load:progress', progress);
-
-    return progress;
+    return _.average(progressCounts);
   };
 
 

@@ -25,7 +25,7 @@ define(['aeris/util', 'aeris/events'], function(_, Events) {
      * this event is triggered will ensure
      * smooth animations.
      *
-     * If an anmimation is started before all
+     * If an animation is started before all
      * tile frames are loaded, tiles which are
      * not yet loaded will not render until
      * they are loaded.
@@ -77,6 +77,15 @@ define(['aeris/util', 'aeris/events'], function(_, Events) {
      */
   };
   _.extend(AnimationInterface.prototype, Events.prototype);
+
+
+  /**
+   * Begin preloading assets required to run the animation.
+   *
+   * @method preload
+   * @return {aeris.Promise} Resolves when preloading is complete.
+   */
+  AnimationInterface.prototype.preload = _.abstractMethod;
 
 
   /**
@@ -174,6 +183,15 @@ define(['aeris/util', 'aeris/events'], function(_, Events) {
    * @return {Boolean}
    */
   AnimationInterface.prototype.isAnimating = _.abstractMethod;
+
+
+  /**
+   * Is the animated object set to a map?
+   *
+   * @method hasMap
+   * @return {Boolean}
+   */
+  AnimationInterface.prototype.hasMap = _.abstractMethod;
 
   return AnimationInterface;
 });

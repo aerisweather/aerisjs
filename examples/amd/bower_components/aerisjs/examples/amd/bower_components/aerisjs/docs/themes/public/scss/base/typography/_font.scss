@@ -1,0 +1,40 @@
+@include font-face("Bitstream",
+  font-files(
+    "bitstream/VeraMono-webfont.woff",
+    "bitstream/VeraMono-webfont.ttf",
+    "bitstream/VeraMono-webfont.svg"
+  ),
+  "bitstream/VeraMono-webfont.eot"
+);
+
+@include font-face("Ubunto Mono",
+  font-files(
+    "ubuntumono/UbuntuMono-R.ttf"
+  )
+);
+
+@include font-face("Ubunto Mono",
+  font-files(
+    "ubuntumono/UbuntuMono-B.ttf"
+  ), false, bold
+);
+
+@include font-face("Source Sans",
+  font-files(
+    "sourcesans/SourceSansPro-Regular.otf"
+  )
+);
+
+@include font-face("Source Sans",
+  font-files(
+    "sourcesans/SourceSansPro-Semibold.otf"
+  ), false, bold
+);
+
+@mixin font-header {
+  font-family: "Source Sans", sans-serif;
+}
+
+@mixin font-monospace {
+  font-family: "Ubuntu Mono", monospace;
+}

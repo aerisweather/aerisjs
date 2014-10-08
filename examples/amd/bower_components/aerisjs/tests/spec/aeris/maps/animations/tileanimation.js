@@ -7,11 +7,12 @@ define([
   'mocks/aeris/maps/layers/aeristile',
   'mocks/aeris/maps/animations/helpers/times',
   'mocks/aeris/maps/animations/helpers/animationlayerloader',
-  'mocks/mockfactory'
-], function(_, TileAnimation, Model, Promise, Events, MockLayer, MockTimes, MockLayerLoader, MockFactory) {
+  'mocks/mockfactory',
+  'tests/lib/clock'
+], function(_, TileAnimation, Model, Promise, Events, MockLayer, MockTimes, MockLayerLoader, MockFactory, clock) {
 
-  var MockOrderedTimes = function() {
-    var times = MockTimes.apply(null, arguments);
+  var MockOrderedTimes = function(opt_count, opt_min, opt_max) {
+    var times = MockTimes.call(null, opt_count, opt_min, opt_max);
 
     return _.sortBy(times, _.identity);
   };
@@ -35,14 +36,20 @@ define([
   };
 
 
-
-
-
   describe('TileAnimation', function() {
     var animation, layerLoader, masterLayer;
     var times, timeLayers;
-    var TIMES_COUNT = 10;
+    var TIMES_COUNT = 10, CURRENT_TIME = 10e7;
     var map;
+
+
+    beforeEach(function() {
+      clock.useFakeTimers(CURRENT_TIME);
+    });
+    afterEach(function() {
+      clock.restore();
+    });
+
 
     beforeEach(function() {
       map = new MockMap();
@@ -57,9 +64,31 @@ define([
       timeLayers = new MockTimeLayers(times);
     });
 
-    function resolveLayerLoader(opt_times, opt_timeLayers) {
-      layerLoader.trigger('load:times', opt_times || times, opt_timeLayers || timeLayers);
-      layerLoader.load.andResolveWith(opt_timeLayers || timeLayers);
+    function resolveLayerLoader(times_or_timeLayers) {
+      var times, timeLayers;
+
+      // Arg is times
+      if (_.isArray(times_or_timeLayers)) {
+        times = times_or_timeLayers;
+        timeLayers = createTimeLayersFromTimes(times);
+      }
+      // Arg is timeLayers
+      else {
+        timeLayers = times_or_timeLayers;
+        times = _.keys(timeLayers);
+      }
+
+      layerLoader.trigger('load:times', times, timeLayers);
+      layerLoader.load.andResolveWith(timeLayers);
+    }
+
+    function createTimeLayersFromTimes(times) {
+      return times.reduce(function(timeLayers, time) {
+        timeLayers[time] = new MockLayer({
+          time: new Date(time)
+        });
+        return timeLayers;
+      }, {});
     }
 
 
@@ -100,6 +129,19 @@ define([
 
     });
 
+    it('should bind it\'s from/to times to the animationLayerLoader\'s from/to times', function() {
+      _.times(5, function(i) {
+        var FROM = 1e3 * (i + 1);
+        var TO = 2e3 * (i + 1);
+
+        animation.setFrom(FROM);
+        expect(layerLoader.setFrom).toHaveBeenCalledWith(FROM);
+
+        animation.setTo(TO);
+        expect(layerLoader.setTo).toHaveBeenCalledWith(TO);
+      });
+    });
+
 
     describe('loadAnimationLayers', function() {
 
@@ -131,52 +173,36 @@ define([
 
 
       describe('when layers times are loaded', function() {
-        var timeLayers, times;
 
         beforeEach(function() {
-          times = new MockOrderedTimes();
-          timeLayers = new MockTimeLayers(times);
           animation.loadAnimationLayers();
         });
 
 
-        it('should set the current time to the latest time', function() {
+        it('should set the current animation time to the actual current time', function() {
+          var times = _.range(Date.now() - 10, Date.now() + 10);
           var latestTime = Math.max.apply(null, times);
-          resolveLayerLoader();
+          resolveLayerLoader(times);
 
-          expect(animation.getCurrentTime().getTime()).toEqual(latestTime);
+          expect(animation.getCurrentTime().getTime()).toEqual(CURRENT_TIME);
         });
 
         it('should sync the most current layer to the master layer', function() {
-          var timeLayers = {
-            10: new MockLayer(),
-            20: new MockLayer(),
-            30: new MockLayer()
-          };
+          var timeLayers = createTimeLayersFromTimes([10, 20, 30]);
           spyOn(timeLayers[30], 'bindAttributesTo');
-          resolveLayerLoader([10, 20, 30], timeLayers);
+          resolveLayerLoader(timeLayers);
 
           expect(timeLayers[30].bindAttributesTo).toHaveBeenCalledWithSomeOf(masterLayer);
         });
 
-        it('should reset `from` to the earliest loaded time', function() {
-          var onChangeFrom = jasmine.createSpy('onChangeFrom');
-          animation.on('change:from', onChangeFrom);
+        it('should not change the animation from/to times', function() {
+          animation.setFrom(0);
+          animation.setTo(100);
 
-          resolveLayerLoader([20, 10, 50, 100, 30]);
+          resolveLayerLoader([10, 20, 30, 40, 50]);
 
-          expect(animation.getFrom().getTime()).toEqual(10);
-          expect(onChangeFrom).toHaveBeenCalled();
-        });
-
-        it('should reset `to` to the latest loaded time', function() {
-          var onChangeTo = jasmine.createSpy('onChangeTo');
-          animation.on('change:to', onChangeTo);
-
-          resolveLayerLoader([20, 10, 50, 100, 30]);
-
+          expect(animation.getFrom().getTime()).toEqual(0);
           expect(animation.getTo().getTime()).toEqual(100);
-          expect(onChangeTo).toHaveBeenCalled();
         });
 
       });
@@ -196,7 +222,7 @@ define([
       describe('next', function() {
 
         it('should go to the next time', function() {
-          resolveLayerLoader();
+          resolveLayerLoader(times);
           animation.goToTime(times[0]);
 
           animation.next();
@@ -207,9 +233,7 @@ define([
         });
 
         it('should go to the next closest time', function() {
-          var times = [10, 20, 30];
-          var timeLayers = new MockTimeLayers(times);
-          resolveLayerLoader(times, timeLayers);
+          resolveLayerLoader([10, 20, 30]);
           animation.goToTime(22);
 
           animation.next();
@@ -218,7 +242,7 @@ define([
         });
 
         it('should go to the first time, if the last time is current', function() {
-          resolveLayerLoader();
+          resolveLayerLoader(times);
 
           animation.goToTime(_.last(times));
 
@@ -238,7 +262,7 @@ define([
       describe('previous', function() {
 
         it('should go to the previous time', function() {
-          resolveLayerLoader();
+          resolveLayerLoader(times);
           animation.goToTime(times[2]);
 
           animation.previous();
@@ -249,9 +273,7 @@ define([
         });
 
         it('should go to the previous closest time', function() {
-          var times = [10, 20, 30];
-          var timeLayers = new MockTimeLayers(times);
-          resolveLayerLoader(times, timeLayers);
+          resolveLayerLoader([10, 20, 30]);
           animation.goToTime(22);
 
           animation.previous();
@@ -259,7 +281,7 @@ define([
         });
 
         it('should go to the last time, if the first time is current', function() {
-          resolveLayerLoader();
+          resolveLayerLoader(times);
           animation.goToTime(times[0]);
 
           animation.previous();
@@ -287,6 +309,9 @@ define([
              * Checks that only the layer for the given time
              * is set to a map.
              *
+             *  eg:
+             *    expect(timeLayers).toBeShowingLayerForTime(time);
+             *
              * @param {number} time Timestamp.
              * @return {Boolean}
              */
@@ -294,7 +319,7 @@ define([
               var timeLayers = this.actual;
               var times = _.keys(timeLayers);
 
-              var shownTimes = _.filter(times, function(time) {
+              var shownTimes = times.filter(function(time) {
                 var layer = timeLayers[time];
                 return layer.isShown();
               });
@@ -323,12 +348,8 @@ define([
 
 
         it('should show only the layer for the closest available time', function() {
-          var timeLayers = {
-            10: new MockLayer(),
-            20: new MockLayer(),
-            30: new MockLayer()
-          };
-          resolveLayerLoader([10, 20, 30], timeLayers);
+          var timeLayers = createTimeLayersFromTimes([10, 20, 30]);
+          resolveLayerLoader(timeLayers);
 
           animation.goToTime(0);
           expect(timeLayers).toBeShowingLayerForTime(10);
@@ -350,6 +371,62 @@ define([
 
           animation.goToTime(9999);
           expect(timeLayers).toBeShowingLayerForTime(30);
+        });
+
+        describe('when choosing a closest available time', function() {
+
+          it('should choose a past time on goToTime(PAST_TIME), even if a future time is closer', function() {
+            var times = [
+              CURRENT_TIME - 100,
+              CURRENT_TIME + 10
+            ];
+            var timeLayers = createTimeLayersFromTimes(times);
+            resolveLayerLoader(timeLayers);
+
+            animation.goToTime(CURRENT_TIME - 1);
+            expect(timeLayers).toBeShowingLayerForTime(CURRENT_TIME - 100);
+          });
+
+          it('should choose a past time on goToTime(CURRENT_TIME), even if a future time is closer', function() {
+            var times = [
+              CURRENT_TIME - 100,
+              CURRENT_TIME + 10
+            ];
+            var timeLayers = createTimeLayersFromTimes(times);
+            resolveLayerLoader(timeLayers);
+
+            animation.goToTime(CURRENT_TIME);
+            expect(timeLayers).toBeShowingLayerForTime(CURRENT_TIME - 100);
+          });
+
+          it('should choose a future time on goToTime(FUTURE_TIME), even if a past future time is closer', function() {
+            var times = [
+              CURRENT_TIME - 10,
+              CURRENT_TIME + 100
+            ];
+            var timeLayers = createTimeLayersFromTimes(times);
+            resolveLayerLoader(timeLayers);
+
+            animation.goToTime(CURRENT_TIME + 1);
+            expect(timeLayers).toBeShowingLayerForTime(CURRENT_TIME + 100);
+          });
+
+          describe('when the animation has no future times', function() {
+
+            it('should show no time, if the provided time is in the future', function() {
+              var pastTimes = _.range(Date.now(), Date.now() - 1000, -10);
+              var timeLayers = createTimeLayersFromTimes(pastTimes);
+              resolveLayerLoader(timeLayers);
+
+              animation.goToTime(Date.now() + 1e3);
+
+              pastTimes.forEach(function(time) {
+                expect(timeLayers).not.toBeShowingLayerForTime(time);
+              });
+            });
+
+          });
+
         });
 
         it('should set the current time to the specified time', function() {
@@ -375,14 +452,117 @@ define([
           expect(animation.getCurrentTime().getTime()).toEqual(9999);
         });
 
+        describe('when the layer is not loaded', function() {
+          var times, timeLayers, NOW;
+
+          beforeEach(function() {
+            NOW = Date.now();
+
+            times = _.range(NOW - 10, NOW + 10, 1);
+            timeLayers = createTimeLayersFromTimes(times);
+
+            // mark all layers as not loaded, to start
+            times.forEach(function(t) {
+              setIsTimeLoaded(t, false);
+            });
+
+            resolveLayerLoader(timeLayers);
+          });
+
+          function setIsTimeLoaded(time, isLoaded) {
+            timeLayers[time].isLoaded.andReturn(isLoaded);
+
+            if (isLoaded) {
+              timeLayers[time].trigger('load');
+            }
+          }
+
+
+          it('should not show the layer', function() {
+            setIsTimeLoaded(NOW - 1, false);
+            setIsTimeLoaded(NOW - 2, true);
+
+            // go to not-loaded time
+            animation.goToTime(Date.now() - 1);
+
+            expect(timeLayers).not.toBeShowingLayerForTime(Date.now() - 1);
+          });
+
+          it('should show the closest loaded layer, in the same tense (past)', function() {
+            setIsTimeLoaded(NOW - 1, false);
+            setIsTimeLoaded(NOW - 7, true);
+            setIsTimeLoaded(NOW - 8, true);
+
+            // A closer time is available in future
+            setIsTimeLoaded(NOW + 1, true);
+
+            // go to not-loaded time (past)
+            animation.goToTime(NOW - 1);
+            // --> should show loaded time
+            expect(timeLayers).toBeShowingLayerForTime(NOW - 7);
+            expect(timeLayers).not.toBeShowingLayerForTime(NOW - 1);
+          });
+
+          it('should show the closest loaded layer, in the same tense (future)', function() {
+            setIsTimeLoaded(NOW + 1, false);
+            setIsTimeLoaded(NOW + 7, true);
+            setIsTimeLoaded(NOW + 8, true);
+
+            // A closer time is available in past
+            setIsTimeLoaded(NOW - 1, true);
+
+            // go to not+loaded time (past)
+            animation.goToTime(NOW + 1);
+            // ++> should show loaded time
+            expect(timeLayers).toBeShowingLayerForTime(Date.now() + 7);
+            expect(timeLayers).not.toBeShowingLayerForTime(Date.now() + 1);
+          });
+
+          describe('when the layer loads', function() {
+
+            it('should switch to showing the loaded layer', function() {
+              setIsTimeLoaded(NOW - 1, false);
+              setIsTimeLoaded(NOW - 2, true);
+              animation.goToTime(NOW - 1);
+
+              setIsTimeLoaded(NOW - 1, true);
+              expect(timeLayers).toBeShowingLayerForTime(NOW - 1);
+              expect(timeLayers).not.toBeShowingLayerForTime(NOW - 2);
+            });
+
+            it('should not show the layer, if it\'s no longer the current layer', function() {
+              setIsTimeLoaded(NOW - 1, false);
+              animation.goToTime(NOW - 1);
+
+              setIsTimeLoaded(NOW - 5, true);
+              animation.goToTime(NOW - 5);
+
+              setIsTimeLoaded(NOW - 1, true);
+              expect(timeLayers).not.toBeShowingLayerForTime(NOW - 1);
+              expect(timeLayers).toBeShowingLayerForTime(NOW - 5);
+            });
+
+          });
+
+          describe('when there are no layers loaded in the same tense', function() {
+
+            it('should show no layers', function() {
+              setIsTimeLoaded(NOW + 1);
+
+              animation.goToTime(NOW - 1);
+
+              times.forEach(function(time) {
+                expect(timeLayers).not.toBeShowingLayerForTime(time);
+              });
+            });
+          });
+
+        });
+
         it('should not show the layer, if the layer is not loaded', function() {
-          var timeLayers = {
-            10: new MockLayer(),
-            20: new MockLayer(),
-            30: new MockLayer()
-          };
+          var timeLayers = createTimeLayersFromTimes([10, 20, 30]);
           timeLayers[20].isLoaded.andReturn(false);
-          resolveLayerLoader([10, 20, 30], timeLayers);
+          resolveLayerLoader(timeLayers);
 
           animation.goToTime(20);
           expect(timeLayers[20].isShown()).toEqual(false);
@@ -414,14 +594,11 @@ define([
           var map;
 
           beforeEach(function() {
-            var timeLayers;
-
-            shownLayer = new MockLayer();
+            var timeLayers = createTimeLayersFromTimes([10]);
+            shownLayer = timeLayers[10];
             spyOn(shownLayer, 'bindAttributesTo');
-            timeLayers = {
-              10: shownLayer
-            };
-            resolveLayerLoader([10], timeLayers);
+
+            resolveLayerLoader(timeLayers);
 
             map = new MockMap();
 
@@ -449,6 +626,138 @@ define([
             expect(_.contains(boundAttrs, 'zIndex')).toEqual(true);
           });
 
+
+        });
+
+
+        describe('time tolerance', function() {
+
+          describe('when the set time is outside the timeTolerance', function() {
+
+            it('should not show any layers', function() {
+              var timeLayers = createTimeLayersFromTimes([100, 200, 300]);
+              resolveLayerLoader(timeLayers);
+              animation.setTimeTolerance(10);
+
+              animation.goToTime(150);
+
+              expect(timeLayers).not.toBeShowingLayerForTime(100);
+              expect(timeLayers).not.toBeShowingLayerForTime(200);
+              expect(timeLayers).not.toBeShowingLayerForTime(300);
+            });
+
+          });
+
+          describe('when the set time is within the timeTolerance', function() {
+
+            it('should show the set time layer', function() {
+              var timeLayers = createTimeLayersFromTimes([100, 200, 300]);
+              resolveLayerLoader(timeLayers);
+              animation.setTimeTolerance(10);
+
+              animation.goToTime(109);
+              expect(timeLayers).toBeShowingLayerForTime(100);
+            });
+
+          });
+
+        });
+
+      });
+
+
+    });
+
+
+    describe('preload', function() {
+      var timeLayers;
+
+      beforeEach(function() {
+        timeLayers = new MockTimeLayers([0, 1, 2]);
+      });
+
+      function loadAll(timeLayers) {
+        _.each(timeLayers, loadLayer);
+      }
+
+      function loadLayer(layer) {
+        layer.promiseToPreload.resolve();
+      }
+
+
+      it('should wait for times to load, before trying to preload layers', function() {
+        animation.preload();
+
+        _.each(timeLayers, function(layer) {
+          expect(layer.preload).not.toHaveBeenCalled();
+        });
+      });
+
+      describe('after times are loaded', function() {
+
+        beforeEach(function() {
+          resolveLayerLoader(timeLayers);
+        });
+
+
+        it('should preload each timeLayer, using the master layer\'s map', function() {
+          animation.preload();
+
+          loadAll(timeLayers);
+
+          _.each(timeLayers, function(lyr) {
+            expect(lyr.preload).toHaveBeenCalled();
+          });
+        });
+
+        it('should wait to load a layer until the previous layer is loaded', function() {
+          animation.preload();
+
+          expect(timeLayers[0].preload).toHaveBeenCalled();
+          expect(timeLayers[1].preload).not.toHaveBeenCalled();
+
+          timeLayers[0].promiseToPreload.resolve();
+          expect(timeLayers[1].preload).toHaveBeenCalled();
+          expect(timeLayers[2].preload).not.toHaveBeenCalled();
+        });
+
+        it('should resolve once all the layers are preloaded', function() {
+          var onResolve = jasmine.createSpy('onResolve');
+
+          animation.preload().
+            done(onResolve).
+            fail(_.throwError);
+
+          expect(onResolve).not.toHaveBeenCalled();
+
+          loadAll(timeLayers);
+
+          expect(onResolve).toHaveBeenCalled();
+        });
+
+        it('should reject if any layer fails to preload', function() {
+          var onReject = jasmine.createSpy('onReject');
+
+          animation.preload().
+            fail(onReject);
+
+          timeLayers[0].promiseToPreload.resolve();
+          timeLayers[1].promiseToPreload.reject();
+
+          expect(onReject).toHaveBeenCalled();
+        });
+
+        describe('if the masterLayer\'s map is unset during preloading', function() {
+
+          it('should continue to use the original map object for preloading', function() {
+            masterLayer.setMap(map);
+            animation.preload();
+
+            masterLayer.setMap(null);
+            loadLayer(timeLayers[0]);
+
+            expect(timeLayers[1].preload).toHaveBeenCalledWith(map);
+          });
 
         });
 
@@ -498,12 +807,8 @@ define([
 
       it('should return a safe copy of the loaded times', function() {
         var times;
-        var timeLayers = {
-          10: new MockLayer(),
-          20: new MockLayer(),
-          30: new MockLayer()
-        };
-        resolveLayerLoader([10, 20, 30], timeLayers);
+        var timeLayers = createTimeLayersFromTimes([10, 20, 30]);
+        resolveLayerLoader(timeLayers);
 
         times = animation.getTimes();
 
@@ -528,10 +833,6 @@ define([
         animation.goToTime(1234);
 
         expect(animation.getCurrentTime().getTime()).toEqual(1234);
-      });
-
-      it('should return null, if no time are loaded, and goToTime hasn\'t been called', function() {
-        expect(animation.getCurrentTime()).toEqual(null);
       });
 
     });

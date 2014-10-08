@@ -45,6 +45,8 @@ define([
         });
       }
 
+      MapObjectCollection.prototype.jasmineToString = _.constant('MapObjectCollection');
+
       beforeEach(function() {
         collection = new MapObjectCollection();
       });
@@ -103,6 +105,8 @@ define([
         });
 
         it('should trigger a \'map:remove\' event, if the map is null', function() {
+          collection.setMap(new MockMap());
+
           collection.on('map:remove', listener);
 
           collection.setMap(null);
@@ -129,7 +133,9 @@ define([
         });
 
         it('should trigger only one \'map:remove\' event', function() {
+          collection.setMap(new MockMap());
           collection.add([new MockMapObject(), new MockMapObject(), new MockMapObject()]);
+
           collection.on('map:remove', listener);
 
           collection.setMap(null);
@@ -147,11 +153,15 @@ define([
 
       beforeEach(function() {
         collection = new MapObjectCollection();
-        collection.setMap(map);
+      });
+
+      it('should return null, if no map has been set', function() {
+        expect(collection.getMap()).toEqual(null);
       });
 
 
       it('should return the map set using setMap', function() {
+        collection.setMap(map);
         expect(collection.getMap()).toEqual(map);
       });
 

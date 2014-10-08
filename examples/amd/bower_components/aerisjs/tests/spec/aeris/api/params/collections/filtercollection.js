@@ -18,7 +18,7 @@ define([
   _.inherits(FilterCollection, BaseFilterCollection);
 
 
-  describe('An AerisApiFilterCollection', function() {
+  describe('FilterCollection', function() {
 
     describe('toString', function() {
 
@@ -182,6 +182,26 @@ define([
         expect(filters.at(0).get('operator')).toEqual(Operator.AND);
         expect(filters.at(1).get('name')).toEqual('colander');
         expect(filters.at(1).get('operator')).toEqual(Operator.OR);
+      });
+
+      it('should replace existing filters (add, then reset)', function() {
+        var filters = new FilterCollection();
+        filters.add(['FILTER_A', 'FILTER_B']);
+
+        filters.reset(['FILTER_A', 'FILTER_C']);
+        expect(filters.length).toEqual(2);
+        expect(filters.at(0).get('name')).toEqual('FILTER_A');
+        expect(filters.at(1).get('name')).toEqual('FILTER_C');
+      });
+
+      it('should replace existing filters (reset, then reset)', function() {
+        var filters = new FilterCollection();
+        filters.reset(['FILTER_A', 'FILTER_B']);
+
+        filters.reset(['FILTER_A', 'FILTER_C']);
+        expect(filters.length).toEqual(2);
+        expect(filters.at(0).get('name')).toEqual('FILTER_A');
+        expect(filters.at(1).get('name')).toEqual('FILTER_C');
       });
 
       it('should remove all filters, if called with no arguments', function() {

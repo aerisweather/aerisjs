@@ -100,5 +100,21 @@ define([
   _.extend(AerisApiCollection.prototype, AerisApiBehavior);
 
 
+  /**
+   * @method parse
+   */
+  AerisApiCollection.prototype.parse = function(data) {
+    // This is a hack for dealing with nested id attributes.
+    // Model data is not otherwise parsed (on fetch) before checking for
+    // duplicates in a collection. This results in duplicate models in a collection.
+    // See https://github.com/jashkenas/backbone/issues/3147#issuecomment-43108388
+    // and http://jsfiddle.net/tT2D9/3/
+    var rawModels = AerisApiBehavior.parse.call(this, data);
+    var parsedModels = rawModels.map(this.model.prototype.parse);
+
+    return parsedModels;
+  };
+
+
   return _.expose(AerisApiCollection, 'aeris.api.AerisApiCollection');
 });

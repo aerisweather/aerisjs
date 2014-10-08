@@ -74,30 +74,29 @@ define([
    * @method watchPosition
    */
   FreeGeoIPGeolocateService.prototype.watchPosition = function(onSuccess, onError, opt_options) {
-    var options = _.extend({
+    var options = _.defaults(opt_options || {}, {
       interval: 3000
-    }, opt_options);
-    var self = this;
-    var NOOP = function() {};
+    });
+    var noop = function() {
+    };
 
-    onSuccess || (onSuccess = NOOP);
-    onError || (onError = NOOP);
+    onSuccess || (onSuccess = noop);
+    onError || (onError = noop);
 
-    var updatePosition = function() {
-      self.getCurrentPosition().
+    var updatePosition = (function() {
+      this.getCurrentPosition().
         done(function(res) {
+          var isNewPosition = !this.lastPosition_ || !_.isEqual(res, this.lastPosition_);
+
           // Only call callback if the
           // position has changed.
-          if (
-            !self.lastPosition_ ||
-            !_.isEqual(res, self.lastPosition_)
-          ) {
+          if (isNewPosition) {
+            this.lastPosition_ = res;
             onSuccess(res);
-            self.lastPosition_ = res;
           }
         }).
         fail(onError);
-    };
+    }.bind(this));
 
     this.watchId_ = window.setInterval(updatePosition, options.interval);
     updatePosition();
@@ -108,7 +107,9 @@ define([
    * @method clearWatch
    */
   FreeGeoIPGeolocateService.prototype.clearWatch = function() {
-    if (_.isNull(this.watchId_)) { return; }
+    if (_.isNull(this.watchId_)) {
+      return;
+    }
 
     window.clearInterval(this.watchId_);
     this.lastPosition_ = null;
@@ -133,7 +134,9 @@ define([
    * @method resolve_
    */
   FreeGeoIPGeolocateService.prototype.resolve_ = function(promise, data) {
-    if (!data || !_.isNumber(data.latitude) || !_.isNumber(data.longitude)) {
+    var isMissingLocationData = !data || !_.isNumber(data.latitude) || !_.isNumber(data.longitude);
+
+    if (isMissingLocationData) {
       promise.reject(new GeolocateServiceError({
         code: GeolocateServiceError.POSITION_UNAVAILABLE,
         message: 'FreeGeoIP returned unexpected data.'

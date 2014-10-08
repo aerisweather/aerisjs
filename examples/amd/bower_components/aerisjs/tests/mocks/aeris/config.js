@@ -27,6 +27,11 @@ define([
     aerisConfig.set(keys);
   };
 
+  MockConfig.unsetApiKeys = function() {
+    aerisConfig.unset('apiId');
+    aerisConfig.unset('apiSecret');
+  };
+
   MockConfig.restore = function() {
     aerisConfig.set(apiKeys_orig);
   };

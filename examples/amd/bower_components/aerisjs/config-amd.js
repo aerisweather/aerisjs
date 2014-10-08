@@ -16,7 +16,8 @@ require.config({
     async: 'bower_components/requirejs-plugins/src/async',
     'gmaps-markerclusterer-plus': 'bower_components/gmaps-markerclusterer-plus/index',
     leaflet: '//cdn.leafletjs.com/leaflet-0.7.2/leaflet-src',
-    'leaflet-markercluster': 'bower_components/leaflet.markercluster/dist/leaflet.markercluster-src'
+    'leaflet-markercluster': 'bower_components/leaflet.markercluster/dist/leaflet.markercluster-src',
+    mapbox: '//api.tiles.mapbox.com/mapbox.js/v1.6.4/mapbox.standalone'
   },
   shim: {
     'gmaps-markerclusterer-plus': {
@@ -32,6 +33,10 @@ require.config({
       init: function() {
         return L.MarkerClusterGroup;
       }
+    },
+    'mapbox': {
+      deps: ['leaflet'],
+      exports: 'L.mapbox'
     }
   }
 });

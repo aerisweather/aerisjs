@@ -3,14 +3,10 @@ define([
 ], function(_) {
   var templateString = '<div>' +
     '  <img src="{url}"' +
-    '       style="position: absolute;' +
-    '       top: {offsetX}px;' +
-    '       left: {offsetY}px;' +
-    '       clip: rect(0px, 25px, 25px, 0px);' +
     '       ">' +
     '  <div style="position: absolute;' +
-    '          top: -23px;' +
-    '          left: 3px;' +
+    '          bottom: {height - 8}px;' +
+    '          right: -{width / 2}px;' +
     '          color: #fff;' +
     '          font-size: 12px;' +
     '          font-family: Arial,sans-serif;' +
@@ -38,7 +34,5 @@ define([
     '  </div>' +
     '</div>';
 
-  return function clusterIconTemplate(data) {
-    return _.template(templateString, data);
-  };
+  return _.template(templateString);
 });

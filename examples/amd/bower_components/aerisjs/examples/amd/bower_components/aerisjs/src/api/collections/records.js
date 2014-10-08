@@ -24,7 +24,7 @@ define([
       p: ':auto',
       limit: 100,
       radius: '100mi',
-      from: new DateHelper().addDays(-60)
+      from: new DateHelper().addDays(-60).getDate()
     });
 
     AerisApiClientCollection.call(this, opt_models, options);
