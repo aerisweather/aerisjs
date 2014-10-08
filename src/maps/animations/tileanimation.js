@@ -319,6 +319,9 @@ define([
     else if (currentLayer) {
       this.transitionOut_(currentLayer);
     }
+    else if (nextLayer) {
+      this.transitionIn_(nextLayer);
+    }
 
     this.currentLayer_ = nextLayer;
     this.trigger('change:time', new Date(this.currentTime_));
