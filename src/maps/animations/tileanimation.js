@@ -313,14 +313,11 @@ define([
       });
     }
 
-    if (currentLayer && nextLayer) {
+    if (nextLayer) {
       this.transition_(currentLayer, nextLayer);
     }
     else if (currentLayer) {
       this.transitionOut_(currentLayer);
-    }
-    else if (nextLayer) {
-      this.transitionIn_(nextLayer);
     }
 
     this.currentLayer_ = nextLayer;
@@ -510,12 +507,12 @@ define([
   /**
    * Transition from one layer to another.
    *
-   * @param {aeris.maps.layers.AerisTile} oldLayer
+   * @param {?aeris.maps.layers.AerisTile} opt_oldLayer
    * @param {aeris.maps.layers.AerisTile} newLayer
    * @private
    * @method transition_
    */
-  TileAnimation.prototype.transition_ = function(oldLayer, newLayer) {
+  TileAnimation.prototype.transition_ = function(opt_oldLayer, newLayer) {
     var isWithinTimeTolerance;
 
 
@@ -526,7 +523,7 @@ define([
     // layers are loaded.
     if (!newLayer.isLoaded()) {
       this.preloadLayer_(newLayer);
-      this.transitionWhenLoaded_(oldLayer, newLayer);
+      this.transitionWhenLoaded_(opt_oldLayer, newLayer);
     }
 
 
@@ -572,18 +569,18 @@ define([
    * Handle transition for a layer which has not yet
    * been loaded
    *
-   * @param {aeris.maps.layers.AerisTile} oldLayer
+   * @param {?aeris.maps.layers.AerisTile} opt_oldLayer
    * @param {aeris.maps.layers.AerisTile} newLayer
    * @method transitionWhenLoaded_
    * @private
    */
-  TileAnimation.prototype.transitionWhenLoaded_ = function(oldLayer, newLayer) {
+  TileAnimation.prototype.transitionWhenLoaded_ = function(opt_oldLayer, newLayer) {
     // Clear any old listeners from this transition
     // (eg. if transition is called twice for the same layer)
     this.stopListening(newLayer, 'load');
     this.listenToOnce(newLayer, 'load', function() {
       if (this.getCurrentLayer() === newLayer) {
-        this.transition_(oldLayer, newLayer);
+        this.transition_(opt_oldLayer, newLayer);
       }
     });
   };
