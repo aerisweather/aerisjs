@@ -24,7 +24,7 @@ define([
           name: '',
           author: '',
           description: '',
-          snipped: ''
+          snippet: ''
         }, _.pick(evt.featureData, [
           'name',
           'author',
@@ -97,3 +97,11 @@ define([
 
   return KmlLayerStrategy;
 });
+/**
+ * @for aeris.maps.layers.KML
+ */
+/**
+ * @event click
+ * @param {aeris.maps.LatLon} latLon
+ * @param {Object} data
+ */
