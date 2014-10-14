@@ -256,5 +256,20 @@ define([
   };
 
 
+  /**
+   * To be used when the map canvas element
+   * has changed dimensions.
+   *
+   * This will tell the underlying mapping strategy to
+   * refresh appropriately (eg. load new tile images to account
+   *  for a larger map).
+   *
+   * @method updateSize
+   */
+  Map.prototype.updateSize = function() {
+    this.trigger('updateSize');
+  };
+
+
   return _.expose(Map, 'aeris.maps.Map');
 });

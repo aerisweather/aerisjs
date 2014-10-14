@@ -23,7 +23,8 @@ define([
     this.listenTo(this.object_, {
       'change:center': this.updateCenter_,
       'change:zoom': this.updateZoom_,
-      'change:baseLayer': this.updateBaseLayer_
+      'change:baseLayer': this.updateBaseLayer_,
+      'updateSize': this.updateSize_
     }, this);
 
     // Make sure all attributes are in sync
@@ -173,6 +174,15 @@ define([
       // Hacks are fun, no?
       aeris.maps.Map.prototype.on.apply(this, arguments);
     };
+  };
+
+
+  /**
+   * @method updateSize_
+   * @private
+   */
+  GoogleMapStrategy.prototype.updateSize_ = function() {
+    gmaps.event.trigger(this.getView(), 'resize');
   };
 
 

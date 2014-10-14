@@ -41,14 +41,7 @@ define([
     this.proxyLeafletMapEvents_();
     this.bindToLeafletMapState_();
 
-    this.bindMapToElementDimensions_();
-    this.bindElReadyEvent_();
-    /**
-     * Triggered when the element is
-     * has non-zero dimensions set on it.
-     *
-     * @event el:dimensions
-     */
+    this.updateSizeWhenCanasAddedToDOM_();
   };
   _.inherits(LeafletMapStrategy, AbstractStrategy);
 
@@ -174,7 +167,8 @@ define([
 
     this.listenTo(this.object_, {
       'change:center change:zoom': this.updateLeafletMapPosition_,
-      'change:baseLayer': this.updateBaseLayer_
+      'change:baseLayer': this.updateBaseLayer_,
+      'updateSize': this.updateSize_
     });
   };
 
@@ -238,45 +232,36 @@ define([
 
 
   /**
-   * Redraw the Leaflet map whenever the container
-   * element changes size.
-   *
-   * Fixes issue with maps created in containers which
-   * have not yet been added to the DOM.
-   * See https://github.com/Leaflet/Leaflet/issues/941
-   *
-   * @method bindMapToElementDimensions_
+   * @method updateSizeWhenCanasAddedToDOM_
    * @private
    */
-  LeafletMapStrategy.prototype.bindMapToElementDimensions_ = function() {
-    this.listenTo(this, 'el:dimensions', function() {
-      this.view_.invalidateSize();
-    });
-  };
-
-
-  /**
-   * @method bindElReadyEvent_
-   * @private
-   */
-  LeafletMapStrategy.prototype.bindElReadyEvent_ = function() {
-    var pollRef;
+  LeafletMapStrategy.prototype.updateSizeWhenCanasAddedToDOM_ = function() {
     var el = this.object_.mapEl_;
     var isElDrawn = function() {
       return el.offsetWidth !== 0 && el.offsetHeight !== 0;
     };
 
-    if (isElDrawn()) {
-      this.trigger('el:dimensions');
-    }
-    if (!isElDrawn()) {
-      pollRef = root.setInterval(function() {
-        if (isElDrawn()) {
-          root.clearInterval(pollRef);
-          this.trigger('el:dimensions');
+    function pollUntil(predicate, cb, pollInterval) {
+      var pollTimer;
+      var predicateChecker = function() {
+        if (predicate()) {
+          cb();
+          root.clearInterval(pollTimer);
         }
-      }.bind(this), 100);
+      };
+      pollTimer = root.setInterval(predicateChecker, pollInterval);
+      predicateChecker();
     }
+
+    pollUntil(isElDrawn, this.updateSize_.bind(this), 100);
+  };
+
+  /**
+   * @method updateSize_
+   * @private
+   */
+  LeafletMapStrategy.prototype.updateSize_ = function() {
+    this.getView().invalidateSize();
   };
 
 

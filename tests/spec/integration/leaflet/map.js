@@ -423,6 +423,18 @@ define([
       });
     });
 
+    describe('updateSize', function() {
+
+      it('should invalidate the map size', function() {
+        spyOn(leafletMap, 'invalidateSize');
+
+        aerisMap.updateSize();
+
+        expect(leafletMap.invalidateSize).toHaveBeenCalled();
+      });
+
+    });
+
   });
 
 });

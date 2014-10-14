@@ -141,6 +141,22 @@ define([
 
     });
 
+    describe('updateSize', function() {
+
+      it('should trigger a `resize` event', function() {
+        var onResize = jasmine.createSpy('onResize');
+        var map = new AerisMap(mapCanvas);
+        var gmap = map.getView();
+
+        google.maps.event.addListener(gmap, 'resize', onResize);
+
+        map.updateSize();
+
+        expect(onResize).toHaveBeenCalled();
+      });
+
+    });
+
   });
 
 });
