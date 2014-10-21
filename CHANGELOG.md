@@ -1,3 +1,11 @@
+# 0.7.17
+
+* ADD: Map#updateSize
+       Fixes unloaded tile images caused by changing
+       map container element dimensions.
+* FIX: Kml click data object 'snippet' property (typo)
+* FIX: Do not show not-yet-loaded-layers in animations.
+
 # 0.7.16
 
 * FIX: Fix layer preloading with gmaps.
