@@ -17,9 +17,7 @@ define([
      * @type {Boolean}
      * @default false
      */
-    if (!this.has('selected')) {
-      this.set('selected', false);
-    }
+
 
     /**
      * @event select
@@ -34,6 +32,16 @@ define([
      * @param {aeris.Model} model The selected or deselected model.
      * @param {Boolean} isSelected
      */
+
+  };
+
+  /**
+   * @method initialize
+   */
+  ToggleBehavior.prototype.initialize = function() {
+    if (!this.has('selected')) {
+      this.set('selected', false);
+    }
 
     this.bindToggleEvents_();
   };
