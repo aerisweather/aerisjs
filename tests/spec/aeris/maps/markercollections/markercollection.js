@@ -19,7 +19,7 @@ define([
         expect(MarkerCollection.prototype.startClustering).toHaveBeenCalled();
       });
 
-      it('should start clustering, if the cluster option is set to false', function() {
+      it('should not start clustering, if the cluster option is set to false', function() {
         new MarkerCollection(undefined, {
           cluster: false
         });
