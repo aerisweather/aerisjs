@@ -325,6 +325,14 @@ define([
     },
 
     /**
+     * @method setAction
+     * @param {string} action
+     */
+    setAction: function(action) {
+      this.action_ = action;
+    },
+
+    /**
      * @method parse
      * @protected
      */

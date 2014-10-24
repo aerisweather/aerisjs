@@ -297,7 +297,9 @@ define([
     'addQuery',
     'removeQuery',
     'resetQuery',
-    'getQuery'
+    'getQuery',
+    'setAction',
+    'getAction'
   ];
   _.each(aerisApiProxyMethods, function(methodName) {
     AerisApiClientCollection.prototype[methodName] = function() {
