@@ -481,10 +481,10 @@ define([
 
 
       it('should return a reverse version of waypoints in a route', function() {
-        var reverseWaypoint = reverser.getRouteWaypointsInReverse();
+        var reverseWaypoints = reverser.getRouteWaypointsInReverse();
 
         // Reverse of lastWaypoint
-        expect(reverseWaypoint[0].attributes).toEqualAttributes({
+        expect(reverseWaypoints[0].attributes).toEqualAttributes({
           position: [300, 300],
           path: [],
           distance: 0,
@@ -493,7 +493,7 @@ define([
         });
 
         // Reverse of middleWaypoint
-        expect(reverseWaypoint[1].attributes).toEqualAttributes({
+        expect(reverseWaypoints[1].attributes).toEqualAttributes({
           position: [200, 200],
 
           // Path from last to middle
@@ -508,7 +508,7 @@ define([
         });
 
         // Reverse of firstWaypoint
-        expect(reverseWaypoint[2].attributes).toEqualAttributes({
+        expect(reverseWaypoints[2].attributes).toEqualAttributes({
           position: [100, 100],
           path: [
             [200, 200],
