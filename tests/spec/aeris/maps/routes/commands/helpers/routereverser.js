@@ -484,7 +484,7 @@ define([
         var reverseWaypoints = reverser.getRouteWaypointsInReverse();
 
         // Reverse of lastWaypoint
-        expect(reverseWaypoints[0].attributes).toEqualAttributes({
+        expect(reverseWaypoints[0].toJSON()).toEqualAttributes({
           position: [300, 300],
           path: [],
           distance: 0,
@@ -493,7 +493,7 @@ define([
         });
 
         // Reverse of middleWaypoint
-        expect(reverseWaypoints[1].attributes).toEqualAttributes({
+        expect(reverseWaypoints[1].toJSON()).toEqualAttributes({
           position: [200, 200],
 
           // Path from last to middle
@@ -508,7 +508,7 @@ define([
         });
 
         // Reverse of firstWaypoint
-        expect(reverseWaypoints[2].attributes).toEqualAttributes({
+        expect(reverseWaypoints[2].toJSON()).toEqualAttributes({
           position: [100, 100],
           path: [
             [200, 200],
