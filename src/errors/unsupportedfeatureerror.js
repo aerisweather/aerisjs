@@ -6,8 +6,7 @@ define([
    * which is not currently supported by the Aeris.js
    * library.
    *
-   * @class UnsupportedFeatureError
-   * @namespace aeris.errors
+   * @class aeris.errors.UnsupportedFeatureError
    * @extends aeris.errors.AbstractError
    */
   return new ErrorTypeFactory({

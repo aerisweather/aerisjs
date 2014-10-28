@@ -2,8 +2,7 @@ define([
   'aeris/errors/errortypefactory'
 ], function(ErrorTypeFactory) {
   /**
-   * @class LayerLoadingError
-   * @namespace aeris.maps.layers.errors
+   * @class aeris.maps.layers.errors.LayerLoadingError
    * @extends aeris.errors.AbstractError
   */
   return new ErrorTypeFactory({

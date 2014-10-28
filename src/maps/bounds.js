@@ -5,8 +5,7 @@
  * defined by its southwest and northeast
  * corners.
  *
- * @class Bounds
- * @namespace aeris.maps
+ * @class aeris.maps.Bounds
  * @static
  * @type {Array.<aeris.maps.LatLon>}
  */

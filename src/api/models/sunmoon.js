@@ -4,8 +4,7 @@ define([
 ], function(_, AerisApiModel) {
   /**
    * @publicApi
-   * @class Sunmoon
-   * @namespace aeris.api.models
+   * @class aeris.api.models.Sunmoon
    * @extends aeris.api.models.AerisApiModel
    *
    * @constructor

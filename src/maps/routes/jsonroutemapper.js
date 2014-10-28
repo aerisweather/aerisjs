@@ -9,8 +9,7 @@ define(['aeris/util'], function(_) {
    * Create a new JSON Route Mapper.
    *
    * @constructor
-   * @class JSONRouteMapper
-   * @namespace aeris.maps.gmaps.route
+   * @class aeris.maps.gmaps.route.JSONRouteMapper
    */
   aeris.maps.gmaps.route.JSONRouteMapper = function() {};
 

@@ -1,7 +1,6 @@
 define(
   /**
-   * @class DirectionsResultsStatus
-   * @namespace aeris.directions.results
+   * @class aeris.directions.results.DirectionsResultsStatus
    * @static
    * @enum
    */

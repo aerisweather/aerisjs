@@ -2,8 +2,7 @@ define([
   'aeris/errors/errortypefactory'
 ], function(ErrorTypeFactory) {
   /**
-   * @class JSONParseError
-   * @namespace aeris.maps.gmaps.route.errors
+   * @class aeris.maps.gmaps.route.errors.JSONParseError
    * @extends aeris.errors.AbstractError
   */
   return new ErrorTypeFactory({

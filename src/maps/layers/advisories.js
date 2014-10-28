@@ -5,8 +5,7 @@ define([
   /**
    * @constructor
    * @publicApi
-   * @class Advisories
-   * @namespace aeris.maps.layers
+   * @class aeris.maps.layers.Advisories
    * @extends aeris.maps.layers.AerisTile
    */
   var Advisories = function(opt_attrs, opt_options) {

@@ -5,8 +5,7 @@ define([
   var root = this;
 
   /**
-   * @class HTML5ServiceOptions
-   * @namespace aeris.geolocate.options
+   * @class aeris.geolocate.options.HTML5ServiceOptions
    * @extends aeris.geolocate.options.GeolocateServiceOptions
    *
    * @constructor

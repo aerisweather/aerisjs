@@ -7,8 +7,7 @@ define([
   /**
    * Handles the loading of time-layers, cloned from a base layer.
    *
-   * @class AnimationLayerLoader
-   * @namespace aeris.maps.animations.helpers
+   * @class aeris.maps.animations.helpers.AnimationLayerLoader
    * @constructor
    *
    * @param {aeris.maps.layers.AerisTile} baseLayer

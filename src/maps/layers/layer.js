@@ -6,8 +6,7 @@ define([
    * Base class for all layers.
    *
    * @constructor
-   * @class Layer
-   * @namespace aeris.maps.layers
+   * @class aeris.maps.layers.Layer
    *
    * @extends aeris.maps.extensions.MapExtensionObject
    */

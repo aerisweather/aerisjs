@@ -4,8 +4,7 @@ define(['aeris/util', 'aeris/maps/layers/googlemaptype'], function(_, GoogleMapT
    *
    * @constructor
    * @publicApi
-   * @class GoogleRoadMap
-   * @namespace aeris.maps.layers
+   * @class aeris.maps.layers.GoogleRoadMap
    * @extends aeris.maps.layers.GoogleMapType
    */
   var GoogleRoadMap = function(opt_attrs, opt_options) {

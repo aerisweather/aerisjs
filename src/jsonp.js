@@ -16,8 +16,7 @@ define(['aeris/util'], function(_) {
    *   //do something with data, which is the JSON object you should retrieve from someUrl.php
    * });
    *
-   * @class JSONP
-   * @namespace aeris
+   * @class aeris.JSONP
    */
   aeris.jsonp = (function() {
 

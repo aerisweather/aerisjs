@@ -53,8 +53,7 @@ define([
    *
    *
    * @constructor
-   * @class CommandManager
-   * @namespace aeris.commands
+   * @class aeris.commands.CommandManager
    *
    * @param {Object=} opt_options
    * @param {aeris.PromiseQueue=} opt_options.queueManager

@@ -7,8 +7,7 @@ define([
    *
    * @constructor
    * @publicApi
-   * @class QPF
-   * @namespace aeris.maps.layers
+   * @class aeris.maps.layers.QPF
    * @extends aeris.maps.layers.AerisTile
    */
   var QPF = function(opt_attrs, opt_options) {

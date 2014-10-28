@@ -7,8 +7,7 @@ define([
    *
    * @constructor
    * @publicApi
-   * @class LightningStrikeDensity
-   * @namespace aeris.maps.layers
+   * @class aeris.maps.layers.LightningStrikeDensity
    * @extends aeris.maps.layers.AerisTile
    */
   var LightningStrikeDensity = function(opt_attrs, opt_options) {

@@ -16,8 +16,7 @@ define([
    * @param {number} opt_options.endDelay Milliseconds to pause between animation loops.
    *
    * @constructor
-   * @class AbstractAnimation
-   * @namespace aeris.maps.animations
+   * @class aeris.maps.animations.AbstractAnimation
    * @extends aeris.maps.animations.AnimationInterface
    */
   var AbstractAnimation = function(opt_options) {

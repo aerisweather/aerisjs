@@ -15,8 +15,7 @@ define([
    * Representation of Aeris Interactive Tile layer.
    *
    * @constructor
-   * @class AerisTile
-   * @namespace aeris.maps.layers
+   * @class aeris.maps.layers.AerisTile
    * @extends aeris.maps.layers.AbstractTile
    */
   var AerisTile = function(opt_attrs, opt_options) {

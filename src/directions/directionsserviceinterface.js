@@ -2,8 +2,7 @@ define(function() {
   /**
    * Provides directions between points.
    *
-   * @class DirectionsServiceInterface
-   * @namespace aeris.directions
+   * @class aeris.directions.DirectionsServiceInterface
    * @constructor
    *
    * @interface

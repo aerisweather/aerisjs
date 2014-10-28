@@ -10,8 +10,7 @@ define([
   /**
    * A wrapper around the google directions service.
    *
-   * @class GoogleDirectionsService
-   * @namespace aeris.directions
+   * @class aeris.directions.GoogleDirectionsService
    * @implements aeris.directions.DirectionsServiceInterface
    *
    * @constructor

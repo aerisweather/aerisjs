@@ -9,8 +9,7 @@ define([
    * Representation of Aeris Polygons layer.
    *
    * @constructor
-   * @class AerisPolygons
-   * @namespace aeris.maps.layers
+   * @class aeris.maps.layers.AerisPolygons
    * @extends aeris.maps.layers.Polygons
    * @abstract
    */

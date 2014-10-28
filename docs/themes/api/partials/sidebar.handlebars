@@ -20,6 +20,7 @@
           --}}
           {{#each ../projectLibs }}
             {{#ifEquals ../name this}}
+              {{{log ../../this}}}
               {{>namespacetree ../../this}}
             {{/ifEquals}}
           {{/each  }}

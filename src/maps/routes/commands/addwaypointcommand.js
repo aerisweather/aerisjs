@@ -6,8 +6,7 @@ define([
 ], function(EmptyPromise, AbstractRouteCommand, InvalidArgumentError, _) {
   /**
    *
-   * @class AddWaypointCommand
-   * @namespace aeris.maps.gmaps.route.commands
+   * @class aeris.maps.gmaps.route.commands.AddWaypointCommand
    * @extends aeris.maps.gmaps.route.commands.AbstractRouteCommand
    *
    * @constructor

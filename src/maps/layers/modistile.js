@@ -7,8 +7,7 @@ define([
    * Representation of an Aeris Modis layer.
    *
    * @constructor
-   * @class ModisTile
-   * @namespace aeris.maps.layers
+   * @class aeris.maps.layers.ModisTile
    * @extends aeris.maps.layers.AerisTile
    */
   var ModisTile = function(opt_attrs, opt_options) {

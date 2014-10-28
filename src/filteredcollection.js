@@ -9,8 +9,7 @@ define([
    * source collection, though only models which pass a
    * defined filter will be set on the FilteredCollection.
    *
-   * @class FilteredCollection
-   * @namespace aeris
+   * @class aeris.FilteredCollection
    * @extends aeris.Collection
    *
    * @constructor

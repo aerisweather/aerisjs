@@ -1,8 +1,7 @@
 define(function() {
   /**
    * @publicApi
-   * @class AnimationOptions
-   * @namespace aeris.maps.animations.options
+   * @class aeris.maps.animations.options.AnimationOptions
    * @static
    */
   var AnimationOptions = {};

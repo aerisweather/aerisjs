@@ -8,8 +8,7 @@ define([
    * Calculates distances between points
    * using the google geometry library
    *
-   * @class GoogleDistanceCalculator
-   * @namespace aeris.directions.helpers
+   * @class aeris.directions.helpers.GoogleDistanceCalculator
    * @implements aeris.directions.helpers.DistanceCalculatorInterface
    * @static
    *

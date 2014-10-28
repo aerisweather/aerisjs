@@ -18,8 +18,7 @@ define([
    *        If set to true, model will immediately check validation
    *        on instantiation.
    *
-   * @class Model
-   * @namespace aeris
+   * @class aeris.Model
    * @extends Backbone.Model
    * @uses aeris.Events
    */
@@ -278,8 +277,7 @@ define([
  * Included here to provide documentation for
  * inherited aeris.Model classes
  *
- * @class Model
- * @namespace Backbone
+ * @class Backbone.Model
  *
  * @param {Object=} opt_attrs Attributes to set on the model.
  *

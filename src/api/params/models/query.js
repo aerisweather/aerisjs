@@ -8,8 +8,7 @@ define([
    * Represents a single query property:value
    * definition.
    *
-   * @class Query
-   * @namespace aeris.api.params.models
+   * @class aeris.api.params.models.Query
    * @extends aeris.Model
    *
    * @constructor

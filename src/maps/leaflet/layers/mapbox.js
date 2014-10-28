@@ -5,8 +5,7 @@ define([
   'mapbox'
 ], function(_, AbstractStrategy, Leaflet) {
   /**
-   * @class MapBox
-   * @namespace aeris.maps.leaflet.layers
+   * @class aeris.maps.leaflet.layers.MapBox
    * @extends aeris.maps.AbstractStrategy
    *
    * @constructor

@@ -5,8 +5,7 @@ define([
   /**
    * @constructor
    * @publicApi
-   * @class SnowDepth
-   * @namespace aeris.maps.layers
+   * @class aeris.maps.layers.SnowDepth
    * @extends aeris.maps.layers.AerisTile
    */
   var SnowDepth = function(opt_attrs, opt_options) {

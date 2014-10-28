@@ -7,8 +7,7 @@ define([
    * A strategy for rendering a GoogleMapType layers with OpenLayers.
    *
    * @constructor
-   * @class GoogleMapTypeStrategy
-   * @namespace aeris.maps.openlayers.layers
+   * @class aeris.maps.openlayers.layers.GoogleMapTypeStrategy
    * @extends aeris.maps.openlayers.layers.LayerStrategy
    */
   var GoogleMapTypeStrategy = function(layer) {

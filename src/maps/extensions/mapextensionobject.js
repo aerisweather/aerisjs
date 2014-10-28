@@ -22,8 +22,7 @@ define([
    *
    * @constructor
    *
-   * @class MapExtensionObject
-   * @namespace aeris.maps.extensions
+   * @class aeris.maps.extensions.MapExtensionObject
    * @extends aeris.ViewModel
    * @uses aeris.maps.extensions.StrategyObject
    * @implements aeris.maps.MapObjectInterface

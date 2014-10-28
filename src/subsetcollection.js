@@ -13,8 +13,7 @@ define([
    * SubsetCollection, it will be updated with models from the soure collection
    * accordingly
    *
-   * @class SubsetCollection
-   * @namespace aeris
+   * @class aeris.SubsetCollection
    * @extends aeris.Collection
    *
    * @constructor

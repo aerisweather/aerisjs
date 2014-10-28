@@ -9,8 +9,7 @@ define(['aeris/util'], function(_) {
    *
    * @param {Object} position Gelocated position.
    * @publicApi
-   * @class GeolocatePosition
-   * @namespace aeris.geolocate.results
+   * @class aeris.geolocate.results.GeolocatePosition
    * @constructor
    */
   var GeolocatePosition = function(position) {

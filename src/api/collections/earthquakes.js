@@ -10,8 +10,7 @@ define([
    * Aeris API 'earthquake' endpoint.
    *
    * @publicApi
-   * @class Earthquakes
-   * @namespace aeris.api.collections
+   * @class aeris.api.collections.Earthquakes
    * @extends aeris.api.collections.PointDataCollection
    *
    * @constructor

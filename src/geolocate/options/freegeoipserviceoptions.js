@@ -4,8 +4,7 @@ define([
   'aeris/jsonp'
 ], function(_, GeolocateServiceOptions, JSONP) {
   /**
-   * @class FreeGeoIPServiceOptions
-   * @namespace aeris.geolocate.options
+   * @class aeris.geolocate.options.FreeGeoIPServiceOptions
    * @extends aeris.geolocate.options.GeolocateServiceOptions
    *
    * @constructor

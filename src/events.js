@@ -3,8 +3,7 @@ define(['aeris/util', 'backbone'], function(_, Backbone) {
    * An events manager,
    * based on Backbone.Events.
    *
-   * @class Events
-   * @namespace aeris
+   * @class aeris.Events
    * @publicApi
    * @constructor
    */

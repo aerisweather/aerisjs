@@ -5,8 +5,7 @@ define([
   /**
    * A collection of {aeris.maps.markers.PointDataMarker} map objects.
    *
-   * @class PointDataMarkers
-   * @namespace aeris.maps.markercollections
+   * @class aeris.maps.markercollections.PointDataMarkers
    * @extends aeris.maps.markercollections.MarkerCollection
    *
    * @constructor

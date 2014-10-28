@@ -23,8 +23,7 @@ define([
    *
    * @constructor
    * @publicApi
-   * @class AnimationSync
-   * @namespace aeris.maps.animations
+   * @class aeris.maps.animations.AnimationSync
    * @extends aeris.maps.animations.AbstractAnimation
    * @implements aeris.maps.animations.AnimationInterface
    */

@@ -26,8 +26,7 @@ define([
    *    });
    * </code>
    *
-   * @class MarkerCollection
-   * @namespace aeris.maps.markercollections
+   * @class aeris.maps.markercollections.MarkerCollection
    * @extends aeris.maps.extensions.MapObjectCollection
    * @publicApi
    *
@@ -188,7 +187,6 @@ define([
  * See http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclustererplus/docs/reference.html
  *  "class ClusterIconStyle" for acceptable style options.
  *
- * @class ClusterStyles
- * @namespace aeris.maps.markercollections.options
+ * @class aeris.maps.markercollections.options.ClusterStyles
  * @static
 */

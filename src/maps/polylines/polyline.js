@@ -9,8 +9,7 @@ define([
    * A polyline is an array of latLon coordinates
    * renders as a line on the map.
    *
-   * @class Polyline
-   * @namespace aeris.maps.polylines
+   * @class aeris.maps.polylines.Polyline
    * @extends aeris.maps.MapExtensionObject
    *
    * @constructor

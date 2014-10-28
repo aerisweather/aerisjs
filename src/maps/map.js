@@ -17,8 +17,7 @@ define([
    * {aeris.maps.markers.Marker} and {aeris.maps.layers.AerisRadar} are examples of {aeris.maps.MapObjectInterface} objects which can be set to a map.
    *
    * @publicApi
-   * @class Map
-   * @namespace aeris.maps
+   * @class aeris.maps.Map
    * @extends aeris.maps.extensions.MapExtensionObject
    * @override
    *

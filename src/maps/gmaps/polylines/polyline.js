@@ -8,8 +8,7 @@ define([
    * Strategy for rendering a Polyline using the
    * Google Maps API.
    *
-   * @class Polyline
-   * @namespace aeris.maps.gmaps.polylines
+   * @class aeris.maps.gmaps.polylines.Polyline
    * @extends aeris.maps.gmaps.AbstractStrategy
    *
    * @constructor

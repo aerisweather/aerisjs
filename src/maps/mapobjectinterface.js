@@ -7,8 +7,7 @@ define([
    * object which has some relationship with
    * a {aeris.maps.Map} object.
    *
-   * @class MapObjectInterface
-   * @namespace aeris.maps
+   * @class aeris.maps.MapObjectInterface
    * @interface
    *
    * @constructor

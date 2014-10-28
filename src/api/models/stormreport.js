@@ -4,8 +4,7 @@ define([
 ], function(_, PointData) {
   /**
    * @publicApi
-   * @class StormReport
-   * @namespace aeris.api.models
+   * @class aeris.api.models.StormReport
    * @extends aeris.api.models.PointData
    *
    * @constructor

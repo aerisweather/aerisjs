@@ -5,8 +5,7 @@ define([
   /**
    * @constructor
    * @publicApi
-   * @class Humidity
-   * @namespace aeris.maps.layers
+   * @class aeris.maps.layers.Humidity
    * @extends aeris.maps.layers.AerisTile
    */
   var Humidity = function(opt_attrs, opt_options) {

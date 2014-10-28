@@ -5,8 +5,7 @@ define([
   /**
    * @constructor
    * @publicApi
-   * @class HeatIndex
-   * @namespace aeris.maps.layers
+   * @class aeris.maps.layers.HeatIndex
    * @extends aeris.maps.layers.AerisTile
    */
   var HeatIndex = function(opt_attrs, opt_options) {

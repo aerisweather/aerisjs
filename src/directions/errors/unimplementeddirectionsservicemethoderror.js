@@ -2,8 +2,7 @@ define([
   'aeris/errors/errortypefactory'
 ], function(ErrorTypeFactory) {
   /**
-   * @class UnimplementedDirectionsServiceMethodError
-   * @namespace aeris.directions.errors
+   * @class aeris.directions.errors.UnimplementedDirectionsServiceMethodError
    * @extends aeris.errors.AbstractError
   */
   return new ErrorTypeFactory({

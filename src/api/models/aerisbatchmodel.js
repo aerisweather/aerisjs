@@ -10,8 +10,7 @@ define([
    * Note that AerisBatchModel does not currently support
    * per-model actions or queries.
    *
-   * @class AerisBatchModel
-   * @namespace aeris.api.models
+   * @class aeris.api.models.AerisBatchModel
    * @extends aeris.api.models.AerisApiModel
    *
    * @constructor

@@ -5,8 +5,10 @@
     var namespaceTree = {};
 
     classes.forEach(function(classObj) {
-      var namespaces = classObj.namespace.split('.');
       var parent = namespaceTree;
+      var namespaces = classObj.name.
+        split('.').
+        slice(0, -1); // remove class name from end
 
       namespaces.forEach(function(nsName, i) {
         var isLastNs = i === (namespaces.length - 1);
@@ -18,7 +20,7 @@
             shortName: nsName,
             classes: [],
             namespaces: {}
-          }
+          };
         }
 
 
@@ -28,7 +30,7 @@
         }
 
         // Move pointer forward
-        parent = parent[nsName].namespaces
+        parent = parent[nsName].namespaces;
       });
     });
 

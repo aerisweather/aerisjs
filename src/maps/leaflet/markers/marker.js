@@ -7,8 +7,7 @@ define([
   /**
    * A strategy for rendering a marker using Leaflet.
    *
-   * @class Marker
-   * @namespace aeris.maps.leaflet.markers
+   * @class aeris.maps.leaflet.markers.Marker
    * @extends aeris.maps.AbstractStrategy
    *
    * @constructor

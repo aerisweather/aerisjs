@@ -7,8 +7,7 @@ define([
 ], function(_, PointDataMarkers, LightningCollection, LightningMarker, clusterStyles) {
   /**
    * @publicApi
-   * @class LightningMarkers
-   * @namespace aeris.maps.markercollections
+   * @class aeris.maps.markercollections.LightningMarkers
    * @extends aeris.maps.markercollections.PointDataMarkers
    *
    * @constructor

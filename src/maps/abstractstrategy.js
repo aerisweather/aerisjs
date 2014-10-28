@@ -14,8 +14,7 @@ define([
    * place in the library where we find direct interactions with
    * specific mapping libraries.
    *
-   * @class AbstractStrategy
-   * @namespace aeris.maps
+   * @class aeris.maps.AbstractStrategy
    * @constructor
    *
    * @param {aeris.maps.MapObjectInterface} obj

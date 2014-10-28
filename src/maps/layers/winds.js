@@ -5,8 +5,7 @@ define([
   /**
    * @constructor
    * @publicApi
-   * @class Winds
-   * @namespace aeris.maps.layers
+   * @class aeris.maps.layers.Winds
    * @extends aeris.maps.layers.AerisTile
    */
   var Winds = function(opt_attrs, opt_options) {

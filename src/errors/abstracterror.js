@@ -5,8 +5,7 @@ define(['aeris/util'], function(_) {
    * @abstract
    * @param {string} message Error message.
    * @constructor
-   * @class AbstractError
-   * @namespace aeris.errors
+   * @class aeris.errors.AbstractError
    */
   var AbstractError = function(message) {
     // See note above _.inherits.

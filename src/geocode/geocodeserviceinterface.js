@@ -2,8 +2,7 @@ define(function() {
   /**
    * Looks up latLon coordinates for named locations
    *
-   * @class GeocodeServiceInterface
-   * @namespace aeris.geocode
+   * @class aeris.geocode.GeocodeServiceInterface
    * @interface
    *
    * @constructor

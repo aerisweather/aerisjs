@@ -10,8 +10,7 @@ define([
    * Uses the Aeris API /places endpoint to lookup
    * a lat/lon coordinate from a place name.
    *
-   * @class AerisGeolocateService
-   * @namespace aeris.geolocate
+   * @class aeris.geolocate.AerisGeolocateService
    * @implements aeris.geolocate.GeolocateServiceInterface
    *
    * @constructor

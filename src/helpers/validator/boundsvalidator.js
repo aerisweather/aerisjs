@@ -6,8 +6,7 @@ define([
   /**
    * Validates bounds defined by latLon coordinates.
    *
-   * @class BoundsValidator
-   * @namespace aeris.helpers.validator
+   * @class aeris.helpers.validator.BoundsValidator
    * @extends aeris.helpers.validator.AbstractValidator
    *
    * @constructor

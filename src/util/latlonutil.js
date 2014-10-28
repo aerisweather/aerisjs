@@ -2,8 +2,7 @@ define([
   'aeris/util'
 ], function(_) {
   /**
-   * @class latLonUtil
-   * @namespace aeris.util
+   * @class aeris.util.latLonUtil
    * @static
    */
   var latLonUtil = {

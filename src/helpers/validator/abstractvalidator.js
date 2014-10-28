@@ -5,8 +5,7 @@ define([
   /**
    * Base validator class.
    *
-   * @class AbstractValidator
-   * @namespace aeris.helpers.validator
+   * @class aeris.helpers.validator.AbstractValidator
    * @implements aeris.helpers.validator.ValidatorInterface
    *
    * @abstract

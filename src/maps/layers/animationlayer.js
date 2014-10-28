@@ -7,8 +7,7 @@ define([
    * which can be animated.
    *
    * @constructor
-   * @class AnimationLayer
-   * @namespace aeris.maps.layers
+   * @class aeris.maps.layers.AnimationLayer
    * @extends aeris.maps.layers.Layer
    */
   var AnimationLayer = function(opt_attrs, opt_options) {

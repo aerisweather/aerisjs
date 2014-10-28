@@ -6,8 +6,7 @@ define([
    * Lookup objects to match a
    * marker type to its icon file name.
    *
-   * @property iconLookup
-   * @namespace aeris.maps.markers.config
+   * @property aeris.maps.markers.config.iconLookup
    * @static
    */
   var stormReportDefaults = {

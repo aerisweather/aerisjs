@@ -2,8 +2,7 @@ define(function() {
   /**
    * A response to a geocode service request
    *
-   * @class GeocodeServiceResponse
-   * @namespace aeris.geocode
+   * @class aeris.geocode.GeocodeServiceResponse
    * @constructor
    */
   var GeocodeServiceResponse = function(responseObj) {

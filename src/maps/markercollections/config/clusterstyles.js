@@ -9,8 +9,7 @@ define([
    * See http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclustererplus/docs/reference.html
    *  "class ClusterIconStyle" for acceptable style options.
    *
-   * @class clusterStyles
-   * @namespace aeris.maps.markercollections.config
+   * @class aeris.maps.markercollections.config.clusterStyles
    * @static
    */
   var clusterStyles = {};

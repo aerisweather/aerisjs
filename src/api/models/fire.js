@@ -5,8 +5,7 @@ define([
 ], function(_, PointData, ApiResponseError) {
   /**
    * @publicApi
-   * @class Fire
-   * @namespace aeris.api.models
+   * @class aeris.api.models.Fire
    * @extends aeris.api.models.PointData
    *
    * @constructor

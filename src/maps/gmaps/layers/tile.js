@@ -5,8 +5,7 @@ define([
   'googlemaps!'
 ], function(_, BaseLayerStrategy, ImageMapType, gmaps) {
   /**\
-   * @class TileLayerStrategy
-   * @namespace aeris.maps.gmaps.layers
+   * @class aeris.maps.gmaps.layers.TileLayerStrategy
    * @extends aeris.maps.gmaps.layers.AbstractMapTypeStrategy
    *
    * @constructor

@@ -6,8 +6,7 @@ define([
    *
    * Should only be mixed into {aeris.Model} object.
    *
-   * @class ToggleBehavior
-   * @namespace aeris
+   * @class aeris.ToggleBehavior
    * @extensionfor {aeris.Model}
    * @constructor
    */

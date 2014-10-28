@@ -8,8 +8,7 @@ define([
   var lightningStyles = iconLookup.lightning;
   /**
    * @publicApi
-   * @class LightningMarker
-   * @namespace aeris.maps.markers
+   * @class aeris.maps.markers.LightningMarker
    * @extends aeris.maps.markers.PointDataMarker
    * @constructor
    */

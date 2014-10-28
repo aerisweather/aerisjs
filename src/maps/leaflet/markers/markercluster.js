@@ -10,8 +10,7 @@ define([
    * A strategy for rendering clusters of markers
    * using Leaflet.
    *
-   * @class MarkerCluster
-   * @namespace aeris.maps.leaflet
+   * @class aeris.maps.leaflet.MarkerCluster
    * @extends aeris.maps.AbstractStrategy
    *
    * @constructor

@@ -4,8 +4,7 @@ define(['aeris/util', 'aeris/maps/layers/googlemaptype'], function(_, GoogleMapT
    *
    * @constructor
    * @publicApi
-   * @class GoogleTerrain
-   * @namespace aeris.maps.layers
+   * @class aeris.maps.layers.GoogleTerrain
    * @extends aeris.maps.layers.GoogleMapType
    */
   var GoogleTerrain = function(opt_attrs, opt_options) {

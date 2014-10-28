@@ -7,8 +7,7 @@ define([
    *
    * @constructor
    * @publicApi
-   * @class ConvectiveHazards
-   * @namespace aeris.maps.layers
+   * @class aeris.maps.layers.ConvectiveHazards
    * @extends aeris.maps.layers.AerisPolygons
    */
   var ConvectiveHazards = function(opt_attrs, opt_options) {

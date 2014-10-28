@@ -6,8 +6,7 @@ define([
    * A partial layer strategy implementation,
    * with logic common to all OpenLayers layers.
    *
-   * @class AbstractLayerStrategy
-   * @namespace aeris.maps.openlayers.layers
+   * @class aeris.maps.openlayers.layers.AbstractLayerStrategy
    * @extends aeris.maps.AbstractStrategy
    *
    * @abstract

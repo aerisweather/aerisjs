@@ -7,8 +7,7 @@ define([
    * Strategy for rendering a tile layer
    * using Leaflet.
    *
-   * @class Tile
-   * @namespace aeris.maps.leaflet.layers
+   * @class aeris.maps.leaflet.layers.Tile
    * @extends aeris.maps.strategy.AbstractStrategy
    *
    * @constructor

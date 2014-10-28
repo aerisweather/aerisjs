@@ -8,8 +8,7 @@ define([
   /**
    * Global configuration object for Aeris.js library.
    *
-   * @class config
-   * @namespace aeris
+   * @class aeris.config
    * @extends aeris.Model
    * @publicApi
    *

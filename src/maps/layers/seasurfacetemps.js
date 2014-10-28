@@ -8,8 +8,7 @@ define([
    * @param {number|string} opt_period MODIS period length. If string, must parse as integer.
    * @constructor
    * @publicApi
-   * @class SeaSurfaceTemps
-   * @namespace aeris.maps.layers
+   * @class aeris.maps.layers.SeaSurfaceTemps
    * @extends aeris.maps.layers.ModisTile
    */
   var SeaSurfaceTemps = function(opt_attrs, opt_options) {

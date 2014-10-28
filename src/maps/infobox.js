@@ -9,8 +9,7 @@ define([
    * Representation of an Info Box.
    *
    * @publicApi
-   * @class InfoBox
-   * @namespace aeris.maps
+   * @class aeris.maps.InfoBox
    * @constructor
    * @extends aeris.maps.extensions.MapExtensionObject
    */

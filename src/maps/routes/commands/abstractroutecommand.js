@@ -9,8 +9,7 @@ define([
    *
    * Base class for all route commands.
    *
-   * @class AbstractRouteCommand
-   * @namespace aeris.maps.gmaps.route.commands
+   * @class aeris.maps.gmaps.route.commands.AbstractRouteCommand
    * @extends aeris.AbstractCommand
    *
    * @param {aeris.maps.gmaps.route.Route} route

@@ -5,8 +5,7 @@ define([
 ], function(_, AerisApiModel, DateHelper) {
   /**
    * @publicApi
-   * @class Record
-   * @namespace aeris.api.models
+   * @class aeris.api.models.Record
    * @extends aeris.api.models.AerisApiModel
    *
    * @constructor

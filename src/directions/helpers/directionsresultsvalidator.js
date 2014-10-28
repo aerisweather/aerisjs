@@ -8,8 +8,7 @@ define([
   /**
    * Validates an {aeris.directions.results.DirectionsResults} object.
    *
-   * @class DirectionsResultsValidator
-   * @namespace aeris.directions.results
+   * @class aeris.directions.results.DirectionsResultsValidator
    * @extends aeris.helpers.validator.AbstractValidator
    * @implements aeris.helpers.validator.ValidatorInterface
    *

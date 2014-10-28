@@ -5,8 +5,7 @@ define([
   /**
    * @constructor
    * @publicApi
-   * @class SatelliteGlobal
-   * @namespace aeris.maps.layers
+   * @class aeris.maps.layers.SatelliteGlobal
    * @extends aeris.maps.layers.AerisTile
    */
   var SatelliteGlobal = function(opt_attrs, opt_options) {

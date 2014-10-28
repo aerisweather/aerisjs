@@ -5,8 +5,7 @@ define([
   /**
    * Rendering strategy for Aeris Tiles.
    *
-   * @class AerisTile
-   * @namespace aeris.maps.leaflet.layers
+   * @class aeris.maps.leaflet.layers.AerisTile
    * @extends aeris.maps.leaflet.layers.Tile
    *
    * @constructor

@@ -4,8 +4,7 @@ define([
 ], function(_, BaseStrategy) {
   /**
    * @override
-   * @class AerisTile
-   * @namespace aeris.maps.gmaps.layers
+   * @class aeris.maps.gmaps.layers.AerisTile
    * @extends aeris.maps.gmaps.layers.TileLayerStrategy
    * @constructor
    */

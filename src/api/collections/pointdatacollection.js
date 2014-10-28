@@ -6,8 +6,7 @@ define([
   /**
    * A representation of point data from the Aeris Api.
    *
-   * @class PointDataCollection
-   * @namespace aeris.api.collections
+   * @class aeris.api.collections.PointDataCollection
    * @extends aeris.api.collections.AerisApiCollection
    *
    * @constructor

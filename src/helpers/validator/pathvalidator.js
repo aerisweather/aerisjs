@@ -4,8 +4,7 @@ define([
   'aeris/helpers/validator/errors/pathvalidationerror'
 ], function(_, AbstractValidator, PathValidationError) {
   /**
-   * @class PathValidator
-   * @namespace aeris.helpers.validator
+   * @class aeris.helpers.validator.PathValidator
    * @extends aeris.helpers.validator.AbstractValidator
    *
    * @constructor

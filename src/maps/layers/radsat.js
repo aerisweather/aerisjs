@@ -7,8 +7,7 @@ define([
    *
    * @constructor
    * @publicApi
-   * @class RadSat
-   * @namespace aeris.maps.layers
+   * @class aeris.maps.layers.RadSat
    * @extends aeris.maps.layers.AerisTile
    */
   var RadSat = function(opt_attrs, opt_options) {

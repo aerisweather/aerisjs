@@ -9,8 +9,7 @@ define([
    *
    * Inspired by https://github.com/tommyh/backbone-view-model
    *
-   * @class ViewModel
-   * @namespace aeris
+   * @class aeris.ViewModel
    * @extends aeris.Model
    *
    * @constructor

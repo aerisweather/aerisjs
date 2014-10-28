@@ -6,8 +6,7 @@ define(['aeris/util', 'aeris/events'], function(_, Events) {
    * implementation support.
    *
    * @constructor
-   * @class AnimationInterface
-   * @namespace aeris.maps.animations
+   * @class aeris.maps.animations.AnimationInterface
    * @interface
    * @uses aeris.Events
    */

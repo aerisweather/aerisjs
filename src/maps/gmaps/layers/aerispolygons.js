@@ -4,8 +4,7 @@ define([
   'googlemaps!'
 ], function(_, BaseStrategy, gmaps) {
   /**
-   * @class AerisPolygonsStrategy
-   * @namespace aeris.maps.gmaps.layers
+   * @class aeris.maps.gmaps.layers.AerisPolygonsStrategy
    * @extends aeris.maps.gmaps.AbstractStrategy
    * @constructor
    */

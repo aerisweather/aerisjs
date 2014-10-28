@@ -4,8 +4,7 @@ define([
   'aeris/maps/abstractstrategy'
 ], function(_, mapUtil, AbstractStrategy) {
   /**
-   * @class InfoBox
-   * @namespace aeris.maps.openlayers
+   * @class aeris.maps.openlayers.InfoBox
    * @extends aeris.maps.AbstractStrategy
    * @param {aeris.maps.InfoBox} infoBox
    * @constructor

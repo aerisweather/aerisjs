@@ -9,8 +9,7 @@ define([
    * Resolves with a {aeris.directions.results.DirectionsResults}
    * object.
    *
-   * @class PromiseToFetchDirections
-   * @namespace aeris.directions.promise
+   * @class aeris.directions.promise.PromiseToFetchDirections
    * @extends aeris.Promise
    *
    * @constructor

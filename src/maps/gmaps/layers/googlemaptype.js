@@ -9,8 +9,7 @@ define([
    * (roadmap, satellite, terrain, hybrid)
    *
    * @override
-   * @class GoogleMapType
-   * @namespace aeris.maps.gmaps.layers
+   * @class aeris.maps.gmaps.layers.GoogleMapType
    * @extends aeris.maps.layers.LayerStrategy
    * @constructor
    */

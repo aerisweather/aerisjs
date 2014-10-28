@@ -8,7 +8,6 @@
  *      rain: {L.MarkerClusterGroup}
  *    }
  *
- * @class MarkerClusterView
- * @namespace aeris.maps.leaflet.markers
+ * @class aeris.maps.leaflet.markers.MarkerClusterView
  * @type {Object.<string,L.MarkerClusterGroup>}
  */

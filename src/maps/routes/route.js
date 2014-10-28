@@ -8,8 +8,7 @@ define([
   /**
    * A collection of {aeris.maps.gmaps.route.Waypoint} instances
    *
-   * @class Route
-   * @namespace aeris.maps.gmaps.route
+   * @class aeris.maps.gmaps.route.Route
    * @extends aeris.Collection
    *
    * @constructor

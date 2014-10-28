@@ -8,8 +8,7 @@ define([
    * Represents a single filter applied
    * to a request to the Aeris API.
    *
-   * @class Filter
-   * @namespace aeris.api.params.models
+   * @class aeris.api.params.models.Filter
    * @extends aeris.Model
    *
    * @param {Object=} opt_options

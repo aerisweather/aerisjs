@@ -3,7 +3,6 @@
  *
  * A sequence of latitude / longitude coordinates
  *
- * @class Path
+ * @class aeris.maps.Path
  * @static
- * @namespace aeris.maps
  */

@@ -11,8 +11,7 @@ define(['aeris/util'], function(_) {
    * Manipulates a {Date} object.
    *
    * @publicApi
-   * @class DateHelper
-   * @namespace aeris
+   * @class aeris.DateHelper
    *
    * @param {Date=} opt_date Defaults to current date.
    * @constructor

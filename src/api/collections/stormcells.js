@@ -5,8 +5,7 @@ define([
 ], function(_, AerisApiClientCollection, StormCell) {
   /**
    * @publicApi
-   * @class StormCells
-   * @namespace aeris.api.collections
+   * @class aeris.api.collections.StormCells
    * @extends aeris.api.collections.AerisApiClientCollection
    *
    * @constructor

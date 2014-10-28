@@ -11,8 +11,7 @@ define([
    * Represents parameters to be included
    * with a request to the Aeris API.
    *
-   * @class Params
-   * @namespace aeris.api.params.models
+   * @class aeris.api.params.models.Params
    * @extends aeris.Model
    *
    * @param {Object=} opt_options

@@ -10,8 +10,7 @@ define([
    * Aeris API 'stormreports' endpoint.
    *
    * @publicApi
-   * @class StormReports
-   * @namespace aeris.api.collections
+   * @class aeris.api.collections.StormReports
    * @extends aeris.api.collections.AerisApiClientCollection
    *
    * @constructor

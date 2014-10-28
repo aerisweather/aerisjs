@@ -4,9 +4,8 @@ define([
   'aeris/maps/strategy/layers/mapbox'
 ], function(_, Layer, MapBoxStrategy) {
   /**
-   * @class MapBox
-   * @namespace
-   * @extends Layer
+   * @class aeris.maps.layers.MapBox
+   * @extends aeris.maps.layers.Layer
    *
    * @constructor
    */

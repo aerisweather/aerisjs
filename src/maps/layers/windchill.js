@@ -5,8 +5,7 @@ define([
   /**
    * @constructor
    * @publicApi
-   * @class WindChill
-   * @namespace aeris.maps.layers
+   * @class aeris.maps.layers.WindChill
    * @extends aeris.maps.layers.AerisTile
    */
   var WindChill = function(opt_attrs, opt_options) {

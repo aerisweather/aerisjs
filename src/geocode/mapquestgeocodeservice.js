@@ -12,8 +12,7 @@ define([
    * See http://open.mapquestapi.com/geocoding
    *
    * @publicApi
-   * @class MapQuestGeocodeService
-   * @namespace aeris.geocode
+   * @class aeris.geocode.MapQuestGeocodeService
    * @implements aeris.geocode.GeocodeServiceInterface
    *
    * @constructor

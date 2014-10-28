@@ -2,8 +2,7 @@ define([
   'aeris/errors/errortypefactory'
 ], function(ErrorTypeFactory) {
   /**
-   * @class ValidationError
-   * @namespace aeris.errors
+   * @class aeris.errors.ValidationError
    * @extends aeris.errors.AbstractError
   */
   return new ErrorTypeFactory({

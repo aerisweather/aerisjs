@@ -10,8 +10,7 @@ define([
    * Animates a single {aeris.maps.layers.AerisTile} layer.
    *
    * @publicApi
-   * @class TileAnimation
-   * @namespace aeris.maps.animations
+   * @class aeris.maps.animations.TileAnimation
    * @constructor
    * @extends aeris.maps.animations.AbstractAnimation
    *

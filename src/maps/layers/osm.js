@@ -9,8 +9,7 @@ define([
    *
    * @constructor
    * @publicApi
-   * @class OSM
-   * @namespace aeris.maps.layers
+   * @class aeris.maps.layers.OSM
    * @extends aeris.maps.layers.AbstractTile
    */
   var OSM = function(opt_attrs, opt_options) {

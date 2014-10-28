@@ -2,8 +2,7 @@ define(['aeris/util'], function(_) {
   /**
    * Options for an {aeris.geolocate.AbstractGeolocateService}
    *
-   * @class GeolocateServiceOptions
-   * @namespace aeris.geolocate.options
+   * @class aeris.geolocate.options.GeolocateServiceOptions
    * @constructor
    *
    * @param {Object=} opt_options

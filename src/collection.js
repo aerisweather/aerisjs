@@ -8,8 +8,7 @@ define([
   /**
    * Base collection class.
    *
-   * @class Collection
-   * @namespace aeris
+   * @class aeris.Collection
    * @extends Backbone.Collection
    *
    * @param {Array.<aeris.Model>=} opt_models
@@ -142,8 +141,7 @@ define([
  * documentation. Provided here to provide documentation
  * for extending classes.
  *
- * @class Collection
- * @namespace Backbone
+ * @class Backbone.Collection
  */
 
 /**

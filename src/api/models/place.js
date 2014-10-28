@@ -4,8 +4,7 @@ define([
 ], function(_, AerisApiModel) {
   /**
    * @publicApi
-   * @class Place
-   * @namespace aeris.api.models
+   * @class aeris.api.models.Place
    * @extends aeris.api.models.AerisApiModel
    *
    * @constructor

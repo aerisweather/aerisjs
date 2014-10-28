@@ -11,8 +11,7 @@ define([
    * See 'Chained Queries and Filters':
    *  http://www.hamweather.com/support/documentation/aeris/queries/
    *
-   * @class ChainedQueries
-   * @namespace aeris.api.params.collections
+   * @class aeris.api.params.collections.ChainedQueries
    * @extends aeris.Collection
    *
    * @constructor

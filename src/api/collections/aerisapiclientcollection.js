@@ -14,8 +14,7 @@ define([
    * the filter can be changed or removed without needed to request
    * new data from the server.
    *
-   * @class AerisApiClientCollection
-   * @namespace aeris.api.collections
+   * @class aeris.api.collections.AerisApiClientCollection
    * @extends aeris.SubsetCollection
    *
    * @constructor

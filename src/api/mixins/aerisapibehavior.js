@@ -7,8 +7,7 @@ define([
   'aeris/errors/apiresponseerror'
 ], function(_, Model, Promise,  Params, InvalidArgumentError, ApiResponseError) {
   /**
-   * @class AerisApiBehavior
-   * @namespace aeris.api.mixins
+   * @class aeris.api.mixins.AerisApiBehavior
    */
   return {
     /**

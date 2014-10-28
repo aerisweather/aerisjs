@@ -25,8 +25,7 @@ define([
    * @param {aeris.maps.gmaps.route.commands.helpers.RouteReverser} opt_options.routeReverser
    *
    *
-   * @class AppendReverseRouteCommand
-   * @namespace aeris.maps.gmaps.route.command
+   * @class aeris.maps.gmaps.route.command.AppendReverseRouteCommand
    * @extends aeris.maps.gmaps.route.command.AbstractRouteCommand
    *
    * @constructor

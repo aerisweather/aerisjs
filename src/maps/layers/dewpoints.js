@@ -5,8 +5,7 @@ define([
   /**
    * @constructor
    * @publicApi
-   * @class DewPoints
-   * @namespace aeris.maps.layers
+   * @class aeris.maps.layers.DewPoints
    * @extends aeris.maps.layers.AerisTile
    */
   var DewPoints = function(opt_attrs, opt_options) {

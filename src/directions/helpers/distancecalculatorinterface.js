@@ -2,8 +2,7 @@ define(function() {
   /**
    * Calculates the distance between two points.
    *
-   * @class DistanceCalculatorInterface
-   * @namespace aeris.directions.helpers
+   * @class aeris.directions.helpers.DistanceCalculatorInterface
    * @static
    * @interface
    *

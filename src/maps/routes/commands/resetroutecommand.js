@@ -15,8 +15,7 @@ define([
    * @extends aeris.maps.gmaps.route.commands.AbstractRouteCommand
    *
    * @constructor
-   * @class ResetRouteCommand
-   * @namespace aeris.maps.gmaps.route.commands
+   * @class aeris.maps.gmaps.route.commands.ResetRouteCommand
    * @param {Array<aeris.maps.gmaps.route.Waypoint>=} opt_waypoints New Waypoints to add to the route.
    * @param {Boolean=} opt_refresh Set to `true` to recalculate the provided waypoints' path and distance data.
    *

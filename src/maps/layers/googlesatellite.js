@@ -4,8 +4,7 @@ define(['aeris/util', 'aeris/maps/layers/googlemaptype'], function(_, GoogleMapT
    *
    * @constructor
    * @publicApi
-   * @class GoogleSatellite
-   * @namespace aeris.maps.layers
+   * @class aeris.maps.layers.GoogleSatellite
    * @extends aeris.maps.layers.GoogleMapType
    */
   var GoogleSatellite = function(opt_attrs, opt_options) {

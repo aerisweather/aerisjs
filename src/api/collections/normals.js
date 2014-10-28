@@ -5,8 +5,7 @@ define([
 ], function(_, AerisApiClientCollection, Normal) {
   /**
    * @publicApi
-   * @class Normals
-   * @namespace aeris.api.collections
+   * @class aeris.api.collections.Normals
    * @extends aeris.api.collections.AerisApiClientCollection
    *
    * @constructor

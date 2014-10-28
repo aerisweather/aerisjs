@@ -8,8 +8,7 @@ define([
    *
    * @override
    * @constructor
-   * @class AbstractMapTypeStrategy
-   * @namespace aeris.maps.gmaps.layers
+   * @class aeris.maps.gmaps.layers.AbstractMapTypeStrategy
    * @extends aeris.maps.gmaps.AbstractStrategy
    */
   var AbstractMapTypeStrategy = function(layer) {

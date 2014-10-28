@@ -31,8 +31,7 @@ define([
    *      $('#rangeInput').attr('max', animation.getFrom().getTime());
    *    });
    *
-   * @class AutoUpdateAnimation
-   * @namespace aeris.maps.animations
+   * @class aeris.maps.animations.AutoUpdateAnimation
    * @extends aeris.maps.animations.TileAnimation
    *
    * @constructor

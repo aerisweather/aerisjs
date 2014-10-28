@@ -2,8 +2,7 @@ define([
   'aeris/errors/errortypefactory'
 ], function(ErrorTypeFactory) {
   /**
-   * @class APIResponseError
-   * @namespace aeris.errors
+   * @class aeris.errors.APIResponseError
    * @extends aeris.errors.AbstractError
   */
   return new ErrorTypeFactory({

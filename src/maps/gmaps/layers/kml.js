@@ -9,8 +9,7 @@ define([
    *
    * @override
    * @constructor
-   * @class KMLLayerStrategy
-   * @namespace aeris.maps.gmaps.layers
+   * @class aeris.maps.gmaps.layers.KMLLayerStrategy
    * @extends aeris.maps.gmaps.AbstractStrategy
    */
   var KmlLayerStrategy = function() {

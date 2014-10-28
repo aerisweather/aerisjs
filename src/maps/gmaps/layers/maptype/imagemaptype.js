@@ -10,8 +10,7 @@ define([
    * See https://developers.google.com/maps/documentation/javascript/reference#ImageMapTypeOptions
    *  for additional parameter options.
    *
-   * @class ImageMapType
-   * @namespace aeris.maps.gmaps.layers.maptype
+   * @class aeris.maps.gmaps.layers.maptype.ImageMapType
    * @implements google.maps.MapType
    *
    * @param {Object} options

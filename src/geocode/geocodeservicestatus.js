@@ -2,8 +2,7 @@ define(['aeris/util'], function(_) {
   /**
    * Possible status values provided by a {aeris.geocode.GeocodeServiceResponse}.
    *
-   * @class GeocodeServiceStatus
-   * @namespace aeris.geocode
+   * @class aeris.geocode.GeocodeServiceStatus
    * @static
    * @readonly
    * @enum {string}

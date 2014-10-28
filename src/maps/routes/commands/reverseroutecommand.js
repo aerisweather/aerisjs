@@ -7,8 +7,7 @@ define([
   /**
    * Reverses the order of waypoints and their direction in a route.
    *
-   * @class ReverseRouteCommands
-   * @namespace aeris.maps.gmaps.route.commands
+   * @class aeris.maps.gmaps.route.commands.ReverseRouteCommands
    * @extends aeris.maps.gmaps.route.commands.AbstractRouteCommand
    *
    * @param {aeris.maps.gmaps.route.Route} route

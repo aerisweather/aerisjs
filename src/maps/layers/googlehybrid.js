@@ -4,8 +4,7 @@ define(['aeris/util', 'aeris/maps/layers/googlemaptype'], function(_, GoogleMapT
    *
    * @constructor
    * @publicApi
-   * @class GoogleHybrid
-   * @namespace aeris.maps.layers
+   * @class aeris.maps.layers.GoogleHybrid
    * @extends aeris.maps.layers.GoogleMapType
    */
   var GoogleHybrid = function(opt_attrs, opt_options) {

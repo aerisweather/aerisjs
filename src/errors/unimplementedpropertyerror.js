@@ -2,8 +2,7 @@ define([
   'aeris/errors/errortypefactory'
 ], function(ErrorTypeFactory) {
   /**
-   * @class UnimplementedPropertyError
-   * @namespace aeris.errors
+   * @class aeris.errors.UnimplementedPropertyError
    * @extends aeris.errors.AbstractError
   */
   return new ErrorTypeFactory({

@@ -2,8 +2,7 @@ define([
   'aeris/errors/errortypefactory'
 ], function(ErrorTypeFactory) {
   /**
-   * @class GeolocateServiceError
-   * @namespace aeris.geolocate.errors
+   * @class aeris.geolocate.errors.GeolocateServiceError
    * @extends aeris.errors.AbstractError
    *
    * @param {Object} errorObj

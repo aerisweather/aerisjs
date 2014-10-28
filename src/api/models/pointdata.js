@@ -9,8 +9,7 @@ define([
    * which is tied to a specified
    * lat/lon location.
    *
-   * @class PointData
-   * @namespace aeris.api.models
+   * @class aeris.api.models.PointData
    * @extends aeris.api.models.AerisApiModel
    * @constructor
    */

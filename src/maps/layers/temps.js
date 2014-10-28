@@ -5,8 +5,7 @@ define([
   /**
    * @constructor
    * @publicApi
-   * @class Temps
-   * @namespace aeris.maps.layers
+   * @class aeris.maps.layers.Temps
    * @extends aeris.maps.layers.AerisTile
    */
   var Temps = function(opt_attrs, opt_options) {

@@ -6,8 +6,7 @@ define([
    * A strategy for rendering a Tile layer with OpenLayers.
    *
    * @constructor
-   * @class TileStrategy
-   * @namespace aeris.maps.openlayers.layers
+   * @class aeris.maps.openlayers.layers.TileStrategy
    * @extends aeris.maps.openlayers.layers.LayerStrategy
    */
   var TileStrategy = function(layer) {

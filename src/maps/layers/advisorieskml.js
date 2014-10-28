@@ -7,8 +7,7 @@ define([
    *
    * @constructor
    * @publicApi
-   * @class AdvisoriesKML
-   * @namespace aeris.maps.layers
+   * @class aeris.maps.layers.AdvisoriesKML
    * @extends aeris.maps.layers.KML
    */
   var AdvisoriesKML = function(opt_attrs, opt_options) {

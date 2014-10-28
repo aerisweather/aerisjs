@@ -7,8 +7,7 @@ define([
    *
    * @constructor
    * @publicApi
-   * @class Chlorophyll
-   * @namespace aeris.maps.layers
+   * @class aeris.maps.layers.Chlorophyll
    * @extends aeris.maps.layers.ModisTile
    */
   var Chlorophyll = function(opt_attrs, opt_options) {

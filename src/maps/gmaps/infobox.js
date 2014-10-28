@@ -10,8 +10,7 @@ define([
    *
    * @param {aeris.maps.InfoBox} infoBox
    *
-   * @class InfoBox
-   * @namespace aeris.maps.gmaps
+   * @class aeris.maps.gmaps.InfoBox
    * @extends aeris.maps.gmaps.AbstractStrategy
    * @constructor
    */

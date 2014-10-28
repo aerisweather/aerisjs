@@ -26,8 +26,7 @@ define([
    * A waypoint has a path, as well as information
    * about how to get the path.
    *
-   * @class Waypoint
-   * @namespace aeris.maps.gmaps.route
+   * @class aeris.maps.gmaps.route.Waypoint
    * @extends aeris.maps.markers.Marker
    *
    * @uses aeris.ToggleBehavior

@@ -8,8 +8,7 @@ define([
    * Maintains a version of a source collection
    * which is limited to a specified length.
    *
-   * @class LimitedCollection
-   * @namespace aeris
+   * @class aeris.LimitedCollection
    * @extends aeris.Collection
    *
    * @constructor

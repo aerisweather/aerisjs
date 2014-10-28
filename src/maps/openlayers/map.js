@@ -7,8 +7,7 @@ define([
    * A strategy for rendering an OpenLayers map.
    *
    * @param {aeris.maps.Map} mapObject
-   * @class MapStrategy
-   * @namespace aeris.maps.openlayers
+   * @class aeris.maps.openlayers.MapStrategy
    * @extends aeris.maps.AbstractStrategy
    * @constructor
    */

@@ -7,8 +7,7 @@ define([
 ], function(_, PointDataMarkers, FireMarker, FireCollection, clusterStyles) {
   /**
    * @publicApi
-   * @class FireMarkers
-   * @namespace aeris.maps.markercollections
+   * @class aeris.maps.markercollections.FireMarkers
    * @extends aeris.maps.markercollections.PointDataMarkers
    *
    * @constructor

@@ -8,8 +8,7 @@ define([
   /**
    * A map rendering strategy using Leaflet.
    *
-   * @class Map
-   * @namespace aeris.maps.leaflet
+   * @class aeris.maps.leaflet.Map
    * @extends aeris.maps.strategy.AbstractStrategy
    *
    * @constructor

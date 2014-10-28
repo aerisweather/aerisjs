@@ -6,8 +6,7 @@ define([
 ], function(_, config, PointDataMarker, iconLookup) {
   /**
    * @publicApi
-   * @class StormReportMarker
-   * @namespace aeris.maps.markers
+   * @class aeris.maps.markers.StormReportMarker
    * @extends aeris.maps.markers.PointDataMarker
    * @constructor
    */

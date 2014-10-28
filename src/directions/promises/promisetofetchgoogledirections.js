@@ -7,8 +7,7 @@ define([
   /**
    * A promise to fetch directions from the Google Directions API.
    *
-   * @class PromiseToFetchGoogleDirections
-   * @namespace aeris.directions.promise
+   * @class aeris.directions.promise.PromiseToFetchGoogleDirections
    * @extends aeris.directions.promises.PromiseToFetchDirections
    *
    * @constructor

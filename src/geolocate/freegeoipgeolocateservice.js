@@ -7,8 +7,7 @@ define([
 ], function(_, Promise, FreeGeoIPServiceOptions, GeolocatePosition, GeolocateServiceError) {
   /**
    * @publicApi
-   * @class FreeGeoIPGeolocateService
-   * @namespace aeris.geolocate
+   * @class aeris.geolocate.FreeGeoIPGeolocateService
    * @implements aeris.geolocate.GeolocateServiceInterface
    * @constructor
    *

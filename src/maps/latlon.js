@@ -3,8 +3,7 @@
  *
  * A latitude/longitude coordinate on a map.
  *
- * @class LatLon
- * @namespace aeris.maps
+ * @class aeris.maps.LatLon
  * @static
  * @type {Array.<number,number>}
  */

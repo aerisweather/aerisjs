@@ -14,8 +14,7 @@ define([
    *
    *
    * @constructor
-   * @class AbstractTile
-   * @namespace aeris.maps.layers
+   * @class aeris.maps.layers.AbstractTile
    * @extends aeris.maps.layers.AnimationLayer
    */
   var AbstractTile = function(opt_attrs, opt_options) {

@@ -8,8 +8,7 @@ define([
    * An abstract representation of a Google MapType layer.
    *
    * @constructor
-   * @class GoogleMapType
-   * @namespace aeris.maps.layers
+   * @class aeris.maps.layers.GoogleMapType
    * @extends aeris.maps.layers.Layer
    */
   var GoogleMapType = function(opt_attrs, opt_options) {

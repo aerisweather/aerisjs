@@ -44,8 +44,7 @@ define([
    *    model.toJSON === { hello: 'Universe' }
    *
    *
-   * @class ClassFactory
-   * @namespace aeris
+   * @class aeris.ClassFactory
    *
    * @param {Function=} opt_Type Parent class constructor.
    * @param {Array.<*>} opt_boundArgs Arguments to bind to the class constructor.

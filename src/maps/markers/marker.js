@@ -69,8 +69,7 @@ define([
    * </code>
    *
    * @publicApi
-   * @class Marker
-   * @namespace aeris.maps.markers
+   * @class aeris.maps.markers.Marker
    *
    * @extends aeris.maps.extensions.MapExtensionObject
    * @uses aeris.maps.ToggleBehavior

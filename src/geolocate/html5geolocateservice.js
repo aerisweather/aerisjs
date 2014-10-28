@@ -9,8 +9,7 @@ define([
 
   /**
    * @publicApi
-   * @class HTML5GeolocateService
-   * @namespace aeris.geolocate
+   * @class aeris.geolocate.HTML5GeolocateService
    * @implements aeris.geolocate.GeolocateServiceInterface
    *
    * @constructor

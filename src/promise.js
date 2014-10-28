@@ -9,8 +9,7 @@ define([
    *
    * @constructor
    * @publicApi
-   * @class Promise
-   * @namespace aeris
+   * @class aeris.Promise
    */
   var Promise = function() {
 

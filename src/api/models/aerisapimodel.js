@@ -8,8 +8,7 @@ define([
    * A client-side representation of a single response object
    * from the Aeris API.
    *
-   * @class AerisApiModel
-   * @namespace aeris.api.models
+   * @class aeris.api.models.AerisApiModel
    * @extends aeris.Model
    * @uses aeris.api.mixins.AerisApiBehavior
    *

@@ -7,8 +7,7 @@ define([
   /**
    * An object bound to a strategy.
    *
-   * @class StrategyObject
-   * @namespace aeris.maps.extensions
+   * @class aeris.maps.extensions.StrategyObject
    * @constructor
    *
    * @param {Object=} opt_options

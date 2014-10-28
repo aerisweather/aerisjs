@@ -7,8 +7,7 @@ define([
    * Helper class for reversing the order of waypoints
    * in a route.
    *
-   * @class RouteReverser
-   * @namespace aeris.maps.gmaps.route.commands.helpers
+   * @class aeris.maps.gmaps.route.commands.helpers.RouteReverser
    *
    * @param {aeris.maps.gmaps.route.Route} route
    *

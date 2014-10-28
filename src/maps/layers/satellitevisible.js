@@ -5,8 +5,7 @@ define([
   /**
    * @constructor
    * @publicApi
-   * @class SatelliteVisible
-   * @namespace aeris.maps.layers
+   * @class aeris.maps.layers.SatelliteVisible
    * @extends aeris.maps.layers.AerisTile
    */
   var SatelliteVisible = function(opt_attrs, opt_options) {

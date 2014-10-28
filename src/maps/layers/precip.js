@@ -5,8 +5,7 @@ define([
   /**
    * Precipitation layer.
    *
-   * @class Precip
-   * @namespace aeris.maps.layers
+   * @class aeris.maps.layers.Precip
    * @extends aeris.maps.layers.AerisTile
    * @publicApi
    *

@@ -7,8 +7,7 @@ define([
    * A marker MapExtensionObject which is a view
    * model for a {aeris.api.models.PointData} data model.
    *
-   * @class PointDataMarker
-   * @namespace aeris.maps.markers
+   * @class aeris.maps.markers.PointDataMarker
    * @extends aeris.maps.markers.Marker
    *
    * @constructor

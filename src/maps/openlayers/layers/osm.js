@@ -6,8 +6,7 @@ define([
    * A strategy for rendering an OSM layer with OpenLayers.
    *
    * @constructor
-   * @class OSMStrategy
-   * @namespace aeris.maps.openlayers.layers
+   * @class aeris.maps.openlayers.layers.OSMStrategy
    * @extends aeris.maps.openlayers.layers.LayerStrategy
    */
   var OSMStrategy = function(layer) {

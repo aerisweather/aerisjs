@@ -5,8 +5,7 @@ define([
   /**
    * A collection of {aeris.maps.MapObjectInterface} objects.
    *
-   * @class MapObjectCollection
-   * @namespace aeris.maps.extensions
+   * @class aeris.maps.extensions.MapObjectCollection
    * @extends aeris.ViewCollection
    *
    * @implements aeris.maps.MapObjectInterface

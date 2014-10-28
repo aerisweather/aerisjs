@@ -8,8 +8,7 @@ define([
 ], function(_, mapUtil, gmaps, Promise, GeocodeServiceResponse, GeocodeServiceStatus) {
   /**
    * @publicApi
-   * @class GoogleGeocodeService
-   * @namespace aeris.geocode
+   * @class aeris.geocode.GoogleGeocodeService
    * @implements aeris.geocode.GeocodeServiceInterface
    * @constructor
    */

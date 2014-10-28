@@ -48,8 +48,7 @@ define([
    * @param {Function=} opt_options.ResetRouteCommand
    * @param {Function=} opt_options.AppendReverseRouteCommand
    *
-   * @class RouteBuilder
-   * @namespace aeris.maps.gmaps.route
+   * @class aeris.maps.gmaps.route.RouteBuilder
    * @constructor
    */
   var RouteBuilder = function(opt_options) {

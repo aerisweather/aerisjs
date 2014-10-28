@@ -6,8 +6,7 @@ define([
   /**
    * Base class for Google Maps strategies.
    *
-   * @class AbstractStrategy
-   * @namespace aeris.maps.gmaps
+   * @class aeris.maps.gmaps.AbstractStrategy
    * @extends aeris.maps.AbstractStrategy
    *
    * @constructor

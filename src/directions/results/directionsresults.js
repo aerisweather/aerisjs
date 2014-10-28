@@ -20,8 +20,7 @@ define([
    *      }
    *    }
    *
-   * @class DirectionsResults
-   * @namespace aeris.directions.results
+   * @class aeris.directions.results.DirectionsResults
    *
    * @constructor
    * @throws {aeris.directions.errors.InvalidDirectionsResultsError}

@@ -5,8 +5,7 @@ define([
 ], function(_, AerisApiClientCollection, Advisory) {
   /**
    * @publicApi
-   * @class Advisories
-   * @namespace aeris.api.collections
+   * @class aeris.api.collections.Advisories
    * @extends aeris.api.collections.AerisApiClientCollection
    *
    * @constructor

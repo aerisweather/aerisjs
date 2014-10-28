@@ -25,8 +25,7 @@ define([
   /**
    * Strategy for rendering a collection of markers in a cluster.
    *
-   * @class MarkerCluster
-   * @namespace aeris.maps.gmaps.markers
+   * @class aeris.maps.gmaps.markers.MarkerCluster
    * @extends aeris.maps.gmaps.AbstractStrategy
    *
    * @constructor

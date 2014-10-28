@@ -6,8 +6,7 @@ define([
    *
    * Should only be mixed into {aeris.Collection} objects.
    *
-   * @class ToggleCollectionBehavior
-   * @namespace aeris
+   * @class aeris.ToggleCollectionBehavior
    * @extensionfor {aeris.Collection}
    *
    * @constructor

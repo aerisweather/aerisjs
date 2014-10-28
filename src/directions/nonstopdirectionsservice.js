@@ -8,8 +8,7 @@ define([
    * Provides a direct path from point A to point B,
    * without any stops or change in direction in between.
    *
-   * @class NonstopDirectionsService
-   * @namespace aeris.directions
+   * @class aeris.directions.NonstopDirectionsService
    * @implements aeris.directions.DirectionsServiceInterface
    *
    * @constructor

@@ -7,8 +7,7 @@ define([
   /**
    * Strategy for rendering markers.
    *
-   * @class Marker
-   * @namespace aeris.maps.gmaps.markers
+   * @class aeris.maps.gmaps.markers.Marker
    * @extends aeris.maps.AbstractStrategy
    *
    * @constructor

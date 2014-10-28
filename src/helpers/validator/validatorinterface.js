@@ -2,8 +2,7 @@ define(function() {
   /**
    * Helper for validating an object.
    *
-   * @class ValidatorInterface
-   * @namespace aeris.helpers.validator
+   * @class aeris.helpers.validator.ValidatorInterface
    * @interface
    *
    * @param {Object} obj Object to validate.

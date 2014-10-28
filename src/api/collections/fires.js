@@ -9,8 +9,7 @@ define([
    * Aeris API 'fires' endpoint.
    *
    * @publicApi
-   * @class Fires
-   * @namespace aeris.api.collections
+   * @class aeris.api.collections.Fires
    * @extends aeris.api.collections.PointDataCollection
    *
    * @constructor

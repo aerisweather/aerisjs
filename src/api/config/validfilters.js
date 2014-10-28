@@ -3,8 +3,7 @@ define(
    * A list of valid point data endpoint filters
    * to be used when querying the Aeris API.
    *
-   * @class validFilters
-   * @namespace aeris.api.config
+   * @class aeris.api.config.validFilters
    * @static
    *
    * As {Object.<string,Array.<string>>}

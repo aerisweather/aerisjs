@@ -7,8 +7,7 @@ define([
    * Represents a lightning data response from the AerisApi
    *
    * @publicApi
-   * @class Lightning
-   * @namespace aeris.api.models
+   * @class aeris.api.models.Lightning
    * @extends aeris.api.models.PointData
    *
    * @constructor

@@ -25,8 +25,7 @@ define([
    * pq.dequeue(); // starts running the queue
    *
    * @constructor
-   * @class PromiseQueue
-   * @namespace aeris
+   * @class aeris.PromiseQueue
    */
   var PromiseQueue = function() {
     /**

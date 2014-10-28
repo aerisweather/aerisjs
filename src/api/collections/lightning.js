@@ -9,8 +9,7 @@ define([
    * Aeris API 'lightning' endpoint.
    *
    * @publicApi
-   * @class Lightning
-   * @namespace aeris.api.collections
+   * @class aeris.api.collections.Lightning
    * @extends aeris.api.collections.PointDataCollection
    *
    * @constructor

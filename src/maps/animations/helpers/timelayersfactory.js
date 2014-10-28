@@ -5,8 +5,7 @@ define([
    * Helper class for creating a collection of layers
    * from an array of timestamps
    *
-   * @class TimeLayersFactory
-   * @namespace aeris.maps.animations.helpers
+   * @class aeris.maps.animations.helpers.TimeLayersFactory
    *
    * @constructor
    * @override

@@ -6,8 +6,7 @@ define([
    * Create a layer representing a collection of polygons.
    *
    * @constructor
-   * @class Polygons
-   * @namespace aeris.maps.layers
+   * @class aeris.maps.layers.Polygons
    * @extends aeris.maps.layers.Layer
    * @abstract
    */

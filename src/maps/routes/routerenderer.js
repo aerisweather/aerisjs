@@ -35,8 +35,7 @@ define([
    * Create a Google Map extension used for rendering a Route.
    *
    * @constructor
-   * @class RouteRenderer
-   * @namespace aeris.maps.gmaps.route
+   * @class aeris.maps.gmaps.route.RouteRenderer
    *
    * @param {Object=} opt_options
    *

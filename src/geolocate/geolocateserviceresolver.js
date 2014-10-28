@@ -6,8 +6,7 @@ define([
   /**
    * Helper for creating a supported {aeris.geolocate.GeolocateServiceInterface}
    *
-   * @class GeolocateServiceResolver
-   * @namespace aeris.geolocate
+   * @class aeris.geolocate.GeolocateServiceResolver
    *
    * @constructor
    *

@@ -7,8 +7,7 @@ define([
 ], function(_, PointDataMarkers, EarthquakeCollection, EarthquakeMarker, clusterStyles) {
   /**
    * @publicApi
-   * @class EarthquakeMarkers
-   * @namespace aeris.maps.markercollections
+   * @class aeris.maps.markercollections.EarthquakeMarkers
    * @extends aeris.maps.markercollections.PointDataMarkers
    *
    * @constructor

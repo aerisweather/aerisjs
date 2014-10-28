@@ -2,8 +2,7 @@ define([
   'aeris/errors/errortypefactory'
 ], function(ErrorTypeFactory) {
   /**
-   * @class TimeoutError
-   * @namespace aeris.errors
+   * @class aeris.errors.TimeoutError
    * @extends aeris.errors.AbstractError
   */
   return new ErrorTypeFactory({

@@ -7,8 +7,7 @@ define([
    * Representation of KML layer.
    *
    * @constructor
-   * @class KML
-   * @namespace aeris.maps.layers
+   * @class aeris.maps.layers.KML
    * @extends aeris.maps.layers.Layer
    */
   var KML = function(opt_attrs, opt_options) {

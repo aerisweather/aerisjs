@@ -8,8 +8,7 @@ define([
    * Represents a set of filters to include in
    * a request to the AerisAPI
    *
-   * @class FilterCollection
-   * @namespace aeris.api.params.collections
+   * @class aeris.api.params.collections.FilterCollection
    * @extends aeris.Collection
    *
    * @constructor

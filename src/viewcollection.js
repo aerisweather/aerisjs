@@ -7,8 +7,7 @@ define([
    * A representation of a data collection, which has been
    * reshaped into a form expected by a view.
    *
-   * @class ViewCollection
-   * @namespace aeris
+   * @class aeris.ViewCollection
    * @extends aeris.Collection
    *
    * @constructor

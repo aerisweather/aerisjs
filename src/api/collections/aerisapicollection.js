@@ -11,8 +11,7 @@ define([
    * See http://www.hamweather.com/support/documentation/aeris/
    * for Aeris API documentation.
    *
-   * @class AerisApiCollection
-   * @namespace aeris.api.collections
+   * @class aeris.api.collections.AerisApiCollection
    * @extends aeris.Collection
    * @uses aeris.api.mixins.AerisApiBehavior
    *

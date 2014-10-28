@@ -6,8 +6,7 @@ define([
   /**
    * Helper for binding events to google maps objects.
    *
-   * @class GoogleEvents
-   * @namespace aeris.maps.gmaps
+   * @class aeris.maps.gmaps.GoogleEvents
    *
    * @constructor
    */

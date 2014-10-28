@@ -7,8 +7,7 @@ define([
    *
    * @constructor
    * @publicApi
-   * @class Radar
-   * @namespace aeris.maps.layers
+   * @class aeris.maps.layers.Radar
    * @extends aeris.maps.layers.AerisTile
    */
   var Radar = function(opt_attrs, opt_options) {

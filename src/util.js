@@ -6,8 +6,7 @@ define([
   /**
    * Aeris library utilities.
    *
-   * @class util
-   * @namespace aeris
+   * @class aeris.util
    * @static
    */
   var customUtil = {
