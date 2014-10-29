@@ -4,6 +4,7 @@ define(['aeris/util', 'backbone'], function(_, Backbone) {
    * based on Backbone.Events.
    *
    * @class aeris.Events
+   * @extends Backbone.Events
    * @publicApi
    * @constructor
    */
