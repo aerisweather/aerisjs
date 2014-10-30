@@ -1,3 +1,10 @@
+# 0.7.18
+
+This release contains several minor modifications
+to the Aeris.js codebase, none of which effect the interface.
+
+See git history for a full list fo changes.
+
 # 0.7.17
 
 * ADD: Map#updateSize
