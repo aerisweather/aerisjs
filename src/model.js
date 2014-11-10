@@ -154,7 +154,7 @@ define([
         'Make sure that Model#normalize_ is returning an object.');
     }
 
-    Backbone.Model.prototype.set.call(this, config, opts);
+    return Backbone.Model.prototype.set.call(this, config, opts);
   };
 
 
