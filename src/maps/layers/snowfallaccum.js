@@ -5,21 +5,22 @@ define([
   /**
    * @constructor
    * @publicApi
-   * @class aeris.maps.layers.SnowDepth
+   * @class aeris.maps.layers.SnowFallAccum
    * @extends aeris.maps.layers.AerisTile
    */
-  var SnowDepth = function(opt_attrs, opt_options) {
+  var SnowFallAccum = function(opt_attrs, opt_options) {
     var attrs = _.extend({
-      name: 'SnowDepth',
-      tileType: 'snowdepth_snodas',
+      name: 'SnowFallAccum',
+      tileType: 'fsnow_4knam',
+      futureTileType: 'fsnow_4knam',
       autoUpdateInterval: AerisTile.updateIntervals.MODIS
     }, opt_attrs);
 
 
     AerisTile.call(this, attrs, opt_options);
   };
-  _.inherits(SnowDepth, AerisTile);
+  _.inherits(SnowFallAccum, AerisTile);
 
 
-  return _.expose(SnowDepth, 'aeris.maps.layers.SnowDepth');
+  return _.expose(SnowFallAccum, 'aeris.maps.layers.SnowFallAccum');
 });
