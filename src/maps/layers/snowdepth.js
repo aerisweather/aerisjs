@@ -18,8 +18,6 @@ define([
 
     AerisTile.call(this, attrs, opt_options);
   };
-
-  // Inherit from AerisTile
   _.inherits(SnowDepth, AerisTile);
 
 

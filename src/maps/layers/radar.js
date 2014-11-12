@@ -3,8 +3,6 @@ define([
   'aeris/maps/layers/aeristile'
 ], function(_, AerisTile) {
   /**
-   * Representation of Aeris Radar layer.
-   *
    * @constructor
    * @publicApi
    * @class aeris.maps.layers.Radar
@@ -24,8 +22,5 @@ define([
   _.inherits(Radar, AerisTile);
 
 
-
-
   return _.expose(Radar, 'aeris.maps.layers.Radar');
-
 });
