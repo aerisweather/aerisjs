@@ -12,6 +12,7 @@ define([
     var attrs = _.extend({
       name: 'SnowDepth',
       tileType: 'snowdepth_snodas',
+      futureTileType: 'fsnow_4knam',
       autoUpdateInterval: AerisTile.updateIntervals.MODIS
     }, opt_attrs);
 
