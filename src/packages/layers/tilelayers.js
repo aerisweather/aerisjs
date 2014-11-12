@@ -13,6 +13,7 @@ define([
   'aeris/maps/layers/satellitevisible',
   'aeris/maps/layers/seasurfacetemps',
   'aeris/maps/layers/snowdepth',
+  'aeris/maps/layers/snowfallaccum',
   'aeris/maps/layers/temps',
   'aeris/maps/layers/windchill',
   'aeris/maps/layers/winds',
