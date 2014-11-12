@@ -368,9 +368,6 @@ define([
 
           animation.goToTime(24);
           expect(timeLayers).toBeShowingLayerForTime(20);
-
-          animation.goToTime(9999);
-          expect(timeLayers).toBeShowingLayerForTime(30);
         });
 
         describe('when choosing a closest available time', function() {
@@ -631,6 +628,68 @@ define([
 
 
         describe('time tolerance', function() {
+
+          describe('default time tolerance', function() {
+            it('should not show layers outside the standard time layers interval', function() {
+              var timeLayers = createTimeLayersFromTimes([
+                // Standard time layer interval is 100
+                200,
+                300,
+                400,
+                500
+              ]);
+              resolveLayerLoader(timeLayers);
+
+              // within standard interval --> show closest layer
+              animation.goToTime(590);
+              expect(timeLayers).toBeShowingLayerForTime(500);
+
+              // Outside standard interval --> don't show any layer
+              animation.goToTime(610);
+              expect(timeLayers).not.toBeShowingLayerForTime(500);
+              expect(timeLayers).not.toBeShowingLayerForTime(400);
+              expect(timeLayers).not.toBeShowingLayerForTime(300);
+              expect(timeLayers).not.toBeShowingLayerForTime(200);
+              expect(timeLayers).not.toBeShowingLayerForTime(100);
+
+              // And on the lower end...
+              animation.goToTime(110);
+              expect(timeLayers).toBeShowingLayerForTime(200);
+
+              animation.goToTime(90);
+              expect(timeLayers).not.toBeShowingLayerForTime(100);
+              expect(timeLayers).not.toBeShowingLayerForTime(200);
+              expect(timeLayers).not.toBeShowingLayerForTime(300);
+              expect(timeLayers).not.toBeShowingLayerForTime(400);
+              expect(timeLayers).not.toBeShowingLayerForTime(500);
+            });
+
+            it('should not show layers more than 2 hours away, if only one layer is available', function() {
+              var HOUR = 1000 * 60 * 60;
+              var timeLayers = createTimeLayersFromTimes([
+                HOUR * 10
+              ]);
+              resolveLayerLoader(timeLayers);
+
+              // Less than 2 hours difference --> show layer
+              animation.goToTime(HOUR * 9);
+              expect(timeLayers).toBeShowingLayerForTime(HOUR * 10);
+
+              // More than 2 hours difference --> do not show layer
+              animation.goToTime(HOUR * 7);
+              expect(timeLayers).not.toBeShowingLayerForTime(HOUR * 10);
+
+              // Less than 2 hours difference --> show layer
+              animation.goToTime(HOUR * 11);
+              expect(timeLayers).toBeShowingLayerForTime(HOUR * 10);
+
+              // More than 2 hours difference --> do not show layer
+              animation.goToTime(HOUR * 13);
+              expect(timeLayers).not.toBeShowingLayerForTime(HOUR * 10);
+            });
+          });
+
+
 
           describe('when the set time is outside the timeTolerance', function() {
 

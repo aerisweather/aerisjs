@@ -28,8 +28,7 @@ define([
       from: _.now() - (1000 * 60 * 60 * 2), // two hours ago
       to: _.now(),
       limit: 20,
-      AnimationLayerLoader: AnimationLayerLoader,
-      timeTolerance: 1000 * 60 * 60 * 2   // 2 hours
+      AnimationLayerLoader: AnimationLayerLoader
     });
 
 
@@ -38,7 +37,7 @@ define([
      * @private
      * @type {number} In milliseconds.
      */
-    this.timeTolerance_ = options.timeTolerance;
+    this.timeTolerance_ = null;
 
 
     AbstractAnimation.call(this, options);
@@ -129,6 +128,14 @@ define([
 
 
   /**
+   * @property DEFAULT_TIME_TOLERANCE_
+   * @static
+   * @type {number}
+   * @private
+   */
+  TileAnimation.DEFAULT_TIME_TOLERANCE_ = 1000 * 60 * 60 * 2; // 2 hours
+
+  /**
    * Load the tile layers for the animation.
    *
    * @return {aeris.Promise} Promise to load all layers.
@@ -140,6 +147,11 @@ define([
     this.animationLayerLoader_.once('load:times', function(times, timeLayers) {
       this.setTimeLayers_(timeLayers);
       this.refreshCurrentLayer_();
+
+      if (_.isNull(this.timeTolerance_)) {
+        // Set to regular interval between times
+        this.timeTolerance_ = this.getLargestInterval_(times) || TileAnimation.DEFAULT_TIME_TOLERANCE_;
+      }
 
       this.trigger('load:times', times, timeLayers);
     }, this);
@@ -533,7 +545,7 @@ define([
     _.without(this.timeLayers_, newLayer).
       forEach(this.transitionOut_, this);
 
-    isWithinTimeTolerance = this.getTimeDeviation_(this.currentTime_) < this.timeTolerance_;
+    isWithinTimeTolerance = this.getTimeDeviation_(this.currentTime_) <= this.timeTolerance_;
     if (isWithinTimeTolerance) {
       this.transitionInClosestLoadedLayer_(newLayer);
     }
@@ -612,6 +624,32 @@ define([
    */
   TileAnimation.prototype.getTimeDeviation_ = function(time) {
     return Math.abs(time - this.getClosestTime_(time));
+  };
+
+
+  /**
+   * @method getLargestInterval_
+   * @private
+   * @param {Array.<number>} numbers
+   */
+  TileAnimation.prototype.getLargestInterval_ = function(numbers) {
+    var lastTime, sortedTimes;
+
+    // No intervals exist
+    if (numbers.length < 2) {
+      return 0;
+    }
+
+    lastTime = numbers[0];
+    sortedTimes = _.sortBy(numbers, _.identity);
+
+    return sortedTimes.reduce(function(interval, time) {
+      var currentInterval = Math.abs(time - lastTime);
+
+      lastTime = time;
+
+      return Math.max(interval, currentInterval);
+    }, 0);
   };
 
 
