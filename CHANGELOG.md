@@ -1,3 +1,14 @@
+# 0.7.19
+
+* ADD: SnowFallAccum Layer
+* MOD: Infer the default time tolerance for Animations.
+       This fixes animations for layers with long intervals
+       between tile times (eg. SnowDepth)
+* FIX: Model#set returns model instance.
+       Fixes errors in Model#sync, and conforms to Backbone#set
+       interface.
+
+
 # 0.7.18
 
 This release contains several minor modifications
