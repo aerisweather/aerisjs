@@ -1,7 +1,20 @@
 define([
   'underscore'
 ], function(underscore) {
+  // Check if we have a conflict
+  var root = this;
   var _ = underscore.noConflict();
+
+  // If the global underscore obj is undefined,
+  // it means there was no previous owner,
+  // and using noConflict() was unnecessary.
+  // In this case, we want to
+  // reassign underscore back to the global scope.
+  // Other consumers may be expecting it in the
+  // global scope, so we don't want to take it away from them.
+  if (!root._) {
+    root._ = _;
+  }
 
   /**
    * Aeris library utilities.
