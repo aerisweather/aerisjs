@@ -114,6 +114,8 @@ define([
     // Inherit from opt_Type
     if (opt_Type) {
       _.inherits(Klass, opt_Type);
+      // add static properties to Klass
+      _.extend(Klass, opt_Type);
     }
 
     return Klass;
