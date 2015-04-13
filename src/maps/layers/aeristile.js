@@ -27,7 +27,7 @@ define([
 
     var attrs = _.defaults(opt_attrs || {}, {
       subdomains: ['1', '2', '3', '4'],
-      server: 'http://tile{d}.aerisapi.com',
+      server: '//tile{d}.aerisapi.com',
       maxZoom: 27,
       minZoom: 1,
 
