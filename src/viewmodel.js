@@ -90,7 +90,10 @@ define([
    * @return {aeris.Model} The data model associated with this view model.
    * @method getData
    */
-  ViewModel.prototype.getData = function() {
+  ViewModel.prototype.getData = function(opt_path) {
+    if (opt_path) {
+      return this.getDataAttribute(opt_path);
+    }
     return this.data_;
   };
 
