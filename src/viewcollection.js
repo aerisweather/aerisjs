@@ -17,8 +17,14 @@ define([
     var isDataCollectionProvided = opt_options && opt_options.data;
     var options = _.defaults(opt_options || {}, {
       data: new Collection(),
-      model: ViewModel
+      model: ViewModel,
+      modelOptions: {}
     });
+
+    // Pass attributeTransforms down to the model.
+    if (options.attributeTransforms) {
+      options.modelOptions.attributeTransforms = options.attributeTransforms;
+    }
 
 
     /**
