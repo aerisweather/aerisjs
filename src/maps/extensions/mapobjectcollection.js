@@ -12,13 +12,13 @@ define([
    *
    * @constructor
    * @override
-  */
+   */
   var MapObjectCollection = function() {
     /**
      * @property map_
      * @private
      * @type {?aeris.maps.Map}
-    */
+     */
     this.map_ = null;
 
     ViewCollection.apply(this, arguments);
@@ -35,6 +35,14 @@ define([
       },
       remove: function(model) {
         model.setMap(null);
+      },
+      reset: function(collection, options) {
+        options.previousModels.forEach(function(model) {
+          model.setMap(null);
+        });
+        this.each(function(model) {
+          model.setMap(this.getMap());
+        }, this);
       }
     });
   };
