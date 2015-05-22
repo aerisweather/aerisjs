@@ -286,6 +286,14 @@ define([
         expect(_.path('')).toBeUndefined();
       });
 
+      it('should return undefined for properties whose parents are null', function() {
+        expect(_.path('foo.bar.qux', {
+          foo: {
+            bar: null
+          }
+        })).toBeUndefined();
+      });
+
     });
 
     describe('isNumeric', function() {

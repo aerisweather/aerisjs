@@ -199,7 +199,7 @@ define([
       scope = _.isUndefined(opt_scope) ? window : opt_scope;
 
       return _.reduce(parts, function(obj, i) {
-        return _.isUndefined(obj) ? undefined : obj[i];
+        return _.isObject(obj) ? obj[i] : undefined;
       }, scope);
     },
 
