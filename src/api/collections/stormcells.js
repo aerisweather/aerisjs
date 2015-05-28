@@ -21,7 +21,7 @@ define([
     _.defaults(options.params, {
       p: ':auto',
       limit: 100,
-      radius: '100mi'
+      radius: '3000mi'
     });
 
     AerisApiClientCollection.call(this, opt_models, options);
