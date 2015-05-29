@@ -13,9 +13,45 @@ define([
         action: 'within'
       }),
       map: null,
-      strategy: StormCellsStrategy
+      strategy: StormCellsStrategy,
+      style: {
+        cell: {
+          radius: 4,
+          fillColor: 'green',
+          color: '#000',
+          weight: 1,
+          opacity: 1,
+          fillOpacity: 0.8,
+          hover: {
+            radius: 7,
+            fillOpacity: 1
+          }
+        },
+        cone: {
+          stroke: true,
+          color: '#030303',
+          weight: 1,
+          opacity: 0.8,
+          fillColor: '#f66',
+          fillOpacity: 0.2,
+          hover: {
+            weight: 2,
+            fillOpacity: 0.8,
+            fillColor: '#f66'
+          }
+        },
+        line: {
+          stroke: true,
+          color: '#030303',
+          weight: 1,
+          opacity: 0.8
+        }
+      }
     });
+
     this.map_ = options.map;
+
+    this.getStyle = _.isFunction(options.style) ? options.style : _.constant(options.style);
 
     ViewCollection.call(this, opt_models, options);
     StrategyObject.call(this, options);
@@ -50,5 +86,5 @@ define([
     return !!this.map_;
   };
 
-  return StormCells;
+  return _.expose(StormCells, 'aeris.maps.StormCells');
 });

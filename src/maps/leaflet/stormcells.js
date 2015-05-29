@@ -22,18 +22,7 @@ define([
       pointToLayer: function(feature, latLng) {
         return new Leaflet.CircleMarker(latLng);
       }.bind(this),
-      onEachFeature: function(feature, layer) {
-        var EventTrigger = function(eventType) {
-          return function(evt) {
-            this.trigger(eventType, MapUtil.toAerisLatLon(evt.latlng), feature);
-          };
-        };
-        layer.on({
-          click: EventTrigger('click').bind(this),
-          mouseover: EventTrigger('mouseover').bind(this),
-          mouseout: EventTrigger('mouseout').bind(this)
-        });
-      }.bind(this)
+      onEachFeature: this.initializeFeature_.bind(this)
     });
   };
 
@@ -50,6 +39,58 @@ define([
 
   StormCells.prototype.beforeRemove_ = function() {
     this.mapView_.removeLayer(this.view_);
+  };
+
+  StormCells.prototype.initializeFeature_ = function(feature, layer) {
+    var EventTrigger = function(eventType) {
+      return function(evt) {
+        this.object_.trigger(eventType, MapUtil.toAerisLatLon(evt.latlng), feature);
+      };
+    };
+
+    // Style the layers
+    var styles = this.object_.getStyle(feature.properties);
+    this.setLayerStyle(layer, styles);
+
+    // Proxy events
+    layer.on({
+      click: EventTrigger('click').bind(this),
+      mouseover: EventTrigger('mouseover').bind(this),
+      mouseout: EventTrigger('mouseout').bind(this)
+    });
+
+    // Handle hover events
+    layer.on({
+      mouseover: function(evt) {
+        this.setLayerStyle(layer, {
+          cell: styles.cell.hover,
+          cone: styles.cone.hover,
+          line: styles.line.hover
+        });
+
+        if (!Leaflet.Browser.ie && !Leaflet.Browser.opera) {
+          // Apparently, this doesn't work in IE or Opera...
+          layer.bringToFront();
+        }
+      }.bind(this),
+      mouseout: function(evt) {
+        this.setLayerStyle(layer, styles);
+      }.bind(this)
+    });
+  };
+
+  StormCells.prototype.setLayerStyle = function(layer, objectStyles) {
+    layer.getLayers().forEach(function(layer) {
+      if (layer instanceof Leaflet.CircleMarker) {
+        layer.setStyle(objectStyles.cell);
+      }
+      else if (layer instanceof Leaflet.Polygon) {
+        layer.setStyle(objectStyles.cone);
+      }
+      else if (layer instanceof Leaflet.Polyline) {
+        layer.setStyle(objectStyles.line);
+      }
+    }, this);
   };
 
   return StormCells;
