@@ -11,9 +11,7 @@ define([
     AbstractStrategy.call(this, stormCellsMapObject);
 
     this.listenTo(this.object_, {
-      'add remove reset change': _.debounce(this.update_, 250, {
-        leading: false
-      })
+      'change': _.throttle(this.update_, 250)
     });
   };
   _.inherits(StormCells, AbstractStrategy);
@@ -46,12 +44,7 @@ define([
   StormCells.prototype.initializeFeature_ = function(feature, layer) {
     var EventTrigger = function(eventType) {
       return function(evt) {
-        // We're wrapping the storm cell data in a view model,
-        // to keep this event interface similar to a marker event.
-        var stormCellViewModel = new StormCellMarker(null, {
-          data: new FeatureModel(feature)
-        });
-        this.object_.trigger(eventType, MapUtil.toAerisLatLon(evt.latlng), stormCellViewModel);
+        this.object_.trigger(eventType, MapUtil.toAerisLatLon(evt.latlng), this.object_);
       };
     };
 
