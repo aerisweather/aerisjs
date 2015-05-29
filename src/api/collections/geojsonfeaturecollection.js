@@ -1,15 +1,15 @@
 define([
   'aeris/util',
   'aeris/api/collections/aerisapicollection',
-  'aeris/api/models/aerisapimodel',
+  'aeris/api/models/geojsonfeature',
   'aeris/promise',
   'jquery'
-], function(_, AerisApiCollection, AerisApiModel, Promise, $) {
+], function(_, AerisApiCollection, GeoJsonFeature, Promise, $) {
   /** @class GeoJsonFeatureCollection */
   var GeoJsonFeatureCollection = function(geoJson, opt_options) {
     var models = geoJson ? this.parse(geoJson) : null;
     var options = _.defaults(opt_options || {}, {
-      model: AerisApiModel,
+      model: GeoJsonFeature,
       server: 'http://uat.hamweather.net/AerisGeoJSON',
       filter: [{
         name: 'geocol',
@@ -18,11 +18,26 @@ define([
     });
 
     AerisApiCollection.call(this, models, options);
+
+    this.jsonp_ = {
+      'get': function(url, data, onSuccess) {
+        $.ajax({
+          dataType: 'json',
+          data: data,
+          url: url,
+          success: onSuccess,
+          error: function(xhr, testStatus, err) {
+            throw err;
+          }
+        });
+      }
+    };
   };
   _.inherits(GeoJsonFeatureCollection, AerisApiCollection);
 
   GeoJsonFeatureCollection.prototype.parse = function(geoJson) {
-    return geoJson.features;
+    var models = geoJson.features;
+    return AerisApiCollection.prototype.parse.call(this, models);
   };
 
   GeoJsonFeatureCollection.prototype.toGeoJson = function() {
@@ -32,31 +47,8 @@ define([
     };
   };
 
-  GeoJsonFeatureCollection.prototype.sync = function(method, model, opt_options) {
-    var noop = function() {};
-    var promiseToSync = new Promise();
-    var options = _.defaults(opt_options || {}, {
-      success: noop,
-      error: noop,
-      complete: noop
-    });
-
-    this.trigger('request', this, promiseToSync, opt_options);
-
-    $.ajax({
-      dataType: 'json',
-      url: 'http://uat.hamweather.net/AerisGeoJSON/stormcells/within?p=27.527758206861886,-136.0107421875,50.233151832472245,-61.12792968750001&filter=geocol&query=&limit=1000&fields=loc,id,ob.hail,ob.mda,ob.tvs,forecast&sort=tor:-1,mda:-1,hail:-1&client_id=wgE96YE3scTQLKjnqiMsv&client_secret=DGCTq4z2xxttTBwTiimwlWyxmx5IDwK0VZ7T2WMS',
-      success: function(res) {
-        promiseToSync.resolve(res);
-        this.trigger('sync', this, res, opt_options);
-      }.bind(this),
-      error: promiseToSync.reject
-    });
-
-    return promiseToSync.
-      done(options.success).
-      fail(options.error).
-      always(options.complete);
+  GeoJsonFeatureCollection.prototype.isSuccessResponse_ = function(res) {
+    return !res.error;
   };
 
   return _.expose(GeoJsonFeatureCollection, 'aeris.api.collections.GeoJsonFeatureCollection');
