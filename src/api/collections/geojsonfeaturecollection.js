@@ -18,20 +18,6 @@ define([
     });
 
     AerisApiCollection.call(this, models, options);
-
-    this.jsonp_ = {
-      'get': function(url, data, onSuccess) {
-        $.ajax({
-          dataType: 'json',
-          data: data,
-          url: url,
-          success: onSuccess,
-          error: function(xhr, testStatus, err) {
-            throw err;
-          }
-        });
-      }
-    };
   };
   _.inherits(GeoJsonFeatureCollection, AerisApiCollection);
 
