@@ -19,7 +19,8 @@ define([
             'loc',
             'ob.hail',
             'ob.tvs',
-            'ob.mda'
+            'ob.mda',
+            'forecast'
           ]
         }
       }),
