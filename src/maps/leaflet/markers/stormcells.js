@@ -9,10 +9,6 @@ define([
   /** @class StormCells */
   var StormCells = function(stormCellsMapObject) {
     AbstractStrategy.call(this, stormCellsMapObject);
-
-    this.listenTo(this.object_, {
-      'change': _.throttle(this.update_, 250)
-    });
   };
   _.inherits(StormCells, AbstractStrategy);
 
@@ -24,11 +20,6 @@ define([
       }.bind(this),
       onEachFeature: this.initializeFeature_.bind(this)
     });
-  };
-
-  StormCells.prototype.update_ = function() {
-    this.view_.clearLayers();
-    this.view_.addData(this.object_.toGeoJson());
   };
 
   StormCells.prototype.setMap = function(map) {
