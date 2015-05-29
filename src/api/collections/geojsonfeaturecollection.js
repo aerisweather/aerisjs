@@ -10,11 +10,7 @@ define([
     var models = geoJson ? this.parse(geoJson) : null;
     var options = _.defaults(opt_options || {}, {
       model: GeoJsonFeature,
-      server: 'http://uat.hamweather.net/AerisGeoJSON',
-      filter: [{
-        name: 'geocol',
-        operator: 'AND'
-      }]
+      server: 'http://uat.hamweather.net/AerisGeoJSON'
     });
 
     AerisApiCollection.call(this, models, options);
