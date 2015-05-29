@@ -10,43 +10,15 @@ define([
     var options = _.defaults(opt_options || {}, {
       data: new GeoJsonFeatureCollection(null, {
         endpoint: 'stormcells',
-        action: 'within'
+        action: 'within',
+        params: {
+          limit: 100,
+          filter: [{ name: 'geocol', operator: 'AND' }]
+        }
       }),
       map: null,
       strategy: StormCellsStrategy,
-      style: {
-        cell: {
-          radius: 4,
-          fillColor: 'green',
-          color: '#000',
-          weight: 1,
-          opacity: 1,
-          fillOpacity: 0.8,
-          hover: {
-            radius: 7,
-            fillOpacity: 1
-          }
-        },
-        cone: {
-          stroke: true,
-          color: '#030303',
-          weight: 1,
-          opacity: 0.8,
-          fillColor: '#f66',
-          fillOpacity: 0.2,
-          hover: {
-            weight: 2,
-            fillOpacity: 0.8,
-            fillColor: '#f66'
-          }
-        },
-        line: {
-          stroke: true,
-          color: '#030303',
-          weight: 1,
-          opacity: 0.8
-        }
-      }
+      style: this.getStyleDefault_.bind(this)
     });
 
     this.map_ = options.map;
@@ -84,6 +56,67 @@ define([
 
   StormCells.prototype.hasMap = function() {
     return !!this.map_;
+  };
+
+  StormCells.prototype.getStyleDefault_ = function(properties) {
+    var styles = {
+      cell: {
+        radius: 4,
+        fillColor: 'green',
+        color: '#000',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8,
+        hover: {
+          radius: 7,
+          fillOpacity: 1
+        }
+      },
+      cone: {
+        stroke: true,
+        color: '#030303',
+        weight: 1,
+        opacity: 0.8,
+        fillColor: '#f66',
+        fillOpacity: 0.2,
+        hover: {
+          weight: 2,
+          fillOpacity: 0.8,
+          fillColor: '#f66'
+        }
+      },
+      line: {
+        stroke: true,
+        color: '#030303',
+        weight: 1,
+        opacity: 0.8,
+        hover: {}
+      }
+    };
+
+    // Tornado
+    if (properties.ob.tvs > 0 || properties.ob.mda > 10) {
+      _.extend(styles.cell, {
+        radius: 5,
+        fillColor: 'red'
+      });
+    }
+    // Hail
+    else if (properties.ob.hail && properties.ob.hail.prob >= 70) {
+      _.extend(styles.cell, {
+        radius: 5,
+        fillColor: 'yellow'
+      });
+    }
+    // rotating
+    else if (properties.ob.mda > 0) {
+      _.extend(styles.cell, {
+        radius: 5,
+        fillColor: 'orange'
+      });
+    }
+
+    return styles;
   };
 
   return _.expose(StormCells, 'aeris.maps.StormCells');
