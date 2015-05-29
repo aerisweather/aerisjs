@@ -1,12 +1,12 @@
 define([
   'aeris/util',
-  'aeris/viewcollection',
-  'aeris/maps/extensions/strategyobject',
+  'aeris/maps/markercollections/pointdatamarkers',
+  'aeris/maps/markers/stormcellmarker',
   'aeris/api/collections/geojsonfeaturecollection',
-  'aeris/maps/strategy/stormcells'
-], function(_, ViewCollection, StrategyObject, GeoJsonFeatureCollection, StormCellsStrategy) {
-  /** @class StormCells */
-  var StormCells = function(opt_models, opt_options) {
+  'aeris/maps/strategy/markers/stormcells'
+], function(_, PointDataMarkers, StormCellMarker, GeoJsonFeatureCollection, StormCellsStrategy) {
+  /** @class StormCellMarkers */
+  var StormCellMarkers = function(opt_models, opt_options) {
     var options = _.defaults(opt_options || {}, {
       data: new GeoJsonFeatureCollection(null, {
         endpoint: 'stormcells',
@@ -16,49 +16,26 @@ define([
           filter: [{ name: 'geocol', operator: 'AND' }]
         }
       }),
-      map: null,
+      model: StormCellMarker,
       strategy: StormCellsStrategy,
+      // StormCells do not yet support clustering
+      clusterStrategy: null,
+      cluster: false,
       style: this.getStyleDefault_.bind(this)
     });
 
-    this.map_ = options.map;
-
     this.getStyle = _.isFunction(options.style) ? options.style : _.constant(options.style);
 
-    ViewCollection.call(this, opt_models, options);
-    StrategyObject.call(this, options);
+    PointDataMarkers.call(this, opt_models, options);
   };
-  _.inherits(StormCells, ViewCollection);
-  _.extend(StormCells.prototype, StrategyObject.prototype);
+  _.inherits(StormCellMarkers, PointDataMarkers);
 
 
-  StormCells.prototype.toGeoJson = function() {
+  StormCellMarkers.prototype.toGeoJson = function() {
     return this.data_.toGeoJson();
   };
 
-  StormCells.prototype.setMap = function(map) {
-    var isSettingMap = !this.hasMap() && map;
-    var isRemovingMap = this.hasMap() && !map;
-
-    this.map_ = map;
-
-    if (isSettingMap) {
-      this.trigger('map:set', this, map, {});
-    }
-    else if (isRemovingMap) {
-      this.trigger('map:remove', this, map, {});
-    }
-  };
-
-  StormCells.prototype.getMap = function() {
-    return this.map_;
-  };
-
-  StormCells.prototype.hasMap = function() {
-    return !!this.map_;
-  };
-
-  StormCells.prototype.getStyleDefault_ = function(properties) {
+  StormCellMarkers.prototype.getStyleDefault_ = function(properties) {
     var styles = {
       cell: {
         radius: 4,
@@ -119,5 +96,9 @@ define([
     return styles;
   };
 
-  return _.expose(StormCells, 'aeris.maps.StormCells');
+  StormCellMarkers.prototype.startClustering = function() {
+    throw new Error('StormCellMarkers do not currently support clustering');
+  };
+
+  return _.expose(StormCellMarkers, 'aeris.maps.StormCells');
 });

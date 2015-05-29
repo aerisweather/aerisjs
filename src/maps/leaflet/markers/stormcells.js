@@ -3,9 +3,9 @@ define([
   'aeris/maps/abstractstrategy',
   'leaflet',
   'aeris/maps/strategy/util',
-  'aeris/viewmodel',
-  'aeris/model'
-], function(_, AbstractStrategy, Leaflet, MapUtil, ViewModel, Model) {
+  'aeris/maps/markers/stormcellmarker',
+  'aeris/api/models/geojsonfeature'
+], function(_, AbstractStrategy, Leaflet, MapUtil, StormCellMarker, FeatureModel) {
   /** @class StormCells */
   var StormCells = function(stormCellsMapObject) {
     AbstractStrategy.call(this, stormCellsMapObject);
@@ -48,8 +48,8 @@ define([
       return function(evt) {
         // We're wrapping the storm cell data in a view model,
         // to keep this event interface similar to a marker event.
-        var stormCellViewModel = new ViewModel(null, {
-          data: new Model(feature)
+        var stormCellViewModel = new StormCellMarker(null, {
+          data: new FeatureModel(feature)
         });
         this.object_.trigger(eventType, MapUtil.toAerisLatLon(evt.latlng), stormCellViewModel);
       };
