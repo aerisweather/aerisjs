@@ -17,14 +17,12 @@ define([
         }
       }),
       model: StormCellMarker,
-      strategy: StormCellsStrategy,
+      strategy: _.noop,
       // StormCells do not yet support clustering
       clusterStrategy: null,
-      cluster: false,
-      style: this.getStyleDefault_.bind(this)
+      cluster: false
     });
 
-    this.getStyle = _.isFunction(options.style) ? options.style : _.constant(options.style);
 
     PointDataMarkers.call(this, opt_models, options);
   };
@@ -33,67 +31,6 @@ define([
 
   StormCellMarkers.prototype.toGeoJson = function() {
     return this.data_.toGeoJson();
-  };
-
-  StormCellMarkers.prototype.getStyleDefault_ = function(properties) {
-    var styles = {
-      cell: {
-        radius: 4,
-        fillColor: 'green',
-        color: '#000',
-        weight: 1,
-        opacity: 1,
-        fillOpacity: 0.8,
-        hover: {
-          radius: 7,
-          fillOpacity: 1
-        }
-      },
-      cone: {
-        stroke: true,
-        color: '#030303',
-        weight: 1,
-        opacity: 0.8,
-        fillColor: '#f66',
-        fillOpacity: 0.2,
-        hover: {
-          weight: 2,
-          fillOpacity: 0.8,
-          fillColor: '#f66'
-        }
-      },
-      line: {
-        stroke: true,
-        color: '#030303',
-        weight: 1,
-        opacity: 0.8,
-        hover: {}
-      }
-    };
-
-    // Tornado
-    if (properties.ob.tvs > 0 || properties.ob.mda > 10) {
-      _.extend(styles.cell, {
-        radius: 5,
-        fillColor: 'red'
-      });
-    }
-    // Hail
-    else if (properties.ob.hail && properties.ob.hail.prob >= 70) {
-      _.extend(styles.cell, {
-        radius: 5,
-        fillColor: 'yellow'
-      });
-    }
-    // rotating
-    else if (properties.ob.mda > 0) {
-      _.extend(styles.cell, {
-        radius: 5,
-        fillColor: 'orange'
-      });
-    }
-
-    return styles;
   };
 
   StormCellMarkers.prototype.startClustering = function() {
