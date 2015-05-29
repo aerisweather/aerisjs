@@ -13,7 +13,14 @@ define([
         action: 'within',
         params: {
           limit: 100,
-          filter: [{ name: 'geocol', operator: 'AND' }]
+          fields: [
+            'id',
+            'place',
+            'loc',
+            'ob.hail',
+            'ob.tvs',
+            'ob.mda'
+          ]
         }
       }),
       model: StormCellMarker,
