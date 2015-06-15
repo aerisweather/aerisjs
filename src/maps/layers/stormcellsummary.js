@@ -60,5 +60,5 @@ define([
     return this.style_;
   };
 
-  return StormCellSummary;
+  return _.expose(StormCellSummary, 'aeris.maps.layers.StormCellSummary');
 });
