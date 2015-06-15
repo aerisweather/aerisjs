@@ -10,4 +10,6 @@ define([
   StormCells.prototype.createView_ = function() {
     throw new Error('Aeris.js does not currently support StormCells using Google Maps.');
   };
+
+  return StormCells;
 });
