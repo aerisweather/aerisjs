@@ -3,9 +3,7 @@ define([
   'aeris/maps/abstractstrategy',
   'leaflet',
   'aeris/maps/strategy/util',
-  'aeris/maps/markers/stormcellmarker',
-  'aeris/api/models/geojsonfeature'
-], function(_, AbstractStrategy, Leaflet, MapUtil, StormCellMarker, FeatureModel) {
+], function(_, AbstractStrategy, Leaflet, MapUtil) {
   /** @class StormCells */
   var StormCells = function(stormCellsMapObject) {
     AbstractStrategy.call(this, stormCellsMapObject);
