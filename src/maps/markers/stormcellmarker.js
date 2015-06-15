@@ -56,27 +56,24 @@ define([
         hover: {}
       }
     };
+    var typeStyles = {
+      tornado: {
+        radius: 5,
+          fillColor: 'red'
+      },
+      hail: {
+        radius: 5,
+        fillColor: 'yellow'
+      },
+      rotating: {
+        radius: 5,
+        fillColor: 'orange'
+      }
+    };
+    var type = _.path('traits.type', properties);
 
-    // Tornado
-    if (properties.ob.tvs > 0 || properties.ob.mda > 10) {
-      _.extend(styles.cell, {
-        radius: 5,
-        fillColor: '#fc0d1b'
-      });
-    }
-    // Hail
-    else if (properties.ob.hail && properties.ob.hail.prob >= 70) {
-      _.extend(styles.cell, {
-        radius: 5,
-        fillColor: '#2dfffe'
-      });
-    }
-    // rotating
-    else if (properties.ob.mda > 0) {
-      _.extend(styles.cell, {
-        radius: 5,
-        fillColor: '#fecb2f'
-      });
+    if (typeStyles[type]) {
+      _.extend(styles.cell, typeStyles[type]);
     }
 
     return styles;

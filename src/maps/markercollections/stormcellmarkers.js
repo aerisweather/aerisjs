@@ -17,10 +17,9 @@ define([
             'id',
             'place',
             'loc',
-            'ob.hail',
-            'ob.tvs',
-            'ob.mda',
-            'forecast'
+            'ob',
+            'forecast',
+            'traits'
           ]
         }
       }),
