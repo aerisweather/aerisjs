@@ -12,7 +12,7 @@ define([
         endpoint: 'stormcells',
         action: 'within',
         params: {
-          limit: 100,
+          limit: 1000,
           fields: [
             'id',
             'place',
@@ -20,7 +20,8 @@ define([
             'ob',
             'forecast',
             'traits'
-          ]
+          ],
+          sort: 'tor:-1,mda:-1,hail:-1'
         }
       }),
       model: StormCellMarker,
