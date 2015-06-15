@@ -246,7 +246,7 @@ define([
      * @return {Boolean}
      */
     isSuccessResponse_: function(res) {
-      return res && res.success;
+      return !res.error;
     },
 
 
