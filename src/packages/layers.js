@@ -6,5 +6,5 @@ define([
   'aeris/packages/layers/googlelayers',
   'aeris/maps/layers/convectivehazards',
   'aeris/maps/layers/advisorieskml',
-  'aeris/maps/layers/stormcellsummary'
+  'aeris/maps/layers/geojson'
 ], function() {});
