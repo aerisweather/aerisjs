@@ -45,5 +45,5 @@ define([
     throw new Error('StormCellMarkers do not currently support clustering');
   };
 
-  return _.expose(StormCellMarkers, 'aeris.maps.StormCells');
+  return StormCellMarkers;
 });

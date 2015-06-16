@@ -87,5 +87,5 @@ define([
     return style;
   };
 
-  return _.expose(SevereWarnings, 'aeris.maps.layers.SevereWarnings');
+  return SevereWarnings;
 });
