@@ -2,6 +2,7 @@ define([
   'aeris/util',
   'aeris/api/models/aerisapimodel'
 ], function(_, AerisApiModel) {
+  /** @class GeoJsonFeature */
   var GeoJsonFeature = function(opt_attrs, opt_options) {
     AerisApiModel.call(this, opt_attrs, opt_options);
   };
