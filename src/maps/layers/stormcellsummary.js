@@ -1,9 +1,8 @@
 define([
   'aeris/util',
-  'aeris/maps/layers/layer',
-  'aeris/api/collections/geojsonfeaturecollection',
-  'aeris/maps/strategy/layers/geojson'
-], function(_, Layer, GeoJsonFeatureCollection, GeoJsonStrategy) {
+  'aeris/maps/layers/geojson',
+  'aeris/api/collections/geojsonfeaturecollection'
+], function(_, GeoJson, GeoJsonFeatureCollection) {
   /** @class StormCellSummary */
   var StormCellSummary = function(opt_attrs, opt_options) {
     var options = _.defaults(opt_options || {}, {
@@ -22,13 +21,10 @@ define([
             }
           ]
         }
-      }),
-      strategy: GeoJsonStrategy,
-      attributeTransforms: {
-        geoJson: function() {
-          return this.data_.toGeoJson();
-        }
-      },
+      })
+    });
+    var attrs = _.defaults(opt_attrs || {}, {
+      clickable: false,
       style: {
         stroke: true,
         color: '#030303',
@@ -38,27 +34,10 @@ define([
         fillOpacity: 0.4
       }
     });
-    var attrs = _.defaults(opt_attrs || {}, {
-      clickable: false
-    });
 
-    Layer.call(this, attrs, options);
-
-    this.style_ = options.style;
-
-    this.listenTo(this.data_, {
-      'add remove reset': _.throttle(this.syncToModel.bind(this), 100)
-    });
+    GeoJson.call(this, attrs, options);
   };
-  _.inherits(StormCellSummary, Layer);
-
-  StormCellSummary.prototype.toGeoJson = function() {
-    return this.data_.toGeoJson();
-  };
-
-  StormCellSummary.prototype.getStyle = function() {
-    return this.style_;
-  };
+  _.inherits(StormCellSummary, GeoJson);
 
   return _.expose(StormCellSummary, 'aeris.maps.layers.StormCellSummary');
 });
