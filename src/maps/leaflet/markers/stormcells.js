@@ -2,7 +2,7 @@ define([
   'aeris/util',
   'aeris/maps/abstractstrategy',
   'leaflet',
-  'aeris/maps/strategy/util',
+  'aeris/maps/strategy/util'
 ], function(_, AbstractStrategy, Leaflet, MapUtil) {
   /** @class StormCells */
   var StormCells = function(stormCellsMapObject) {
