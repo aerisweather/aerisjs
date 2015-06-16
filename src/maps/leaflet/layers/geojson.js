@@ -18,8 +18,8 @@ define([
 
   GeoJson.prototype.createView_ = function() {
     return new Leaflet.geoJson(this.object_.toGeoJson(), {
-      style: (function() {
-        return this.object_.getStyle();
+      style: (function(feature) {
+        return this.object_.getStyle(feature.properties);
       }.bind(this)),
       clickable: this.object_.get('clickable')
     });

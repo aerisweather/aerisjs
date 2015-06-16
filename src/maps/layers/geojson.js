@@ -6,22 +6,26 @@ define([
 ], function(_, Layer, GeoJsonFeatureCollection, GeoJsonStrategy) {
   /** @class GeoJson */
   var GeoJson = function(opt_attrs, opt_options) {
+    var attrs = _.defaults(opt_attrs || {}, {
+      clickable: true
+    });
     var options = _.defaults(opt_options || {}, {
       strategy: GeoJsonStrategy,
       attributeTransforms: {
         geoJson: function() {
           return this.data_.toGeoJson();
         }
-      }
-    });
-    var attrs = _.defaults(opt_attrs || {}, {
-      clickable: true,
+      },
       style: {}
     });
 
     if (!options.data) {
       throw new Error('GeoJson layers must provide GeoJsonFeatureCollection data.');
     }
+
+    // Normalize style as a function,
+    // which receives the feature properties.
+    this.getStyle = _.isFunction(options.style) ? options.style : _.constant(options.style);
 
     Layer.call(this, attrs, options);
 
@@ -38,10 +42,6 @@ define([
 
   GeoJson.prototype.toGeoJson = function() {
     return this.data_.toGeoJson();
-  };
-
-  GeoJson.prototype.getStyle = function() {
-    return this.get('style');
   };
 
   return _.expose(GeoJson, 'aeris.maps.layers.GeoJson');

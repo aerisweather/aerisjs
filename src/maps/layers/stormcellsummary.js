@@ -10,15 +10,7 @@ define([
    */
   var StormCellSummary = function(opt_attrs, opt_options) {
     var attrs = _.defaults(opt_attrs || {}, {
-      clickable: false,
-      style: {
-        stroke: true,
-        color: '#030303',
-        weight: 1,
-        opacity: .8,
-        fillColor: 'orange',
-        fillOpacity: 0.4
-      }
+      clickable: false
     });
     var options = _.defaults(opt_options || {}, {
       data: new GeoJsonFeatureCollection(null, {
@@ -36,7 +28,15 @@ define([
             }
           ]
         }
-      })
+      }),
+      style: {
+        stroke: true,
+        color: '#030303',
+        weight: 1,
+        opacity: .8,
+        fillColor: 'orange',
+        fillOpacity: 0.4
+      }
     });
 
     GeoJson.call(this, attrs, options);
