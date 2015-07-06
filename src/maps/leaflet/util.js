@@ -15,7 +15,8 @@ define([
      * @return {aeris.maps.LatLon}
      */
     toAerisLatLon: function(leafletLatLng) {
-      return [leafletLatLng.lat, leafletLatLng.lng];
+      var wrappedLatLng = leafletLatLng.wrap();
+      return [wrappedLatLng.lat, wrappedLatLng.lng];
     },
 
     /**
@@ -24,9 +25,11 @@ define([
      * @return {aeris.maps.Bounds}
      */
     toAerisBounds: function(leafletBounds) {
+      var sw = leafletBounds.getSouthWest();
+      var ne = leafletBounds.getNorthEast();
       return [
-        [leafletBounds.getSouth(), leafletBounds.getWest()],
-        [leafletBounds.getNorth(), leafletBounds.getEast()]
+        util.toAerisLatLon(sw),
+        util.toAerisLatLon(ne)
       ];
     },
 
