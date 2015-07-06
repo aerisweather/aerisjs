@@ -104,7 +104,8 @@ define([
             toEqual([12.34, 56.78]);
 
           leafletMarker.setLatLng(new Leaflet.LatLng(98.76, 54.32));
-          expect(aerisMarker.getPosition()).toEqual([98.76, 54.32]);
+          expect(aerisMarker.getPosition()[0]).toBeNear(98.76, 0.01);
+          expect(aerisMarker.getPosition()[1]).toBeNear(54.32, 0.01);
         });
 
         it('icon url', function() {
