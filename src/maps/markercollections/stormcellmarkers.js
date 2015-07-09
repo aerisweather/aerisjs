@@ -2,9 +2,8 @@ define([
   'aeris/util',
   'aeris/maps/markercollections/pointdatamarkers',
   'aeris/maps/markers/stormcellmarker',
-  'aeris/api/collections/geojsonfeaturecollection',
-  'aeris/maps/strategy/markers/stormcells'
-], function(_, PointDataMarkers, StormCellMarker, GeoJsonFeatureCollection, StormCellsStrategy) {
+  'aeris/api/collections/geojsonfeaturecollection'
+], function(_, PointDataMarkers, StormCellMarker, GeoJsonFeatureCollection) {
   /** @class StormCellMarkers */
   var StormCellMarkers = function(opt_models, opt_options) {
     var options = _.defaults(opt_options || {}, {
