@@ -1,3 +1,22 @@
+# 0.8.0
+
+### Functional Changes
+
+* ADD: New `aeris.api.collections.GeoJsonFeatureCollection`
+* ADD: `StormCellMarkers` (available only via AMD)
+* ADD: New `aeris.maps.layers.GeoJson` layer, for geojson polygons
+* ADD: Legend images for SnowDepth, Snowall Accum, Advisories@2x
+* MOD: Tiles urls are not protocol specific (removed `http:` from url)
+* FIX: Map longitude bounds were not wrapping (could be more than +180/-180)
+* FIX: Fix Precip / QPF legend images
+* FIX: Fix MarkerClustering behavior on `Collection#reset`
+
+
+### Non-Functional Changes
+
+* ADD: `GeoJson` api models, to support GeoJson markers (eg `StormCellMarkers`)
+* MOD: `ClassFactory` inherits static methods from proxy class
+
 # 0.7.19
 
 * ADD: SnowFallAccum Layer
