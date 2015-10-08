@@ -1,3 +1,8 @@
+# 0.8.1
+
+* FIX: When calling stopClustering on a marker collection,
+       markers which were not clustered would disappear.
+
 # 0.8.0
 
 ### Functional Changes
