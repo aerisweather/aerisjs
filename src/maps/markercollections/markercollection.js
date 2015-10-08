@@ -141,6 +141,13 @@ define([
   MarkerCollection.prototype.startClustering = function() {
     this.setStrategy(this.clusterStrategy_);
 
+    // Sometimes re-starting clustering
+    // causes some non-clustered markers not to show.
+    // This fixes that.
+    var map = this.getMap();
+    this.setMap(null);
+    this.setMap(map);
+
     this.isClustering_ = true;
   };
 

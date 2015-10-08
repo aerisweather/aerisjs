@@ -58,11 +58,14 @@ define([
   MarkerCluster.prototype.setMap = function(map) {
     AbstractStrategy.prototype.setMap.call(this, map);
 
-    // Add all markers to the cluster
-    this.resetMarkers_(this.object_.models);
-
     // Add clusters to the map
-    _.invoke(this.view_, 'addTo', this.mapView_);
+    _.values(this.view_).
+      forEach(function(view) {
+        view.addTo(this.mapView_);
+      }, this);
+
+    // Add all markers to the clusters
+    this.resetMarkers_(this.object_.models);
   };
 
 
@@ -314,16 +317,22 @@ define([
    * @method destroy
    */
   MarkerCluster.prototype.destroy = function() {
+    var markerViews = this.object_.models.
+      map(function(marker) {
+        return marker.getView();
+      });
+    var mapView = this.mapView_;
+
+    AbstractStrategy.prototype.destroy.call(this);
+
     // Put each marker view back on the map.
     // --> we're destroying the clustering strategy,
     //    but we still want the markers to be rendered.
-    this.object_.each(function(markerObj) {
-      if (this.mapView_) {
-        markerObj.getView().addTo(this.mapView_);
-      }
-    }, this);
-
-    AbstractStrategy.prototype.destroy.call(this);
+    if (mapView) {
+      markerViews.forEach(function(view) {
+        view.addTo(mapView);
+      }, this);
+    }
   };
 
 

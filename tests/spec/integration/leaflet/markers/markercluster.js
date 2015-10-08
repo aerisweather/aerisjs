@@ -572,7 +572,7 @@ define([
 
 
       describe('stopClustering', function() {
-        var ctx, MARKER_COUNT_INIT = 10;
+        var ctx, MARKER_COUNT_INIT = 2;
 
         beforeEach(function() {
           ctx = {};
@@ -581,7 +581,7 @@ define([
         describe('when using the `cluster: true` option', function() {
 
           beforeEach(function() {
-            ctx.markerCollection = new MarkerCollection(getMarkers(MARKER_COUNT_INIT), {
+            ctx.markerCollection = new MarkerCollection(getMarkers(MARKER_COUNT_INIT, NW), {
               cluster: true
             });
             ctx.markerCollection.setMap(map);
@@ -609,6 +609,18 @@ define([
 
               expect(map).toHaveClusterCount(0);
               expect(map).toHaveMarkerCount(MARKER_COUNT_INIT);
+            });
+
+            it('should still show previously un-clustered markers', function() {
+              ctx.markerCollection.add(getMarkers(1, SW));
+              // baseline: 1 cluster, and one non-clustered marker
+              expect(map).toHaveClusterCount(1);
+              expect(map).toHaveMarkerCount(1);
+
+              ctx.markerCollection.stopClustering();
+
+              expect(map).toHaveClusterCount(0);
+              expect(map).toHaveMarkerCount(MARKER_COUNT_INIT + 1);   // plus the one we added, not in the cluster
             });
 
             it('should render any new markers individually', function() {
