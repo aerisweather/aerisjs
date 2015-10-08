@@ -65,7 +65,8 @@ module.exports = function(grunt) {
             }
           }
         }   // default strategy
-      },
+      },/*
+      Google maps tests are not working in PhantomJS
       gmaps: {
         options: {
           specs: gmapsSpecs,
@@ -75,7 +76,7 @@ module.exports = function(grunt) {
             }
           }
         }
-      },
+      },*/
       openlayers: {
         options: {
           specs: openLayersSpecs,
