@@ -387,7 +387,7 @@ define([
         tile.loadTileTimes();
 
         expect(jsonp.getRequestedUrl()).toEqual(
-          '//tile.aerisapi.com/' +
+          '//maps.aerisapi.com/' +
             API_ID_STUB + '_' + API_SECRET_STUB + '/' +
             TILE_TYPE_STUB + '.jsonp'
         );
@@ -418,13 +418,13 @@ define([
           });
 
           expect(requestedUrls).toContain(
-            '//tile.aerisapi.com/' +
+            '//maps.aerisapi.com/' +
               API_ID_STUB + '_' + API_SECRET_STUB + '/' +
               FUTURE_TILE_TYPE_STUB + '.jsonp'
           );
 
           expect(requestedUrls).toContain(
-            '//tile.aerisapi.com/' +
+            '//maps.aerisapi.com/' +
               API_ID_STUB + '_' + API_SECRET_STUB + '/' +
               TILE_TYPE_STUB + '.jsonp'
           );
