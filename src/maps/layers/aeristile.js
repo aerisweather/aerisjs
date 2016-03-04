@@ -7,10 +7,10 @@ define([
   'aeris/errors/timeouterror',
   'aeris/errors/unsupportedfeatureerror',
   'aeris/maps/layers/abstracttile',
-  'aeris/jsonp',
+  'aeris/api/getjson',
   'aeris/maps/layers/config/zindex',
   'aeris/maps/strategy/layers/aeristile'
-], function(_, aerisConfig, Promise, ValidationError, MissingApiKeyError, TimeoutError, UnsupportedFeatureError, BaseTile, JSONP, zIndexConfig, AerisTileStrategy) {
+], function(_, aerisConfig, Promise, ValidationError, MissingApiKeyError, TimeoutError, UnsupportedFeatureError, BaseTile, getJson, zIndexConfig, AerisTileStrategy) {
   /**
    * Representation of Aeris Interactive Tile layer.
    *
@@ -21,8 +21,7 @@ define([
   var AerisTile = function(opt_attrs, opt_options) {
     var options = _.extend({
       strategy: AerisTileStrategy,
-      validate: true,
-      jsonp: JSONP
+      validate: true
     }, opt_options);
 
     var attrs = _.defaults(opt_attrs || {}, {
@@ -134,14 +133,6 @@ define([
      * @private
      */
     this.loaded_ = false;
-
-
-    /**
-     * @type {aeris.JSONP}
-     * @private
-     * @property jsonp_
-     */
-    this.jsonp_ = options.jsonp;
 
 
     BaseTile.call(this, attrs, options);
@@ -382,32 +373,24 @@ define([
    * @return {aeris.Promise}
    */
   AerisTile.prototype.loadTileTimesForEndpoint_ = function(endpoint) {
-    var TIMEOUT = 5000;
     var promiseToLoadTimes = new Promise();
     var url = this.createTileTimesUrlForEndpoint_(endpoint);
 
-    // Times API uses a static callback function
-    // (as opposed to accepting a callback param)
-    // based on the tile type
-    var jsonpCallback = endpoint + 'Times';
-
     this.ensureApiKeys_();
 
-    this.jsonp_.get(url, {}, function(res) {
-      var times;
+    getJson(url)
+      .done(function(res) {
+        var times;
 
-      if (!res.files) {
-        promiseToLoadTimes.reject(new Error('Failed to load tile times: no time data was returned.'));
-      }
+        if (!res.files) {
+          promiseToLoadTimes.reject(new Error('Failed to load tile times: no time data was returned.'));
+        }
 
-      times = this.parseTileTimes_(res);
+        times = this.parseTileTimes_(res);
 
-      promiseToLoadTimes.resolve(times);
-    }.bind(this), jsonpCallback);
-
-    // As jsonp does not currently provide an onerror,
-    // fallback to a timeout
-    this.rejectAfterTimeout_(promiseToLoadTimes, TIMEOUT, 'Timeout while loading Aeris Interactive Tile times.');
+        promiseToLoadTimes.resolve(times);
+      }.bind(this))
+      .fail(promiseToLoadTimes.reject);
 
     return promiseToLoadTimes;
   };
@@ -458,7 +441,7 @@ define([
    * @param {string} endpoint Tile type endpoint.
    */
   AerisTile.prototype.createTileTimesUrlForEndpoint_ = function(endpoint) {
-    var urlPattern = '{server}/{client_id}_{client_secret}/{tileType}.jsonp';
+    var urlPattern = '{server}/{client_id}_{client_secret}/{tileType}.json';
     var server = this.get('server').replace('{d}', '');
 
     return urlPattern.
