@@ -11,7 +11,7 @@ define([
   var Humidity = function(opt_attrs, opt_options) {
     var attrs = _.extend({
       name: 'Humidity',
-      tileType: 'current_rh',
+      tileType: 'humidity',
       autoUpdateInterval: AerisTile.updateIntervals.CURRENT
     }, opt_attrs);
 

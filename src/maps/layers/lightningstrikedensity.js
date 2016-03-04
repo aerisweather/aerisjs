@@ -13,7 +13,7 @@ define([
   var LightningStrikeDensity = function(opt_attrs, opt_options) {
     var attrs = _.extend({
       name: 'Lightning Strike Density',
-      tileType: 'ltngsd',
+      tileType: 'lightning-strike-density',
       autoUpdateInterval: AerisTile.updateIntervals.SATELLITE
     }, opt_attrs);
 
