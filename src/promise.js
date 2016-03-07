@@ -229,6 +229,7 @@ define([
     var promises = Array.prototype.slice.call(arguments);
     var masterPromise = new Promise();
     var masterResponse = [];
+    var resolvedCount = 0;
 
     // Allow first argument to be array of promises
     if (promises.length === 1 && promises[0] instanceof Array) {
@@ -248,8 +249,9 @@ define([
       promise.done(function() {
         var childResponse = _.argsToArray(arguments);
         masterResponse[i] = childResponse;
+        resolvedCount++;
 
-        if (masterResponse.length === promises.length) {
+        if (resolvedCount === promises.length) {
           masterPromise.resolve.apply(masterPromise, masterResponse);
         }
       });
