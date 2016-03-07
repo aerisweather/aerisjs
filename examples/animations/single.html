@@ -35,6 +35,7 @@
   <p>
     Time:
     <span id="currentTime"></span>
+    <span id="future-flag" style="font-style: italic; font-size: 14px; color: #808080; float: right;"></span>
   </p>
 
   <div class="animationControls">
@@ -63,7 +64,9 @@
     // Set the maximum number of animation "frames"
     // to load. A higher limit will result in a smoother
     // animation, though it will take longer to load.
-    limit: 50
+    limit: 50,
+    from: Date.now() - 1000 * 60 * 60 * 6,    // 6 hours ago
+    to: Date.now() + 1000 * 60 * 60 * 18      // 18 hours into the future
   });
 
   radar.setMap(map);
@@ -76,6 +79,7 @@
   //
   // Alternatively, you can wait for the 'load:complete' event
   // to fire.
+  animation.goToTime(Date.now() - 1000 * 60 * 60 * 6);
   animation.start();
 
 
@@ -116,6 +120,11 @@
   animation.on('change:time', function(date) {
     var formattedTime = date.toTimeString().replace(/.*(\d{2}:\d{2})(:\d{2}).*/, "$1");
     $('#currentTime').text(formattedTime);
+
+    var isFuture = date > Date.now();
+    $('#future-flag').text(isFuture ? 'future' : '');
+
+    animation.setSpeed(isFuture ? 180 : 30)
   });
 
 
