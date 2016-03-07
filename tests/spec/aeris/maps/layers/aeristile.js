@@ -351,7 +351,7 @@ define([
 
       var MockTimesResponse = function(times) {
         return {
-          files: _.map(times, this.timeToResponseObject_, this)
+          files: times.map(this.timeToResponseObject_, this)
         };
       };
 
@@ -438,18 +438,43 @@ define([
 
         it('should resolve with combined times from the standard and future tile apis', function() {
           var onTimesLoaded = jasmine.createSpy('onTimesLoaded');
+          clock.useFakeTimers(100);
 
           tile.loadTileTimes().
             done(onTimesLoaded);
 
           xhr.requests.forEach(function(req) {
             var isFutureRequest = new RegExp(FUTURE_TILE_TYPE_STUB).test(req.requestUrl);
-            var times = isFutureRequest ? [4, 5, 6] : [1, 2, 3];
+            var times = isFutureRequest ? [110, 120, 130] : [85, 90, 95];
 
             req.respondWithJson(new MockTimesResponse(times));
           });
 
-          expect(onTimesLoaded).toHaveBeenCalledWith([1, 2, 3, 4, 5, 6]);
+          expect(onTimesLoaded).toHaveBeenCalledWith([85, 90, 95, 110, 120, 130]);
+        });
+
+        // Otherwise, animations will attempt to load those times using the past `tileType`
+        it('should strip out times from the future times.json which are actually in the past', function() {
+          clock.useFakeTimers(100);
+
+          var onTimesLoaded = jasmine.createSpy('onTimesLoaded');
+
+          tile.loadTileTimes().done(onTimesLoaded);
+
+          xhr.requests.forEach(function(req) {
+            var isFutureRequest = new RegExp(FUTURE_TILE_TYPE_STUB).test(req.requestUrl);
+            var times = isFutureRequest ?
+              // future times
+              [95, 105, 115] : // should remove 95 (past time)
+              // past times
+              [78, 88, 98];
+
+            req.respondWithJson(new MockTimesResponse(times));
+          });
+
+          expect(onTimesLoaded).toHaveBeenCalledWith([
+            78, 88, 98, 105, 115
+          ]);
         });
 
       });

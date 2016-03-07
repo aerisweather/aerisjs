@@ -356,7 +356,12 @@ define([
     Promise.when(loadPromises).
       done(function(currTimesArgs, futureTimesArgs) {
         var currentTimes = currTimesArgs[0];
-        var futureTimes = futureTimesArgs ? futureTimesArgs[0] : [];
+        var futureTimes = (futureTimesArgs ? futureTimesArgs[0] : [])
+          // Remove any future times that are actually from the past
+          // Otherwise, animations will attempt to load those times using the past `tileType`
+          .filter(function(time) {
+            return time > Date.now();
+          });
 
         promiseToLoadAllTimes.resolve(currentTimes.concat(futureTimes));
       }).
