@@ -18,6 +18,6 @@ You can sign up for a free Aeris API developer account at [hamweather.com](http:
 * [MarkerCollection](http://demo.aerisjs.com/markercollections/index.html)
 
 
-## jsFiddle
+## Live Demo
 
-You can play with the Aeris.js library using our [jsFiddle sandbox](http://jsfiddle.net/zCr2f/10/).
+You can play with the Aeris.js library using our [JS Bin sandbox](http://jsbin.com/wacaja/edit?js,output).
