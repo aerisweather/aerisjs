@@ -1,31 +1,26 @@
 define([
   'aeris/util',
-  'aeris/maps/layers/modistile'
-], function(_, ModisTile) {
+  'aeris/maps/layers/aeristile'
+], function(_, AerisTile) {
   /**
    * Representation of Aeris Sea Surface Temperatures layer.
    *
    * @constructor
    * @publicApi
    * @class aeris.maps.layers.Chlorophyll
-   * @extends aeris.maps.layers.ModisTile
+   * @extends aeris.maps.layers.AerisTile
    */
   var Chlorophyll = function(opt_attrs, opt_options) {
     var attrs = _.extend({
       name: 'Chlorophyll',
-      modisPeriodTileTypes: {
-        1: 'modis_chlo_1day',
-        3: 'modis_chlo_3day',
-        7: 'modis_chlo_7day',
-        14: 'modis_chlo_14day'
-      }
+      tileType: 'modis-chlo'
     }, opt_attrs);
 
-    ModisTile.call(this, attrs, opt_options);
+    AerisTile.call(this, attrs, opt_options);
   };
 
   // Inherit from AerisTile
-  _.inherits(Chlorophyll, ModisTile);
+  _.inherits(Chlorophyll, AerisTile);
 
 
   return _.expose(Chlorophyll, 'aeris.maps.layers.Chlorophyll');

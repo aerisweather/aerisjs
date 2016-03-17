@@ -4,11 +4,11 @@ define([
   'aeris/promise',
   'aeris/maps/layers/aeristile',
   'aeris/maps/abstractstrategy',
-  'mocks/aeris/jsonp',
   'mocks/aeris/config',
   'aeris/errors/timeouterror',
-  'tests/lib/clock'
-], function(_, sinon, Promise, AerisTile, Strategy, MockJSONP, MockConfig, TimeoutError, clock) {
+  'tests/lib/clock',
+  'tests/mocks/window/xhr'
+], function(_, sinon, Promise, AerisTile, Strategy, MockConfig, TimeoutError, clock, MockXhr) {
 
 
   function TestFactory(opt_attrs, opt_options) {
@@ -18,11 +18,9 @@ define([
       autoUpdateInterval: 999999
     });
     var options = _.defaults(opt_options || {}, {
-      strategy: getStubbedStrategy(),
-      jsonp: new MockJSONP
+      strategy: getStubbedStrategy()
     });
 
-    this.jsonp = options.jsonp;
     this.strategy = options.strategy;
     this.tile = new AerisTile(attrs, options);
   }
@@ -42,10 +40,19 @@ define([
 
 
   describe('AerisTile', function() {
+    var xhr;
+
+    beforeEach(function() {
+      xhr = new MockXhr();
+    });
+
 
     afterEach(function() {
       MockConfig.restore();
+
+      xhr.restore();
     });
+
 
 
     describe('constructor', function() {
@@ -337,14 +344,14 @@ define([
 
 
     describe('loadTileTimes', function() {
-      var tile, jsonp;
+      var tile;
       var API_ID_STUB = 'API_ID_STUB', API_SECRET_STUB = 'API_SECRET_STUB';
       var TILE_TYPE_STUB = 'TILE_TYPE_STUB';
       var STUB_TIMES = [1000, 2000, 3000, 4000, 5000];
 
       var MockTimesResponse = function(times) {
         return {
-          files: _.map(times, this.timeToResponseObject_, this)
+          files: times.map(this.timeToResponseObject_, this)
         };
       };
 
@@ -369,7 +376,6 @@ define([
           tileType: TILE_TYPE_STUB
         });
         tile = test.tile;
-        jsonp = test.jsonp;
 
         clock.useFakeTimers();
       });
@@ -386,10 +392,10 @@ define([
       it('should request times data from the aeris tiles API', function() {
         tile.loadTileTimes();
 
-        expect(jsonp.getRequestedUrl()).toEqual(
-          '//tile.aerisapi.com/' +
-            API_ID_STUB + '_' + API_SECRET_STUB + '/' +
-            TILE_TYPE_STUB + '.jsonp'
+        expect(xhr.requests[0].requestUrl).toEqual(
+          '//maps.aerisapi.com/' +
+          API_ID_STUB + '_' + API_SECRET_STUB + '/' +
+          TILE_TYPE_STUB + '.json'
         );
       });
 
@@ -410,90 +416,78 @@ define([
 
 
         it('should request times data from the standard and future tiles api', function() {
-          var requestedUrls;
           tile.loadTileTimes();
 
-          requestedUrls = jsonp.get.calls.map(function(call) {
-            return call.args[0];
-          });
+          var requestedUrls = _.pluck(xhr.requests, 'requestUrl');
 
           expect(requestedUrls).toContain(
-            '//tile.aerisapi.com/' +
+            '//maps.aerisapi.com/' +
               API_ID_STUB + '_' + API_SECRET_STUB + '/' +
-              FUTURE_TILE_TYPE_STUB + '.jsonp'
+              FUTURE_TILE_TYPE_STUB + '.json'
           );
 
           expect(requestedUrls).toContain(
-            '//tile.aerisapi.com/' +
+            '//maps.aerisapi.com/' +
               API_ID_STUB + '_' + API_SECRET_STUB + '/' +
-              TILE_TYPE_STUB + '.jsonp'
+              TILE_TYPE_STUB + '.json'
           );
 
-          expect(jsonp.get.callCount).toEqual(2);
+          expect(xhr.requests.length).toEqual(2);
         });
 
 
         it('should resolve with combined times from the standard and future tile apis', function() {
-          var PAST_TIMES_STUB = _.range(0, 5);
-          var FUTURE_TIMES_STUB = _.range(6, 10);
           var onTimesLoaded = jasmine.createSpy('onTimesLoaded');
-
-          // Mock jsonp to respond with either past of future times,
-          // based on the url endpoint.
-          jsonp.get.andCallFake(function(url, data, onLoad, callbackName) {
-            var isFutureRequest = new RegExp(FUTURE_TILE_TYPE_STUB).test(url);
-            var times = isFutureRequest ? FUTURE_TIMES_STUB : PAST_TIMES_STUB;
-
-            onLoad(new MockTimesResponse(times));
-          });
+          clock.useFakeTimers(100);
 
           tile.loadTileTimes().
             done(onTimesLoaded);
 
-          expect(onTimesLoaded).toHaveBeenCalledWith(PAST_TIMES_STUB.concat(FUTURE_TIMES_STUB));
-        });
+          xhr.requests.forEach(function(req) {
+            var isFutureRequest = new RegExp(FUTURE_TILE_TYPE_STUB).test(req.requestUrl);
+            var times = isFutureRequest ? [110, 120, 130] : [85, 90, 95];
 
-        it('should use the correct jsonp callback names', function() {
-          jsonp.get.andCallFake(function(url, data, onLoad, callbackName) {
-            var isFutureRequest = new RegExp(FUTURE_TILE_TYPE_STUB).test(url);
-
-            if (isFutureRequest) {
-              expect(callbackName).toEqual(FUTURE_TILE_TYPE_STUB + 'Times');
-            }
-            else {
-              expect(callbackName).toEqual(TILE_TYPE_STUB + 'Times');
-            }
-
-            onLoad(new MockTimesResponse());
+            req.respondWithJson(new MockTimesResponse(times));
           });
 
-          tile.loadTileTimes();
+          expect(onTimesLoaded).toHaveBeenCalledWith([85, 90, 95, 110, 120, 130]);
+        });
 
-          expect(jsonp.get).toHaveBeenCalled();
+        // Otherwise, animations will attempt to load those times using the past `tileType`
+        it('should strip out times from the future times.json which are actually in the past', function() {
+          clock.useFakeTimers(100);
+
+          var onTimesLoaded = jasmine.createSpy('onTimesLoaded');
+
+          tile.loadTileTimes().done(onTimesLoaded);
+
+          xhr.requests.forEach(function(req) {
+            var isFutureRequest = new RegExp(FUTURE_TILE_TYPE_STUB).test(req.requestUrl);
+            var times = isFutureRequest ?
+              // future times
+              [95, 105, 115] : // should remove 95 (past time)
+              // past times
+              [78, 88, 98];
+
+            req.respondWithJson(new MockTimesResponse(times));
+          });
+
+          expect(onTimesLoaded).toHaveBeenCalledWith([
+            78, 88, 98, 105, 115
+          ]);
         });
 
       });
 
       it('should resolve with an array of timestamps', function() {
-        var promiseToLoadTimes = tile.loadTileTimes();
         var onDone = jasmine.createSpy('onDone');
-        promiseToLoadTimes.done(onDone);
 
-        jsonp.resolveWith(new MockTimesResponse(STUB_TIMES));
+        tile.loadTileTimes()
+          .done(onDone);
+
+        xhr.requests[0].respondWithJson(new MockTimesResponse(STUB_TIMES));
 
         expect(onDone).toHaveBeenCalledWith(STUB_TIMES);
-      });
-
-      it('should reject after a timeout of 5 seconds', function() {
-        var TIMEOUT = 5000;
-        var promiseToLoadTimes = tile.loadTileTimes();
-        var onFail = jasmine.createSpy('onFail');
-        promiseToLoadTimes.fail(onFail);
-
-        clock.tick(TIMEOUT);
-
-        expect(onFail).toHaveBeenCalled();
-        expect(onFail.mostRecentCall.args[0]).toBeInstanceOf(TimeoutError);
       });
 
     });

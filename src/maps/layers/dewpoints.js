@@ -11,7 +11,7 @@ define([
   var DewPoints = function(opt_attrs, opt_options) {
     var attrs = _.extend({
       name: 'DewPoints',
-      tileType: 'current_dp',
+      tileType: 'dew-points',
       autoUpdateInterval: AerisTile.updateIntervals.CURRENT
     }, opt_attrs);
 

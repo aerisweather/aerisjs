@@ -11,7 +11,7 @@ define([
   var SnowDepth = function(opt_attrs, opt_options) {
     var attrs = _.extend({
       name: 'SnowDepth',
-      tileType: 'snowdepth_snodas',
+      tileType: 'snowdepth',
       autoUpdateInterval: AerisTile.updateIntervals.MODIS
     }, opt_attrs);
 

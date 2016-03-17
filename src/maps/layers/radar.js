@@ -12,7 +12,7 @@ define([
     var attrs = _.extend({
       name: 'Radar',
       tileType: 'radar',
-      futureTileType: 'frad_4knam',
+      futureTileType: 'frad-nam4k',
       autoUpdateInterval: AerisTile.updateIntervals.RADAR
     }, opt_attrs);
 

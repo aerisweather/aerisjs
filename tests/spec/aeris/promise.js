@@ -273,6 +273,24 @@ define([
         expect(flag).toBe(true);
       });
 
+      it('should maintain promise result order done callback', function() {
+        var onDone = jasmine.createSpy('onDone');
+        Promise.when(p1, p2, p3)
+          .done(function(val1, val2, val3) {
+            expect(val1).toEqual(['p1 val']);
+            expect(val2).toEqual(['p2 val']);
+            expect(val3).toEqual(['p3 val']);
+            onDone();
+          });
+
+        // Resolve out of order
+        p2.resolve('p2 val');
+        p1.resolve('p1 val');
+        p3.resolve('p3 val');
+
+        expect(onDone).toHaveBeenCalled();
+      });
+
       it('should fail if any child promises fail', function() {
         Promise.when(p1, p2, p3).fail(setFlag);
         p1.resolve();

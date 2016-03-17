@@ -13,8 +13,8 @@ define([
   var QPF = function(opt_attrs, opt_options) {
     var attrs = _.extend({
       name: 'QPF',
-      tileType: 'fqpf_4knam',
-      futureTileType: 'fqpf_4knam',
+      tileType: 'fqpf-nam4k',
+      futureTileType: 'fqpf-nam4k',
       autoUpdateInterval: 1000 * 60 * 60 * 6    // every 6 hours
     }, opt_attrs);
 

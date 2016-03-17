@@ -11,8 +11,8 @@ define([
   var Temps = function(opt_attrs, opt_options) {
     var attrs = _.extend({
       name: 'Temps',
-      tileType: 'current_temps',
-      futureTileType: 'ftemps_4knam',
+      tileType: 'temperatures',
+      futureTileType: 'ftemps-nam4k',
       autoUpdateInterval: AerisTile.updateIntervals.CURRENT
     }, opt_attrs);
 

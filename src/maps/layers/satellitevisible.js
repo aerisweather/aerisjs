@@ -11,7 +11,7 @@ define([
   var SatelliteVisible = function(opt_attrs, opt_options) {
     var attrs = _.extend({
       name: 'SatelliteVisible',
-      tileType: 'sat_vistrans',
+      tileType: 'sat-vis-hires',
       autoUpdateInterval: AerisTile.updateIntervals.SATELLITE
     }, opt_attrs);
 

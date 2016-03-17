@@ -11,7 +11,7 @@ define([
   var WindChill = function(opt_attrs, opt_options) {
     var attrs = _.extend({
       name: 'WindChill',
-      tileType: 'current_windchill',
+      tileType: 'windchill',
       autoUpdateInterval: AerisTile.updateIntervals.CURRENT
     }, opt_attrs);
 

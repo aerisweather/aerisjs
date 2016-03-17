@@ -11,8 +11,8 @@ define([
   var SatelliteGlobal = function(opt_attrs, opt_options) {
     var attrs = _.extend({
       name: 'SatelliteGlobal',
-      tileType: 'globalsat',
-      futureTileType: 'fclouds_4knam',
+      tileType: 'sat-global',
+      futureTileType: 'fsat-nam4k',
       autoUpdateInterval: AerisTile.updateIntervals.SATELLITE
     }, opt_attrs);
 

@@ -11,7 +11,7 @@ define([
   var HeatIndex = function(opt_attrs, opt_options) {
     var attrs = _.extend({
       name: 'HeatIndex',
-      tileType: 'current_heat_index',
+      tileType: 'heat-index',
       autoUpdateInterval: AerisTile.updateIntervals.CURRENT
     }, opt_attrs);
 

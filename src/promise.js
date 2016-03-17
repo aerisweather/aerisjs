@@ -229,17 +229,14 @@ define([
     var promises = Array.prototype.slice.call(arguments);
     var masterPromise = new Promise();
     var masterResponse = [];
-    var length;
+    var resolvedCount = 0;
 
     // Allow first argument to be array of promises
     if (promises.length === 1 && promises[0] instanceof Array) {
       promises = promises[0];
     }
-    length = promises.length;
 
-    var resolvedCount = 0;
-
-    _.each(promises, function(promise) {
+    promises.forEach(function(promise, i) {
       if (!(promise instanceof Promise)) {
         throw new InvalidArgumentError('Unable to create master promise: ' +
           promise.toString() + ' is not a valid Promise object');
@@ -251,10 +248,10 @@ define([
 
       promise.done(function() {
         var childResponse = _.argsToArray(arguments);
-        masterResponse.push(childResponse);
+        masterResponse[i] = childResponse;
         resolvedCount++;
 
-        if (resolvedCount >= length) {
+        if (resolvedCount === promises.length) {
           masterPromise.resolve.apply(masterPromise, masterResponse);
         }
       });

@@ -1,3 +1,12 @@
+# 0.9.0
+
+* MOD: Use new Maps API (AMP) at `maps.aerisapi.com`
+* MOD: Rename `AerisTile` `tileType`s, to match official AMP names.
+* MOD: Use XHR in place of JSONP for tile `/times.json` requests
+* MOD: **BREAKING** remove support for `setModisPeriod` on `Chlorophyll` and `SeaSurfaceTemps` layers
+       (no longer supported by AMP)
+
+
 # 0.8.1
 
 * FIX: When calling stopClustering on a marker collection,
