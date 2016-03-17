@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="../css/example.css"/>
   <link rel="shortcut icon" type="image/x-icon" href="../weather.ico"/>
 
-  <script type="text/javascript" src="http://cdn.aerisjs.com/aeris.js"></script>
+  <script type="text/javascript" src="http://staging.aerisjs.com/aeris.js"></script>
   <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
   <script type="text/javascript" src="../apikeys.js"></script>
 </head>
@@ -56,8 +56,14 @@
     apiSecret: apiKeys.aeris.secret
   });
 
-  map = new aeris.maps.Map('map-canvas');
-  radar = new aeris.maps.layers.Radar();
+  map = new aeris.maps.Map('map-canvas', {
+    //center: [51.07764539352731, -96.62750244140625],
+    //zoom: 11,
+    scrollZoom: false
+  });
+  radar = new aeris.maps.layers.Temps({
+    server: '//tile.aerisapi.com'
+  });
 
   // Create an animation "wrapper" around the satellite layer.
   animation = new aeris.maps.animations.TileAnimation(radar, {
@@ -79,8 +85,8 @@
   //
   // Alternatively, you can wait for the 'load:complete' event
   // to fire.
-  animation.goToTime(Date.now() - 1000 * 60 * 60 * 6);
-  animation.start();
+  //animation.goToTime(Date.now() + 1000 * 60 * 60 * 10);
+  //animation.start();
 
 
   // Show loading progress
