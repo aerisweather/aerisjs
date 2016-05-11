@@ -1,3 +1,8 @@
+# 0.9.1
+
+* FIX: Animations were failing to load, if the client did not have
+       permission to future tile layers.
+
 # 0.9.0
 
 * MOD: Use new Maps API (AMP) at `maps.aerisapi.com`
