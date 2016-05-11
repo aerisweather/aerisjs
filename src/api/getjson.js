@@ -1,4 +1,4 @@
-define(['aeris/promise'], function(Promise) {
+define(['underscore', 'aeris/promise'], function(_, Promise) {
   return function getJson(url) {
     var promise = new Promise();
 
@@ -12,7 +12,7 @@ define(['aeris/promise'], function(Promise) {
 
         return promise.resolve(json);
       } else {
-        var err = Object.assign(new Error('Request to ' + url + ' returned an HTTP error code'), {
+        var err = _.extend(new Error('Request to ' + url + ' returned an HTTP error code'), {
           xhr: request
         });
         return promise.reject(err);
