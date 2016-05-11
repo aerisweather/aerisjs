@@ -395,7 +395,13 @@ define([
 
         promiseToLoadTimes.resolve(times);
       }.bind(this))
-      .fail(promiseToLoadTimes.reject);
+      .fail(function(err) {
+        if (err.xhr && err.xhr.status === 401) {
+          console.warn('Client does not have access to tile times for ' + endpoint);
+          return promiseToLoadTimes.resolve([]);
+        }
+        promiseToLoadTimes.reject(err);
+      });
 
     return promiseToLoadTimes;
   };

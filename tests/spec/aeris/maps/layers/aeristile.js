@@ -477,6 +477,25 @@ define([
           ]);
         });
 
+        it('should not include future times, if the client does not have permissions', function() {
+          var onTimesLoaded = jasmine.createSpy('onTimesLoaded');
+          clock.useFakeTimers(100);
+
+          tile.loadTileTimes()
+            .done(onTimesLoaded);
+
+          // Past times return valid times
+          xhr.requests[0].respondWithJson(new MockTimesResponse([85, 90, 95]));
+
+          // Future times return a 401
+          xhr.requests[1]
+            .respondWithJson({
+              error: { code: 'authorization_error' }
+            }, 401);
+
+          expect(onTimesLoaded).toHaveBeenCalledWith([85, 90, 95]);
+        });
+
       });
 
       it('should resolve with an array of timestamps', function() {
