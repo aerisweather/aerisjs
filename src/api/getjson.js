@@ -12,7 +12,10 @@ define(['aeris/promise'], function(Promise) {
 
         return promise.resolve(json);
       } else {
-        return promise.reject(new Error('Request to ' + url + ' returned an HTTP error code'));
+        var err = Object.assign(new Error('Request to ' + url + ' returned an HTTP error code'), {
+          xhr: request
+        });
+        return promise.reject(err);
       }
     };
 
