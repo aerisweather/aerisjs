@@ -72,7 +72,7 @@ define([
       tileSize: new gmaps.Size(256, 256),
       minZoom: this.object_.get('minZoom'),
       maxZoom: this.object_.get('maxZoom'),
-      name: this.object_.get('name'),
+      name: this.object_.get('name') || 'Aeris Weather Layer',
       opacity: this.object_.get('opacity'),
       zIndex: this.object_.get('zIndex')
     };
