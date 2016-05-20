@@ -128,9 +128,6 @@ define([
    * @method validate
    */
   AbstractTile.prototype.validate = function(attrs) {
-    if (!_.isString(attrs.name)) {
-      return new ValidationError('name', 'not a valid string');
-    }
     if (!_.isString(attrs.server)) {
       return new ValidationError('server', 'not a valid string');
     }
