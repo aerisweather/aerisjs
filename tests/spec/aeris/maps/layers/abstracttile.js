@@ -63,18 +63,6 @@ define([
   describe('AbstractTile', function() {
     describe('constructor', function() {
 
-      it('should require a name', function() {
-        expect(function() {
-          new ConcreteTile({
-            name: null
-          });
-        }).toThrowType('ValidationError');
-
-        new ConcreteTile({
-          name: 'STUB_NAME'
-        });
-      });
-
       it('should require server', function() {
         expect(function() {
           new ConcreteTile({
