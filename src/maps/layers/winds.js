@@ -11,7 +11,7 @@ define([
   var Winds = function(opt_attrs, opt_options) {
     var attrs = _.extend({
       name: 'Winds',
-      tileType: 'fwinds-nam4k',
+      tileType: 'winds',
       futureTileType: 'fwinds-nam4k',
       autoUpdateInterval: AerisTile.updateIntervals.CURRENT
     }, opt_attrs);
