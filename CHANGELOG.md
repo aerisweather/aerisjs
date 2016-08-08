@@ -1,3 +1,9 @@
+# 0.9.2
+
+* MOD: Use default forecast model for all map layers
+* FIX: Fix `aeris.maps.layers.Winds` `tileType` (was using `fwinds`)
+* FIX: Fix error when using a layers with google maps, when there is no `name` attribute defined
+
 # 0.9.1
 
 * FIX: Animations were failing to load, if the client did not have
