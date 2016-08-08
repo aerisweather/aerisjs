@@ -12,7 +12,7 @@ define([
     var attrs = _.extend({
       name: 'Satellite',
       tileType: 'satellite',
-      futureTileType: 'fsat-nam4k',
+      futureTileType: 'fsat',
       autoUpdateInterval: AerisTile.updateIntervals.SATELLITE
     }, opt_attrs);
 

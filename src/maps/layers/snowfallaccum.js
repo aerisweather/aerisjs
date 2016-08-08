@@ -11,8 +11,8 @@ define([
   var SnowFallAccum = function(opt_attrs, opt_options) {
     var attrs = _.extend({
       name: 'SnowFallAccum',
-      tileType: 'fsnow-nam4k',
-      futureTileType: 'fsnow-nam4k',
+      tileType: 'fsnow',
+      futureTileType: 'fsnow',
       autoUpdateInterval: AerisTile.updateIntervals.MODIS
     }, opt_attrs);
 

@@ -15,7 +15,7 @@ define([
     var attrs = _.defaults(opt_attrs || {}, {
       name: 'Precip',
       tileType: 'precip',
-      futureTileType: 'frain-nam4k',
+      futureTileType: 'frain',
       autoUpdateInterval: AerisTile.updateIntervals.CURRENT
     });
 
