@@ -3,6 +3,7 @@ node_js:
 - '0.11'
 install:
 - gem install compass
+- npm install
 - if [[ "$TRAVIS_BRANCH" == "master" ]] || [[ "$TRAVIS_BRANCH" == "staging" ]]; then sudo pip install awscli; fi
 script:
 - if [[ "$TRAVIS_BRANCH" == "master" ]]; then npm run-script deploy; fi

@@ -3,6 +3,7 @@
 .idea/*
 .DS_STORE
 *.log
+node_modules/
 
 # Sandbox
 examples/sandbox/*.*
