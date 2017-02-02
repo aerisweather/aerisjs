@@ -20,7 +20,7 @@ define([
     var attrs = _.extend({
       name: 'OpenStreetMap',
       subdomains: ['a', 'b', 'c'],
-      server: 'http://{d}.tile.openstreetmap.org',
+      server: 'https://{d}.tile.openstreetmap.org',
       maxZoom: 18
     }, opt_attrs);
 
