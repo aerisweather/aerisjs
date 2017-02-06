@@ -78,7 +78,7 @@ define([
         });
 
         it('should use the OSM tile server pattern', function() {
-          expect(leafletOsmLayer.ctorUrl).toEqual('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+          expect(leafletOsmLayer.ctorUrl).toEqual('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
         });
 
 
@@ -109,7 +109,7 @@ define([
 
         it('should include an attribution to Open Street Maps', function() {
           expect(leafletOsmLayer.ctorOptions.attribution).toEqual(
-            '<a href="http://www.openstreetmap.org/copyright" target="_blank">&copy OpenStreetMap contributors</a>'
+            '<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy OpenStreetMap contributors</a>'
           );
         });
 

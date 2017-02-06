@@ -77,7 +77,7 @@ define([
    * @return {string}
    */
   Tile.prototype.getOSMAttribution_ = function() {
-    return '<a href="http://www.openstreetmap.org/copyright" target="_blank">' +
+    return '<a href="https://www.openstreetmap.org/copyright" target="_blank">' +
       '&copy OpenStreetMap contributors' +
       '</a>';
   };
