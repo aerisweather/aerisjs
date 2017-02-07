@@ -29,11 +29,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('test', [
     'jasmine-legacy',
-    'gjslint',
-
-    // gjslint modifies files in the closure-linter-wrapper node module
-    // every time you run it. This will remove those changes.
-    'shell:ignore-closer-linter-changes'
+    'gjslint'
   ]);
 
   grunt.config.merge({
