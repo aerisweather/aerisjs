@@ -1,3 +1,7 @@
+# 0.9.3
+
+* FIX: Used https for osm layers.
+
 # 0.9.2
 
 * MOD: Use default forecast model for all map layers
