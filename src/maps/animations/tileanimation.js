@@ -68,9 +68,9 @@ define([
      *
      * @type {Object.<number,aeris.maps.layers.AerisTile>}
      * @private
-     * @property timeLayers_
+     * @property layersByTime_
      */
-    this.timeLayers_ = {};
+    this.layersByTime_ = {};
 
 
     /**
@@ -93,39 +93,33 @@ define([
     this.AnimationLayerLoader_ = options.AnimationLayerLoader;
 
 
-    /**
-     * Helper for creating and loading animation layer 'frames'
-     *
-     * @property animationLayerLoader_
-     * @protected
-     * @type {aeris.maps.animations.helpers.AnimationLayerLoader}
-     */
-    this.animationLayerLoader_ = this.createAnimationLayerLoader_();
+    // Helper for creating and loading animation layer 'frames'
+    this.animationLayerLoader_ = new this.AnimationLayerLoader_(this.masterLayer_, {
+      from: this.from_,
+      to: this.to_,
+      limit: this.limit_
+    });
 
 
-    this.prepareMasterLayer_();
+    // Convert the master layer into a "dummy" view model,
+    // with no bound rendering behavior.
+    //
+    // This will allow the client to manipulate the master layer
+    // as a proxy for all other animation frames, without actually
+    // showing the layer on the map.
+    // 
+    this.masterLayer_.removeStrategy();
+
+    // Load all the tile layers for the animation
     this.loadAnimationLayers();
 
+    // Bind the layer loader to the animations time bounds
     this.listenTo(this, 'change:to change:from', function() {
       this.animationLayerLoader_.setTo(this.to_);
       this.animationLayerLoader_.setFrom(this.from_);
     });
   };
   _.inherits(TileAnimation, AbstractAnimation);
-
-
-  /**
-   * @method createAnimationLayerLoader_
-   * @protected
-   */
-  TileAnimation.prototype.createAnimationLayerLoader_ = function() {
-    return new this.AnimationLayerLoader_(this.masterLayer_, {
-      from: this.from_,
-      to: this.to_,
-      limit: this.limit_
-    });
-  };
-
 
   /**
    * @property DEFAULT_TIME_TOLERANCE_
@@ -144,18 +138,21 @@ define([
   TileAnimation.prototype.loadAnimationLayers = function() {
     this.bindLoadEventsTo_(this.animationLayerLoader_);
 
-    this.animationLayerLoader_.once('load:times', function(times, timeLayers) {
-      this.setTimeLayers_(timeLayers);
+    // When layers have loaded, set them up for animating
+    this.animationLayerLoader_.once('load:times', function(times, layersByTime) {
+      this.setLayersByTime_(layersByTime);
       this.refreshCurrentLayer_();
 
+      // Set a default time tolerance, if none is set
       if (_.isNull(this.timeTolerance_)) {
         // Set to regular interval between times
         this.timeTolerance_ = this.getLargestInterval_(times) || TileAnimation.DEFAULT_TIME_TOLERANCE_;
       }
 
-      this.trigger('load:times', times, timeLayers);
+      this.trigger('load:times', times, layersByTime);
     }, this);
 
+    // Start loading layers
     return this.animationLayerLoader_.load().
       fail(function(err) {
         throw err;
@@ -173,7 +170,7 @@ define([
     // to be loaded, before we can preload layers
     this.whenTimesAreLoaded_().
       done(function() {
-        var layers = _.values(this.timeLayers_);
+        var layers = _.values(this.layersByTime_);
 
         // Preload each layer in sequece
         Promise.sequence(layers, function(layer) {
@@ -226,22 +223,6 @@ define([
     return promiseToLoadTimes;
   };
 
-
-  /**
-   * Convert master layer into a "dummy" view model,
-   * with no bound rendering behavior.
-   *
-   * This will allow the client to manipulate the master layer
-   * as a proxy for all other animation frames, without actually
-   * showing the layer on the map.
-   *
-   * @method prepareMasterLayer_
-   * @private
-   */
-  TileAnimation.prototype.prepareMasterLayer_ = function() {
-    // Destroy its strategy, so changes to its state is not rendered
-    this.masterLayer_.removeStrategy();
-  };
 
 
   /**
@@ -361,8 +342,8 @@ define([
    * @method destroy
    */
   TileAnimation.prototype.destroy = function() {
-    _.invoke(this.timeLayers_, 'destroy');
-    this.timeLayers_ = {};
+    _.invoke(this.layersByTime_, 'destroy');
+    this.layersByTime_ = {};
     this.times_.length = 0;
 
     this.stopListening();
@@ -424,12 +405,12 @@ define([
   /**
    * Set the layer "frames" to animate.
    *
-   * @method setTimeLayers_
+   * @method setLayersByTime_
    * @param {Object.<number,aeris.maps.layers.AerisTile>} timeLayers Hash of timestamp --> layer
    * @private
    */
-  TileAnimation.prototype.setTimeLayers_ = function(timeLayers) {
-    this.timeLayers_ = timeLayers;
+  TileAnimation.prototype.setLayersByTime_ = function(timeLayers) {
+    this.layersByTime_ = timeLayers;
     this.times_ = this.getOrderedTimesFromLayers_(timeLayers);
   };
 
@@ -455,7 +436,7 @@ define([
    * @private
    */
   TileAnimation.prototype.getLayerForTime_ = function(time) {
-    return this.timeLayers_[this.getClosestTime_(time)];
+    return this.layersByTime_[this.getClosestTime_(time)];
   };
 
 
@@ -466,7 +447,7 @@ define([
    * @return {aeris.maps.layers.AerisTile}
    */
   TileAnimation.prototype.getLayerForTimeInSameTense_ = function(time) {
-    return this.timeLayers_[this.getClosestTimeInSameTense_(time)];
+    return this.layersByTime_[this.getClosestTimeInSameTense_(time)];
   };
 
 
@@ -542,7 +523,7 @@ define([
     // Sometime we have trouble with old layers sticking around.
     // especially when we need to reload layers for new bounds.
     // This a fail-proof way to handle that issue.
-    _.without(this.timeLayers_, newLayer).
+    _.without(this.layersByTime_, newLayer).
       forEach(this.transitionOut_, this);
 
     isWithinTimeTolerance = this.getTimeDeviation_(this.currentTime_) <= this.timeTolerance_;
@@ -602,8 +583,8 @@ define([
    * @private
    */
   TileAnimation.prototype.transitionInClosestLoadedLayer_ = function(layer) {
-    var loadedTimes = _.keys(this.timeLayers_).filter(function(time) {
-      return this.timeLayers_[time].isLoaded();
+    var loadedTimes = _.keys(this.layersByTime_).filter(function(time) {
+      return this.layersByTime_[time].isLoaded();
     }, this);
     var closestLoadedTime = this.getClosestTimeInSameTense_(layer.get('time').getTime(), loadedTimes);
 
@@ -612,7 +593,7 @@ define([
     }
 
 
-    this.transitionIn_(this.timeLayers_[closestLoadedTime]);
+    this.transitionIn_(this.layersByTime_[closestLoadedTime]);
   };
 
 

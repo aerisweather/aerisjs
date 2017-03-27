@@ -35,9 +35,9 @@ define([
     /**
      * @type {Object.<number,AerisTile>}
      * @private
-     * @property timeLayers_
+     * @property layersByTime_
      */
-    this.timeLayers_ = {};
+    this.layersByTime_ = {};
 
     /**
      * @event load:progress
@@ -92,11 +92,11 @@ define([
     var promiseToLoadLayers = new Promise();
     var resolveOnLoadComplete = function() {
       this.once('load:complete', function() {
-        promiseToLoadLayers.resolve(this.timeLayers_);
+        promiseToLoadLayers.resolve(this.layersByTime_);
       });
     };
     var triggerLoadTimes = function(times) {
-      this.trigger('load:times', times, this.timeLayers_);
+      this.trigger('load:times', times, this.layersByTime_);
     };
 
     this.baseLayer_.loadTileTimes().
@@ -117,13 +117,13 @@ define([
    * @method addLayersForTimes_
    */
   AnimationLayerLoader.prototype.addLayersForTimes_ = function(times) {
-    var currentTimes = this.getTimesFromLayers_(this.timeLayers_);
+    var currentTimes = this.getTimesFromLayers_(this.layersByTime_);
     var allTimes = _.uniq(currentTimes.concat(times));
 
     this.timeLayersFactory_.setTimes(allTimes);
-    this.timeLayers_ = this.timeLayersFactory_.createTimeLayers();
+    this.layersByTime_ = this.timeLayersFactory_.createTimeLayers();
 
-    this.resetLayerLoadEvents_(this.timeLayers_);
+    this.resetLayerLoadEvents_(this.layersByTime_);
   };
 
 
@@ -131,16 +131,16 @@ define([
    * For a hash of { times -> layers }, return the times.
    *
    * @method getTimesFromLayers_
-   * @param {Object.<number, aeris.maps.layers.AerisTile>} timeLayers
+   * @param {Object.<number, aeris.maps.layers.AerisTile>} layersByTime
    * @private
    * @return {Array.<number>}
    */
-  AnimationLayerLoader.prototype.getTimesFromLayers_ = function(timeLayers) {
+  AnimationLayerLoader.prototype.getTimesFromLayers_ = function(layersByTime) {
     var toInt = function(time) {
       return parseInt(time);
     };
 
-    return Object.keys(timeLayers).map(toInt);
+    return Object.keys(layersByTime).map(toInt);
   };
 
 
@@ -151,17 +151,17 @@ define([
    * @method resetLayerLoadEvents_
    * @private
    */
-  AnimationLayerLoader.prototype.resetLayerLoadEvents_ = function(timeLayers) {
-    this.unbindLayerLoadEvents_(timeLayers);
-    this.bindLayerLoadEvents_(timeLayers);
+  AnimationLayerLoader.prototype.resetLayerLoadEvents_ = function(layersByTime) {
+    this.unbindLayerLoadEvents_(layersByTime);
+    this.bindLayerLoadEvents_(layersByTime);
   };
 
 
   /**
    * @method bindLayerLoadEvents_
-   * @param {Object.<number,aeris.maps.layers.AerisTile>} timeLayers
+   * @param {Object.<number,aeris.maps.layers.AerisTile>} layersByTime
    */
-  AnimationLayerLoader.prototype.bindLayerLoadEvents_ = function(timeLayers) {
+  AnimationLayerLoader.prototype.bindLayerLoadEvents_ = function(layersByTime) {
     var triggerLoadResetOnce = _.debounce(this.triggerLoadReset_.bind(this), 15);
 
     var bindLayerEvents = function(layer) {
@@ -171,7 +171,7 @@ define([
       });
     };
 
-    _.each(timeLayers, bindLayerEvents, this);
+    _.each(layersByTime, bindLayerEvents, this);
   };
 
 
@@ -180,10 +180,10 @@ define([
    *
    * @method unbindLayerLoadEvents_
    * @private
-   * @param {object.<number, aeris.maps.layers.AerisTile>} timeLayers
+   * @param {object.<number, aeris.maps.layers.AerisTile>} layersByTime
    */
-  AnimationLayerLoader.prototype.unbindLayerLoadEvents_ = function(timeLayers) {
-    _.each(timeLayers, this.stopListening, this);
+  AnimationLayerLoader.prototype.unbindLayerLoadEvents_ = function(layersByTime) {
+    _.each(layersByTime, this.stopListening, this);
   };
 
 
@@ -216,14 +216,14 @@ define([
    * @method getLoadProgress
    */
   AnimationLayerLoader.prototype.getLoadProgress = function() {
-    var totalCount = _.keys(this.timeLayers_).length;
+    var totalCount = _.keys(this.layersByTime_).length;
     var loadedCount = 0;
 
     if (!totalCount) {
       return 0;
     }
 
-    _.each(this.timeLayers_, function(layer) {
+    _.each(this.layersByTime_, function(layer) {
       if (layer.isLoaded()) {
         loadedCount++;
       }
@@ -241,7 +241,7 @@ define([
     this.stopListening();
     this.timeLayersFactory_.destroy();
 
-    delete this.timeLayers_;
+    delete this.layersByTime_;
   };
 
 
