@@ -294,6 +294,9 @@ define([
     // Set the new layer
     this.currentTime_ = time;
 
+    if (nextLayer === currentLayer) {
+      return;
+    }
 
     // If no time layers have been created
     // wait for time layers to be created,
