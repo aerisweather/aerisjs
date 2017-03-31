@@ -26,5 +26,12 @@ define(function() {
   AnimationOptions.limit;
 
 
+  /**
+   * @property speed
+   * @type {number} Max number of animation frames to load and render.
+   */
+  AnimationOptions.speed;
+
+
   return AnimationOptions;
 });

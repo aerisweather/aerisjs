@@ -149,14 +149,14 @@ define([
     // We want random times for layer creation
     // So our layers are not loaded in sequential
     // chronological order (faster perceived load time).
-    this.shuffleTimes_();
+    this.times_ = this.shuffleTimes_(this.times_);
 
     _.each(this.times_, function(time) {
       this.timeLayers_[time] = this.createLayerForTime_(time);
     }, this);
 
     // Make sure times are sorted
-    this.sortTimes_();
+    this.times_ = this.sortTimes_(this.times_);
 
     return this.timeLayers_;
   };
@@ -326,28 +326,20 @@ define([
    * @private
    * @method shuffleTimes_
    */
-  TimeLayersFactory.prototype.shuffleTimes_ = function() {
-    this.times_ = _.sample(this.times_, this.times_.length);
+  TimeLayersFactory.prototype.shuffleTimes_ = function(times) {
+    return _.sample(times, times.length);
   };
-
-
-  /**
-   * @private
-   * @method sortTimes_
-   */
-  TimeLayersFactory.prototype.sortTimes_ = function() {
-    this.times_ = this.getOrderedTimes();
-  };
-
 
   /**
    * @return {Array.<number>} Timestamps in chronological order.
    * @method getOrderedTimes
    */
-  TimeLayersFactory.prototype.getOrderedTimes = function() {
-    return this.times_.sort(function(a, b) {
-      return a > b ? 1 : -1;
-    });
+  TimeLayersFactory.prototype.sortTimes_ = function(times) {
+    return times
+      .slice(0)
+      .sort(function(a, b) {
+        return a > b ? 1 : -1;
+      });
   };
 
 

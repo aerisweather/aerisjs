@@ -18,9 +18,6 @@ define([
    * @param {aeris.maps.animations.options.AnimationOptions} opt_options
    * @param {number} opt_options.timestep Time between animation frames, in milliseconds.
    * @param {aeris.maps.animations.helpers.AnimationLayerLoader=} opt_options.animationLayerLoader
-   * @param {number=} opt_options.timeTolerance When the time is set on a TileAnimation, the animation object will
-   *        find and display the animation layer with the closest timestamp. However, if the closest available layer is
-   *        more than `timeTolerance` ms away from the set time, the layer will not be displayed. Defaults to 2 hours.
    */
   var TileAnimation = function(layer, opt_options) {
     var options = _.defaults(opt_options || {}, {
@@ -30,15 +27,6 @@ define([
       limit: 20,
       AnimationLayerLoader: AnimationLayerLoader
     });
-
-
-    /**
-     * @property timeTolerance_
-     * @private
-     * @type {number} In milliseconds.
-     */
-    this.timeTolerance_ = null;
-
 
     AbstractAnimation.call(this, options);
 
@@ -107,7 +95,7 @@ define([
     // This will allow the client to manipulate the master layer
     // as a proxy for all other animation frames, without actually
     // showing the layer on the map.
-    // 
+    //
     this.masterLayer_.removeStrategy();
 
     // Load all the tile layers for the animation
@@ -142,12 +130,6 @@ define([
     this.animationLayerLoader_.once('load:times', function(times, layersByTime) {
       this.setLayersByTime_(layersByTime);
       this.refreshCurrentLayer_();
-
-      // Set a default time tolerance, if none is set
-      if (_.isNull(this.timeTolerance_)) {
-        // Set to regular interval between times
-        this.timeTolerance_ = this.getLargestInterval_(times) || TileAnimation.DEFAULT_TIME_TOLERANCE_;
-      }
 
       this.trigger('load:times', times, layersByTime);
     }, this);
@@ -508,7 +490,6 @@ define([
    * @method transition_
    */
   TileAnimation.prototype.transition_ = function(opt_oldLayer, newLayer) {
-    var isWithinTimeTolerance;
 
 
     // If the new layer is not yet loaded,
@@ -529,13 +510,7 @@ define([
     _.without(this.layersByTime_, newLayer).
       forEach(this.transitionOut_, this);
 
-    isWithinTimeTolerance = this.getTimeDeviation_(this.currentTime_) <= this.timeTolerance_;
-    if (isWithinTimeTolerance) {
-      this.transitionInClosestLoadedLayer_(newLayer);
-    }
-    else {
-      this.transitionOut_(newLayer);
-    }
+    this.transitionInClosestLoadedLayer_(newLayer);
   };
 
 
@@ -718,16 +693,6 @@ define([
   TileAnimation.prototype.getLayerIndex_ = function() {
     var timeOfCurrentLayer = this.getClosestTime_(this.currentTime_);
     return this.times_.indexOf(timeOfCurrentLayer);
-  };
-
-
-  /**
-   * @method setTimeTolerance
-   * @param {number} tolerance
-   */
-  TileAnimation.prototype.setTimeTolerance = function(tolerance) {
-    this.timeTolerance_ = tolerance;
-    this.goToTime(this.currentTime_);
   };
 
 

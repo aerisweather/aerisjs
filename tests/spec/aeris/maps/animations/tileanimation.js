@@ -567,6 +567,7 @@ define([
 
         it('should trigger a \'change:time\' event, with a Date object', function() {
           var onChangeTime = jasmine.createSpy('onChangeTime');
+          resolveLayerLoader([5, 7, 10, 15]);
           animation.on('change:time', onChangeTime);
 
           animation.goToTime(10);
@@ -623,102 +624,6 @@ define([
             expect(_.contains(boundAttrs, 'zIndex')).toEqual(true);
           });
 
-
-        });
-
-
-        describe('time tolerance', function() {
-
-          describe('default time tolerance', function() {
-            it('should not show layers outside the standard time layers interval', function() {
-              var timeLayers = createTimeLayersFromTimes([
-                // Standard time layer interval is 100
-                200,
-                300,
-                400,
-                500
-              ]);
-              resolveLayerLoader(timeLayers);
-
-              // within standard interval --> show closest layer
-              animation.goToTime(590);
-              expect(timeLayers).toBeShowingLayerForTime(500);
-
-              // Outside standard interval --> don't show any layer
-              animation.goToTime(610);
-              expect(timeLayers).not.toBeShowingLayerForTime(500);
-              expect(timeLayers).not.toBeShowingLayerForTime(400);
-              expect(timeLayers).not.toBeShowingLayerForTime(300);
-              expect(timeLayers).not.toBeShowingLayerForTime(200);
-              expect(timeLayers).not.toBeShowingLayerForTime(100);
-
-              // And on the lower end...
-              animation.goToTime(110);
-              expect(timeLayers).toBeShowingLayerForTime(200);
-
-              animation.goToTime(90);
-              expect(timeLayers).not.toBeShowingLayerForTime(100);
-              expect(timeLayers).not.toBeShowingLayerForTime(200);
-              expect(timeLayers).not.toBeShowingLayerForTime(300);
-              expect(timeLayers).not.toBeShowingLayerForTime(400);
-              expect(timeLayers).not.toBeShowingLayerForTime(500);
-            });
-
-            it('should not show layers more than 2 hours away, if only one layer is available', function() {
-              var HOUR = 1000 * 60 * 60;
-              var timeLayers = createTimeLayersFromTimes([
-                HOUR * 10
-              ]);
-              resolveLayerLoader(timeLayers);
-
-              // Less than 2 hours difference --> show layer
-              animation.goToTime(HOUR * 9);
-              expect(timeLayers).toBeShowingLayerForTime(HOUR * 10);
-
-              // More than 2 hours difference --> do not show layer
-              animation.goToTime(HOUR * 7);
-              expect(timeLayers).not.toBeShowingLayerForTime(HOUR * 10);
-
-              // Less than 2 hours difference --> show layer
-              animation.goToTime(HOUR * 11);
-              expect(timeLayers).toBeShowingLayerForTime(HOUR * 10);
-
-              // More than 2 hours difference --> do not show layer
-              animation.goToTime(HOUR * 13);
-              expect(timeLayers).not.toBeShowingLayerForTime(HOUR * 10);
-            });
-          });
-
-
-
-          describe('when the set time is outside the timeTolerance', function() {
-
-            it('should not show any layers', function() {
-              var timeLayers = createTimeLayersFromTimes([100, 200, 300]);
-              resolveLayerLoader(timeLayers);
-              animation.setTimeTolerance(10);
-
-              animation.goToTime(150);
-
-              expect(timeLayers).not.toBeShowingLayerForTime(100);
-              expect(timeLayers).not.toBeShowingLayerForTime(200);
-              expect(timeLayers).not.toBeShowingLayerForTime(300);
-            });
-
-          });
-
-          describe('when the set time is within the timeTolerance', function() {
-
-            it('should show the set time layer', function() {
-              var timeLayers = createTimeLayersFromTimes([100, 200, 300]);
-              resolveLayerLoader(timeLayers);
-              animation.setTimeTolerance(10);
-
-              animation.goToTime(109);
-              expect(timeLayers).toBeShowingLayerForTime(100);
-            });
-
-          });
 
         });
 

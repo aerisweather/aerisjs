@@ -17,6 +17,13 @@ define([
   var AnimationLayerLoader = function(baseLayer, opt_options) {
     var options = opt_options || {};
 
+    /** @type {Number} */
+    this.from_ = options.from;
+    /** @type {Number} */
+    this.to_ = options.to;
+    /** @type {Number} */
+    this.limit_ = options.limit;
+
     /**
      * @type {aeris.maps.layers.AerisTile}
      * @private
@@ -90,23 +97,26 @@ define([
    */
   AnimationLayerLoader.prototype.load = function() {
     var promiseToLoadLayers = new Promise();
-    var resolveOnLoadComplete = function() {
+    var times = this.getTimeRange_(this.from_, this.to_, this.limit_);
+    this.addLayersForTimes_(times);
+
+    setTimeout(function() {
+      this.trigger('load:times', times, this.layersByTime_);
       this.once('load:complete', function() {
         promiseToLoadLayers.resolve(this.layersByTime_);
       });
-    };
-    var triggerLoadTimes = function(times) {
-      this.trigger('load:times', times, this.layersByTime_);
-    };
-
-    this.baseLayer_.loadTileTimes().
-      done(this.addLayersForTimes_, this).
-      done(triggerLoadTimes, this).
-      done(resolveOnLoadComplete, this).
-      fail(promiseToLoadLayers.reject, promiseToLoadLayers);
+    }.bind(this), 0);
 
     return promiseToLoadLayers.
       fail(this.trigger.bind(this, 'load:error'));
+  };
+
+  AnimationLayerLoader.prototype.getTimeRange_ = function(from, to, limit) {
+    var animationDuration = to - from;
+    var MIN_INTERVAL = 1000 * 60;
+    var animationInterval = Math.max(Math.floor(animationDuration / limit), MIN_INTERVAL);
+
+    return _.range(from, to, animationInterval);
   };
 
 
@@ -117,10 +127,11 @@ define([
    * @method addLayersForTimes_
    */
   AnimationLayerLoader.prototype.addLayersForTimes_ = function(times) {
-    var currentTimes = this.getTimesFromLayers_(this.layersByTime_);
-    var allTimes = _.uniq(currentTimes.concat(times));
+    var prevTimes = Object.keys(this.layersByTime_)
+      .map(function(time) { return parseInt(time); });
+    var nextTimes = _.uniq(prevTimes.concat(times));
 
-    this.timeLayersFactory_.setTimes(allTimes);
+    this.timeLayersFactory_.setTimes(nextTimes);
     this.layersByTime_ = this.timeLayersFactory_.createTimeLayers();
 
     this.resetLayerLoadEvents_(this.layersByTime_);

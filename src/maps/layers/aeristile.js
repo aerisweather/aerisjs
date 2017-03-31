@@ -9,8 +9,9 @@ define([
   'aeris/maps/layers/abstracttile',
   'aeris/api/getjson',
   'aeris/maps/layers/config/zindex',
-  'aeris/maps/strategy/layers/aeristile'
-], function(_, aerisConfig, Promise, ValidationError, MissingApiKeyError, TimeoutError, UnsupportedFeatureError, BaseTile, getJson, zIndexConfig, AerisTileStrategy) {
+  'aeris/maps/strategy/layers/aeristile',
+  'aeris/util/timestring'
+], function(_, aerisConfig, Promise, ValidationError, MissingApiKeyError, TimeoutError, UnsupportedFeatureError, BaseTile, getJson, zIndexConfig, AerisTileStrategy, timeString) {
   /**
    * Representation of Aeris Interactive Tile layer.
    *
@@ -298,7 +299,6 @@ define([
    */
   AerisTile.prototype.getAerisTimeString = function() {
     var time = this.get('time');
-    var timeString;
 
     // Aeris accepts 0, -1, -2, or -3
     // As 'X' times before now.
@@ -307,27 +307,7 @@ define([
       return time.getTime();
     }
 
-    // Aeris wants the time in the format of
-    // '[year][month][date][hours][minutes][seconds]'
-    // eg: March 8, 2013, 3:25:14pm = '20130308152514'
-    timeString = time.getFullYear().toString();
-
-    _.each([
-      time.getUTCMonth() + 1,
-      time.getUTCDate(),
-      time.getUTCHours(),
-      time.getUTCMinutes(),
-      time.getUTCSeconds()
-    ], function(timePart) {
-      timePart = timePart.toString();
-
-      // Add leading zeros onto each time component
-      timePart = timePart.length === 2 ? timePart : '0' + timePart;
-
-      timeString += timePart;
-    });
-
-    return timeString;
+    return timeString.fromDate(time);
   };
 
 
