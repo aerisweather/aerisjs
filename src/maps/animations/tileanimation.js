@@ -21,10 +21,6 @@ define([
    */
   var TileAnimation = function(layer, opt_options) {
     var options = _.defaults(opt_options || {}, {
-      // Defaults will be set after times are loaded.
-      from: _.now() - (1000 * 60 * 60), // one hour ago
-      to: _.now(),
-      limit: 20,
       AnimationLayerLoader: AnimationLayerLoader
     });
 

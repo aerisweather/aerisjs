@@ -21,8 +21,9 @@ define([
    */
   var AbstractAnimation = function(opt_options) {
     var options = _.defaults(opt_options || {}, {
-      from: 0,
+      from: _.now() - (1000 * 60 * 60), // one hour ago
       to: _.now(),
+      limit: 20,
       speed: 30,
       timestep: 1000 * 60,
       endDelay: 1000
