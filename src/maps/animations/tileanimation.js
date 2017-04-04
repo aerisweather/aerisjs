@@ -19,7 +19,7 @@ define([
    * @param {aeris.maps.animations.helpers.AnimationLayerLoader=} opt_options.animationLayerLoader
    */
   var TileAnimation = function(layer, opt_options) {
-    var options = opt_options || {}
+    var options = opt_options || {};
 
     AbstractAnimation.call(this, options);
 
@@ -125,20 +125,20 @@ define([
       this.trigger('load:reset', this.getLoadProgress());
     }.bind(this), 15);
 
-    var triggerLoadProgress = function() {
+    var triggerLoadProgress = (function() {
       var progress = this.getLoadProgress();
       if (progress === 1) {
         this.trigger('load:complete', progress);
       }
 
       this.trigger('load:progress', progress);
-    }.bind(this);
+    }.bind(this));
 
     _.each(this.layersByTime_, function(lyr) {
       lyr.on({
         'load': triggerLoadProgress,
         'load:reset': triggerLoadReset
-      })
+      });
     }.bind(this));
   };
 
