@@ -1,11 +1,10 @@
 define([
   'aeris/util',
   'aeris/maps/animations/abstractanimation',
-  'aeris/maps/animations/helpers/animationlayerloader',
   'aeris/promise',
   'aeris/errors/invalidargumenterror',
   'aeris/util/findclosest'
-], function(_, AbstractAnimation, AnimationLayerLoader, Promise, InvalidArgumentError, findClosest) {
+], function(_, AbstractAnimation, Promise, InvalidArgumentError, findClosest) {
   /**
    * Animates a single {aeris.maps.layers.AerisTile} layer.
    *
@@ -20,9 +19,7 @@ define([
    * @param {aeris.maps.animations.helpers.AnimationLayerLoader=} opt_options.animationLayerLoader
    */
   var TileAnimation = function(layer, opt_options) {
-    var options = _.defaults(opt_options || {}, {
-      AnimationLayerLoader: AnimationLayerLoader
-    });
+    var options = opt_options || {}
 
     AbstractAnimation.call(this, options);
 
@@ -67,24 +64,6 @@ define([
     this.times_ = [];
 
 
-    /**
-     * animationLayerLoader constructor.
-     *
-     * @property AnimationLayerLoader_
-     * @type {function():aeris.maps.animations.helpers.AnimationLayerLoader}
-     * @protected
-     */
-    this.AnimationLayerLoader_ = options.AnimationLayerLoader;
-
-
-    // Helper for creating and loading animation layer 'frames'
-    this.animationLayerLoader_ = new this.AnimationLayerLoader_(this.masterLayer_, {
-      from: this.from_,
-      to: this.to_,
-      limit: this.limit_
-    });
-
-
     // Convert the master layer into a "dummy" view model,
     // with no bound rendering behavior.
     //
@@ -97,10 +76,9 @@ define([
     // Load all the tile layers for the animation
     this.loadAnimationLayers();
 
-    // Bind the layer loader to the animations time bounds
+    // Reload layers, when our bounds change
     this.listenTo(this, 'change:to change:from', function() {
-      this.animationLayerLoader_.setTo(this.to_);
-      this.animationLayerLoader_.setFrom(this.from_);
+      this.loadAnimationLayers();
     });
   };
   _.inherits(TileAnimation, AbstractAnimation);
@@ -120,21 +98,48 @@ define([
    * @method loadAnimationLayers
    */
   TileAnimation.prototype.loadAnimationLayers = function() {
-    this.bindLoadEventsTo_(this.animationLayerLoader_);
+    // Remove old layers
+    _.each(this.layersByTime_, function(lyr) {
+      lyr.destroy();
+    });
 
-    // When layers have loaded, set them up for animating
-    this.animationLayerLoader_.once('load:times', function(times, layersByTime) {
-      this.setLayersByTime_(layersByTime);
-      this.refreshCurrentLayer_();
-
-      this.trigger('load:times', times, layersByTime);
-    }, this);
-
-    // Start loading layers
-    return this.animationLayerLoader_.load().
-      fail(function(err) {
-        throw err;
+    // Create new layers
+    this.times_ = getTimeRange(this.from_, this.to_, this.limit_);
+    this.layersByTime_ = this.times_.reduce(function(lyrs, time) {
+      lyrs[time] = this.masterLayer_.clone({
+        time: new Date(time),
+        map: null,
+        autoUpdate: false
       });
+      return lyrs;
+    }.bind(this), {});
+    this.trigger('load:times', this.times_.slice(0));
+
+    this.bindLayerLoadEvents_();
+
+    this.preload();
+  };
+
+  TileAnimation.prototype.bindLayerLoadEvents_ = function() {
+    var triggerLoadReset = _.debounce(function() {
+      this.trigger('load:reset', this.getLoadProgress());
+    }.bind(this), 15);
+
+    var triggerLoadProgress = function() {
+      var progress = this.getLoadProgress();
+      if (progress === 1) {
+        this.trigger('load:complete', progress);
+      }
+
+      this.trigger('load:progress', progress);
+    }.bind(this);
+
+    _.each(this.layersByTime_, function(lyr) {
+      lyr.on({
+        'load': triggerLoadProgress,
+        'load:reset': triggerLoadReset
+      })
+    }.bind(this));
   };
 
   /**
@@ -303,7 +308,21 @@ define([
    * @method getLoadProgress
    */
   TileAnimation.prototype.getLoadProgress = function() {
-    return this.animationLayerLoader_.getLoadProgress();
+    var totalCount = _.keys(this.layersByTime_).length;
+    var loadedCount = 0;
+
+    if (!totalCount) {
+      return 0;
+    }
+
+    _.each(this.layersByTime_, function(layer) {
+      if (layer.isLoaded()) {
+        loadedCount++;
+      }
+    }, 0);
+
+
+    return Math.min(loadedCount / totalCount, 1);
   };
 
 
@@ -348,76 +367,6 @@ define([
    */
   TileAnimation.prototype.getTimes = function() {
     return _.clone(this.times_);
-  };
-
-
-  /**
-   * @method bindLoadEventsTo_
-   * @private
-   * @param {aeris.maps.animations.helpers.AnimationLayerLoader} layerLoader
-   */
-  TileAnimation.prototype.bindLoadEventsTo_ = function(layerLoader) {
-    // Proxy load events from AnimationLayerLoader
-    var proxyLayerLoaderEvents = _.partial(this.proxyEvent_, layerLoader);
-
-    _.each([
-      'load:progress',
-      'load:complete',
-      'load:error',
-      'load:reset'
-    ], proxyLayerLoaderEvents, this);
-  };
-
-
-  /**
-   * @method proxyEvent_
-   * @param {aeris.Events} target
-   * @param {string} eventName
-   * @private
-   */
-  TileAnimation.prototype.proxyEvent_ = function(target, eventName) {
-    this.listenTo(target, eventName, function(var_args) {
-      var args = _.argsToArray(arguments);
-      this.trigger.apply(this, [eventName].concat(args));
-    });
-  };
-
-
-  /**
-   * Set the layer "frames" to animate.
-   *
-   * @method setLayersByTime_
-   * @param {Object.<number,aeris.maps.layers.AerisTile>} timeLayers Hash of timestamp --> layer
-   * @private
-   */
-  TileAnimation.prototype.setLayersByTime_ = function(timeLayers) {
-    this.layersByTime_ = timeLayers;
-    this.times_ = this.getOrderedTimesFromLayers_(timeLayers);
-  };
-
-
-  /**
-   *
-   * @param {Object.<number, aeris.maps.layers.AerisTile>} timeLayers
-   * @return {Array.<Number>}
-   * @private
-   */
-  TileAnimation.prototype.getOrderedTimesFromLayers_ = function(timeLayers) {
-    var times = _.map(_.keys(timeLayers), function(time) {
-      return parseInt(time);
-    });
-    return _.sortBy(times, _.identity);
-  };
-
-
-  /**
-   * @method getLayerForTime_
-   * @param {Number} time
-   * @return {aeris.maps.layers.AerisTile}
-   * @private
-   */
-  TileAnimation.prototype.getLayerForTime_ = function(time) {
-    return this.layersByTime_[this.getClosestTime_(time)];
   };
 
 
@@ -572,43 +521,6 @@ define([
 
 
   /**
-   * @method getTimeDeviation_
-   * @private
-   * @param {number} time
-   * @return {number} The difference the provided time, and the closest available time.
-   */
-  TileAnimation.prototype.getTimeDeviation_ = function(time) {
-    return Math.abs(time - this.getClosestTime_(time));
-  };
-
-
-  /**
-   * @method getLargestInterval_
-   * @private
-   * @param {Array.<number>} numbers
-   */
-  TileAnimation.prototype.getLargestInterval_ = function(numbers) {
-    var lastTime, sortedTimes;
-
-    // No intervals exist
-    if (numbers.length < 2) {
-      return 0;
-    }
-
-    lastTime = numbers[0];
-    sortedTimes = _.sortBy(numbers, _.identity);
-
-    return sortedTimes.reduce(function(interval, time) {
-      var currentInterval = Math.abs(time - lastTime);
-
-      lastTime = time;
-
-      return Math.max(interval, currentInterval);
-    }, 0);
-  };
-
-
-  /**
    * Update the attributes of the provided layer
    * to match those of the master layer.
    *
@@ -690,6 +602,14 @@ define([
     var timeOfCurrentLayer = this.getClosestTime_(this.currentTime_);
     return this.times_.indexOf(timeOfCurrentLayer);
   };
+
+  function getTimeRange(from, to, limit) {
+    var animationDuration = to - from;
+    var MIN_INTERVAL = 1000 * 60;
+    var animationInterval = Math.max(Math.floor(animationDuration / limit), MIN_INTERVAL);
+
+    return _.range(from, to, animationInterval);
+  }
 
 
   return _.expose(TileAnimation, 'aeris.maps.animations.TileAnimation');
