@@ -80,6 +80,9 @@ define([
     this.listenTo(this, 'change:to change:from', function() {
       this.loadAnimationLayers();
     });
+
+    // Preload layers, when the masterLayer get a map
+    this.listenTo(this.masterLayer_, 'map:set', this.preload)
   };
   _.inherits(TileAnimation, AbstractAnimation);
 
@@ -114,6 +117,9 @@ define([
       return lyrs;
     }.bind(this), {});
     this.trigger('load:times', this.times_.slice(0));
+
+    // Load the layer closest to our current time
+    this.goToTime(this.getCurrentTime());
 
     this.bindLayerLoadEvents_();
 
