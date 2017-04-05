@@ -81,8 +81,10 @@ define([
       this.loadAnimationLayers();
     });
 
-    // Preload layers, when the masterLayer get a map
-    this.listenTo(this.masterLayer_, 'map:set', this.preload)
+    // Make sure the current layer is loaded, when the masterLayer get a map
+    this.listenTo(this.masterLayer_, 'map:set', function() {
+      this.preloadLayer_(this.getCurrentLayer());
+    });
   };
   _.inherits(TileAnimation, AbstractAnimation);
 
@@ -122,8 +124,6 @@ define([
     this.goToTime(this.getCurrentTime());
 
     this.bindLayerLoadEvents_();
-
-    this.preload();
   };
 
   TileAnimation.prototype.bindLayerLoadEvents_ = function() {
@@ -156,14 +156,10 @@ define([
 
     var layers = _.values(this.layersByTime_);
 
-    // Preload the current layer first
-    this.preloadLayer_(this.getCurrentLayer())
-      .done(function() {
-        // Then preload the rest
-        Promise.map(layers, this.preloadLayer_, this).
-          done(promiseToPreload.resolve).
-          fail(promiseToPreload.reject);
-      }.bind(this));
+    // Then preload the rest
+    Promise.map(layers, this.preloadLayer_, this)
+      .done(promiseToPreload.resolve)
+      .fail(promiseToPreload.reject);
 
     return promiseToPreload;
   };
