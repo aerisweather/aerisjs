@@ -147,22 +147,17 @@ define([
    */
   TileAnimation.prototype.preload = function() {
     var promiseToPreload = new Promise();
-    var mapToUseForPreloading = this.masterLayer_.getMap();
 
-    // We need our times (and timeLayers)
-    // to be loaded, before we can preload layers
-    this.whenTimesAreLoaded_().
-      done(function() {
-        var layers = _.values(this.layersByTime_);
+    var layers = _.values(this.layersByTime_);
 
-        // Preload each layer in sequece
-        Promise.sequence(layers, function(layer) {
-          return layer.preload(mapToUseForPreloading);
-        }).
+    // Preload the current layer first
+    this.preloadLayer_(this.getCurrentLayer())
+      .done(function() {
+        // Then preload the rest
+        Promise.map(layers, this.preloadLayer_, this).
           done(promiseToPreload.resolve).
           fail(promiseToPreload.reject);
-      }, this).
-      fail(promiseToPreload.reject);
+      }.bind(this));
 
     return promiseToPreload;
   };
@@ -178,32 +173,6 @@ define([
    */
   TileAnimation.prototype.preloadLayer_ = function(layer) {
     return layer.preload(this.masterLayer_.getMap());
-  };
-
-
-  /**
-   * @method whenTimesAreLoaded_
-   * @private
-   * @return {aeris.Promise} A promise to load tile layer times.
-   *                         Resolves immediately if times are already loaded.
-   */
-  TileAnimation.prototype.whenTimesAreLoaded_ = function() {
-    var promiseToLoadTimes = new Promise();
-    var areTimesLoaded = !!this.times_.length;
-
-    if (areTimesLoaded) {
-      promiseToLoadTimes.resolve(this.getTimes());
-    }
-    else {
-      this.listenToOnce(this, {
-        'load:times': promiseToLoadTimes.resolve.
-          bind(promiseToLoadTimes),
-        'load:error': promiseToLoadTimes.reject.
-          bind(promiseToLoadTimes)
-      });
-    }
-
-    return promiseToLoadTimes;
   };
 
 
