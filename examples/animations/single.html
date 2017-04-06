@@ -61,9 +61,7 @@
     //zoom: 11,
     scrollZoom: false
   });
-  radar = new aeris.maps.layers.Temps({
-    server: '//tile.aerisapi.com'
-  });
+  radar = new aeris.maps.layers.Radar();
 
   // Create an animation "wrapper" around the satellite layer.
   animation = new aeris.maps.animations.TileAnimation(radar, {
