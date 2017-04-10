@@ -11,6 +11,8 @@ define([
         endpoint: 'stormcells',
         action: 'within',
         params: {
+          p: ':auto',
+          radius: '3000mi',
           limit: 1000,
           fields: [
             'id',
