@@ -12,7 +12,7 @@ define([
       model: GeoJsonFeature
     });
 
-    options.params = Object.assign({}, options.params || {}, {
+    options.params = _.extend({}, options.params || {}, {
       format: 'geojson'
     });
 
