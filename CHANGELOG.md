@@ -1,3 +1,9 @@
+# 1.0.0
+
+* MOD: Animation - do not use times.json to resolve valid times.
+       Instead, allow the MapApi to resolve the validTime.
+* FIX: Use correct Aeris API url for storm cell markers
+
 # 0.9.3
 
 * FIX: Used https for osm layers.
