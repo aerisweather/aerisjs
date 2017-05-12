@@ -3,7 +3,7 @@ define([
   'aeris/maps/strategy/layers/abstractmaptype',
   'aeris/maps/strategy/layers/maptype/imagemaptype',
   'googlemaps!'
-], function(_, BaseLayerStrategy, ImageMapType, gmaps) {
+], function(_, AbstractMapTypeStrategy, ImageMapType, gmaps) {
   /**\
    * @class aeris.maps.gmaps.layers.TileLayerStrategy
    * @extends aeris.maps.gmaps.layers.AbstractMapTypeStrategy
@@ -18,7 +18,7 @@ define([
 
     this.MapType_ = options.MapType;
 
-    BaseLayerStrategy.apply(this, arguments);
+    AbstractMapTypeStrategy.apply(this, arguments);
 
     this.listenTo(this.object_, {
       'change:opacity': this.updateOpacity,
@@ -27,18 +27,22 @@ define([
     this.updateOpacity();
   };
 
-  _.inherits(TileLayerStrategy, BaseLayerStrategy);
+  _.inherits(TileLayerStrategy, AbstractMapTypeStrategy);
 
 
   /**
    * @method createView_
    */
   TileLayerStrategy.prototype.createView_ = function() {
-    var mapTypeOptions = this.getMapTypeOptions_();
-
-    this.view_ = new this.MapType_(mapTypeOptions);
-
-    return this.view_;
+    return new this.MapType_({
+			getTileUrl: _.bind(this.getUrl_, this),
+			tileSize: new gmaps.Size(256, 256),
+			minZoom: this.object_.get('minZoom'),
+			maxZoom: this.object_.get('maxZoom'),
+			name: this.object_.get('name') || 'Aeris Weather Layer',
+			opacity: this.object_.get('opacity'),
+			zIndex: this.object_.get('zIndex')
+		});
   };
 
 
@@ -48,34 +52,18 @@ define([
 
       // Map view fires 'idle' event when all layers are loaded.
       google.maps.event.addListenerOnce(this.mapView_, 'idle', function() {
-        this.object_.trigger('load');
+        // TODO: this is firing immediatlely for layers,
+        // before their first load event
+        //this.object_.trigger('load');
       }.bind(this));
     }, this);
 
     this.googleEvents_.listenTo(this.getView(), 'load', function() {
+      console.log('google-tile-view.load');
       this.object_.trigger('load');
     }, this);
 
-    BaseLayerStrategy.prototype.delegateMapEvents_.apply(this, arguments);
-  };
-
-
-  /**
-   * @return {google.maps.ImageMapTypeOptions}
-   *
-   * @private
-   * @method getMapTypeOptions_
-   */
-  TileLayerStrategy.prototype.getMapTypeOptions_ = function() {
-    return {
-      getTileUrl: _.bind(this.getUrl_, this),
-      tileSize: new gmaps.Size(256, 256),
-      minZoom: this.object_.get('minZoom'),
-      maxZoom: this.object_.get('maxZoom'),
-      name: this.object_.get('name') || 'Aeris Weather Layer',
-      opacity: this.object_.get('opacity'),
-      zIndex: this.object_.get('zIndex')
-    };
+    AbstractMapTypeStrategy.prototype.delegateMapEvents_.apply(this, arguments);
   };
 
 

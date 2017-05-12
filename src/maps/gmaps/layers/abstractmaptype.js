@@ -1,7 +1,7 @@
 define([
   'aeris/util',
   'aeris/maps/strategy/abstractstrategy'
-], function(_, BaseStrategy) {
+], function(_, AbstractStrategy) {
   /**
    * Base class for layer strategies
    * interacting with the {google.maps.MapType} interface.
@@ -48,10 +48,10 @@ define([
     this.isBaseLayer_ = _.isUndefined(this.isBaseLayer_) ? false : this.isBaseLayer_;
 
 
-    BaseStrategy.apply(this, arguments);
+    AbstractStrategy.apply(this, arguments);
   };
 
-  _.inherits(AbstractMapTypeStrategy, BaseStrategy);
+  _.inherits(AbstractMapTypeStrategy, AbstractStrategy);
 
 
   /**
@@ -70,7 +70,7 @@ define([
       baseLayer: this.isBaseLayer_
     }, opt_options);
 
-    BaseStrategy.prototype.setMap.call(this, aerisMap, options);
+    AbstractStrategy.prototype.setMap.call(this, aerisMap, options);
 
     // Store the previous map type
     // in case we want to revert

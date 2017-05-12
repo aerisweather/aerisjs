@@ -7,7 +7,7 @@ define([
   'aeris/maps/layers/errors/layerloadingerror',
   'aeris/maps/layers/animationlayer',
   'aeris/maps/strategy/layers/tile'
-], function(_, Promise, Events, UnimplementedPropertyError, ValidationError, LayerLoadingError, BaseLayer, TileStrategy) {
+], function(_, Promise, Events, UnimplementedPropertyError, ValidationError, LayerLoadingError, AnimationLayer, TileStrategy) {
   /**
    * Representation of image tile layer. Tile layers are
    * expected to pull in tile images from an API.
@@ -118,10 +118,10 @@ define([
       }
     });
 
-    BaseLayer.call(this, attrs, options);
+    AnimationLayer.call(this, attrs, options);
   };
 
-  _.inherits(AbstractTile, BaseLayer);
+  _.inherits(AbstractTile, AnimationLayer);
 
 
   /**
@@ -139,7 +139,7 @@ define([
       return new ValidationError('opacity', 'must be a number between 0 and 1');
     }
 
-    return BaseLayer.prototype.validate.apply(this, arguments);
+    return AnimationLayer.prototype.validate.apply(this, arguments);
   };
 
 
