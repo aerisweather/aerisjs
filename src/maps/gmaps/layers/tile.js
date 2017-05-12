@@ -56,17 +56,9 @@ define([
   TileLayerStrategy.prototype.delegateMapEvents_ = function() {
     this.googleEvents_.listenTo(this.mapView_, 'bounds_changed', function() {
       this.object_.trigger('load:reset');
-
-      // Map view fires 'idle' event when all layers are loaded.
-      google.maps.event.addListenerOnce(this.mapView_, 'idle', function() {
-        // TODO: this is firing immediatlely for layers,
-        // before their first load event
-        //this.object_.trigger('load');
-      }.bind(this));
     }, this);
 
-    this.googleEvents_.listenTo(this.getView(), 'load', function() {
-      console.log('google-tile-view.load');
+    this.googleEvents_.listenTo(this.mapView_, 'tilesloaded', function() {
       this.object_.trigger('load');
     }, this);
 
@@ -113,7 +105,6 @@ define([
 
   TileLayerStrategy.prototype.updateZIndex_ = function () {
     var zIndex = this.object_.get('zIndex');
-    console.log(`updateZIndex for ${this.object_.get('tileType')}: ${zIndex}`);
 
     // Assign `aerisZIndex` prop to the view,
     // so we can manually rearrange layers against one another.
@@ -123,10 +114,8 @@ define([
     // If there's no map assigned to this layer,
     // we can't do anything here
     if (!this.object_.getMap()) {
-      console.log(`${this.object_.get('tileType')} DOES NOT have map`);
       return;
     }
-    console.log(`${this.object_.get('tileType')} has map`);
 
     // Find all tile layer views
     var mapView = this.object_.getMap().getView();
@@ -135,16 +124,44 @@ define([
       .filter(function(view) { return 'aerisZIndex' in view; });
 
     // Remove all layer views from the map view
-    mapView.overlayMapTypes.clear();
+    //mapView.overlayMapTypes.clear();
 
-    // Add them all back, in order
+    // Sort the layer views in place
+    // so we don't have to re-render
+    // https://en.wikipedia.org/wiki/Selection_sort
+    var views = mapView.overlayMapTypes.getArray();
+    var viewsLength = views.length;
+    for (var iPointer = 0; iPointer < viewsLength - 1; iPointer++) {
+      // Find the index of any view
+      // with a lower zIndex than the pointer view
+      var iMin = iPointer;
+      for (var i = iPointer + 1; i < viewsLength; i++) {
+        if (views[i].aerisZIndex < views[iMin].aerisZIndex) {
+          iMin = i;
+        }
+      }
+
+      if (iMin !== iPointer) {
+        // Swap minView with pointerView
+        var minView = views[iMin];
+        var pointerView = views[iPointer];
+
+        // Put minView where pointerView was
+        mapView.overlayMapTypes.setAt(iPointer, minView);
+
+        // Put pointerView where minView was
+        mapView.overlayMapTypes.setAt(iMin, pointerView);
+      }
+    }
+
+   /* // Add them all back, in order
     var sortedViews = _.sortBy(zIndexableViews, function(v) {
       return v.aerisZIndex;
     });
     sortedViews
       .forEach(function(view) {
         mapView.overlayMapTypes.push(view);
-      });
+      });*/
 
   };
 

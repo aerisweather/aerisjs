@@ -18,23 +18,23 @@ require([
     temps.setZIndex(radarZIndex);
 	};
 
-  /*
-  map.on('click', (latLon) => console.log(latLon));
+  /*map.on('click', (latLon) => console.log(latLon));
 
-  radar = new AerisTile({
-    tileType: 'radar'
+  lyr = new AerisTile({
+    tileType: 'temperatures',
+    opacity: 0.75
   });
-  animation = new TileAnimation(radar, {
-    from: Date.now() - 3 * HOUR,
+  animation = new TileAnimation(lyr, {
+    from: Date.now() - 24 * HOUR,
     to: Date.now(),
     limit: 10,
-    speed: 50
+    speed: 500
   });
 
-  radar.setMap(map);
+  lyr.setMap(map);
 
-  animation.preload();
-  animation.start();
+  //animation.preload();
+  //animation.start();
 
   animation.on({
     'load:error': function(err) {
