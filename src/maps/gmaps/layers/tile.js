@@ -1,9 +1,8 @@
 define([
   'aeris/util',
   'aeris/maps/strategy/layers/abstractmaptype',
-  'aeris/maps/strategy/layers/maptype/imagemaptype',
   'googlemaps!'
-], function(_, AbstractMapTypeStrategy, ImageMapType, gmaps) {
+], function(_, AbstractMapTypeStrategy, gmaps) {
   /**\
    * @class aeris.maps.gmaps.layers.TileLayerStrategy
    * @extends aeris.maps.gmaps.layers.AbstractMapTypeStrategy
@@ -13,7 +12,7 @@ define([
    */
   var TileLayerStrategy = function(layer, opt_options) {
     var options = _.extend({
-      MapType: ImageMapType
+      MapType: gmaps.ImageMapType
     }, opt_options);
 
     this.MapType_ = options.MapType;
@@ -22,9 +21,18 @@ define([
 
     this.listenTo(this.object_, {
       'change:opacity': this.updateOpacity,
-      'change:zIndex': this.updateZIndex_
+      'change:zIndex': this.updateZIndex_,
+      // zIndex can only be applied when we have a map set,
+      // so when a map is set, make sure zIndex is rendered properly
+      'map:set': this.updateZIndex_
     }, this);
     this.updateOpacity();
+
+
+    // gmaps does not support a `setZIndex` method,
+    // so we have to do some funky stuff to get zIndex to work.
+    // Make sure that funky stuff is initialized
+    this.updateZIndex_();
   };
 
   _.inherits(TileLayerStrategy, AbstractMapTypeStrategy);
@@ -35,14 +43,13 @@ define([
    */
   TileLayerStrategy.prototype.createView_ = function() {
     return new this.MapType_({
-			getTileUrl: _.bind(this.getUrl_, this),
-			tileSize: new gmaps.Size(256, 256),
-			minZoom: this.object_.get('minZoom'),
-			maxZoom: this.object_.get('maxZoom'),
-			name: this.object_.get('name') || 'Aeris Weather Layer',
-			opacity: this.object_.get('opacity'),
-			zIndex: this.object_.get('zIndex')
-		});
+      getTileUrl: _.bind(this.getUrl_, this),
+      tileSize: new gmaps.Size(256, 256),
+      minZoom: this.object_.get('minZoom'),
+      maxZoom: this.object_.get('maxZoom'),
+      name: this.object_.get('name') || 'Aeris Weather Layer',
+      opacity: this.object_.get('opacity')
+    });
   };
 
 
@@ -104,9 +111,41 @@ define([
   };
 
 
-  TileLayerStrategy.prototype.updateZIndex_ = function() {
+  TileLayerStrategy.prototype.updateZIndex_ = function () {
     var zIndex = this.object_.get('zIndex');
-    this.getView().setZIndex(zIndex);
+    console.log(`updateZIndex for ${this.object_.get('tileType')}: ${zIndex}`);
+
+    // Assign `aerisZIndex` prop to the view,
+    // so we can manually rearrange layers against one another.
+    // (gmaps does not support a `setZIndex` method)
+    this.getView().aerisZIndex = this.object_.get('zIndex');
+
+    // If there's no map assigned to this layer,
+    // we can't do anything here
+    if (!this.object_.getMap()) {
+      console.log(`${this.object_.get('tileType')} DOES NOT have map`);
+      return;
+    }
+    console.log(`${this.object_.get('tileType')} has map`);
+
+    // Find all tile layer views
+    var mapView = this.object_.getMap().getView();
+    var zIndexableViews = mapView.overlayMapTypes
+      .getArray()
+      .filter(function(view) { return 'aerisZIndex' in view; });
+
+    // Remove all layer views from the map view
+    mapView.overlayMapTypes.clear();
+
+    // Add them all back, in order
+    var sortedViews = _.sortBy(zIndexableViews, function(v) {
+      return v.aerisZIndex;
+    });
+    sortedViews
+      .forEach(function(view) {
+        mapView.overlayMapTypes.push(view);
+      });
+
   };
 
   return TileLayerStrategy;
