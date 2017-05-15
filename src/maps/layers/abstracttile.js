@@ -242,6 +242,11 @@ define([
    *        to start loading.
    */
   AbstractTile.prototype.preload = function(map) {
+    if (this.isPreloading_) {
+      return Promise.resolve();
+    }
+    this.isPreloading_ = true;
+
     var promiseToLoad = new Promise();
     var attrs_orig = this.pick(['opacity']);
     var attrListener = new Events();
@@ -255,6 +260,7 @@ define([
     // We don't have a map to use,
     // so that's all
     if (!map) {
+      this.isPreloading_ = false;
       promiseToLoad.reject(new LayerLoadingError('Unable to preload Tile: no map has been specified.'));
       return promiseToLoad;
     }
@@ -271,6 +277,7 @@ define([
       }
 
       this.set(attrs_orig);
+      this.isPreloading_ = false;
       promiseToLoad.resolve();
     });
 
