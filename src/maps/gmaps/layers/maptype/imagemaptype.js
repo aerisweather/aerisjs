@@ -160,7 +160,6 @@ define([
       mapTypeEventHub.trigger('init', this);
     }
 
-
     return tileContainer;
   };
 

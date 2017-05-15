@@ -133,9 +133,9 @@ define([
     }
     if (
       !_.isNumber(attrs.opacity) ||
-        attrs.opacity > 1 ||
-        attrs.opacity < 0
-      ) {
+      attrs.opacity > 1 ||
+      attrs.opacity < 0
+    ) {
       return new ValidationError('opacity', 'must be a number between 0 and 1');
     }
 
