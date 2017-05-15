@@ -35,14 +35,14 @@ require([
   animation = new TileAnimation(lyr, {
     from: moment().startOf('hour').subtract(10, 'hours').toDate(),
     to: moment().startOf('hour').toDate(),
-    limit: 10,
-    speed: 500
+    limit: 25,
+    speed: 300
   });
 
   lyr.setMap(map);
 
-  //animation.preload();
-  //animation.start();
+  animation.preload();
+  animation.start();
 
   animation.on({
     'load:error': function(err) {
@@ -85,5 +85,14 @@ Ideas:
 
 - why is it showing tiles that are not really loaded?
   see if we can fix that.
+
+
+
+Try this:
+  initLyr = animation.getCurrentLayer();
+  animation.previous();
+  initLyr.setMap(null);
+  // current layer disappears!
+
   
  */
