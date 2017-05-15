@@ -115,7 +115,6 @@ define([
    * @method beforeRemove_
    */
   AbstractMapTypeStrategy.prototype.beforeRemove_ = function() {
-    var index;
 
     // Base Layer --> Revert to the last map type
     if (this.isBaseLayer_) {
@@ -125,16 +124,12 @@ define([
     }
     // Overlay --> Remove Overlay from map
     else {
-      _.each(this.mapView_.overlayMapTypes.getArray(), function(mapType, i) {
-        // Equality or object comparison tests
-        // don't seem to work here.
-        // Checking for the same name will be fine,
-        // as long as you don't have two of the same
-        // type of tile on the same map (why would you?)
-        if (mapType.name === this.getView().name) {
-          index = i;
-        }
+      var overlayMapTypes = this.mapView_.overlayMapTypes.getArray();
+      var viewToRemove = _.find(overlayMapTypes, function(mapType) {
+        return mapType === this.getView();
       }, this);
+      var index = overlayMapTypes.indexOf(viewToRemove);
+
       this.mapView_.overlayMapTypes.removeAt(index);
     }
 
