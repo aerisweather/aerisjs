@@ -33,8 +33,8 @@ require([
     opacity: 0.75
   });
   animation = new TileAnimation(lyr, {
-    from: Date.now() - 24 * HOUR,
-    to: Date.now(),
+    from: moment().startOf('hour').subtract(10, 'hours').toDate(),
+    to: moment().startOf('hour').toDate(),
     limit: 10,
     speed: 500
   });
@@ -65,7 +65,7 @@ require([
 
   function renderInfo() {
     const currTime = animation.getCurrentTime();
-    const timeStr = `${currTime.getHours()}:${currTime.getMinutes()}`;
+    const timeStr = `${currTime.getUTCHours()}:${currTime.getMinutes()}`;
     const text = `Frame: ${animation.indexOfCurrentTime_()}. Time: ${timeStr}. Loaded? ${animation.getCurrentLayer().isLoaded()}; Prog: ${(animation.getLoadProgress() * 100).toFixed(0)}%`;
     $('#animation-time').text(text);
   }

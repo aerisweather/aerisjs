@@ -243,10 +243,10 @@ define([
    */
   AbstractTile.prototype.preload = function(map) {
     if (this.isPreloading_) {
-      console.log(`Layer ${this.getAerisTimeString()} is already preloading`);
+      console.log(`Layer ${this.get('tileType')}/${this.getAerisTimeString()} is already preloading`);
       return Promise.resolve();
     }
-    console.log(`Preloading ${this.getAerisTimeString()}`);
+    console.log(`Preloading ${this.get('tileType')}/${this.getAerisTimeString()}`);
     this.isPreloading_ = true;
 
     var promiseToLoad = new Promise();
@@ -280,7 +280,7 @@ define([
 
       this.set(attrs_orig);
       this.isPreloading_ = false;
-      console.log(`Preloading ${this.getAerisTimeString()} complete`);
+      console.log(`Preloading ${this.get('tileType')}/${this.getAerisTimeString()} complete`);
       promiseToLoad.resolve();
     });
 

@@ -83,7 +83,6 @@ define([
 
     // Make sure the current layer is loaded, when the masterLayer get a map
     this.listenTo(this.masterLayer_, 'map:set', function() {
-      this.preloadLayer_(this.getCurrentLayer());
       this.transitionIn_(this.getCurrentLayer());
     });
   };
@@ -395,6 +394,7 @@ define([
     if (!newLayer.isLoaded()) {
       this.preloadLayer_(newLayer);
       this.transitionWhenLoaded_(opt_oldLayer, newLayer);
+      return;
     }
 
 
@@ -404,6 +404,8 @@ define([
     // This a fail-proof way to handle that issue.
     _.without(this.layersByTime_, newLayer).
       forEach(this.transitionOut_, this);
+    //this.transitionOut_(this.getCurrentLayer());
+    //if (opt_oldLayer) { this.transitionOut_(this.get); }
 
     this.transitionInClosestLoadedLayer_(newLayer);
     //this.transitionIn_(newLayer);
@@ -416,6 +418,7 @@ define([
    * @private
    */
   TileAnimation.prototype.transitionIn_ = function(layer) {
+    //console.log(`transitionIn ${layer.getAerisTimeString()}`);
     this.syncLayerToMaster_(layer);
   };
 
@@ -426,6 +429,7 @@ define([
    * @private
    */
   TileAnimation.prototype.transitionOut_ = function(layer) {
+    //console.log(`transitionOut ${layer.getAerisTimeString()}`);
     layer.stopListening(this.masterLayer_);
     layer.setOpacity(0);
   };
