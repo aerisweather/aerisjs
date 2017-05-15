@@ -119,12 +119,6 @@ define([
 
     // Find all tile layer views
     var mapView = this.object_.getMap().getView();
-    var zIndexableViews = mapView.overlayMapTypes
-      .getArray()
-      .filter(function(view) { return 'aerisZIndex' in view; });
-
-    // Remove all layer views from the map view
-    //mapView.overlayMapTypes.clear();
 
     // Sort the layer views in place
     // so we don't have to re-render
@@ -141,11 +135,13 @@ define([
         }
       }
 
-      if (iMin !== iPointer) {
-        // Swap minView with pointerView
-        var minView = views[iMin];
-        var pointerView = views[iPointer];
-
+      var minView = views[iMin];
+      var pointerView = views[iPointer];
+      if (
+        iMin !== iPointer &&
+        'aerisZIndex' in minView &&
+        'aerisZIndex' in pointerView
+      ) {
         // Put minView where pointerView was
         mapView.overlayMapTypes.setAt(iPointer, minView);
 
@@ -153,16 +149,6 @@ define([
         mapView.overlayMapTypes.setAt(iMin, pointerView);
       }
     }
-
-   /* // Add them all back, in order
-    var sortedViews = _.sortBy(zIndexableViews, function(v) {
-      return v.aerisZIndex;
-    });
-    sortedViews
-      .forEach(function(view) {
-        mapView.overlayMapTypes.push(view);
-      });*/
-
   };
 
   return TileLayerStrategy;

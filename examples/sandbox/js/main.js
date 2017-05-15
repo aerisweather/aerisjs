@@ -10,18 +10,25 @@ require([
 		zoom: 6,
 		endDelay: 3000
 	});
-  radar = new AerisTile({ tileType: 'radar', map, zIndex: 200 });
-  temps = new AerisTile({ tileType: 'temperatures', map, zIndex: 100, opacity: .5 });
+  /*radar = new AerisTile({ tileType: 'radar', map, zIndex: 200 });
+  //temps = new AerisTile({ tileType: 'temperatures', map, zIndex: 100, opacity: .5 });
   switchZ = () => {
     const radarZIndex = radar.getZIndex();
     radar.setZIndex(temps.getZIndex());
     temps.setZIndex(radarZIndex);
 	};
+  radar.on({
+    load: () => console.log('loaded')
+  })*/
 
-  /*map.on('click', (latLon) => console.log(latLon));
+  baseLayer = new AerisTile({
+    tileType: 'flat',
+    zIndex: 0,
+    map
+  });
 
   lyr = new AerisTile({
-    tileType: 'temperatures',
+    tileType: 'radar',
     opacity: 0.75
   });
   animation = new TileAnimation(lyr, {
@@ -47,11 +54,8 @@ require([
     },
     'load:progress': function(progress) {
       console.log(`Progress: ${progress}`);
-      /!*if (progress >= 0.2) {
-        animation.start();
-      }*!/
     }
-  });*/
+  });
 });
 
 var SECOND = 1000;
@@ -59,27 +63,13 @@ var MINUTE = SECOND * 60;
 var HOUR = MINUTE * 60;
 var DAY = HOUR * 24;
 /*
-Found the bad layer.
-  bad layer had a map, and opacity=1
-  I tried doing `badLayer.setMap(null); badLayer.setMap(masterLayer.getMap());
-    and it showed up.
+Ideas:
+- Go back to custom ImageMapType, and try to fix
+- Preload only one layer at a time,
+  so we're not slamming the map.
+- Forget about 'isLoaded()` animation logic
 
-This also fixed it:
- badLyr.getMap() === masterLayer.getMap()
-   true
- masterLayer.getMap() === window.map
-   true
- badLyr.setMap(null)
- badLyr.setMap(masterLayer.getMap())
-
-For a bad layer, I notice that lyr.getView().divs_ is empty.
-  (unlike for a good layer)
-  I wonder if there's an issue with out Custom ImageMapType.
-  Unfortunately, I don't know why we implemented it,
-    so I don't know if I can swap it out for a standard GMap layer.
-  Might be worth trying...
-
-    See 22d2590bb595202b6dc604b69e639ec7e16186e1
-       - Create custom G Overlay MapType
-       in order to handle z-index changes.
+- why is it showing tiles that are not really loaded?
+  see if we can fix that.
+  
  */
