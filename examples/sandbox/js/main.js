@@ -1,10 +1,11 @@
 require([
+  'jquery',
   'aeris/util',
   'aeris/maps/map',
   'aeris/maps/layers/aeristile',
   'aeris/maps/animations/tileanimation',
   'aeris/maps/animations/animationsync'
-], function (_, Map, AerisTile, TileAnimation, AnimationSync) {
+], function ($, _, Map, AerisTile, TileAnimation, AnimationSync) {
 	map = new Map('map-canvas', {
 		center: [38.37611542403604, -77.93701171875],
 		zoom: 6,
@@ -54,8 +55,21 @@ require([
     },
     'load:progress': function(progress) {
       console.log(`Progress: ${progress}`);
+      renderInfo();
+    },
+    'change:time': function(time) {
+      renderInfo();
     }
   });
+  renderInfo();
+
+  function renderInfo() {
+    const currTime = animation.getCurrentTime();
+    const timeStr = `${currTime.getHours()}:${currTime.getMinutes()}`;
+    const text = `Frame: ${animation.indexOfCurrentTime_()}. Time: ${timeStr}. Loaded? ${animation.getCurrentLayer().isLoaded()}; Prog: ${(animation.getLoadProgress() * 100).toFixed(0)}%`;
+    $('#animation-time').text(text);
+  }
+
 });
 
 var SECOND = 1000;

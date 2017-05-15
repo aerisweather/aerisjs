@@ -133,9 +133,9 @@ define([
     }
     if (
       !_.isNumber(attrs.opacity) ||
-        attrs.opacity > 1 ||
-        attrs.opacity < 0
-      ) {
+      attrs.opacity > 1 ||
+      attrs.opacity < 0
+    ) {
       return new ValidationError('opacity', 'must be a number between 0 and 1');
     }
 
@@ -244,8 +244,9 @@ define([
   AbstractTile.prototype.preload = function(map) {
     if (this.isPreloading_) {
       console.log(`Layer ${this.getAerisTimeString()} is already preloading`);
-      return;
+      return Promise.resolve();
     }
+    console.log(`Preloading ${this.getAerisTimeString()}`);
     this.isPreloading_ = true;
 
     var promiseToLoad = new Promise();
@@ -279,13 +280,14 @@ define([
 
       this.set(attrs_orig);
       this.isPreloading_ = false;
+      console.log(`Preloading ${this.getAerisTimeString()} complete`);
       promiseToLoad.resolve();
     });
 
     this.set({
       // Temporarily set to 0 opacity, so we don't see
       // the layer being added to the map
-      opacity: 0.5
+      opacity: 0
     });
     // Trigger the layer to load, by setting its
     // view to a map.
