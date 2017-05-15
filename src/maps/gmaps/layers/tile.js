@@ -35,14 +35,14 @@ define([
    */
   TileLayerStrategy.prototype.createView_ = function() {
     return new this.MapType_({
-			getTileUrl: _.bind(this.getUrl_, this),
-			tileSize: new gmaps.Size(256, 256),
-			minZoom: this.object_.get('minZoom'),
-			maxZoom: this.object_.get('maxZoom'),
-			name: this.object_.get('name') || 'Aeris Weather Layer',
-			opacity: this.object_.get('opacity'),
-			zIndex: this.object_.get('zIndex')
-		});
+      getTileUrl: _.bind(this.getUrl_, this),
+      tileSize: new gmaps.Size(256, 256),
+      minZoom: this.object_.get('minZoom'),
+      maxZoom: this.object_.get('maxZoom'),
+      name: this.object_.get('name') || 'Aeris Weather Layer',
+      opacity: this.object_.get('opacity'),
+      zIndex: this.object_.get('zIndex')
+    });
   };
 
 
@@ -59,7 +59,6 @@ define([
     }, this);
 
     this.googleEvents_.listenTo(this.getView(), 'load', function() {
-      console.log('google-tile-view.load');
       this.object_.trigger('load');
     }, this);
 
