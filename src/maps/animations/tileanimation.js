@@ -174,17 +174,8 @@ define([
    * @return {aeris.Promise} Promise to load the layer
    */
   TileAnimation.prototype.preloadLayer_ = function(layer) {
+    console.log(`preloading ${layer.getAerisTimeString()}`);
     return layer.preload(this.masterLayer_.getMap());
-  };
-
-
-
-  /**
-   * @method refreshCurrentLayer_
-   * @private
-   */
-  TileAnimation.prototype.refreshCurrentLayer_ = function() {
-    this.goToTime(this.getCurrentTime());
   };
 
 
@@ -243,7 +234,8 @@ define([
     currentLayer = this.getCurrentLayer();
     // Note that we may not be able to find a layer in the same tense,
     // in which case this value is null.
-    nextLayer = this.getLayerForTimeInSameTense_(time) || null;
+    var closestTime = this.getClosestTimeInSameTense_(time);
+    nextLayer = this.layersByTime_[closestTime] || null;
 
     // Set the new layer
     this.currentTime_ = time;
@@ -342,32 +334,6 @@ define([
 
 
   /**
-   * @method getLayerForTimeInSameTense_
-   * @private
-   * @param {Number} time
-   * @return {aeris.maps.layers.AerisTile}
-   */
-  TileAnimation.prototype.getLayerForTimeInSameTense_ = function(time) {
-    return this.layersByTime_[this.getClosestTimeInSameTense_(time)];
-  };
-
-
-  /**
-   * Returns the closes available time.
-   *
-   * @param {number} targetTime UNIX timestamp.
-   * @param {Array.<Number>} opt_times Defaults to loaded animation times.
-   * @return {number}
-   * @private
-   * @method getClosestTime_
-   */
-  TileAnimation.prototype.getClosestTime_ = function(targetTime, opt_times) {
-    var times = opt_times || this.times_;
-    return findClosest(targetTime, times);
-  };
-
-
-  /**
    * Returns the closes available time.
    *
    * If provided time is in the past, will return
@@ -406,8 +372,6 @@ define([
    * @method transition_
    */
   TileAnimation.prototype.transition_ = function(opt_oldLayer, newLayer) {
-
-
     // If the new layer is not yet loaded,
     // wait to transition until it is.
     // This prevents displaying an "empty" tile layer,
@@ -519,45 +483,15 @@ define([
 
 
   TileAnimation.prototype.getNextTime_ = function() {
-    return this.isCurrentLayerLast_() ?
-      this.times_[0] : this.times_[this.getLayerIndex_() + 1];
+    return this.indexOfCurrentTime_() === this.times_.length - 1 ?
+      this.times_[0] : this.times_[this.indexOfCurrentTime_() + 1];
   };
 
 
   TileAnimation.prototype.getPreviousTime_ = function() {
     var lastTime = _.last(this.times_);
-    return this.isCurrentLayerFirst_() ?
-      lastTime : this.times_[this.getLayerIndex_() - 1];
-  };
-
-  /**
-   * @method isCurrentLayer_
-   * @private
-   * @param {aeris.maps.layers.AerisTile} layer
-   * @return {Boolean}
-   */
-  TileAnimation.prototype.isCurrentLayer_ = function(layer) {
-    return layer === this.getCurrentLayer();
-  };
-
-
-  /**
-   * @return {boolean} True, if the current layer is the first frame.
-   * @private
-   * @method isCurrentLayerFirst_
-   */
-  TileAnimation.prototype.isCurrentLayerFirst_ = function() {
-    return this.getLayerIndex_() === 0;
-  };
-
-
-  /**
-   * @return {boolean} True, if the current layer is the last frame.
-   * @private
-   * @method isCurrentLayerLast_
-   */
-  TileAnimation.prototype.isCurrentLayerLast_ = function() {
-    return this.getLayerIndex_() === this.times_.length - 1;
+    return this.indexOfCurrentTime_() === 0 ?
+      lastTime : this.times_[this.indexOfCurrentTime_() - 1];
   };
 
 
@@ -567,10 +501,10 @@ define([
    *
    * @return {number}
    * @private
-   * @method getLayerIndex_
+   * @method indexOfCurrentTime_
    */
-  TileAnimation.prototype.getLayerIndex_ = function() {
-    var timeOfCurrentLayer = this.getClosestTime_(this.currentTime_);
+  TileAnimation.prototype.indexOfCurrentTime_ = function() {
+    var timeOfCurrentLayer = findClosest(this.currentTime_, this.times_);
     return this.times_.indexOf(timeOfCurrentLayer);
   };
 

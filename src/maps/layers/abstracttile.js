@@ -242,6 +242,12 @@ define([
    *        to start loading.
    */
   AbstractTile.prototype.preload = function(map) {
+    if (this.isPreloading_) {
+      console.log(`Layer ${this.getAerisTimeString()} is already preloading`);
+      return;
+    }
+    this.isPreloading_ = true;
+
     var promiseToLoad = new Promise();
     var attrs_orig = this.pick(['opacity']);
     var attrListener = new Events();
@@ -255,6 +261,7 @@ define([
     // We don't have a map to use,
     // so that's all
     if (!map) {
+      this.isPreloading_ = false;
       promiseToLoad.reject(new LayerLoadingError('Unable to preload Tile: no map has been specified.'));
       return promiseToLoad;
     }
@@ -271,13 +278,14 @@ define([
       }
 
       this.set(attrs_orig);
+      this.isPreloading_ = false;
       promiseToLoad.resolve();
     });
 
     this.set({
       // Temporarily set to 0 opacity, so we don't see
       // the layer being added to the map
-      opacity: 0
+      opacity: 0.5
     });
     // Trigger the layer to load, by setting its
     // view to a map.

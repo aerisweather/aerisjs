@@ -42,7 +42,7 @@ define([
    * @method createView_
    */
   TileLayerStrategy.prototype.createView_ = function() {
-    return new this.MapType_({
+    var mapType = new this.MapType_({
       getTileUrl: _.bind(this.getUrl_, this),
       tileSize: new gmaps.Size(256, 256),
       minZoom: this.object_.get('minZoom'),
@@ -50,6 +50,7 @@ define([
       name: this.object_.get('name') || 'Aeris Weather Layer',
       opacity: this.object_.get('opacity')
     });
+    return mapType;
   };
 
 
