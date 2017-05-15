@@ -174,7 +174,21 @@ define([
    * @return {aeris.Promise} Promise to load the layer
    */
   TileAnimation.prototype.preloadLayer_ = function(layer) {
-    return layer.preload(this.masterLayer_.getMap());
+    var promiseToPreload = new Promise();
+
+    if (!this.lastPromiseToPreload_) {
+      this.lastPromiseToPreload_ = Promise.resolve();
+    }
+
+    this.lastPromiseToPreload_
+      .always(function() {
+        promiseToPreload.proxy(
+          layer.preload(this.masterLayer_.getMap())
+        );
+      }, this);
+
+    this.lastPromiseToPreload_ = promiseToPreload;
+    return promiseToPreload;
   };
 
 
