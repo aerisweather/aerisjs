@@ -354,6 +354,12 @@ define([
     return Promise.when(arr.map(mapFn, opt_ctx));
   };
 
+  Promise.resolve = function(val) {
+    var promise = new Promise();
+    promise.resolve(val);
+    return promise;
+  };
+
 
   return _.expose(Promise, 'aeris.Promise');
 
