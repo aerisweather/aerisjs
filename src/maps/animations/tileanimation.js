@@ -83,7 +83,8 @@ define([
 
     // Make sure the current layer is loaded, when the masterLayer get a map
     this.listenTo(this.masterLayer_, 'map:set', function() {
-      this.preloadLayer_(this.getCurrentLayer());
+      //this.preloadLayer_(this.getCurrentLayer());
+      this.transitionIn_(this.getCurrentLayer());
     });
   };
   _.inherits(TileAnimation, AbstractAnimation);
@@ -377,10 +378,10 @@ define([
     // This prevents displaying an "empty" tile layer,
     // and makes it easier to start animations before all
     // layers are loaded.
-    if (!newLayer.isLoaded()) {
+    /*if (!newLayer.isLoaded()) {
       this.preloadLayer_(newLayer);
       this.transitionWhenLoaded_(opt_oldLayer, newLayer);
-    }
+    }*/
 
 
     // Hide all the layers
@@ -390,7 +391,8 @@ define([
     _.without(this.layersByTime_, newLayer).
       forEach(this.transitionOut_, this);
 
-    this.transitionInClosestLoadedLayer_(newLayer);
+    //this.transitionInClosestLoadedLayer_(newLayer);
+    this.transitionIn_(newLayer);
   };
 
 
@@ -400,7 +402,9 @@ define([
    * @private
    */
   TileAnimation.prototype.transitionIn_ = function(layer) {
-    this.syncLayerToMaster_(layer);
+    layer.setOpacity(1);
+    layer.setMap(this.masterLayer_.getMap());
+    //this.syncLayerToMaster_(layer);
   };
 
 
@@ -410,8 +414,9 @@ define([
    * @private
    */
   TileAnimation.prototype.transitionOut_ = function(layer) {
-    layer.stopListening(this.masterLayer_);
     layer.setOpacity(0);
+    /*layer.stopListening(this.masterLayer_);
+    layer.setOpacity(0);*/
   };
 
 
