@@ -85,6 +85,21 @@ define([
     this.listenTo(this.masterLayer_, 'map:set', function() {
       this.preloadLayer_(this.getCurrentLayer());
     });
+
+    // The idea is to prevent layers from re-loading
+    // all at the same time, when we move the map around
+   /* if (this.masterLayer_.getMap()) { bindMapEvents(); }
+    else { this.listenTo(this.masterLayer_, 'map:set', bindMapEvents) }
+    function bindMapEvents() {
+      this.listenTo(this.masterLayer_.getMap(), {
+        'change:zoom change:bounds change:center': _.debounce(function() {
+          console.log('map moved');
+          _.values(this.layersByTime_)
+            .filter(lyr => lyr !== this.getCurrentLayer())
+            .forEach(lyr => lyr.setMap(null))
+        }, 100)
+      });
+    }*/
   };
   _.inherits(TileAnimation, AbstractAnimation);
 
@@ -157,7 +172,7 @@ define([
     var layers = _.values(this.layersByTime_);
 
     // Then preload the rest
-    Promise.map(layers, this.preloadLayer_, this)
+    Promise.map(_.shuffle(layers), this.preloadLayer_, this)
       .done(promiseToPreload.resolve)
       .fail(promiseToPreload.reject);
 
@@ -192,10 +207,11 @@ define([
       }.bind(this));
       // Give up after a while, so we're not blocking the animation
       setTimeout(function() {
-        // TODO (shoule reject, not log)
         if (promiseToPreload.getState() === 'pending') {
+          // HACK -- just call it loaded (show whatever we've got)
+          layer.trigger('load');
           console.error(`Failed to preload layer ${this.getLayerIndex_(layer)}: timed out`);
-          promiseToPreload.reject(new Error(`Failed to preload layer: timed out`));
+          //promiseToPreload.reject(new Error(`Failed to preload layer: timed out`));
         }
       }.bind(this), 3000);
     }.bind(this);
@@ -229,6 +245,14 @@ define([
    */
   TileAnimation.prototype.refreshCurrentLayer_ = function() {
     this.goToTime(this.getCurrentTime());
+  };
+
+  TileAnimation.prototype.start = function() {
+    AbstractAnimation.prototype.start.call(this);
+    // preload on start
+    // (this gives a little better ux than allowing layers to preload
+    //  as we hit them, because `preload()` shuffles the layer order)
+    this.preload();
   };
 
 

@@ -135,8 +135,17 @@ define([
 
       img = this.createTileImage_(ownerDocument, tileSrc);
 
+      this.imageStatus_ || (this.imageStatus_ = {});
+      this.imageStatus_[tileSrc] = false;
+      window.renderInfo();
       img.onload = _.bind(function() {
-        this.addLoadedImage_(img);
+        this.imageStatus_[tileSrc] = true;
+
+        if (_.every(this.imageStatus_, Boolean)) {
+          gmaps.event.trigger(this, 'load');
+        }
+        window.renderInfo();
+        //this.addLoadedImage_(img);
       }, this);
 
       tileContainer.appendChild(img);
@@ -246,13 +255,17 @@ define([
    * @method addLoadedImage_
    */
   ImageMapType.prototype.addLoadedImage_ = function(img) {
-    this.loadedImgs_.push(img);
-    if (this.imgs_.length === this.loadedImgs_.length) {
+    this.imageStatus_ || (this.imageStatus_ = {});
+    var imgSrc = img.getAttribute('src');
+    this.imageStatus_[imgSrc]
+    //this.loadedImgs_.push(img);
+    if (this.loadedImgs_.length >= this.imgs_.length) {
       // Note: avoid using the standard 'tilesloaded'
       // event. It seems that google will also trigger
       // this event on its own, maybe for different reasons.
       gmaps.event.trigger(this, 'load');
     }
+    window.renderInfo();
   };
 
 
@@ -321,14 +334,22 @@ define([
    * @method releaseTile
    */
   ImageMapType.prototype.releaseTile = function(div) {
-    var img = div.getElementsByTagName('img');
+    var img = div.getElementsByTagName('img')[0];
+    var imgSrc = img.getAttribute('src');
+    delete this.imageStatus_[imgSrc];
     var divIndex = this.divs_.indexOf(div);
     var imgIndex = this.imgs_.indexOf(img);
     var loadImgIndex = this.loadedImgs_.indexOf(img);
 
-    this.divs_.splice(divIndex, 1);
-    this.imgs_.splice(imgIndex, 1);
-    this.loadedImgs_.splice(loadImgIndex, 1);
+    // TODO: what if indexOf returns -1?
+    if (divIndex !== -1) {
+      this.divs_.splice(divIndex, 1);
+    }
+    if (imgIndex !== -1) {
+      this.imgs_.splice(imgIndex, 1);
+    }
+    //this.loadedImgs_.splice(loadImgIndex, 1);
+    window.renderInfo();
   };
 
 

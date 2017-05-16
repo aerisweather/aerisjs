@@ -37,7 +37,7 @@ require([
   animation = new TileAnimation(lyr, {
     from: Date.now() - 24 * HOUR,
     to: Date.now(),
-    limit: 20,
+    limit: 10,
     speed: 300
   });
 
@@ -58,8 +58,12 @@ require([
     },
     'load:progress': function(progress) {
       console.log(`Progress: ${progress}`);
+      renderInfo();
     },
-    'load:reset': () => console.log('anim load:reset')
+    'load:reset': () => {
+      console.log('anim load:reset');
+      renderInfo();
+    }
   });
 
   getLayers = () => animation.getTimes().map(t => animation.layersByTime_[t]);
@@ -70,16 +74,28 @@ require([
     });
   });
 
+  listLoaded = () => getLayers().map(l => l.isLoaded());
 
   function renderInfo () {
     var framesCount = animation.getTimes().length;
     const info = `
       ${animation.getLayerIndex_() + 1} / ${framesCount}
       <br>
-      ${getLayers().map(l => l.isLoaded()).length} / ${framesCount} loaded
+      ${getLayers().filter(l => l.isLoaded()).length} / ${framesCount} loaded
+      <br>
+      ${getLayers().map(renderLyrInfo).join('<br>')}
     `;
     $('#info').html(info)
   }
+
+  function renderLyrInfo(lyr) {
+    const imgStatus = _.values(lyr.getView().imageStatus_);
+    return `
+      [${animation.getLayerIndex_(lyr)}] 
+      ${imgStatus.filter(Boolean).length} / ${imgStatus.length}
+    `;
+  }
+
   renderInfo();
   window.renderInfo = renderInfo;
 });
