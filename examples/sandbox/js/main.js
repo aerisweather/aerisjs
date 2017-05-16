@@ -22,7 +22,8 @@ require([
   temps.on({
     load: () => console.log('load'),
     'load:reset': () => console.log('load:reset')
-  })*/
+  })
+  window.renderInfo = () => {}*/
 
   baseLayer = new AerisTile({
     tileType: 'flat,admin',
@@ -77,15 +78,20 @@ require([
   listLoaded = () => getLayers().map(l => l.isLoaded());
 
   function renderInfo () {
-    var framesCount = animation.getTimes().length;
-    const info = `
+    try {
+      var framesCount = animation.getTimes().length;
+      const info = `
       ${animation.getLayerIndex_() + 1} / ${framesCount}
       <br>
       ${getLayers().filter(l => l.isLoaded()).length} / ${framesCount} loaded
       <br>
       ${getLayers().map(renderLyrInfo).join('<br>')}
     `;
-    $('#info').html(info)
+      $('#info').html(info)
+    }
+    catch (err) {
+      console.warn(`Failed to render info: ${err.message}`);
+    }
   }
 
   function renderLyrInfo(lyr) {

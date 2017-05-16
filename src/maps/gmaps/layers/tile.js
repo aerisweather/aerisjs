@@ -49,6 +49,9 @@ define([
   TileLayerStrategy.prototype.delegateMapEvents_ = function() {
     this.googleEvents_.listenTo(this.mapView_, 'bounds_changed', _.throttle(function() {
       this.object_.trigger('load:reset');
+      if (this.view_.isLoaded()) {
+        this.object_.trigger('load');
+      }
     }, 500), this);
 
     this.googleEvents_.listenTo(this.getView(), 'load', function() {

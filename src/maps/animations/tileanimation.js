@@ -85,21 +85,6 @@ define([
     this.listenTo(this.masterLayer_, 'map:set', function() {
       this.preloadLayer_(this.getCurrentLayer());
     });
-
-    // The idea is to prevent layers from re-loading
-    // all at the same time, when we move the map around
-   /* if (this.masterLayer_.getMap()) { bindMapEvents(); }
-    else { this.listenTo(this.masterLayer_, 'map:set', bindMapEvents) }
-    function bindMapEvents() {
-      this.listenTo(this.masterLayer_.getMap(), {
-        'change:zoom change:bounds change:center': _.debounce(function() {
-          console.log('map moved');
-          _.values(this.layersByTime_)
-            .filter(lyr => lyr !== this.getCurrentLayer())
-            .forEach(lyr => lyr.setMap(null))
-        }, 100)
-      });
-    }*/
   };
   _.inherits(TileAnimation, AbstractAnimation);
 
@@ -172,7 +157,8 @@ define([
     var layers = _.values(this.layersByTime_);
 
     // Then preload the rest
-    Promise.map(_.shuffle(layers), this.preloadLayer_, this)
+    var layersToPreload = [this.getCurrentLayer()].concat(_.shuffle(layers));
+    Promise.map(layersToPreload, this.preloadLayer_, this)
       .done(promiseToPreload.resolve)
       .fail(promiseToPreload.reject);
 
@@ -189,14 +175,19 @@ define([
    * @return {aeris.Promise} Promise to load the layer
    */
   TileAnimation.prototype.preloadLayer_ = function(layer) {
-    console.log(`preloading lyr${this.getLayerIndex_(layer)}...`);
     var promiseToPreload = new Promise();
+
+    // Give up, if the map bounds change
+    layer.on('load:reset', () => {
+      promiseToPreload.resolve();
+    });
 
     if (!this.lastPromiseToPreload_) {
       this.lastPromiseToPreload_ = Promise.resolve();
     }
 
     var doPreload = function () {
+      console.log(`preloading lyr${this.getLayerIndex_(layer)}...`);
       layer.set({
         map: this.masterLayer_.getMap(),
         opacity: layer === this.getCurrentLayer() ? this.masterLayer_.getOpacity() : 0
@@ -213,7 +204,7 @@ define([
           console.error(`Failed to preload layer ${this.getLayerIndex_(layer)}: timed out`);
           //promiseToPreload.reject(new Error(`Failed to preload layer: timed out`));
         }
-      }.bind(this), 3000);
+      }.bind(this), 5000);
     }.bind(this);
 
     this.lastPromiseToPreload_

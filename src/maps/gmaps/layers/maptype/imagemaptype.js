@@ -141,7 +141,7 @@ define([
       img.onload = _.bind(function() {
         this.imageStatus_[tileSrc] = true;
 
-        if (_.every(this.imageStatus_, Boolean)) {
+        if (this.isLoaded()) {
           gmaps.event.trigger(this, 'load');
         }
         window.renderInfo();
@@ -170,6 +170,10 @@ define([
     }
 
     return tileContainer;
+  };
+
+  ImageMapType.prototype.isLoaded = function() {
+    return _.every(this.imageStatus_, Boolean);
   };
 
   /**
