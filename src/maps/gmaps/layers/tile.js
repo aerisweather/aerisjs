@@ -51,11 +51,12 @@ define([
       this.object_.trigger('load:reset');
 
       // Map view fires 'idle' event when all layers are loaded.
-      google.maps.event.addListenerOnce(this.mapView_, 'idle', function() {
-        // TODO: this is firing immediatlely for layers,
-        // before their first load event
-        //this.object_.trigger('load');
-      }.bind(this));
+      // If we're already all loaded,
+      // trigger load immediately
+      // (eg, if bounds changed a little, but no new tiles need to load)
+      if (this.view_.isLoaded()) {
+        this.object_.trigger('load');
+      }
     }, this);
 
     this.googleEvents_.listenTo(this.getView(), 'load', function() {
