@@ -157,7 +157,8 @@ define([
     var layers = _.values(this.layersByTime_);
 
     // Then preload the rest
-    Promise.map(layers, this.preloadLayer_, this)
+    var layersToPreload = [this.getCurrentLayer()].concat(_.shuffle(layers));
+    Promise.map(layersToPreload, this.preloadLayer_, this)
       .done(promiseToPreload.resolve)
       .fail(promiseToPreload.reject);
 
@@ -199,6 +200,14 @@ define([
    */
   TileAnimation.prototype.refreshCurrentLayer_ = function() {
     this.goToTime(this.getCurrentTime());
+  };
+
+  TileAnimation.prototype.start = function() {
+    AbstractAnimation.prototype.start.call(this);
+    // preload on start
+    // (this gives a little better ux than allowing layers to preload
+    //  as we hit them, because `preload()` shuffles the layer order)
+    this.preload();
   };
 
 
