@@ -66,17 +66,6 @@ define([
 
 
     /**
-     * Loaded image elements.
-     * A subset of this.imgs_
-     *
-     * @type {Array.<HTMLElement>}
-     * @private
-     * @property loadedImgs_
-     */
-    this.loadedImgs_ = [];
-
-
-    /**
      * @type {number}
      * @private
      * @property zIndex_
@@ -98,6 +87,10 @@ define([
      * @type {HTMLElement}
     */
     this.document_ = null;
+
+    // Keep of hash ([string]:boolean) of imgSrcs,
+    // so we know which ones are loaded
+    this.imageStatus_ = {};
 
 
     // Update our zIndex
@@ -135,8 +128,15 @@ define([
 
       img = this.createTileImage_(ownerDocument, tileSrc);
 
+      this.imageStatus_[tileSrc] = false;
       img.onload = _.bind(function() {
-        this.addLoadedImage_(img);
+        // Mark the image as loaded
+        this.imageStatus_[tileSrc] = true;
+
+        // Fire a `load` event, if all images are loaded
+        if (this.isLoaded()) {
+          gmaps.event.trigger(this, 'load');
+        }
       }, this);
 
       tileContainer.appendChild(img);
@@ -161,6 +161,10 @@ define([
     }
 
     return tileContainer;
+  };
+
+  ImageMapType.prototype.isLoaded = function() {
+    return _.every(this.imageStatus_, Boolean);
   };
 
   /**
@@ -242,21 +246,6 @@ define([
 
 
   /**
-   * @private
-   * @method addLoadedImage_
-   */
-  ImageMapType.prototype.addLoadedImage_ = function(img) {
-    this.loadedImgs_.push(img);
-    if (this.imgs_.length === this.loadedImgs_.length) {
-      // Note: avoid using the standard 'tilesloaded'
-      // event. It seems that google will also trigger
-      // this event on its own, maybe for different reasons.
-      gmaps.event.trigger(this, 'load');
-    }
-  };
-
-
-  /**
    * Returns the parent node of the
    * entire map type. The siblings of this
    * node are other map types.
@@ -321,14 +310,18 @@ define([
    * @method releaseTile
    */
   ImageMapType.prototype.releaseTile = function(div) {
-    var img = div.getElementsByTagName('img');
     var divIndex = this.divs_.indexOf(div);
     var imgIndex = this.imgs_.indexOf(img);
-    var loadImgIndex = this.loadedImgs_.indexOf(img);
+    var img = div.getElementsByTagName('img')[0];
+    var imgSrc = img.getAttribute('src');
+    delete this.imageStatus_[imgSrc];
 
-    this.divs_.splice(divIndex, 1);
-    this.imgs_.splice(imgIndex, 1);
-    this.loadedImgs_.splice(loadImgIndex, 1);
+    if (divIndex !== -1) {
+      this.divs_.splice(divIndex, 1);
+    }
+    if (imgIndex !== -1) {
+      this.imgs_.splice(imgIndex, 1);
+    }
   };
 
 
