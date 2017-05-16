@@ -78,12 +78,16 @@
   // Pass the animation objects to an AnimationSync
   // The AnimationSync uses the same interface as the
   // AerisTile animation objects.
+  var from = Date.now() - 1000 * 60 * 60 * 6;
+  var to = Date.now();
   animationSync = new aeris.maps.animations.AnimationSync([
     radar,
     satellite
   ], {
-    from: Date.now() - 1000 * 60 * 60 * 2,    // 2 hours ago
-    to: Date.now()
+    from: from,    // 2 hours ago
+    to: to,
+    limit: 15,
+    speed: 400
   });
 
   radar.setMap(map);
@@ -128,17 +132,6 @@
 
     'load:error': function(err) {
       throw err;
-    },
-
-    // The AnimationSync object request a list of
-    // available times from the Aeris API, so it knows what tile layers
-    // are available.
-    // This event is fired upon receiving available times.
-    // We're going to use this to update the min/max bounds for
-    // our time range input.
-    'load:times': function(times) {
-      $('#time').attr('min', times[0]);
-      $('#time').attr('max', times[times.length - 1]);
     }
   });
 
@@ -156,16 +149,19 @@
     $('#time').val(date.getTime());
   });
 
+  // Update the HTML slider, to use the animations min/max bounds
+  function updateSliderRange() {
+    $('#time').attr('min', animationSync.getFrom().getTime());
+    $('#time').attr('max', animationSync.getTo().getTime());
+  }
+  updateSliderRange();
 
   // The AnimationSync object "autoUpdates" -- as new weather images
   // become available, the animation will shift forward in time to display
   // the most recent weather.
   // By listening to the 'change:from' and 'change:to' events, we can
   // keep our range element in sync with the animation time.
-  animationSync.on('change:from change:to', function() {
-    $('#time').attr('min', animationSync.getFrom().getTime());
-    $('#time').attr('max', animationSync.getTo().getTime());
-  });
+  animationSync.on('change:from change:to', updateSliderRange());
 
 
   // Animation controls
@@ -191,7 +187,7 @@
     animationSync.next(1000 * 60 * 15);
   });
   // Time range slider
-  $('#time').change(function() {
+  $('#time').on('input', function() {
     var time = parseInt($(this).val());
 
     animationSync.pause();

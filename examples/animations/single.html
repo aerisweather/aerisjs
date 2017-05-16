@@ -57,44 +57,39 @@
   });
 
   map = new aeris.maps.Map('map-canvas', {
-    //center: [51.07764539352731, -96.62750244140625],
-    //zoom: 11,
-    scrollZoom: false
+    scrollZoom: false,
+    zoom: 5
   });
   radar = new aeris.maps.layers.Radar();
 
-  // Create an animation "wrapper" around the satellite layer.
+  // Create an animation "wrapper" around the radar layer.
   animation = new aeris.maps.animations.TileAnimation(radar, {
     // Set the maximum number of animation "frames"
     // to load. A higher limit will result in a smoother
     // animation, though it will take longer to load.
-    limit: 50,
-    from: Date.now() - 1000 * 60 * 60 * 6,    // 6 hours ago
-    to: Date.now() + 1000 * 60 * 60 * 18      // 18 hours into the future
+    limit: 10,
+    speed: 150,
+    from: Date.now() - 1000 * 60 * 60 * 3,    // 3 hours ago
+    to: Date.now()                            // now
   });
 
   radar.setMap(map);
 
 
-  // The animation object begins preloading tiles as soon as it's created,
-  // but you can start the animation right away.
-  // The animation will start out with a low "frame-rate", but as layers are
-  // loaded, they will be added to the animation.
-  //
-  // Alternatively, you can wait for the 'load:complete' event
-  // to fire.
-  //animation.goToTime(Date.now() + 1000 * 60 * 60 * 10);
-  //animation.start();
-
-
   // Show loading progress
   $('#loading').show();
+  // Start preloading layers
+  animation.preload();
 
   // The animation object triggers load:* events
   // when tile layers are loaded, and ready to render.
   animation.on({
     'load:progress': function(progress) {
       $('#progress').text((progress * 100).toFixed(1));
+
+      if (progress >= 0.5) {
+        animation.start();
+      }
     },
 
     'load:complete': function() {
@@ -124,11 +119,6 @@
   animation.on('change:time', function(date) {
     var formattedTime = date.toTimeString().replace(/.*(\d{2}:\d{2})(:\d{2}).*/, "$1");
     $('#currentTime').text(formattedTime);
-
-    var isFuture = date > Date.now();
-    $('#future-flag').text(isFuture ? 'future' : '');
-
-    animation.setSpeed(isFuture ? 180 : 30)
   });
 
 
