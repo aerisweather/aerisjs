@@ -177,15 +177,43 @@ define([
   TileAnimation.prototype.preloadLayer_ = function(layer) {
     var promiseToPreload = new Promise();
 
-    if (!this.lastPromiseToPreload_) {
-      this.lastPromiseToPreload_ = Promise.resolve();
-    }
+    var doPreload = function () {
+      // Add the layer to the map
+      // with opacity 0 (to trigger loading)
+      layer.set({
+        map: this.masterLayer_.getMap(),
+        opacity: layer === this.getCurrentLayer() ? this.masterLayer_.getOpacity() : 0
+      });
 
+      // Resolve once we're done loading
+      layer.once('load', promiseToPreload.resolve);
+
+      // Give up after a while, so we're not blocking the animation
+      setTimeout(function() {
+        if (promiseToPreload.getState() === 'pending') {
+          // Just call the layer loaded (show whatever we've got)
+          layer.trigger('load');
+        }
+      }.bind(this), 2000);
+    }.bind(this);
+
+
+    // Wait for the last layer to preload,
+    // before preloading the next one
+    this.lastPromiseToPreload_ || (this.lastPromiseToPreload_ = Promise.resolve());
     this.lastPromiseToPreload_
       .always(function() {
-        promiseToPreload.proxy(
-          layer.preload(this.masterLayer_.getMap())
-        );
+        // If the layer is already loaded, no more work to do.
+        if (layer.isLoaded()) {
+          promiseToPreload.resolve();
+        }
+        // Wait for a map to be set, before preloading
+        else if (!this.masterLayer_.getMap()) {
+          this.masterLayer_.once('map:set', doPreload);
+        }
+        else {
+          doPreload();
+        }
       }, this);
 
     this.lastPromiseToPreload_ = promiseToPreload;
@@ -592,9 +620,9 @@ define([
    * @private
    * @method getLayerIndex_
    */
-  TileAnimation.prototype.getLayerIndex_ = function() {
-    var timeOfCurrentLayer = this.getClosestTime_(this.currentTime_);
-    return this.times_.indexOf(timeOfCurrentLayer);
+  TileAnimation.prototype.getLayerIndex_ = function(layer) {
+    layer || (layer = this.getCurrentLayer());
+    return this.times_.indexOf(layer.get('time').getTime());
   };
 
   function getTimeRange(from, to, limit) {
