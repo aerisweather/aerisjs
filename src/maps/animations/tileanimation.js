@@ -177,7 +177,7 @@ define([
   TileAnimation.prototype.preloadLayer_ = function(layer) {
     var promiseToPreload = new Promise();
 
-    var doPreload = function () {
+    var doPreload = (function() {
       // Add the layer to the map
       // with opacity 0 (to trigger loading)
       layer.set({
@@ -195,7 +195,7 @@ define([
           layer.trigger('load');
         }
       }.bind(this), 2000);
-    }.bind(this);
+    }.bind(this));
 
 
     // Wait for the last layer to preload,
