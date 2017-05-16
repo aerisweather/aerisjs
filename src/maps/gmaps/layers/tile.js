@@ -47,17 +47,16 @@ define([
 
 
   TileLayerStrategy.prototype.delegateMapEvents_ = function() {
-    this.googleEvents_.listenTo(this.mapView_, 'bounds_changed', function() {
+    this.googleEvents_.listenTo(this.mapView_, 'bounds_changed', _.throttle(function() {
       this.object_.trigger('load:reset');
 
-      // Map view fires 'idle' event when all layers are loaded.
       // If we're already all loaded,
       // trigger load immediately
       // (eg, if bounds changed a little, but no new tiles need to load)
       if (this.view_.isLoaded()) {
         this.object_.trigger('load');
       }
-    }, this);
+    }, 500), this);
 
     this.googleEvents_.listenTo(this.getView(), 'load', function() {
       this.object_.trigger('load');
