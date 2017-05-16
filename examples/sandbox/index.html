@@ -1,19 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Aeris.js MarkerCollection example</title>
+  <title>Aeris.js Sandbox</title>
 
   <link rel="stylesheet" href="../css/example.css"/>
 
+  <!--Leaflet-->
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.2/leaflet.css"/>
   <link rel="stylesheet" href="../../bower_components/leaflet.markercluster/dist/MarkerCluster.Default.css"/>
   <link rel="stylesheet" href="../../bower_components/leaflet.markercluster/dist/MarkerCluster.css"/>
+
+  <!--Google-->
+  <!--<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=geometry&key=AIzaSyDRrNNGdHDhWP63kW3_vCg4S9CZsmwRPyE"></script>-->
+
   <link rel="shortcut icon" type="image/x-icon" href="../weather.ico"/>
+
 
   <script type="text/javascript" src="../apikeys.js"></script>
   <script type="text/javascript" src="../../bower_components/requirejs/require.js" data-main="js/init"></script>
 </head>
 <body>
-  <div id="map-canvas"></div>
+<div id="map-canvas"></div>
+<div id="info"
+     style="
+      position: absolute;
+       top: 20px;
+       right: 20px;
+       background: #fff;
+       border: 1px solid #2c2c2c;
+       padding: 10px;
+     "
+>...</div>
 </body>
 </html>
