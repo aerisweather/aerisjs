@@ -174,17 +174,47 @@ define([
    * @return {aeris.Promise} Promise to load the layer
    */
   TileAnimation.prototype.preloadLayer_ = function(layer) {
+    console.log(`preloading lyr${this.getLayerIndex_(layer)}...`);
     var promiseToPreload = new Promise();
 
     if (!this.lastPromiseToPreload_) {
       this.lastPromiseToPreload_ = Promise.resolve();
     }
 
+    var doPreload = function () {
+      layer.set({
+        map: this.masterLayer_.getMap(),
+        opacity: layer === this.getCurrentLayer() ? this.masterLayer_.getOpacity() : 0
+      });
+      layer.once('load', function() {
+        console.log(`preloading lyr${this.getLayerIndex_(layer)}... done!`);
+        promiseToPreload.resolve();
+      }.bind(this));
+      // Give up after a while, so we're not blocking the animation
+      setTimeout(function() {
+        // TODO (shoule reject, not log)
+        if (promiseToPreload.getState() === 'pending') {
+          console.error(`Failed to preload layer ${this.getLayerIndex_(layer)}: timed out`);
+          //promiseToPreload.reject(new Error(`Failed to preload layer: timed out`));
+        }
+      }.bind(this), 3000);
+    }.bind(this);
+
     this.lastPromiseToPreload_
       .always(function() {
-        promiseToPreload.proxy(
+        if (layer.isLoaded()) {
+          console.log(`preloading lyr${this.getLayerIndex_(layer)}... already preloaded.`);
+          promiseToPreload.resolve();
+        }
+        else if (!this.masterLayer_.getMap()) {
+          this.masterLayer_.once('map:set', doPreload);
+        }
+        else {
+          doPreload();
+        }
+        /*promiseToPreload.proxy(
           layer.preload(this.masterLayer_.getMap())
-        );
+        );*/
       }, this);
 
     this.lastPromiseToPreload_ = promiseToPreload;
@@ -583,9 +613,9 @@ define([
    * @private
    * @method getLayerIndex_
    */
-  TileAnimation.prototype.getLayerIndex_ = function() {
-    var timeOfCurrentLayer = this.getClosestTime_(this.currentTime_);
-    return this.times_.indexOf(timeOfCurrentLayer);
+  TileAnimation.prototype.getLayerIndex_ = function(layer) {
+    layer || (layer = this.getCurrentLayer());
+    return this.times_.indexOf(layer.get('time').getTime());
   };
 
   function getTimeRange(from, to, limit) {

@@ -242,7 +242,7 @@ define([
    *        to start loading.
    */
   AbstractTile.prototype.preload = function(map) {
-    if (this.isPreloading_) {
+    if (this.isPreloading_/*TODO: || this.isLoaded()*/) {
       return Promise.resolve();
     }
     this.isPreloading_ = true;
