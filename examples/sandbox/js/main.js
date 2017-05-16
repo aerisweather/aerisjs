@@ -37,7 +37,7 @@ require([
   animation = new TileAnimation(lyr, {
     from: Date.now() - 24 * HOUR,
     to: Date.now(),
-    limit: 4,
+    limit: 20,
     speed: 300
   });
 
@@ -47,6 +47,7 @@ require([
   animation.start();*/
 
   animation.on({
+    'change:time': () => renderInfo(),
     'load:error': function(err) {
       console.log(err.stack);
       throw err;
@@ -68,6 +69,19 @@ require([
       'load:reset': () => console.log(`lyr[${i}] load:reset`)
     });
   });
+
+
+  function renderInfo () {
+    var framesCount = animation.getTimes().length;
+    const info = `
+      ${animation.getLayerIndex_() + 1} / ${framesCount}
+      <br>
+      ${getLayers().map(l => l.isLoaded()).length} / ${framesCount} loaded
+    `;
+    $('#info').html(info)
+  }
+  renderInfo();
+  window.renderInfo = renderInfo;
 });
 
 var SECOND = 1000;

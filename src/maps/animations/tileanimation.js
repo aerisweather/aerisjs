@@ -195,7 +195,7 @@ define([
         // TODO (shoule reject, not log)
         if (promiseToPreload.getState() === 'pending') {
           console.error(`Failed to preload layer ${this.getLayerIndex_(layer)}: timed out`);
-          //promiseToPreload.reject(new Error(`Failed to preload layer: timed out`));
+          promiseToPreload.reject(new Error(`Failed to preload layer: timed out`));
         }
       }.bind(this), 3000);
     }.bind(this);
