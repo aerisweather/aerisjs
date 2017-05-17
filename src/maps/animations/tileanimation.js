@@ -103,14 +103,12 @@ define([
    * @method loadAnimationLayers
    */
   TileAnimation.prototype.loadAnimationLayers = function() {
-    // Remove old layers
-    _.each(this.layersByTime_, function(lyr) {
-      lyr.destroy();
-    });
+    var prevCurrentTime = this.getCurrentTime();
+    var prevLayersByTime = this.layersByTime_;
 
     // Create new layers
-    this.times_ = getTimeRange(this.from_, this.to_, this.limit_);
-    this.layersByTime_ = this.times_.reduce(function(lyrs, time) {
+    var nextTimes = getTimeRange(this.from_, this.to_, this.limit_);
+    var nextLayers = nextTimes.reduce(function(lyrs, time) {
       lyrs[time] = this.masterLayer_.clone({
         time: new Date(time),
         map: null,
@@ -118,12 +116,38 @@ define([
       });
       return lyrs;
     }.bind(this), {});
+
+    // Wait for new current layer to load
+    var nextCurrentTime = this.getClosestTime_(prevCurrentTime, nextTimes);
+    var nextCurrentLayer = nextLayers[nextCurrentTime];
+
+    this.times_ = nextTimes;
+    this.layersByTime_ = nextLayers;
+    this.bindLayerLoadEvents_();
+
     this.trigger('load:times', this.times_.slice(0));
 
-    // Load the layer closest to our current time
-    this.goToTime(this.getCurrentTime());
-
-    this.bindLayerLoadEvents_();
+    // If there's already layers loaded,
+    // preload the new layers, before transitioning.
+    // This prevents a "flash" when change bounds
+    // (eg. when AIM autoUpdate triggers)
+    var transition = (function() {
+      this.goToTime(this.getCurrentTime());
+      // Remove old layers
+      _.each(prevLayersByTime, function(lyr) {
+        lyr.destroy();
+      });
+    }.bind(this));
+    if (this.getCurrentLayer()) {
+      console.log('preloading next...');
+      this.preloadLayer_(nextCurrentLayer)
+        .always(function() {
+          setTimeout(transition, 1000);
+        }, this);
+    }
+    else {
+      transition();
+    }
   };
 
   TileAnimation.prototype.bindLayerLoadEvents_ = function() {
