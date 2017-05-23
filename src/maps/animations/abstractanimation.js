@@ -159,7 +159,9 @@ define([
         isEndDelaying = true;
         setTimeout(function() {
           isEndDelaying = false;
-          this.goToTime(this.from_);
+          if (this.isAnimating()){
+            this.goToTime(this.from_);
+          }
         }.bind(this), this.endDelay_);
       }
       else {
