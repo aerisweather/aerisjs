@@ -139,7 +139,6 @@ define([
       });
     }.bind(this));
     if (this.getCurrentLayer()) {
-      console.log('preloading next...');
       this.preloadLayer_(nextCurrentLayer)
         .always(function() {
           setTimeout(transition, 1000);
