@@ -147,30 +147,25 @@ define([
       this.goToTime(this.from_);
     }
 
+    var isEndDelaying = false;
     this.animationClock_ = _.interval(function() {
       var nextTime = this.currentTime_ + timeIncrement;
 
       // If we're at the end, restart animation
-      if (nextTime > this.to_) {
-        this.restart_();
+      if (isEndDelaying) {
+        return;
+      }
+      else if (nextTime > this.to_) {
+        isEndDelaying = true;
+        setTimeout(function() {
+          isEndDelaying = false;
+          this.goToTime(this.from_);
+        }.bind(this), this.endDelay_)
       }
       else {
         this.goToTime(nextTime);
       }
     }, wait, this);
-  };
-
-
-  /**
-   * @private
-   * @method restart_
-   */
-  AbstractAnimation.prototype.restart_ = function() {
-    this.pause();
-    _.delay(function() {
-      this.goToTime(this.from_);
-      this.start();
-    }.bind(this), this.endDelay_);
   };
 
 
