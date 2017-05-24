@@ -132,9 +132,7 @@ define([
     // Because calling goToTime every second would be
     // clunky, we use a shorter interval time, than
     // adjust our animation increment accordingly.
-    var wait = 25;
-    var multiplier = wait / 1000;
-    var timeIncrement = this.timestep_ * this.speed_ * multiplier;      // in one second, animate on minute
+    var tickInterval = 25;
 
     if (this.isAnimating()) {
       return;
@@ -149,6 +147,8 @@ define([
 
     var isEndDelaying = false;
     this.animationClock_ = _.interval(function() {
+      var multiplier = tickInterval / 1000;
+      var timeIncrement = this.timestep_ * this.speed_ * multiplier;
       var nextTime = this.currentTime_ + timeIncrement;
 
       // If we're at the end, restart animation
@@ -167,7 +167,7 @@ define([
       else {
         this.goToTime(nextTime);
       }
-    }, wait, this);
+    }, tickInterval, this);
   };
 
 
