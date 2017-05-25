@@ -17,7 +17,7 @@ require.config({
     } : {})
   },
   paths: {
-    'aeris/maps/strategy': 'src/maps/leaflet'
+    'aeris/maps/strategy': 'src/maps/gmaps'
   }
 });
 require(['config-amd'], function() {

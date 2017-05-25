@@ -6,13 +6,13 @@ require([
   'aeris/maps/animations/animationsync'
 ], function (_, Map, AerisTile, TileAnimation, AnimationSync) {
   map = new Map('map-canvas', {
-    center: [45.81348649679973, -94.76806640625],
+    center: [34.05265942137599, -85.78125],
     zoom: 6,
     endDelay: 3000
   });
   map.on('click', latLon => console.log(latLon));
-  /*//radar = new AerisTile({ tileType: 'radar', map, zIndex: 200 });
-  temps = new AerisTile({ tileType: 'temperatures', map, zIndex: 100, opacity: .5 });
+  //radar = new AerisTile({ tileType: 'radar', map, zIndex: 200 });
+  /*temps = new AerisTile({ tileType: 'temperatures', map, zIndex: 100, opacity: .5 });
   switchZ = () => {
     const radarZIndex = radar.getZIndex();
     radar.setZIndex(temps.getZIndex());
@@ -25,27 +25,33 @@ require([
   })
   window.renderInfo = () => {}*/
 
-  baseLayer = new AerisTile({
+  /*baseLayer = new AerisTile({
     tileType: 'flat,admin',
     zIndex: 0,
     map
-  });
+  });*/
 
-  lyr = new AerisTile({
-    tileType: 'temperatures',
-    opacity: 0.75
+  radar = new AerisTile({
+    tileType: 'radar',
+    opacity: 1,
+    zIndex: 20,
+    map
   });
-  animation = new TileAnimation(lyr, {
+  temps = new AerisTile({
+    tileType: 'temperatures',
+    opacity: 0.8,
+    zIndex: 10,
+    map
+  });
+  animation = new AnimationSync([temps, radar], {
     from: Date.now() - 24 * HOUR,
     to: Date.now(),
     limit: 10,
     speed: 300
   });
-
-  lyr.setMap(map);
-
-  /*animation.preload();
-  animation.start();*/
+/*
+  /!*animation.preload();
+  animation.start();*!/
 
   animation.on({
     'change:time': () => renderInfo(),
@@ -69,7 +75,7 @@ require([
 
   getLayers = () => animation.getTimes().map(t => animation.layersByTime_[t]);
   getLayers().forEach((lyr, i) => {
-    lyr.on({
+    radar.on({
       load: () => console.log(`lyr[${i}] load`),
       'load:reset': () => console.log(`lyr[${i}] load:reset`)
     });
@@ -78,6 +84,7 @@ require([
   listLoaded = () => getLayers().map(l => l.isLoaded());
 
   function renderInfo () {
+    return;
     try {
       var framesCount = animation.getTimes().length;
       const info = `
@@ -97,15 +104,15 @@ require([
   }
 
   function renderLyrInfo(lyr) {
-    const imgStatus = _.values(lyr.getView().imageStatus_);
+    const imgStatus = _.values(radar.getView().imageStatus_);
     return `
-      [${animation.getLayerIndex_(lyr)}] 
+      [${animation.getLayerIndex_(radar)}] 
       ${imgStatus.filter(Boolean).length} / ${imgStatus.length}
     `;
   }
 
   renderInfo();
-  window.renderInfo = renderInfo;
+  window.renderInfo = renderInfo;*/
 });
 
 var SECOND = 1000;
