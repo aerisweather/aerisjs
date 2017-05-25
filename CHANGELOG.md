@@ -1,3 +1,10 @@
+# 1.0.1
+
+* FIX: Fix "blank" animation frames, when using google maps
+* FIX: Improve layer-loading performance in animations
+* FIX: Fix animation `isAnimating` return value during end delay
+* FIX: Fix zIndex behavior, when using google maps
+
 # 1.0.0
 
 * MOD: Animation - do not use times.json to resolve valid times.
