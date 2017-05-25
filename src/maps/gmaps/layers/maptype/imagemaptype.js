@@ -86,16 +86,21 @@ define([
     // so we know which ones are loaded
     this.imageStatus_ = {};
 
+    // I can't figure out
+    // how to get zIndexes to work with gMaps.
+    // I give up.
+    setInterval(function() {
+      this.setZIndex(this.zIndex_);
+    }.bind(this), 500);
+
     // Update our zIndex
     // whenever other ImageMapTypes are
     // added to the DOM.
     // This seems to be necessary for
     // gmaps to save our zIndex state.
     mapTypeEventHub.on('init', function(imageMapType) {
-      if (imageMapType !== this) {
-        // Reset our zIndex.
-        this.setParentNodeZIndex_(this.zIndex_);
-      }
+      // Reset our zIndex.
+      this.setZIndex(this.zIndex_);
     }, this);
   };
 
@@ -149,9 +154,7 @@ define([
     // type is added.
     // This event will let other map types update their
     // styles to overcome google.
-    if (!this.getParentNode_()) {
-      mapTypeEventHub.trigger('init', this);
-    }
+    mapTypeEventHub.trigger('init', this);
 
     return tileContainer;
   };
