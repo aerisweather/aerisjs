@@ -22,7 +22,7 @@ define([
 
     this.listenTo(this.object_, {
       'change:opacity': this.updateOpacity,
-      'change:zIndex': this.updateZIndex_
+      'change:zIndex map:set': this.updateZIndex_
     }, this);
     this.updateOpacity();
   };
@@ -34,19 +34,21 @@ define([
    * @method createView_
    */
   TileLayerStrategy.prototype.createView_ = function() {
-    return new this.MapType_({
-      getTileUrl: _.bind(this.getUrl_, this),
-      tileSize: new gmaps.Size(256, 256),
-      minZoom: this.object_.get('minZoom'),
-      maxZoom: this.object_.get('maxZoom'),
-      name: this.object_.get('name') || 'Aeris Weather Layer',
-      opacity: this.object_.get('opacity'),
-      zIndex: this.object_.get('zIndex')
-    });
-  };
+		var mapType = new this.MapType_({
+			getTileUrl: _.bind(this.getUrl_, this),
+			tileSize: new gmaps.Size(256, 256),
+			minZoom: this.object_.get('minZoom'),
+			maxZoom: this.object_.get('maxZoom'),
+			name: this.object_.get('name') || 'Aeris Weather Layer',
+			opacity: this.object_.get('opacity'),
+			zIndex: this.object_.get('zIndex'),
+      tileType: this.object_.get('tileType')
+		});
+		return mapType;
+	};
 
 
-  TileLayerStrategy.prototype.delegateMapEvents_ = function() {
+	TileLayerStrategy.prototype.delegateMapEvents_ = function() {
     this.googleEvents_.listenTo(this.mapView_, 'bounds_changed', _.throttle(function() {
       this.object_.trigger('load:reset');
 

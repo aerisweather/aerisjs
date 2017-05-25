@@ -22,6 +22,7 @@ define([
    * @constructor
    */
   var ImageMapType = function(options) {
+    this.tileType = options.tileType;
     _.defaults(options, {
       zIndex: 1,
       opacity: 1,
@@ -64,13 +65,7 @@ define([
      */
     this.imgs_ = [];
 
-
-    /**
-     * @type {number}
-     * @private
-     * @property zIndex_
-     */
-    this.zIndex_ = options.zIndex;
+		this.setZIndex(options.zIndex);
 
 
     /**
@@ -91,7 +86,6 @@ define([
     // Keep of hash ([string]:boolean) of imgSrcs,
     // so we know which ones are loaded
     this.imageStatus_ = {};
-
 
     // Update our zIndex
     // whenever other ImageMapTypes are
@@ -160,6 +154,11 @@ define([
       mapTypeEventHub.trigger('init', this);
     }
 
+    /*setInterval(function() {
+      console.log('updating zIndex...');
+      this.setZIndex(this.zIndex_);
+    }.bind(this), 100);
+*/
     return tileContainer;
   };
 
@@ -244,7 +243,6 @@ define([
     return img;
   };
 
-
   /**
    * Returns the parent node of the
    * entire map type. The siblings of this
@@ -267,6 +265,7 @@ define([
 
     try {
       this.parentNode_ = this.divs_[0].parentNode.parentNode;
+      this.parentNode_.dataset.tiletype = this.tileType;
       this.setParentNodeZIndex_(this.zIndex_);
     }
     catch (e) {
@@ -282,10 +281,20 @@ define([
    * @method setZIndex
    */
   ImageMapType.prototype.setZIndex = function(zIndex) {
-    if (zIndex === this.zIndex_) { return; }
-
     // Save our new zIndex state.
     this.zIndex_ = zIndex;
+
+    // If we don't have a parent node yet,
+    // wait until we have one, then update the zIndex
+    if (!this.getParentNode_()) {
+      var int = setInterval(function() {
+        if (!this.getParentNode_()) {
+					this.setParentNodeZIndex_(this.zIndex_);
+					clearInterval(int);
+        }
+      }.bind(this), 100);
+      return;
+    }
 
     this.setParentNodeZIndex_(this.zIndex_);
   };
