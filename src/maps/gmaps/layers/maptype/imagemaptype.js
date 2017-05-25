@@ -22,7 +22,6 @@ define([
    * @constructor
    */
   var ImageMapType = function(options) {
-    this.tileType = options.tileType;
     _.defaults(options, {
       zIndex: 1,
       opacity: 1,
@@ -65,7 +64,7 @@ define([
      */
     this.imgs_ = [];
 
-		this.setZIndex(options.zIndex);
+    this.setZIndex(options.zIndex);
 
 
     /**
@@ -80,7 +79,7 @@ define([
      * @property document_
      * @private
      * @type {HTMLElement}
-    */
+     */
     this.document_ = null;
 
     // Keep of hash ([string]:boolean) of imgSrcs,
@@ -154,11 +153,6 @@ define([
       mapTypeEventHub.trigger('init', this);
     }
 
-    /*setInterval(function() {
-      console.log('updating zIndex...');
-      this.setZIndex(this.zIndex_);
-    }.bind(this), 100);
-*/
     return tileContainer;
   };
 
@@ -261,11 +255,12 @@ define([
   ImageMapType.prototype.getParentNode_ = function() {
     var hasValidParentNode = this.parentNode_ && this.document_.contains(this.parentNode_);
 
-    if (hasValidParentNode) { return this.parentNode_; }
+    if (hasValidParentNode) {
+      return this.parentNode_;
+    }
 
     try {
       this.parentNode_ = this.divs_[0].parentNode.parentNode;
-      this.parentNode_.dataset.tiletype = this.tileType;
       this.setParentNodeZIndex_(this.zIndex_);
     }
     catch (e) {
@@ -289,8 +284,8 @@ define([
     if (!this.getParentNode_()) {
       var int = setInterval(function() {
         if (!this.getParentNode_()) {
-					this.setParentNodeZIndex_(this.zIndex_);
-					clearInterval(int);
+          this.setParentNodeZIndex_(this.zIndex_);
+          clearInterval(int);
         }
       }.bind(this), 100);
       return;
@@ -309,7 +304,9 @@ define([
     var parentNode = this.getParentNode_();
     var parentNodeHasSameZIndex = parentNode && window.getComputedStyle(parentNode).zIndex === this.zIndex_;
 
-    if (!parentNode || parentNodeHasSameZIndex) { return; }
+    if (!parentNode || parentNodeHasSameZIndex) {
+      return;
+    }
 
     parentNode.style.zIndex = zIndex;
   };
@@ -339,12 +336,16 @@ define([
    * @method setOpacity
    */
   ImageMapType.prototype.setOpacity = function(opacity) {
-    if (this.opacity_ === opacity) { return; }
+    if (this.opacity_ === opacity) {
+      return;
+    }
 
     this.opacity_ = opacity;
 
     _.each(this.divs_, function(div) {
-      if (window.getComputedStyle(div).opacity === this.opacity_) { return; }
+      if (window.getComputedStyle(div).opacity === this.opacity_) {
+        return;
+      }
 
       div.style.opacity = this.opacity_;
     }, this);

@@ -34,21 +34,19 @@ define([
    * @method createView_
    */
   TileLayerStrategy.prototype.createView_ = function() {
-		var mapType = new this.MapType_({
-			getTileUrl: _.bind(this.getUrl_, this),
-			tileSize: new gmaps.Size(256, 256),
-			minZoom: this.object_.get('minZoom'),
-			maxZoom: this.object_.get('maxZoom'),
-			name: this.object_.get('name') || 'Aeris Weather Layer',
-			opacity: this.object_.get('opacity'),
-			zIndex: this.object_.get('zIndex'),
-      tileType: this.object_.get('tileType')
-		});
-		return mapType;
-	};
+    return new this.MapType_({
+      getTileUrl: _.bind(this.getUrl_, this),
+      tileSize: new gmaps.Size(256, 256),
+      minZoom: this.object_.get('minZoom'),
+      maxZoom: this.object_.get('maxZoom'),
+      name: this.object_.get('name') || 'Aeris Weather Layer',
+      opacity: this.object_.get('opacity'),
+      zIndex: this.object_.get('zIndex')
+    });
+  };
 
 
-	TileLayerStrategy.prototype.delegateMapEvents_ = function() {
+  TileLayerStrategy.prototype.delegateMapEvents_ = function() {
     this.googleEvents_.listenTo(this.mapView_, 'bounds_changed', _.throttle(function() {
       this.object_.trigger('load:reset');
 
@@ -86,10 +84,10 @@ define([
     var subdomain = this.object_.getRandomSubdomain();
 
     url = this.object_.getUrl();
-    url = url.replace(/\{d\}/, subdomain).
-              replace(/\{z\}/, zfactor).
-              replace(/\{x\}/, coord.x).
-              replace(/\{y\}/, coord.y);
+    url = url.replace(/\{d\}/, subdomain)
+      .replace(/\{z\}/, zfactor)
+      .replace(/\{x\}/, coord.x)
+      .replace(/\{y\}/, coord.y);
 
     return url;
   };
