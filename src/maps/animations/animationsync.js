@@ -136,7 +136,12 @@ define([
     animations = animations_or_layers.map(function(obj) {
       var isLayer = obj instanceof AnimationLayer;
 
-      return isLayer ? new this.AnimationType_(obj, this.options_) : obj;
+			var options = _.extend({}, this.options_, {
+			  to: this.getTo(),
+        from: this.getFrom(),
+        limit: this.limit_
+			});
+			return isLayer ? new this.AnimationType_(obj, options) : obj;
     }, this);
 
     _.each(animations, this.addOne_, this);
