@@ -77,36 +77,27 @@ define([
       });
 
       describe('when adding layers', function() {
-        var MockAnimationType;
-        var animationSync;
-        var layer_A, layer_B;
-        var FROM_STUB = 'FROM_STUB', TO_STUB = 'TO_STUB', LIMIT_STUB = 'LIMIT_STUB';
-        var TIMESPAN_STUB = 'TIMESPAN_STUB', TIME_TOLERANCE_STUB = 'TIME_TOLERANCE_STUB';
-
-        beforeEach(function() {
-          layer_A = new MockAnimationLayer();
-          layer_B = new MockAnimationLayer();
-
-          MockAnimationType = jasmine.createSpy('MockAnimationType').
-            andReturn(new MockAnimation());
-
-          animationSync = new AnimationSync(null, {
-            AnimationType: MockAnimationType,
-            from: FROM_STUB,
-            to: TO_STUB,
-            limit: LIMIT_STUB,
-            timespan: TIMESPAN_STUB,
-            timeTolerance: TIME_TOLERANCE_STUB
-          });
-        });
-
 
         it('should create animation objects for each added layer', function() {
+          var layer_A = new MockAnimationLayer();
+          var layer_B = new MockAnimationLayer();
+
+          var MockAnimationType = jasmine.createSpy('MockAnimationType').
+            andReturn(new MockAnimation());
+
+          var animationSync = new AnimationSync(null, {
+            AnimationType: MockAnimationType,
+            from: new Date(5 * 1000),
+            to: new Date(10 * 1000),
+            limit: 5,
+            timeTolerance: 1000
+          });
+
           var animOptions = {
-            from: FROM_STUB,
-            to: TO_STUB,
-            limit: LIMIT_STUB,
-            timeTolerance: TIME_TOLERANCE_STUB
+            from: new Date(5 * 1000),
+            to: new Date(10 * 1000),
+            limit: 5,
+            timeTolerance: 1000
           };
           animationSync.add([layer_A, layer_B]);
 
