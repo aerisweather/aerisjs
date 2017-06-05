@@ -1,3 +1,8 @@
+# 1.0.2
+
+* FIX: fix to/from/limit options, being passed to new layers.
+       This fixes duplicate tile requests being sent on animation init
+
 # 1.0.1
 
 * FIX: Fix "blank" animation frames, when using google maps
