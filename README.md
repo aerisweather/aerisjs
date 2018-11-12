@@ -1,4 +1,4 @@
-### This library has been deprecated. Please visit (our 2.0 docs)[https://www.aerisweather.com/support/docs/toolkits/aeris-js-sdk/]!
+### This library has been deprecated. Please visit [our 2.0 docs](https://www.aerisweather.com/support/docs/toolkits/aeris-js-sdk/)!
 
 Aeris.js
 -----------------
