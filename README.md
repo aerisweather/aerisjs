@@ -1,16 +1,5 @@
-### This library has been deprecated. Please visit [our 2.0 docs](https://www.aerisweather.com/support/docs/toolkits/aeris-js-sdk/)!
-
-Aeris.js
------------------
-
-##### A javscript library for maps and weather.
-
-[![Build Status](https://secure.travis-ci.org/aerisweather/aerisjs.png?branch=master)](http://travis-ci.org/hamweather/aerisjs) *master*
-
-[![Build Status](https://secure.travis-ci.org/aerisweather/aerisjs.png?branch=dev)](http://travis-ci.org/hamweather/aerisjs)
- *dev*
-
-# About Aeris.js
+### This library has been deprecated. Check out [our new JavaScript SDK](https://www.aerisweather.com/support/docs/toolkits/aeris-js-sdk/) instead!
+---
 
 The [Aeris Weather API](http://www.hamweather.com/support/documentation/aeris/) is one of the most complete and advanced weather APIs available and quickly gives you access to many different types of weather information. 
 
